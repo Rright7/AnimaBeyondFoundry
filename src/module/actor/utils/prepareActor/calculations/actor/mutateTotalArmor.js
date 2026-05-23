@@ -63,10 +63,22 @@ export const mutateTotalArmor = data => {
     );
   }
 
+  // Ki passive armor (Armadura de energía / mayor / arcana) — treated as a
+  // virtual extra armor layer of energy type. The bucket already encodes the
+  // "no se apilan entre ellas, prevalece la mayor" rule (Math.max in
+  // applyKiSkillsModifiers), so here it's just one more TA fed into the
+  // same combined formula as physical armors.
+  const kiEnergyArmorTA = data.general?.modifiers?.kiBonus?.energyArmor?.value ?? 0;
+  if (kiEnergyArmorTA > 0) {
+    const energyTAs = equippedArmors.map(armor => armor.system.energy.final.value);
+    energyTAs.push(kiEnergyArmorTA);
+    totalArmor.at.energy.value = calculateTA(energyTAs);
+  }
+
   data.combat.totalArmor = totalArmor;
 };
 
 mutateTotalArmor.abfFlow = {
-  deps: ['system.combat.armors'],
+  deps: ['system.combat.armors', 'system.general.modifiers.kiBonus.energyArmor.value'],
   mods: ['system.combat.totalArmor']
 };

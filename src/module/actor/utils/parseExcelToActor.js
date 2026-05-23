@@ -40,8 +40,9 @@ export const parseExcelToActor = async (excelData, actor, options = {}) => {
   const regenerationModifier =
     excelData.Regeneración_final -
     calculateRegenerationTypeFromConstitution(excelData.CON);
-  const extraDamage =
-    (excelData.DañoIncrementado ? 10 : 0) + (excelData.Extensióndelauraalarma ? 10 : 0);
+  // Damage bonus from Ki abilities (Daño incrementado, Extensión del aura al arma, …)
+  // is now applied dynamically via applyKiSkillsModifiers based on the imported
+  // kiSkills, so the Excel checkboxes no longer need to be summed here.
   const conResistance =
     excelData.Presencia_final + calculateAttributeModifier(excelData.CON);
   const podResistance =
@@ -320,13 +321,7 @@ export const parseExcelToActor = async (excelData, actor, options = {}) => {
             value: bonoPresencia
           }
         },
-        modifiers: {
-          extraDamage: {
-            base: {
-              value: extraDamage
-            }
-          }
-        },
+        modifiers: {},
         settings: {
           inhuman: {
             value: excelData.Inhumanidad

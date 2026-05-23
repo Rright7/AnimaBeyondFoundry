@@ -16,8 +16,20 @@
  *   martialKnowledge   — CM cost from Core Exxet
  *   tree               — { parent: id|null, depth: 0..4 }
  *   aliases            — { es: [...] } alternative Spanish strings that match this entry
- *   effects            — Active Effect-style modifiers (currently empty; populated in
- *                        subsequent PRs once schema and wiring land)
+ *   effects            — Passive modifiers applied to the actor while the ability is in the sheet.
+ *                        Each effect is { target, operation, value } where:
+ *                          target    — 'damage'      (adds to weapon damage final, all weapons)
+ *                                    | 'initiative'  (adds to actor initiative final)
+ *                                    | 'energyArmor' (virtual armor layer of N TA, energy type)
+ *                          operation — 'add'  (accumulates across abilities)
+ *                                    | 'set'  (takes max across abilities — used for energyArmor
+ *                                              to model the "no se apilan, prevalece la mayor"
+ *                                              rule between Ki armor variants)
+ *                          value     — integer
+ *                        Wired through applyKiSkillsModifiers (derived function) which fills
+ *                        system.general.modifiers.kiBonus.{damage,initiative,energyArmor}.value.
+ *                        Those buckets are then read by calculateWeaponDamage, mutateInitiative
+ *                        and mutateTotalArmor.
  *
  * To regenerate from a fresh community Excel, see scripts/extractKiSkills.py
  * (kept outside the repo until a Node port is decided).
@@ -239,7 +251,7 @@ export const KI_SKILLS = [
     martialKnowledge: 10,
     tree: { parent: 'presenceExtrusion', depth: 1 },
     aliases: { es: ['Armadura de energía'] },
-    effects: []
+    effects: [{ target: 'energyArmor', operation: 'set', value: 2 }]
   },
   {
     id: 'majorArmor',
@@ -248,6 +260,8 @@ export const KI_SKILLS = [
     martialKnowledge: 10,
     tree: { parent: 'energyArmor', depth: 2 },
     aliases: { es: ['Armadura mayor'] },
+    // No passive contribution: this ability only grants +4 TA when activated
+    // (1 Ki / 5 turns), which is out of scope for this PR.
     effects: []
   },
   {
@@ -257,7 +271,9 @@ export const KI_SKILLS = [
     martialKnowledge: 10,
     tree: { parent: 'majorArmor', depth: 3 },
     aliases: { es: ['Arm. arcana'] },
-    effects: []
+    // Passive part only — +4 TA, does not stack with energyArmor / majorArmor.
+    // The activable +6 TA (1 Ki / 5 turns) is out of scope for this PR.
+    effects: [{ target: 'energyArmor', operation: 'set', value: 4 }]
   },
   {
     id: 'weaponAuraExtension',
@@ -266,7 +282,7 @@ export const KI_SKILLS = [
     martialKnowledge: 10,
     tree: { parent: 'presenceExtrusion', depth: 1 },
     aliases: { es: ['Extensión del aura al arma'] },
-    effects: []
+    effects: [{ target: 'damage', operation: 'add', value: 10 }]
   },
   {
     id: 'elementalAttack',
@@ -284,7 +300,7 @@ export const KI_SKILLS = [
     martialKnowledge: 10,
     tree: { parent: 'weaponAuraExtension', depth: 2 },
     aliases: { es: ['Daño incrementado'] },
-    effects: []
+    effects: [{ target: 'damage', operation: 'add', value: 10 }]
   },
   {
     id: 'increasedReach',
@@ -302,7 +318,7 @@ export const KI_SKILLS = [
     martialKnowledge: 10,
     tree: { parent: 'weaponAuraExtension', depth: 2 },
     aliases: { es: ['Velocidad incrementada'] },
-    effects: []
+    effects: [{ target: 'initiative', operation: 'add', value: 10 }]
   },
   {
     id: 'kiDestruction',
@@ -706,4 +722,14 @@ export function findKiSkillByName(name) {
   return KI_SKILLS.find(
     s => s.name === needle || (s.aliases?.es ?? []).includes(needle)
   );
+}
+
+/** Lookup a canonical Ki/Nemesis entry by stable internal id.
+ *  Returns undefined when no match found.
+ *  @param {string} id
+ *  @returns {(typeof KI_SKILLS)[number] | undefined}
+ */
+export function findKiSkillById(id) {
+  if (!id) return undefined;
+  return KI_SKILLS.find(s => s.id === id);
 }

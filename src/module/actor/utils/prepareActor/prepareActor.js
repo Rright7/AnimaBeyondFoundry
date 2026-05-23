@@ -44,6 +44,7 @@ import {
   mutateKiAccumulationWillPower,
   mutateKiAccumulationPower
 } from './calculations/actor/domine/mutateDomineData';
+import { applyKiSkillsModifiers } from './calculations/actor/domine/applyKiSkillsModifiers';
 import { mutateInitiative } from './calculations/actor/mutateInitiative';
 import { mutateRegenerationType } from './calculations/actor/general/mutateRegenerationType';
 import { mutatePresence } from './calculations/actor/mutatePresence';
@@ -83,6 +84,9 @@ const DERIVED_DATA_FUNCTIONS = [
   mutateRegenerationType,
   mutateAllActionsModifier,
   mutateArmorsData,
+  // Ki passive modifiers must run before total armor (energyArmor),
+  // weapons (damage bonus) and initiative read kiBonus.*
+  applyKiSkillsModifiers,
   mutateTotalArmor,
   // Natural penalty — unreduced/reduction before final
   mutateNaturalPenaltyUnreduced,
