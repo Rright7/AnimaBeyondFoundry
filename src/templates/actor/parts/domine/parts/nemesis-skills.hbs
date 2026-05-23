@@ -9,14 +9,26 @@
   {{#> "systems/animabf/templates/common/ui/group-body.hbs"
     class="nemesis-skills"
   }}
-    {{#each system.domine.nemesisSkills as |nemesisSkill|}}
+    {{#each system.domine.nemesisSkills as |nemesisSkill index|}}
       <div data-item-id='{{nemesisSkill._id}}' class='nemesis-skill-row'>
-        <input
-          name='system.dynamic.nemesisSkills.{{nemesisSkill._id}}.name'
-          type='text'
-          class='input'
-          value='{{nemesisSkill.name}}'
-        />
+        {{>
+        "systems/animabf/templates/common/ui/vertical-titled-input.hbs"
+          class="name"
+          title=(localize "anima.ui.domine.nemesisSkills.name.title")
+          hideTitle=(is "gt" index 0)
+          inputType="text"
+          inputName=(concat "system.dynamic.nemesisSkills." nemesisSkill._id ".name")
+          inputValue=nemesisSkill.name
+        }}
+        {{>
+        "systems/animabf/templates/common/ui/vertical-titled-input.hbs"
+          class="martial-knowledge"
+          title=(localize "anima.ui.domine.nemesisSkills.martialKnowledge.title")
+          hideTitle=(is "gt" index 0)
+          inputType="number"
+          inputName=(concat "system.dynamic.nemesisSkills." nemesisSkill._id ".system.martialKnowledge.value")
+          inputValue=nemesisSkill.system.martialKnowledge.value
+        }}
       </div>
     {{/each}}
   {{/"systems/animabf/templates/common/ui/group-body.hbs"}}

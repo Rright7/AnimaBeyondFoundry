@@ -9,14 +9,26 @@
   {{#> "systems/animabf/templates/common/ui/group-body.hbs"
     class="ki-skills"
   }}
-    {{#each system.domine.kiSkills as |kiSkill|}}
+    {{#each system.domine.kiSkills as |kiSkill index|}}
       <div data-item-id='{{kiSkill._id}}' class='ki-skill-row'>
-        <input
-          name='system.dynamic.kiSkills.{{kiSkill._id}}.name'
-          type='text'
-          class='input'
-          value='{{kiSkill.name}}'
-        />
+        {{>
+        "systems/animabf/templates/common/ui/vertical-titled-input.hbs"
+          class="name"
+          title=(localize "anima.ui.domine.kiSkills.name.title")
+          hideTitle=(is "gt" index 0)
+          inputType="text"
+          inputName=(concat "system.dynamic.kiSkills." kiSkill._id ".name")
+          inputValue=kiSkill.name
+        }}
+        {{>
+        "systems/animabf/templates/common/ui/vertical-titled-input.hbs"
+          class="martial-knowledge"
+          title=(localize "anima.ui.domine.kiSkills.martialKnowledge.title")
+          hideTitle=(is "gt" index 0)
+          inputType="number"
+          inputName=(concat "system.dynamic.kiSkills." kiSkill._id ".system.martialKnowledge.value")
+          inputValue=kiSkill.system.martialKnowledge.value
+        }}
       </div>
     {{/each}}
   {{/"systems/animabf/templates/common/ui/group-body.hbs"}}

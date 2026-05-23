@@ -888,5 +888,9 @@
   "anima.ui.effects.effectsList.disable.title": "Disable",
   "anima.ui.effects.effectsList.edit.title": "Edit",
   "anima.ui.effects.effectsList.delete.title": "Delete",
-  "anima.effects.newEffect": "New effect"
+  "anima.effects.newEffect": "New effect",
+  "anima.ui.domine.kiSkills.name.title": "Ability",
+  "anima.ui.domine.kiSkills.martialKnowledge.title": "MK",
+  "anima.ui.domine.nemesisSkills.name.title": "Ability",
+  "anima.ui.domine.nemesisSkills.martialKnowledge.title": "MK"
 }

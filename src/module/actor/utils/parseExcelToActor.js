@@ -5,6 +5,7 @@ import { calculateAttributeModifier } from './prepareActor/calculations/util/cal
 import { INITIAL_TECHNIQUE_DATA } from '../../types/domine/TechniqueItemConfig';
 import { INITIAL_MENTAL_PATTERN_DATA } from '../../types/psychic/MentalPatternItemConfig';
 import { importCombatEquipment } from './excelImporter/combatEquipment/index.js';
+import { importKiSkills } from './excelImporter/kiSkills/index.js';
 
 /**
  * Parses excel data to actor data.
@@ -59,15 +60,6 @@ export const parseExcelToActor = async (excelData, actor, options = {}) => {
   const bonoRM = excelData.RM_final - podResistance;
   const bonoRP = excelData.RP_final - volResistance;
 
-  const habilidades = separarHabilidadesKi(excelData.HabilidadesKiNemesis);
-  const habilidadesKi = SetEmptyIfUndefined(habilidades.habilidadesKi)
-    .split(',')
-    .map(value => value.trim())
-    .filter(element => element !== '');
-  const habilidadesNem = SetEmptyIfUndefined(habilidades.habilidadesNemesis)
-    .split(',')
-    .map(value => value.trim())
-    .filter(element => element !== '');
   const arsMagnus = SetEmptyIfUndefined(excelData.ArsMagnusSeleccionados)
     .split(',')
     .map(value => value.trim())
@@ -913,29 +905,8 @@ export const parseExcelToActor = async (excelData, actor, options = {}) => {
     }
   });
 
-  //Settear habilidades del Ki
-  for (var i = 0; i < habilidadesKi.length; i++) {
-    let abilityName = habilidadesKi[i];
-    if (
-      abilityName.indexOf('Detección del Ki') !== -1 ||
-      abilityName.indexOf('Ocultación del Ki') !== -1
-    ) {
-      abilityName = splitAndRemoveLast(habilidadesKi[i]); //quita el valor de la detección y ocultación, deja solo el nombre
-    }
-
-    await actor.createInnerItem({
-      name: abilityName,
-      type: ABFItems.KI_SKILL
-    });
-  }
-
-  //Settear habilidades del némesis
-  for (var i = 0; i < habilidadesNem.length; i++) {
-    await actor.createInnerItem({
-      name: habilidadesNem[i],
-      type: ABFItems.NEMESIS_SKILL
-    });
-  }
+  //Settear habilidades del Ki y Némesis con datos canónicos
+  await importKiSkills(actor, excelData.HabilidadesKiNemesis);
 
   //Settear ars magnus
   for (var i = 0; i < arsMagnus.length; i++) {
@@ -1165,66 +1136,6 @@ export const parseExcelToActor = async (excelData, actor, options = {}) => {
   actor.prepareData();
   actor.sheet.render(false);
 };
-
-function separarHabilidadesKi(habilidades) {
-  /** Ensure valid string */
-  if (typeof habilidades !== 'string') {
-    return {
-      habilidadesKi: '',
-      habilidadesNemesis: ''
-    };
-  }
-
-  let result = {
-    habilidadesKi: '',
-    habilidadesNemesis: ''
-  };
-
-  // Remove seals section
-  const indexSellos = habilidades.indexOf('Sellos:');
-  const habilidadesSinSellos =
-    indexSellos !== -1 ? habilidades.slice(0, indexSellos).trim() : habilidades.trim();
-
-  // Split Ki / Némesis by marker
-  const indexNemesis = habilidadesSinSellos.indexOf('Uso del Némesis');
-
-  if (indexNemesis === -1) {
-    // Only Ki abilities
-    result.habilidadesKi = expandAtaqueElemental(habilidadesSinSellos);
-    return result;
-  }
-
-  const kiPart = habilidadesSinSellos.slice(0, indexNemesis).trim();
-  const nemesisPart = habilidadesSinSellos.slice(indexNemesis).trim();
-
-  result.habilidadesKi = expandAtaqueElemental(kiPart);
-  result.habilidadesNemesis = nemesisPart;
-
-  return result;
-}
-
-function expandAtaqueElemental(text) {
-  if (!text) return '';
-
-  return text
-    .replace(/Ataque elemental\s*\(([^)]+)\)/gi, (_match, group) => {
-      const elements = group
-        .split(',')
-        .map(e => e.trim())
-        .filter(e => e !== '');
-      if (!elements.length) return '';
-      return elements.map(e => `Ataque elemental: ${e}`).join(', ');
-    })
-    .replace(/,\s*,/g, ', ') // clean double commas if any
-    .replace(/,\s*$/g, '') // remove trailing comma
-    .trim();
-}
-
-function splitAndRemoveLast(cadena) {
-  const partes = cadena.split(' ');
-  partes.pop();
-  return partes.join(' ').trim();
-}
 
 function separarElan(elanesCombinados) {
   let result = [];
