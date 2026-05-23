@@ -891,6 +891,8 @@
   "anima.effects.newEffect": "New effect",
   "anima.ui.domine.kiSkills.name.title": "Ability",
   "anima.ui.domine.kiSkills.martialKnowledge.title": "MK",
+  "anima.ui.domine.kiSkills.toggleLock": "Lock/unlock editing",
   "anima.ui.domine.nemesisSkills.name.title": "Ability",
-  "anima.ui.domine.nemesisSkills.martialKnowledge.title": "MK"
+  "anima.ui.domine.nemesisSkills.martialKnowledge.title": "MK",
+  "anima.ui.domine.nemesisSkills.toggleLock": "Lock/unlock editing"
 }

@@ -775,6 +775,8 @@
   "anima.effects.newEffect": "New effect",
   "anima.ui.domine.kiSkills.name.title": "Compétence",
   "anima.ui.domine.kiSkills.martialKnowledge.title": "CM",
+  "anima.ui.domine.kiSkills.toggleLock": "Verrouiller/déverrouiller l\u0027édition",
   "anima.ui.domine.nemesisSkills.name.title": "Compétence",
-  "anima.ui.domine.nemesisSkills.martialKnowledge.title": "CM"
+  "anima.ui.domine.nemesisSkills.martialKnowledge.title": "CM",
+  "anima.ui.domine.nemesisSkills.toggleLock": "Verrouiller/déverrouiller l\u0027édition"
 }

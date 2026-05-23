@@ -893,6 +893,8 @@
   "anima.effects.newEffect": "Nuevo efecto",
   "anima.ui.domine.kiSkills.name.title": "Habilidad",
   "anima.ui.domine.kiSkills.martialKnowledge.title": "CM",
+  "anima.ui.domine.kiSkills.toggleLock": "Bloquear/desbloquear edición",
   "anima.ui.domine.nemesisSkills.name.title": "Habilidad",
-  "anima.ui.domine.nemesisSkills.martialKnowledge.title": "CM"
+  "anima.ui.domine.nemesisSkills.martialKnowledge.title": "CM",
+  "anima.ui.domine.nemesisSkills.toggleLock": "Bloquear/desbloquear edición"
 }

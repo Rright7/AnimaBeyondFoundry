@@ -13,5 +13,13 @@
     "systems/animabf/templates/common/ui/group-header-title.hbs"
       title=this.title
     }}
+    {{#if this.lockButtonAction}}
+      <button
+        type='button'
+        class='section-lock locked'
+        data-on-click='{{this.lockButtonAction}}'
+        title='{{this.lockButtonTitle}}'
+      ><i class='fas fa-lock'></i></button>
+    {{/if}}
   {{/if}}
 </div>

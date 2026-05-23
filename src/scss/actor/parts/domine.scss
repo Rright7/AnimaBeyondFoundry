@@ -38,6 +38,50 @@
     }
   }
 
+  // Tree prefix shown before the ability name (Ki / Nemesis). Pinned to the
+  // top of the child's row so the horizontal arm of ├── / └── sits near the
+  // base of the parent name in the previous row, instead of in the child's
+  // vertical center.
+  .tree-prefix {
+    font-family: ui-monospace, "Cascadia Code", "Consolas", monospace;
+    color: rgba(0, 0, 0, 0.55);
+    white-space: pre;
+    font-size: 0.85rem;
+    line-height: 1;
+    align-self: start;
+    margin: 0;
+    padding: 0;
+    // Pull the prefix up so the elbow ─── touches the bottom of the parent.
+    transform: translateY(-0.25rem);
+
+    &.with-title-offset {
+      // First row has a column title above the input; compensate for that
+      // extra height so the prefix still hugs the top of the input.
+      transform: translateY(1rem);
+    }
+  }
+
+  // Section lock button (Ki / Nemesis headers)
+  .section-lock {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0 0.25rem;
+    margin-left: 0.5rem;
+    color: rgba(0, 0, 0, 0.55);
+    font-size: 0.95rem;
+    line-height: 1;
+
+    &:hover {
+      color: rgba(0, 0, 0, 0.85);
+    }
+
+    &.unlocked {
+      color: #a04040;
+    }
+  }
+  // Section lock button
+
   // Ki Skills
   .ki-skills {
     .ki-skill-row:first-child {
@@ -48,8 +92,13 @@
       margin-top: 0.75rem;
 
       display: grid;
-      grid-template-columns: 3fr 1fr;
-      grid-column-gap: 1rem;
+      grid-template-columns: auto 3fr 1fr;
+      grid-column-gap: 0;
+      align-items: center;
+
+      .martial-knowledge {
+        margin-left: 1rem;
+      }
 
       .name {
         .input-container {
@@ -75,8 +124,13 @@
       margin-top: 0.75rem;
 
       display: grid;
-      grid-template-columns: 3fr 1fr;
-      grid-column-gap: 1rem;
+      grid-template-columns: auto 3fr 1fr;
+      grid-column-gap: 0;
+      align-items: center;
+
+      .martial-knowledge {
+        margin-left: 1rem;
+      }
 
       .name {
         .input-container {
