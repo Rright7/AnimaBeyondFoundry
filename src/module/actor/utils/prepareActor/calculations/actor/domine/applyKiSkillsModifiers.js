@@ -1,4 +1,5 @@
 import {
+  KI_SKILLS,
   findKiSkillById,
   findKiSkillByName
 } from '../../../../excelImporter/kiSkills/kiSkills.js';
@@ -11,7 +12,13 @@ import {
  * Side effects on each matched ability item (Ki or Nemesis):
  *   - system.martialKnowledge.value ← canonical CM
  *   - system.tree.{parent, depth}   ← canonical position in the in-book tree
- *   - system.tree.prefix            ← ASCII box-drawing prefix (├── │   └── )
+ *   - system.tree.prefix            ← ASCII box-drawing prefix
+ *
+ * Both lists (kiSkills, nemesisSkills) are also reordered in-place into the
+ * canonical DFS order so that — after the user deletes and re-adds an
+ * ability — it slots back under its parent instead of dangling at the end.
+ * The reorder only mutates the derived data passed in (system), never the
+ * actor source, so persistence stays whatever the user typed.
  *
  * @param {import('../../../../../../types/Actor').ABFActorDataSourceData} data
  */
@@ -19,8 +26,10 @@ export const applyKiSkillsModifiers = data => {
   const kiSkills = data.domine?.kiSkills ?? [];
   const nemesisSkills = data.domine?.nemesisSkills ?? [];
 
-  const totals = { damage: 0, initiative: 0, energyArmor: 0 };
+  sortByCanonicalOrder(kiSkills);
+  sortByCanonicalOrder(nemesisSkills);
 
+  const totals = { damage: 0, initiative: 0, energyArmor: 0 };
   enrichListFromCanonical(kiSkills, totals);
   enrichListFromCanonical(nemesisSkills, totals);
 
@@ -37,11 +46,30 @@ export const applyKiSkillsModifiers = data => {
   data.general.modifiers.kiBonus.energyArmor = { value: totals.energyArmor };
 };
 
+const CANONICAL_INDEX = (() => {
+  const map = new Map();
+  KI_SKILLS.forEach((entry, idx) => map.set(entry.id, idx));
+  return map;
+})();
+
 /**
- * For each ability in `list`, look up its canonical entry (by id, then name)
- * and mirror CM + tree onto the item, plus accumulate effect bonuses into
- * the shared `totals` object.
+ * Reorder the list in-place to match KI_SKILLS canonical order. Items whose
+ * canonical id can't be resolved (homebrew or unrecognised name) keep their
+ * relative order and are appended at the end. Stable sort.
  */
+function sortByCanonicalOrder(list) {
+  if (list.length < 2) return;
+  list.sort((a, b) => canonicalIndexOf(a) - canonicalIndexOf(b));
+}
+
+function canonicalIndexOf(skill) {
+  const id = skill?.system?.canonicalId;
+  if (id && CANONICAL_INDEX.has(id)) return CANONICAL_INDEX.get(id);
+  const byName = skill?.name ? findKiSkillByName(skill.name) : undefined;
+  if (byName && CANONICAL_INDEX.has(byName.id)) return CANONICAL_INDEX.get(byName.id);
+  return Number.POSITIVE_INFINITY;
+}
+
 function enrichListFromCanonical(list, totals) {
   for (const skill of list) {
     const canonicalId = skill?.system?.canonicalId;
@@ -80,11 +108,6 @@ function enrichListFromCanonical(list, totals) {
   }
 }
 
-/**
- * With every depth set, compute and store the box-drawing prefix on each row
- * of the given list. List is assumed to be in DFS order (as it comes from
- * the importer / kiSkills.js canonical order).
- */
 function populateTreePrefixes(list) {
   const depths = list.map(k => k?.system?.tree?.depth ?? 0);
   const prefixes = computeKiSkillTreePrefixes(depths);
