@@ -1,0 +1,68 @@
+{{#> "systems/animabf/templates/common/ui/group.hbs"
+  class="combat-maneuvers"
+}}
+  {{>
+  "systems/animabf/templates/common/ui/group-header.hbs"
+    title=(localize "anima.ui.combat.combatManeuvers.title")
+  }}
+  {{#> "systems/animabf/templates/common/ui/group-body.hbs"
+    class="combat-maneuvers"
+  }}
+    {{#if system.combat.combatManeuvers.length}}
+      <div class='combat-maneuvers-grid'>
+        {{#each system.combat.combatManeuvers as |maneuver|}}
+          <div data-item-id='{{maneuver._id}}' class='combat-maneuver-card'>
+            <img
+              src='{{maneuver.img}}'
+              alt='{{maneuver.name}}'
+              data-on-click='openCombatManeuver'
+              data-maneuver-id='{{maneuver._id}}'
+              title='{{localize "anima.ui.combat.combatManeuvers.openSheet"}}'
+              class='combat-maneuver-card__icon'
+            />
+            <div class='combat-maneuver-card__body'>
+              <div class='combat-maneuver-card__header'>
+                <div class='combat-maneuver-card__heading'>
+                  <strong class='combat-maneuver-card__name'>{{maneuver.name}}</strong>
+                  {{#if maneuver.system.slug.value}}
+                    <span class='combat-maneuver-card__slug'>{{maneuver.system.slug.value}}</span>
+                  {{/if}}
+                </div>
+                <a
+                  data-on-click='deleteCombatManeuver'
+                  data-maneuver-id='{{maneuver._id}}'
+                  title='{{localize "anima.ui.combat.combatManeuvers.delete"}}'
+                  class='combat-maneuver-card__delete'
+                >
+                  <i class='fas fa-trash'></i>
+                </a>
+              </div>
+              {{#if maneuver.system.slug.value}}
+                <div class='combat-maneuver-card__rules'>
+                  {{combatManeuverRulesSummary maneuver.system.slug.value}}
+                </div>
+              {{/if}}
+              <button
+                type='button'
+                data-on-click='executeCombatManeuver'
+                data-maneuver-id='{{maneuver._id}}'
+                class='combat-maneuver-card__execute'
+                title='{{localize "anima.ui.combat.combatManeuvers.execute"}}'
+              >
+                <i class='fas fa-dice-d10'></i>
+                {{localize "anima.ui.combat.combatManeuvers.execute"}}
+              </button>
+            </div>
+          </div>
+        {{/each}}
+        <div class='combat-maneuver-card combat-maneuver-card--placeholder'>
+          {{localize "anima.ui.combat.combatManeuvers.dragHint"}}
+        </div>
+      </div>
+    {{else}}
+      <p class='combat-maneuvers-empty'>
+        {{localize "anima.ui.combat.combatManeuvers.empty"}}
+      </p>
+    {{/if}}
+  {{/"systems/animabf/templates/common/ui/group-body.hbs"}}
+{{/"systems/animabf/templates/common/ui/group.hbs"}}

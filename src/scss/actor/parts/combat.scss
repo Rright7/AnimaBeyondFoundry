@@ -251,3 +251,114 @@
     }
   }
 }
+
+// ── Sub-tab Maniobras de combate ─────────────────────────────────
+.combat .combat-maneuvers {
+  .combat-maneuvers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 0.625rem;
+    width: 100%;
+  }
+
+  .combat-maneuver-card {
+    display: flex;
+    gap: 0.625rem;
+    align-items: flex-start;
+    padding: 0.625rem;
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: $border-radius;
+    min-width: 0;
+  }
+
+  .combat-maneuver-card--placeholder {
+    align-items: center;
+    justify-content: center;
+    min-height: 5.5rem;
+    border: 1px dashed rgba(0, 0, 0, 0.2);
+    background: transparent;
+    font-size: 0.75rem;
+    font-style: italic;
+    color: rgba(0, 0, 0, 0.4);
+    text-align: center;
+  }
+
+  .combat-maneuver-card__icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    object-fit: cover;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .combat-maneuver-card__body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .combat-maneuver-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.375rem;
+  }
+
+  .combat-maneuver-card__heading {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+  }
+
+  .combat-maneuver-card__name {
+    font-size: 0.875rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .combat-maneuver-card__slug {
+    font-family: monospace;
+    font-size: 0.7rem;
+    color: rgba(0, 0, 0, 0.5);
+  }
+
+  .combat-maneuver-card__delete {
+    color: rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    font-size: 0.8rem;
+    line-height: 1;
+
+    &:hover {
+      color: rgba(0, 0, 0, 0.75);
+    }
+  }
+
+  .combat-maneuver-card__rules {
+    font-size: 0.7rem;
+    color: rgba(0, 0, 0, 0.65);
+    line-height: 1.35;
+  }
+
+  .combat-maneuver-card__execute {
+    @include button;
+    margin-top: 0.25rem;
+    width: 100%;
+    padding: 0.3rem 0;
+    font-size: 0.8rem;
+  }
+
+  .combat-maneuvers-empty {
+    opacity: 0.55;
+    font-size: 0.85em;
+    font-style: italic;
+    padding: 0.5rem 0;
+    text-align: center;
+  }
+}

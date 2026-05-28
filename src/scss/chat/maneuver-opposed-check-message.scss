@@ -1,0 +1,104 @@
+.maneuver-opposed-check {
+  background: #F4ECCF;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  font-size: 13px;
+
+  &__header {
+    background: #7A2613;
+    color: #FFF;
+    padding: 8px 12px;
+    font-weight: 500;
+  }
+
+  &__body {
+    padding: 10px 12px;
+    color: #2A1408;
+  }
+
+  &__participants {
+    margin-bottom: 10px;
+  }
+
+  &__rules {
+    background: rgba(0, 0, 0, 0.06);
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.7);
+    margin-bottom: 10px;
+  }
+
+  &__participants-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  &__side {
+    background: #FFF;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    padding: 8px;
+  }
+
+  &__side-title {
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.55);
+    margin-bottom: 4px;
+  }
+
+  &__breakdown {
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.65);
+    margin-bottom: 4px;
+    line-height: 1.4;
+  }
+
+  &__total {
+    font-weight: 500;
+    font-size: 18px;
+    color: #2A1408;
+  }
+
+  &__total--win {
+    color: #0F6E56;
+  }
+
+  &__total--loss {
+    color: #993556;
+  }
+
+  &__roll-button {
+    background: #7A2613;
+    color: #FFF;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    width: 100%;
+
+    &:hover {
+      box-shadow: 0 0 5px #7A2613;
+    }
+  }
+
+  &__waiting {
+    font-size: 10px;
+    color: rgba(0, 0, 0, 0.45);
+    margin-top: 4px;
+    text-align: center;
+    font-style: italic;
+  }
+
+  &__resolution {
+    margin-top: 10px;
+    padding: 8px 10px;
+    background: #EAF3DE;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #173404;
+  }
+}

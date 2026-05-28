@@ -61,6 +61,11 @@ export default class ABFActorSheet extends ActorSheetV1 {
             navSelector: '.psychic-tabs',
             contentSelector: '.psychic-body',
             initial: 'psychic-main'
+          },
+          {
+            navSelector: '.combat-tabs',
+            contentSelector: '.combat-body',
+            initial: 'combat-main'
           }
         ]
       }

@@ -1,15 +1,28 @@
 <div class="combat">
-    <div class="first-row">
-         {{> "systems/animabf/templates/actor/parts/combat/parts/base-values.hbs"}}
-         {{> "systems/animabf/templates/actor/parts/combat/parts/ammo.hbs"}}
+  <nav class="animabf-tabs combat-tabs tabs secondary-tab" data-group="combatSecondary">
+    <a class="item active" data-tab="combat-main">{{localize "anima.ui.combat.tabs.main"}}</a>
+    <a class="item" data-tab="combat-maneuvers">{{localize "anima.ui.combat.tabs.maneuvers"}}</a>
+  </nav>
+
+  <section class='combat-body'>
+    <div class='tab' data-group="combatSecondary" data-tab="combat-main">
+      <div class="first-row">
+        {{> "systems/animabf/templates/actor/parts/combat/parts/base-values.hbs"}}
+        {{> "systems/animabf/templates/actor/parts/combat/parts/ammo.hbs"}}
+      </div>
+      <div class='second-row'>
+        {{> "systems/animabf/templates/actor/parts/combat/parts/weapons.hbs"}}
+        {{> "systems/animabf/templates/actor/parts/combat/parts/armors.hbs"}}
+      </div>
+      <div class='third-row'>
+        {{> "systems/animabf/templates/actor/parts/combat/parts/supernatural-shields.hbs"}}
+        {{> "systems/animabf/templates/actor/parts/combat/parts/combat-special-skills.hbs"}}
+        {{> "systems/animabf/templates/actor/parts/combat/parts/combat-tables.hbs"}}
+      </div>
     </div>
-    <div class='second-row'>
-      {{> "systems/animabf/templates/actor/parts/combat/parts/weapons.hbs"}}
-      {{> "systems/animabf/templates/actor/parts/combat/parts/armors.hbs"}}
+
+    <div class='tab' data-group="combatSecondary" data-tab="combat-maneuvers">
+      {{> "systems/animabf/templates/actor/parts/combat/parts/combat-maneuvers.hbs"}}
     </div>
-    <div class='third-row'>
-      {{> "systems/animabf/templates/actor/parts/combat/parts/supernatural-shields.hbs"}}
-      {{> "systems/animabf/templates/actor/parts/combat/parts/combat-special-skills.hbs"}}
-      {{> "systems/animabf/templates/actor/parts/combat/parts/combat-tables.hbs"}}
-    </div>
+  </section>
 </div>
