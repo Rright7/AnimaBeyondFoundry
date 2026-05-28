@@ -16,31 +16,25 @@
         {
           "key": "system.combat.attack.final.value",
           "type": "add",
-          "value": "-10",
+          "value": "-100",
           "priority": null
         },
         {
           "key": "system.combat.block.final.value",
           "type": "add",
-          "value": "10",
+          "value": "-80",
           "priority": null
         },
         {
           "key": "system.combat.dodge.final.value",
           "type": "add",
-          "value": "10",
-          "priority": null
-        },
-        {
-          "key": "system.psychic.psychicProjection.imbalance.offensive.final.value",
-          "type": "add",
-          "value": "-100",
-          "priority": null
-        },
-        {
-          "key": "system.psychic.psychicProjection.imbalance.defensive.final.value",
-          "type": "add",
           "value": "-80",
+          "priority": null
+        },
+        {
+          "key": "system.general.modifiers.physicalActions.final.value",
+          "type": "add",
+          "value": "-90",
           "priority": null
         },
         {
@@ -56,15 +50,15 @@
           "priority": null
         },
         {
-          "key": "system.general.modifiers.physicalActions.final.value",
+          "key": "system.psychic.psychicProjection.imbalance.offensive.final.value",
           "type": "add",
-          "value": "-90",
+          "value": "-100",
           "priority": null
         },
         {
-          "key": "system.characteristics.secondaries.initiative.final.value",
+          "key": "system.psychic.psychicProjection.imbalance.defensive.final.value",
           "type": "add",
-          "value": "45",
+          "value": "-80",
           "priority": null
         }
       ],
