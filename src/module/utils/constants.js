@@ -62,7 +62,8 @@ export const Templates = {
     AutoCombatResult: T('chat/auto-combat-result.hbs'),
     AttackData: T('chat/attack-data.hbs'),
     MultiDefenseResult: T('chat/multi-defense-result.hbs'),
-    AttackTargetsChips: T('chat/attack-targets-chips.hbs')
+    AttackTargetsChips: T('chat/attack-targets-chips.hbs'),
+    ManeuverOpposedCheck: T('chat/maneuver-opposed-check.hbs')
   },
 
   // --- Added from your previous manual list ---
@@ -169,6 +170,7 @@ export const Templates = {
       BaseValues: T('actor/parts/combat/parts/base-values.hbs'),
       CombatSpecialSkills: T('actor/parts/combat/parts/combat-special-skills.hbs'),
       CombatTables: T('actor/parts/combat/parts/combat-tables.hbs'),
+      CombatManeuvers: T('actor/parts/combat/parts/combat-maneuvers.hbs'),
       Ammo: T('actor/parts/combat/parts/ammo.hbs'),
       Armors: T('actor/parts/combat/parts/armors.hbs'),
       Weapons: T('actor/parts/combat/parts/weapons.hbs'),

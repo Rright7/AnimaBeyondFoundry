@@ -122,6 +122,22 @@ Hooks.once('ready', async () => {
   game.animabf.api ??= {};
   Object.assign(game.animabf.api, { ABFAttackData });
 
+  // --- Maneuvers API ---
+  // Auto-registers Derribo / Desarme / Presa via the index module.
+  try {
+    const { maneuverRegistry } = await import('./module/combat/maneuvers/index.js');
+    const { executeManeuverPostCombat } = await import(
+      './module/combat/maneuvers/executeManeuver.js'
+    );
+    game.animabf.maneuvers = {
+      get: slug => maneuverRegistry.get(slug),
+      all: () => maneuverRegistry.all(),
+      executePostCombat: executeManeuverPostCombat
+    };
+  } catch (e) {
+    console.warn('[ABF] maneuvers API not initialized:', e);
+  }
+
   game.animabf.macros ??= {};
 
   game.animabf.macros.execute = async ({ id, actorUuid, itemUuid }) => {
@@ -190,6 +206,27 @@ Hooks.once('ready', async () => {
 
       await msg.setFlag(System.id, 'result', updated);
       await msg.update({ content });
+      return;
+    }
+
+    // Maneuver opposed check — a player triggered their D10 roll but cannot
+    // setFlag on a message they don't own. We persist for them, then run the
+    // automatic resolution if both sides have rolled.
+    if (p.op === 'updateManeuverRoll') {
+      const msg = game.messages.get(p.messageId);
+      if (!msg) return;
+      const animabf = msg.flags?.animabf ?? {};
+      if (animabf.kind !== 'maneuverOpposedCheck') return;
+      const side = p.side;
+      const roll = p.roll;
+      if (!roll || !['attacker', 'defender'].includes(side)) return;
+
+      const key = side === 'attacker' ? 'attackerRoll' : 'defenderRoll';
+      await msg.setFlag(System.id, key, roll);
+
+      const { resolveManeuverOpposedCheck } =
+        await import('./module/combat/maneuvers/resolveManeuverOpposedCheck.js');
+      await resolveManeuverOpposedCheck(msg);
     }
   });
 });
@@ -212,6 +249,22 @@ async function _handleChatMessage(message, html) {
       if (target) target.innerHTML = content;
     } catch (err) {
       console.error('[ABF] failed to re-render combatResult message:', err);
+    }
+  }
+
+  if (message.getFlag(System.id, 'kind') === 'maneuverOpposedCheck') {
+    try {
+      const flags = message.flags?.animabf ?? {};
+      const { Templates } = await import('./module/utils/constants.js');
+      const renderFn = foundry.applications?.handlebars?.renderTemplate ?? renderTemplate;
+      const content = await renderFn(Templates.Chat.ManeuverOpposedCheck, {
+        flags,
+        messageId: message.id
+      });
+      const target = html.querySelector('.message-content') ?? html;
+      if (target) target.innerHTML = content;
+    } catch (err) {
+      console.error('[ABF] failed to render maneuverOpposedCheck message:', err);
     }
   }
 

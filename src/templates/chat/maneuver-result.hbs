@@ -1,0 +1,74 @@
+{{#> "systems/animabf/templates/common/ui/group.hbs"
+  class="animabf-chat-message maneuver-result-message"
+  contractible=true
+  contractibleItemId="chat-maneuver-result"
+}}
+  {{>
+    "systems/animabf/templates/common/ui/group-header.hbs"
+    title=maneuverName
+  }}
+
+  {{#> "systems/animabf/templates/common/ui/group-body.hbs"}}
+    <p>
+      <strong>{{attackerName}}</strong> vs <strong>{{defenderName}}</strong>
+    </p>
+
+    {{#unless attackHit}}
+      <p style="color:#888;">
+        El ataque no alcanzó el umbral de daño ({{damagePercent}}% &lt; {{threshold}}%). La maniobra falla.
+      </p>
+    {{else}}
+      <p>
+        Daño causado: <strong>{{damagePercent}}%</strong>
+      </p>
+
+      {{#if opposed}}
+        <hr style="margin:.4rem 0;border-color:var(--border-color-subtle,#ddd);">
+        <p>
+          <strong>Atacante:</strong>
+          {{opposed.attackerTotal}}
+          <span style="opacity:.7">
+            ({{opposed.attackerRoll}} + {{opposed.attackerStatValue}}{{#if opposed.attackerDamageMod}} {{#if (gt opposed.attackerDamageMod 0)}}+{{/if}}{{opposed.attackerDamageMod}}{{/if}}{{#if opposed.attackerExtraMod}} {{#if (gt opposed.attackerExtraMod 0)}}+{{/if}}{{opposed.attackerExtraMod}}{{/if}})
+          </span>
+        </p>
+        <p>
+          <strong>Defensor:</strong>
+          {{opposed.defenderTotal}}
+          <span style="opacity:.7">
+            ({{opposed.defenderRoll}} + {{opposed.defenderStatValue}}{{#if opposed.defenderQuadrupedBonus}} +{{opposed.defenderQuadrupedBonus}} cuadrúpedo{{/if}}{{#if opposed.defenderExtraMod}} {{#if (gt opposed.defenderExtraMod 0)}}+{{/if}}{{opposed.defenderExtraMod}}{{/if}})
+          </span>
+        </p>
+        <p>
+          <strong>Diferencia:</strong> {{opposed.difference}}
+        </p>
+
+        {{#if opposed.attackerWins}}
+          <p style="color:#20a060;font-weight:bold;">¡Maniobra exitosa!</p>
+
+          {{#if effects.length}}
+            <div data-requires-permission="gm" style="margin-top:.5rem;display:flex;flex-direction:column;gap:.25rem;">
+              {{#each effects}}
+                {{#if this.effectSlug}}
+                  <button type="button"
+                          class="chat-action-button"
+                          style="background:#c03050;color:white;width:100%;"
+                          data-action="animabf-apply-maneuver-effect"
+                          data-effect-slug="{{this.effectSlug}}"
+                          data-target="{{this.target}}">
+                    Aplicar "{{this.effectSlug}}" al {{this.target}}
+                  </button>
+                {{else}}
+                  <p style="opacity:.85;font-style:italic;">
+                    Efecto narrativo en el {{this.target}}{{#if this.reason}} ({{this.reason}}){{/if}}
+                  </p>
+                {{/if}}
+              {{/each}}
+            </div>
+          {{/if}}
+        {{else}}
+          <p style="color:#c03050;font-weight:bold;">La maniobra falla.</p>
+        {{/if}}
+      {{/if}}
+    {{/unless}}
+  {{/"systems/animabf/templates/common/ui/group-body.hbs"}}
+{{/"systems/animabf/templates/common/ui/group.hbs"}}
