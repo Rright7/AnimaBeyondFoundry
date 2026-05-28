@@ -143,14 +143,15 @@ export async function openOpposedCheckRollDialog({
   if (!chosen?.stat) return null;
 
   const statValue = getCharacteristicValue(actor, chosen.stat);
-  const die = await rollOpenD10();
+  const { face: dieFace, value: dieValue } = await rollOpenD10();
 
-  const total = die + statValue + (role === 'attacker' ? damageMod : 0) + quadrupedBonus + chosen.extraMod;
+  const total = dieValue + statValue + (role === 'attacker' ? damageMod : 0) + quadrupedBonus + chosen.extraMod;
   const statLabel = STAT_LABELS[chosen.stat] ?? chosen.stat.toUpperCase();
 
   // Pre-format the breakdown string for the chat template (avoids needing
-  // math helpers in HBS).
-  const parts = [`D10: <strong>${die}</strong>`, `+ ${statLabel} ${statValue}`];
+  // math helpers in HBS). On a 10 face, show "10→12" so the rule is visible.
+  const dieLabel = dieFace === 10 ? `<strong>10→12</strong>` : `<strong>${dieFace}</strong>`;
+  const parts = [`D10: ${dieLabel}`, `+ ${statLabel} ${statValue}`];
   if (role === 'attacker' && damageMod !== 0) {
     parts.push(`${damageMod > 0 ? '+' : '−'}${Math.abs(damageMod)} (daño)`);
   }
@@ -161,7 +162,8 @@ export async function openOpposedCheckRollDialog({
   const breakdown = parts.join(' ');
 
   return {
-    die,
+    die: dieValue,
+    dieFace,
     stat: chosen.stat,
     statLabel,
     statValue,

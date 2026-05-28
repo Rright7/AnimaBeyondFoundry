@@ -47,22 +47,18 @@
  */
 
 /**
- * Roll a "D10 con regla del 10" (Anima open d10).
- * Each 10 keeps rolling and adds.
- * @returns {Promise<number>}
+ * Roll a D10 with Anima's "regla del 10": if the die shows 10, it is replaced
+ * by 12 (no recursive re-rolls — the die does NOT explode).
+ * Max possible: 12. Returns an object with both the displayed face and the
+ * effective value, so callers can render "10→12" or just "12".
+ * @returns {Promise<{face: number, value: number}>}
  */
 export async function rollOpenD10() {
-  let total = 0;
-  let last;
-  let safety = 50; // hard cap to avoid pathological infinite loops
-  do {
-    const r = new Roll('1d10');
-    await r.evaluate();
-    last = r.total;
-    total += last;
-    safety -= 1;
-  } while (last === 10 && safety > 0);
-  return total;
+  const r = new Roll('1d10');
+  await r.evaluate();
+  const face = r.total;
+  const value = face === 10 ? 12 : face;
+  return { face, value };
 }
 
 /**
@@ -101,8 +97,10 @@ export async function resolveOpposedCheck(input) {
   const attackerDamageMod = maneuver.getOpposedCheckModifierFromDamage(damagePercent);
   const defenderQuadrupedBonus = maneuver.grantsQuadrupedBonus && defenderIsQuadruped ? 3 : 0;
 
-  const attackerRoll = await rollOpenD10();
-  const defenderRoll = await rollOpenD10();
+  const attackerRollObj = await rollOpenD10();
+  const defenderRollObj = await rollOpenD10();
+  const attackerRoll = attackerRollObj.value;
+  const defenderRoll = defenderRollObj.value;
 
   const attackerTotal =
     attackerRoll + attackerStatValue + attackerDamageMod + Number(attackerExtraMod || 0);
