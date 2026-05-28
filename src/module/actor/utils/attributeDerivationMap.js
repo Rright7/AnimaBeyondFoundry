@@ -19,8 +19,7 @@ export const ATTRIBUTE_PATHS = {
   dodge: ['system.combat.dodge.final.value'],
   initiative: [
     'system.characteristics.secondaries.initiative.final.value',
-    'system.general.modifiers.allActions.final.value',
-    'system.general.modifiers.physicalActions.final.value'
+    'system.general.modifiers.allActions.final.value'
   ],
   physicalActions: ['system.general.modifiers.physicalActions.final.value'],
   magicProjectionOffensive: [

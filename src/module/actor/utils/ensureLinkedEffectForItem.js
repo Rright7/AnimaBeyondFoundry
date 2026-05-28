@@ -15,12 +15,39 @@
  * @param {Item} item — an item of type "effect"
  * @returns {Promise<ActiveEffect|null>}
  */
+// Module-level in-flight set to dedupe concurrent calls for the same item.
+// Two entry points (e.g. _onDropItem manual call + the `createItem` hook)
+// may fire near-simultaneously for the same drop; the AE created by the
+// first call has not yet propagated to actor.effects.contents when the
+// second call's findEffectByItemOrigin runs, so without this guard we end
+// up creating two AEs that apply the same change twice.
+const _inFlight = new Set();
+
 export async function ensureLinkedEffectForItem(actor, item) {
   if (!actor || !item) return null;
 
-  // Look up existing AE by origin first.
+  const flightKey = `${actor.id}:${item.id}`;
+
+  // Cheap fast-path: already linked → nothing to do.
   const existing = findEffectByItemOrigin(actor, item);
   if (existing) return existing;
+
+  // Lock SYNCHRONOUSLY before any await so a concurrent call within the same
+  // microtask sees the flag and bails out. Set.has/add are synchronous.
+  if (_inFlight.has(flightKey)) {
+    // The other concurrent call will create the AE; do nothing here.
+    return null;
+  }
+  _inFlight.add(flightKey);
+
+  try {
+    return await _createAEForItem(actor, item);
+  } finally {
+    _inFlight.delete(flightKey);
+  }
+}
+
+async function _createAEForItem(actor, item) {
 
   const rawBaseData = item.system?.effectData ?? {};
   // Ignore any persisted origin and the compendium `disabled` flag: when an
@@ -42,16 +69,21 @@ export async function ensureLinkedEffectForItem(actor, item) {
 
   const [created] = await actor.createEmbeddedDocuments('ActiveEffect', [data]);
 
-  // Keep the item's own `active` flag and stored `effectData.disabled` in sync
-  // so the sheet UI shows the effect as enabled too.
-  if (typeof item.update === 'function') {
-    try {
-      await item.update({
-        'system.active': true,
-        'system.effectData.disabled': false
-      });
-    } catch (e) {
-      // best-effort
+  // Only run the item-side sync if something actually needs to change. The
+  // AE.create above already triggered the derived-data flow; an unnecessary
+  // item.update would trigger it again and double-apply additive changes.
+  if (created && typeof item.update === 'function') {
+    const itemActive = !!item.system?.active;
+    const itemDisabled = !!item.system?.effectData?.disabled;
+    if (!itemActive || itemDisabled) {
+      try {
+        await item.update({
+          'system.active': true,
+          'system.effectData.disabled': false
+        });
+      } catch (e) {
+        // best-effort
+      }
     }
   }
 

@@ -443,14 +443,21 @@ export const INITIAL_ACTOR_DATA = {
   },
 
   combat: {
+    // Anima RAW: physicalActions does NOT chain to attack/block/dodge.
+    // allActions DOES penalize attack/block/dodge per Tabla 43.
+    // The Ability typed node now performs the full computation; the legacy
+    // mutateCombatData.js was deleted to avoid double-counting.
     attack: {
-      __type: '{"type":"Ability", "attribute":"dexterity"}'
+      __type:
+        '{"type":"Ability", "attribute":"dexterity", "applyAllActionMod":true, "applyPhysicalActionMod":false}'
     },
     block: {
-      __type: '{"type":"Ability", "attribute":"dexterity"}'
+      __type:
+        '{"type":"Ability", "attribute":"dexterity", "applyAllActionMod":true, "applyPhysicalActionMod":false}'
     },
     dodge: {
-      __type: '{"type":"Ability", "attribute":"agility"}'
+      __type:
+        '{"type":"Ability", "attribute":"agility", "applyAllActionMod":true, "applyPhysicalActionMod":false}'
     },
     wearArmor: {
       __type: '{"type":"AffectedByCharacteristicValue", "attribute":"strength"}'

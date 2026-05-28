@@ -20,7 +20,12 @@ export function computeCombatResult(attackData, defenseData) {
     actorId: attackData.attackerId
   });
 
-  const difference = (attackData.attackAbility ?? 0) - (defenseData.defenseAbility ?? 0);
+  // Anima rule: neither attack nor defense ability totals can go below 0.
+  // Apply the floor before computing the round difference so accumulated
+  // penalties never produce phantom counter-attacks.
+  const attackTotal = Math.max(0, attackData.attackAbility ?? 0);
+  const defenseTotal = Math.max(0, defenseData.defenseAbility ?? 0);
+  const difference = attackTotal - defenseTotal;
 
   const hasCounterAttack =
     difference <= 0 &&

@@ -629,11 +629,9 @@ export default class ABFActorSheet extends ActorSheetV1 {
     for (const item of items) {
       if (item.type !== ABFItems.EFFECT) continue;
 
-      await item.update({
-        'system.active': false,
-        'system.effectData.disabled': true
-      });
-
+      // Just ensure the AE exists. The helper handles activation and avoids
+      // double-applying when it's called more than once (e.g. via the
+      // `createItem` hook on top of this manual call).
       await this._ensureEffectForItem(item);
     }
 
