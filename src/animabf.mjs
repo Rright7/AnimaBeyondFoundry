@@ -138,33 +138,59 @@ Hooks.once('ready', async () => {
   // GM-side socket to update attack targets flag
   game.socket.on('system.animabf', async p => {
     if (!game.user.isGM) return;
-    if (!p || p.op !== 'updateAttackTargets') return;
+    if (!p) return;
 
-    const msg = game.messages.get(p.messageId);
-    if (!msg) return;
-    const kind = msg.getFlag(System.id, 'kind');
-    if (kind !== 'attackData') return;
+    if (p.op === 'updateAttackTargets') {
+      const msg = game.messages.get(p.messageId);
+      if (!msg) return;
+      const kind = msg.getFlag(System.id, 'kind');
+      if (kind !== 'attackData') return;
 
-    const entry = p.entry ?? {};
-    const targets = foundry.utils.duplicate(msg.getFlag(System.id, 'targets') ?? []);
+      const entry = p.entry ?? {};
+      const targets = foundry.utils.duplicate(msg.getFlag(System.id, 'targets') ?? []);
 
-    const findIndexByKey = (arr, e) => {
-      if (e.tokenUuid) {
-        const iTok = arr.findIndex(t => t.tokenUuid === e.tokenUuid);
-        if (iTok >= 0) return iTok;
-      }
-      if (e.actorUuid && !e.tokenUuid) {
-        return arr.findIndex(t => t.actorUuid === e.actorUuid && !t.tokenUuid);
-      }
-      return -1;
-    };
+      const findIndexByKey = (arr, e) => {
+        if (e.tokenUuid) {
+          const iTok = arr.findIndex(t => t.tokenUuid === e.tokenUuid);
+          if (iTok >= 0) return iTok;
+        }
+        if (e.actorUuid && !e.tokenUuid) {
+          return arr.findIndex(t => t.actorUuid === e.actorUuid && !t.tokenUuid);
+        }
+        return -1;
+      };
 
-    const i = findIndexByKey(targets, entry);
-    if (i >= 0) targets[i] = { ...targets[i], ...entry };
-    else targets.push(entry);
+      const i = findIndexByKey(targets, entry);
+      if (i >= 0) targets[i] = { ...targets[i], ...entry };
+      else targets.push(entry);
 
-    await msg.setFlag(System.id, 'targets', targets);
-    ui.chat?.updateMessage?.(msg);
+      await msg.setFlag(System.id, 'targets', targets);
+      ui.chat?.updateMessage?.(msg);
+      return;
+    }
+
+    // Critical hit phase update — proxied through GM because players cannot
+    // setFlag/update chat messages they don't own. GM renders the content
+    // in his own locale so all clients see consistent text.
+    if (p.op === 'critUpdate') {
+      const msg = game.messages.get(p.messageId);
+      if (!msg) return;
+
+      const animabf = msg.flags?.animabf ?? {};
+      const current = animabf.result ?? {};
+      const updated = { ...current, ...(p.patch ?? {}) };
+
+      const { Templates } = await import('./module/utils/constants.js');
+      const renderFn = foundry.applications?.handlebars?.renderTemplate ?? renderTemplate;
+      const content = await renderFn(Templates.Chat.CombatResult, {
+        combatResult: updated,
+        defenderId: animabf.defender?.actorId ?? '',
+        defenderTokenId: animabf.defender?.tokenId ?? ''
+      });
+
+      await msg.setFlag(System.id, 'result', updated);
+      await msg.update({ content });
+    }
   });
 });
 

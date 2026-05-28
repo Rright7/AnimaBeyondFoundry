@@ -106,6 +106,55 @@ export const registerSettings = systemId => {
     type: Boolean
   });
 
+  const critRollerChoices = {
+    gm: 'anima.ui.systemSettings.critRoller.gm',
+    owner: 'anima.ui.systemSettings.critRoller.owner'
+  };
+
+  game.settings.register(systemId, ABFSettingsKeys.CRIT_ROLL_LEVEL_BY, {
+    name: 'anima.ui.systemSettings.critRollLevelBy.title',
+    hint: 'anima.ui.systemSettings.critRollLevelBy.hint',
+    scope: 'world',
+    config: true,
+    type: String,
+    choices: critRollerChoices,
+    default: 'owner'
+  });
+
+  game.settings.register(systemId, ABFSettingsKeys.CRIT_ROLL_PHR_BY, {
+    name: 'anima.ui.systemSettings.critRollPhrBy.title',
+    hint: 'anima.ui.systemSettings.critRollPhrBy.hint',
+    scope: 'world',
+    config: true,
+    type: String,
+    choices: critRollerChoices,
+    default: 'owner'
+  });
+
+  game.settings.register(systemId, ABFSettingsKeys.CRIT_ROLL_LOCATION_BY, {
+    name: 'anima.ui.systemSettings.critRollLocationBy.title',
+    hint: 'anima.ui.systemSettings.critRollLocationBy.hint',
+    scope: 'world',
+    config: true,
+    type: String,
+    choices: critRollerChoices,
+    default: 'owner'
+  });
+
+  game.settings.register(systemId, ABFSettingsKeys.CRIT_TEXT_LANG, {
+    name: 'anima.ui.systemSettings.critTextLang.title',
+    hint: 'anima.ui.systemSettings.critTextLang.hint',
+    scope: 'world',
+    config: true,
+    type: String,
+    choices: {
+      es: 'Español',
+      en: 'English',
+      fr: 'Français'
+    },
+    default: 'es'
+  });
+
   game.settings.register(systemId, ABFSettingsKeys.NOTIFY_ON_MISSING_EXCEL_MATCH, {
     name: 'anima.ui.systemSettings.notifyOnMissingExcelMatch.title',
     hint: 'anima.ui.systemSettings.notifyOnMissingExcelMatch.hint.title',

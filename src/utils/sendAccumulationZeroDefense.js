@@ -79,6 +79,7 @@ export async function sendAccumulationZeroDefense({
       animabf: {
         kind: 'combatResult',
         result: { ...combatResult, damageFinal },
+        attacker: { actorId: attackData?.attackerId ?? '' },
         defender: { actorId: actor.id, tokenId: defenderToken?.id ?? '' },
         damageControl: { appliedOnce: false, apps: [] }
       }

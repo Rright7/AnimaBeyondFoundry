@@ -41,6 +41,10 @@ export default async function applyDamageActionHandler(message, _html, ds) {
       if (!ok) return;
     }
 
+    // Capture life BEFORE applying damage (needed for critical check)
+    const lifePath = 'system.characteristics.secondaries.lifePoints.value';
+    const lifeBefore = Number(getProperty(actor, lifePath) ?? 0);
+
     // Apply damage
     const applied = await applyDamageToActor(actor, amount);
     if (!applied) return;
@@ -51,6 +55,45 @@ export default async function applyDamageActionHandler(message, _html, ds) {
       : [];
     apps.push({ ts: Date.now(), by: game.user.id, amount, mult, actorId: actor.id });
     await msg.setFlag(game.animabf.id, 'damageControl', { appliedOnce: true, apps });
+
+    // ── Critical hit check (post-apply) ──────────────────────────
+    // Only check once (first apply). Use the REAL damage applied and life before hit.
+    // Masses are immune to criticals — skip entirely.
+    const result = animabf.result ?? {};
+    const isMass = !!actor.system?.characteristics?.isMass;
+    const critImmune = !!actor.system?.characteristics?.critImmune;
+    if (!appliedOnce && !result.critResolved && lifeBefore > 0 && !isMass && !critImmune) {
+      const lifePercent = (amount / lifeBefore) * 100;
+      const automaticCrit = !!(result.automaticCrit);
+      const isCritical = automaticCrit || lifePercent >= 50;
+
+      if (isCritical) {
+        const baseCriticalValue = amount + (Number(result.critBonus) || 0)
+          + (Number(result.critDamageBonus) || 0);
+
+        const updatedResult = {
+          ...result,
+          isCritical: true,
+          baseCriticalValue,
+          appliedDamage: amount,
+          lifeBeforeHit: lifeBefore
+        };
+
+        await msg.setFlag(game.animabf.id, 'result', updatedResult);
+
+        // Re-render message to show the "Resolve Critical" button
+        const renderFn = foundry.applications?.handlebars?.renderTemplate ?? renderTemplate;
+        const { Templates } = await import('../../module/utils/constants.js');
+        const content = await renderFn(Templates.Chat.CombatResult, {
+          combatResult: updatedResult,
+          defenderId: actorId,
+          defenderTokenId: tokenId
+        });
+        await msg.update({ content });
+        return; // skip the generic updateMessage below
+      }
+    }
+
     ui.chat?.updateMessage?.(msg);
   } catch (err) {
     console.error(err);

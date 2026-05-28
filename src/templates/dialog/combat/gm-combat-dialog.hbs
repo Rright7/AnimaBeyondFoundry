@@ -476,6 +476,37 @@
                 disabled=true
                 inputValue=this.calculations.baseCriticalValue
               }}
+              {{#if this.calculations.critResolved}}
+                <div class="crit-resolution-summary" style="margin-top:.5rem; padding:.4rem; border:1px solid var(--border-color-subtle,#ddd); border-radius:4px; font-size:0.85em;">
+                  {{#if this.calculations.critImmune}}
+                    <p><em>{{localize (concat "chat.combatResult.critImmune." this.calculations.critImmuneReason)}}</em></p>
+                  {{else}}
+                    <p><strong>{{localize "chat.combatResult.critLevel"}}:</strong> {{this.calculations.critLevel}} ({{this.calculations.critLevelRoll}} + {{this.calculations.baseCriticalValue}})</p>
+                    <p><strong>{{localize "chat.combatResult.phRoll"}}:</strong> {{this.calculations.phTotal}} ({{this.calculations.phRoll}} + RF {{this.calculations.phBase}})</p>
+                    {{#if this.calculations.phPassed}}
+                      <p style="color:#20a060;font-weight:bold;">{{localize "chat.combatResult.critNullified"}}</p>
+                    {{else}}
+                      <p><strong>{{localize "chat.combatResult.failureLevel"}}:</strong> {{this.calculations.failureLevel}}</p>
+                      {{#if this.calculations.critLocation}}
+                        <p><strong>{{localize "chat.combatResult.location"}}:</strong> {{localize (concat "chat.combatResult.zone." this.calculations.critLocation.zone)}}</p>
+                      {{/if}}
+                      <p><strong>{{localize "chat.combatResult.actionPenalty"}}:</strong> -{{this.calculations.critEffects.actionPenalty}}</p>
+                      {{#if this.calculations.critEffects.limbDestroyed}}
+                        <p style="color:#c03050;font-weight:bold;">{{localize "chat.combatResult.limbDestroyed"}}</p>
+                      {{/if}}
+                      {{#if this.calculations.critEffects.unconscious}}
+                        <p style="color:#c03050;font-weight:bold;">{{localize "chat.combatResult.unconscious"}}</p>
+                      {{/if}}
+                      {{#if this.calculations.critEffects.death}}
+                        <p style="color:#c03050;font-weight:bold;">{{localize "chat.combatResult.death"}}</p>
+                      {{/if}}
+                      {{#if this.calculations.critEffects.deathTimer}}
+                        <p style="color:#c03050;">{{localize "chat.combatResult.deathTimer"}}</p>
+                      {{/if}}
+                    {{/if}}
+                  {{/if}}
+                </div>
+              {{/if}}
             {{/if}}
           {{/if}}
           {{#if this.calculations.canCounter}}
@@ -494,6 +525,13 @@
             <button class='animabf-button show-results'>
               {{localize 'macros.combat.dialog.showResultsButton.title'}}
             </button>
+          {{/if}}
+          {{#if this.calculations.isCritical}}
+            {{#unless this.calculations.critResolved}}
+              <button class='animabf-button resolve-critical' style='background:#c03050;color:white;'>
+                {{localize 'macros.combat.dialog.resolveCriticalButton.title'}}
+              </button>
+            {{/unless}}
           {{/if}}
           {{#if this.calculations.canCounter}}
             <button title='{{localize 'macros.combat.dialog.counterAttackButtonTooltip.title'}}'

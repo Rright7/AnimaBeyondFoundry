@@ -13,6 +13,21 @@ export class ABFCombatResultData {
     this.isCritical = p.isCritical ?? false;
     this.baseCriticalValue = p.baseCriticalValue ?? 0;
     this.attackBreak = p.attackBreak ?? 0;
+
+    // Critical resolution (populated by resolveCriticalHit)
+    this.critResolved = p.critResolved ?? false;
+    this.critImmune = p.critImmune ?? false;
+    this.critImmuneReason = p.critImmuneReason ?? null;
+    this.critLevel = p.critLevel ?? 0;
+    this.critLevelRoll = p.critLevelRoll ?? 0;
+    this.phRoll = p.phRoll ?? 0;
+    this.phBase = p.phBase ?? 0;
+    this.phTotal = p.phTotal ?? 0;
+    this.phPassed = p.phPassed ?? false;
+    this.failureLevel = p.failureLevel ?? 0;
+    this.critLocation = p.critLocation ?? null;
+    this.critLocationRoll = p.critLocationRoll ?? 0;
+    this.critEffects = p.critEffects ?? null;
   }
 
   toJSON() {
@@ -81,6 +96,25 @@ export class ABFCombatResultDataBuilder {
   }
   attackBreak(v) {
     this._p.attackBreak = Number(v) || 0;
+    return this;
+  }
+
+  /** Merge a full CriticalHitResult into the builder. */
+  applyCriticalResult(critResult) {
+    if (!critResult) return this;
+    this._p.critResolved = critResult.resolved ?? false;
+    this._p.critImmune = critResult.immune ?? false;
+    this._p.critImmuneReason = critResult.immuneReason ?? null;
+    this._p.critLevel = critResult.critLevel ?? 0;
+    this._p.critLevelRoll = critResult.critLevelRoll ?? 0;
+    this._p.phRoll = critResult.phRoll ?? 0;
+    this._p.phBase = critResult.phBase ?? 0;
+    this._p.phTotal = critResult.phTotal ?? 0;
+    this._p.phPassed = critResult.phPassed ?? false;
+    this._p.failureLevel = critResult.failureLevel ?? 0;
+    this._p.critLocation = critResult.location ?? null;
+    this._p.critLocationRoll = critResult.locationRoll ?? 0;
+    this._p.critEffects = critResult.effects ?? null;
     return this;
   }
 
