@@ -65,7 +65,13 @@ export function computeCombatResult(attackData, defenseData) {
     lifePercentRemoved = (finalDamage / lifeBeforeAttack) * 100;
   }
 
-  const isCritical = lifePercentRemoved >= 50 || attackData.automaticCrit; //TO-DO: Add crit inmunity
+  // Puntos vulnerables (Core Exxet): if the attack is aimed at a vulnerable
+  // body part (head, eye, neck, heart by default), the threshold to force a
+  // critical drops from 50% to 10% of the defender's life. Maneuvers like
+  // Inutilizar mark the targeted limb as vulnerable too so a relatively low
+  // damage still triggers the critical roll.
+  const criticThreshold = isAimedAtVulnerableZone(attackData) ? 10 : 50;
+  const isCritical = lifePercentRemoved >= criticThreshold || attackData.automaticCrit; //TO-DO: Add crit inmunity
   const critValue = finalDamage + attackData.critBonus + (attackData.critDamageBonus ?? 0);
 
   const result = ABFCombatResultData.builder()
@@ -178,4 +184,27 @@ function getFinalArmor(attackData, defenseData) {
   }
 
   return Math.max(0, armor);
+}
+
+/** Vulnerable zones for the puntos vulnerables rule (humanoid baseline). */
+const VULNERABLE_ZONES = new Set(['head', 'eye', 'neck', 'heart']);
+
+/**
+ * True if the attack was aimed at a body part considered vulnerable for the
+ * 'puntos vulnerables' rule. Combat maneuvers can also flag their aimed zone
+ * as vulnerable via `treatsAimedZoneAsVulnerable` on the ManeuverDefinition
+ * (used by Inutilizar to treat the targeted limb as vulnerable).
+ *
+ * @param {ABFAttackData} attackData
+ * @returns {boolean}
+ */
+function isAimedAtVulnerableZone(attackData) {
+  if (!attackData?.aimed || !attackData?.aimedWhere) return false;
+  if (VULNERABLE_ZONES.has(attackData.aimedWhere)) return true;
+  const slug = attackData.maneuverSlug || '';
+  if (slug) {
+    const def = game.animabf?.maneuvers?.get?.(slug);
+    if (def?.treatsAimedZoneAsVulnerable) return true;
+  }
+  return false;
 }
