@@ -42,6 +42,20 @@
                   {{combatManeuverRulesSummary maneuver.system.slug.value}}
                 </div>
               {{/if}}
+              {{#with (combatManeuverAimedZoneOptions maneuver.system.slug.value) as |zones|}}
+                {{#if zones.length}}
+                  <div class='combat-maneuver-card__zone'>
+                    <label>{{localize "anima.ui.combat.combatManeuvers.aimedZone"}}</label>
+                    <select data-maneuver-id='{{maneuver._id}}' class='combat-maneuver-card__zone-select'>
+                      {{#each zones as |z|}}
+                        <option value='{{z}}' {{#if (is 'eq' maneuver.system.selectedAimedZone.value z)}}selected{{/if}}>
+                          {{aimedZoneLabel z}}
+                        </option>
+                      {{/each}}
+                    </select>
+                  </div>
+                {{/if}}
+              {{/with}}
               <button
                 type='button'
                 data-on-click='executeCombatManeuver'

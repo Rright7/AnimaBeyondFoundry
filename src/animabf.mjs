@@ -394,6 +394,54 @@ async function _handleChatMessage(message, html) {
 // renderChatMessageHTML available since v13 (renderChatMessage deprecated in v13, removed in v15)
 Hooks.on('renderChatMessageHTML', (message, html) => _handleChatMessage(message, html));
 
+// Auto-apply the 'Inconsciente' AE to the defender when a critical resolved
+// through the Inconsciencia maneuver yields unconsciousness. Lives close to
+// the maneuver auto-post hook for symmetry.
+Hooks.on('updateChatMessage', async (message, _changes) => {
+  try {
+    if (!game.user.isGM) return;
+    const flags = message.flags?.[System.id];
+    if (!flags) return;
+    if (flags.kind !== 'combatResult') return;
+    const result = flags.result ?? {};
+    if (result.critPhase !== 'done') return;
+    if (!result.critEffects?.unconscious) return;
+
+    // Only when the maneuver context says Inconsciencia.
+    const slug = result.maneuverSlug || flags.attackData?.maneuverSlug || '';
+    if (slug !== 'inconsciencia') return;
+
+    // Guard against double application: tag the result once and bail next time.
+    if (result.unconsciousApplied) return;
+
+    const defenderId = flags.defender?.actorId ?? '';
+    const defenderActor = defenderId ? game.actors?.get?.(defenderId) : null;
+    if (!defenderActor) return;
+
+    const pack = game.packs.get(`${System.id}.effects`);
+    if (!pack) return;
+    const docs = await pack.getDocuments();
+    const source = docs.find(d => d.name === 'Inconsciente');
+    if (!source) {
+      ui.notifications?.warn('Efecto "Inconsciente" no encontrado en el compendio.');
+      return;
+    }
+
+    const data = source.toObject();
+    delete data._id;
+    delete data._key;
+    delete data.folder;
+    await defenderActor.createEmbeddedDocuments('Item', [data]);
+
+    await message.setFlag(System.id, 'result', {
+      ...result,
+      unconsciousApplied: true
+    });
+  } catch (err) {
+    console.error('[ABF] auto-apply Inconsciente failed:', err);
+  }
+});
+
 // Auto-post the maneuver opposed-check card when a combatResult or
 // multiDefenseResult resulting from a maneuver attack reaches the threshold.
 Hooks.on('createChatMessage', async message => {

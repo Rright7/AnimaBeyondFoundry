@@ -682,7 +682,8 @@
       "description": { "value": "" },
       "actionType": { "value": "active" },
       "traits": [],
-      "visible": false
+      "visible": false,
+      "selectedAimedZone": { "value": "" }
     }
 
   }

@@ -14,7 +14,7 @@ export class AttackConfigurationDialog extends FormApplication {
     this.render(true);
   }
 
-  static _buildInitialData({ attacker, weaponId, weapon, options = {}, targets, maneuverSlug, maneuverItemName, maneuverPenalty }) {
+  static _buildInitialData({ attacker, weaponId, weapon, options = {}, targets, maneuverSlug, maneuverItemName, maneuverPenalty, aimed, aimedZone }) {
     if (!attacker || !attacker.actor) {
       ui.notifications?.error('AttackConfigurationDialog: attacker is required');
       return { allowed: false };
@@ -70,6 +70,9 @@ export class AttackConfigurationDialog extends FormApplication {
             itemName: maneuverItemName ?? maneuverSlug,
             penalty: Number(maneuverPenalty ?? 0)
           }
+        : null,
+      aim: aimed
+        ? { active: true, zone: String(aimedZone ?? '') }
         : null,
       allowed: options?.allowed ?? isOwner ?? false,
       config: ABFConfig,
@@ -204,6 +207,8 @@ export class AttackConfigurationDialog extends FormApplication {
         .weaponId(weapon.id)
         .maneuverSlug(this.modalData.maneuver?.slug ?? '')
         .maneuverItemName(this.modalData.maneuver?.itemName ?? '')
+        .aimed(this.modalData.aim?.active === true)
+        .aimedWhere(this.modalData.aim?.zone ?? '')
         .targets(this.modalData.targets ?? [])
         .build();
 

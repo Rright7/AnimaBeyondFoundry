@@ -72,9 +72,14 @@ export async function applyManeuverEffectsDirectly({
     if (ok) applied.push(`<strong>${ef.effectSlug}</strong> → ${target.name}`);
   }
 
-  const appliedText = applied.length
-    ? `Aplicado: ${applied.join(' · ')}`
-    : 'Sin efectos aplicables.';
+  // If the maneuver has no direct effects to apply (e.g. Inutilizar or
+  // Inconsciencia, whose actual outcome comes from the critical resolution),
+  // do NOT post a chat message. Posting "Sin efectos aplicables" right after
+  // the combatResult would be misleading because the GM hasn't resolved the
+  // critical yet.
+  if (applied.length === 0) return;
+
+  const appliedText = `Aplicado: ${applied.join(' · ')}`;
 
   const flavor =
     `<strong>${attackerActor.name}</strong> usa <strong>${maneuverItemName}</strong> ` +
