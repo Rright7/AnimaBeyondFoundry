@@ -11,10 +11,23 @@
     class="effects-list"
   }}
 
+  {{#if effects.length}}
+    <div class='effects-list__toolbar'>
+      <a
+        class='effect-control effects-list__clear-all'
+        data-action='clearAll'
+        title='{{localize "anima.ui.effects.effectsList.clearAll"}}'
+      >
+        <i class='fas fa-broom'></i>
+        {{localize "anima.ui.effects.effectsList.clearAll"}}
+      </a>
+    </div>
+  {{/if}}
+
   <div class="item-list effects-list">
     {{#each effects as |effect|}}
       <div class="item effect effect-row" data-item-id="{{effect.id}}">
-        
+
         <div class="effect-name">
           <h4>{{effect.name}}</h4>
         </div>
@@ -24,6 +37,13 @@
                  class="effect-control"
                  data-action="toggle"
                  {{#if effect.system.active}}checked{{/if}} />
+          <a
+            class='effect-control effect-row__delete'
+            data-action='delete'
+            title='{{localize "anima.ui.effects.effectsList.delete.title"}}'
+          >
+            <i class='fas fa-trash'></i>
+          </a>
         </div>
 
       </div>

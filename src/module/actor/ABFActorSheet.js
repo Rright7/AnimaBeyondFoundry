@@ -405,6 +405,26 @@ export default class ABFActorSheet extends ActorSheetV1 {
         }
       }
 
+      case 'clearAll': {
+        // Wipe every effect on this actor — all Item documents of type
+        // 'effect' plus every ActiveEffect on the actor. Drag the desired
+        // ones back from the compendium to re-add them.
+        const effectItemIds = this.actor.items
+          .filter(i => i.type === ABFItems.EFFECT)
+          .map(i => i.id);
+        const aeIds = this.actor.effects.contents.map(e => e.id);
+
+        const ops = [];
+        if (effectItemIds.length) {
+          ops.push(this.actor.deleteEmbeddedDocuments('Item', effectItemIds));
+        }
+        if (aeIds.length) {
+          ops.push(this.actor.deleteEmbeddedDocuments('ActiveEffect', aeIds));
+        }
+        await Promise.all(ops);
+        return;
+      }
+
       default:
     }
   }
