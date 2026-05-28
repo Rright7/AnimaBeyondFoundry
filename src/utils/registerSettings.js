@@ -141,20 +141,6 @@ export const registerSettings = systemId => {
     default: 'owner'
   });
 
-  game.settings.register(systemId, ABFSettingsKeys.CRIT_TEXT_LANG, {
-    name: 'anima.ui.systemSettings.critTextLang.title',
-    hint: 'anima.ui.systemSettings.critTextLang.hint',
-    scope: 'world',
-    config: true,
-    type: String,
-    choices: {
-      es: 'Español',
-      en: 'English',
-      fr: 'Français'
-    },
-    default: 'es'
-  });
-
   game.settings.register(systemId, ABFSettingsKeys.NOTIFY_ON_MISSING_EXCEL_MATCH, {
     name: 'anima.ui.systemSettings.notifyOnMissingExcelMatch.title',
     hint: 'anima.ui.systemSettings.notifyOnMissingExcelMatch.hint.title',

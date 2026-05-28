@@ -195,6 +195,26 @@ Hooks.once('ready', async () => {
 });
 
 async function _handleChatMessage(message, html) {
+  // Re-render combat result messages in each client's own locale so the
+  // displayed language always matches the viewer's Foundry language setting,
+  // regardless of who originally posted or updated the message.
+  if (message.getFlag(System.id, 'kind') === 'combatResult') {
+    try {
+      const animabf = message.flags?.animabf ?? {};
+      const { Templates } = await import('./module/utils/constants.js');
+      const renderFn = foundry.applications?.handlebars?.renderTemplate ?? renderTemplate;
+      const content = await renderFn(Templates.Chat.CombatResult, {
+        combatResult: animabf.result ?? {},
+        defenderId: animabf.defender?.actorId ?? '',
+        defenderTokenId: animabf.defender?.tokenId ?? ''
+      });
+      const target = html.querySelector('.message-content') ?? html;
+      if (target) target.innerHTML = content;
+    } catch (err) {
+      console.error('[ABF] failed to re-render combatResult message:', err);
+    }
+  }
+
   html.addEventListener('click', e => {
     const btn = e.target.closest('.contractible-button');
     if (btn) btn.closest('.contractible-group')?.classList.toggle('contracted');
