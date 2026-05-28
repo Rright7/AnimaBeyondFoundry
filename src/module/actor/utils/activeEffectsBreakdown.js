@@ -23,6 +23,10 @@ export function getActiveEffectContributions(actor, attribute) {
 
   const pathSet = new Set(paths);
   const out = [];
+  // Track seen (effectId|name + value + mode) so an AE that contributes the
+  // SAME value to multiple paths (e.g. Flanco -30 to both block and dodge for
+  // a generic "Defensa" roll) is not double-reported.
+  const seen = new Set();
 
   for (const effect of actor.effects.contents ?? []) {
     if (!effect.active) continue;
@@ -44,7 +48,12 @@ export function getActiveEffectContributions(actor, attribute) {
         if (!Number.isNaN(n) && n !== 0) value = n;
       }
 
-      out.push({ name: effect.name ?? effect.label ?? 'AE', value, mode });
+      const name = effect.name ?? effect.label ?? 'AE';
+      const key = `${effect.id ?? name}|${value}|${mode}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+
+      out.push({ name, value, mode });
     }
   }
 

@@ -138,7 +138,18 @@ export async function autoRollDefenseAgainstAttack({
     ? { ...ChatMessage.getSpeaker({ token: defenderToken }), alias: tokenName }
     : ChatMessage.getSpeaker({ actor });
 
-  await roll.toMessage({ speaker, flavor, rollMode });
+  // candidate.type is one of 'block' | 'dodge' | 'supernaturalShield'.
+  // Normalize to the same vocabulary used by the manual DefenseConfigurationDialog
+  // so the AE trace hook can match without special-casing.
+  const rollAttribute =
+    candidate.type === 'supernaturalShield' ? 'shield' : candidate.type;
+
+  await roll.toMessage({
+    speaker,
+    flavor,
+    rollMode,
+    flags: { animabf: { rollAttribute } }
+  });
 
   if (typeof actor.accumulateDefenses === 'function') {
     actor.accumulateDefenses(!!candidate.stackDefense);

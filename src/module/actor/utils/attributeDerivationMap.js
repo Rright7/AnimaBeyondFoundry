@@ -17,6 +17,12 @@ export const ATTRIBUTE_PATHS = {
   attack: ['system.combat.attack.final.value'],
   block: ['system.combat.block.final.value'],
   dodge: ['system.combat.dodge.final.value'],
+  // Generic "Defensa" rolls — the flavor doesn't distinguish parada vs
+  // esquiva at roll time, so we surface contributions from both stats.
+  defense: [
+    'system.combat.block.final.value',
+    'system.combat.dodge.final.value'
+  ],
   initiative: [
     'system.characteristics.secondaries.initiative.final.value',
     'system.general.modifiers.allActions.final.value'
@@ -60,6 +66,9 @@ export function inferAttributeFromFlavor(flavor) {
   if (/(parada|block|parade)/.test(f)) return 'block';
   if (/(esquiva|dodge|esquive)/.test(f)) return 'dodge';
   if (/(ataque|attack|attaque)/.test(f)) return 'attack';
+  // Generic "Defensa" / "Defense" rolls that don't specify parada or esquiva.
+  // Must come AFTER attack to avoid false positives if the flavor is mixed.
+  if (/(defensa|defense|défense)/.test(f)) return 'defense';
 
   return null;
 }

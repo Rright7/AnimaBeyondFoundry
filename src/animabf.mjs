@@ -431,7 +431,23 @@ Hooks.on('preCreateChatMessage', (message, _data, _options, _userId) => {
     if (!Array.isArray(rolls) || rolls.length === 0) return;
 
     const flavor = message.flavor ?? message.flags?.core?.flavor ?? '';
-    const attribute = inferAttributeFromFlavor(flavor);
+
+    // If the message carries an explicit rollAttribute flag (set by the
+    // defense dialogs / auto-defense path), use it. Otherwise fall back to
+    // inferring from the flavor text. The flag avoids ambiguity when the
+    // flavor is generic (e.g. "Defensa" instead of "Parada" / "Esquiva").
+    const explicitAttr = message.flags?.animabf?.rollAttribute;
+    let attribute;
+    if (explicitAttr === 'block' || explicitAttr === 'dodge') {
+      attribute = explicitAttr;
+    } else if (explicitAttr === 'shield') {
+      // Supernatural shields use the projection skill; trace under both
+      // magic and psychic defensive projections — the hook user only sees
+      // contributions matching the actual shield type via path filtering.
+      attribute = 'magicProjectionDefensive';
+    } else {
+      attribute = inferAttributeFromFlavor(flavor);
+    }
     if (!attribute) return;
 
     // Resolve actor — prefer the token actor when possible (unlinked AE).

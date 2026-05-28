@@ -377,7 +377,15 @@ export class DefenseConfigurationDialog extends FormApplication {
       await roll.toMessage({
         speaker,
         flavor: defenseLabel,
-        rollMode: vis.rollMode
+        rollMode: vis.rollMode,
+        flags: {
+          animabf: {
+            // Carries which exact stat backed this defense roll (block /
+            // dodge / shield), so the AE traceability hook can surface
+            // only the contributions that affected this specific stat.
+            rollAttribute: type
+          }
+        }
       });
 
       // Armor
