@@ -80,6 +80,9 @@ export default async function autoDefendPendingActionHandler(message, _html, ds)
         animabf: {
           kind: 'multiDefenseResult',
           sourceAttackMessageId: msg.id,
+          maneuverSlug: attackData?.maneuverSlug ?? '',
+          maneuverItemName: attackData?.maneuverItemName ?? '',
+          attackerId: attackData?.attackerId ?? '',
           batch: { createdAt: Date.now() },
           entries: entries.map(e => ({ ...e, applied: false }))
         }
@@ -166,6 +169,7 @@ function entryFromAuto(r, tok) {
         r.combatResult?.damage ??
         0
     ),
+    damagePercentage: Number(r.combatResult?.damagePercentage ?? 0),
     hasCounter: !!r.combatResult?.hasCounterAttack,
     counterAttackValue: Number(r.combatResult?.counterAttackValue ?? 0),
     applied: false

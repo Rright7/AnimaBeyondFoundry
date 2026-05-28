@@ -1,19 +1,15 @@
+import { AttackConfigurationDialog } from '../../../dialogs/AttackConfigurationDialog.js';
 import { getSnapshotTargets } from '../getSnapshotTargets.js';
-import { postManeuverOpposedCheck } from '../../../combat/maneuvers/postManeuverOpposedCheck.js';
 
 /**
- * Launch a combat maneuver: post the opposed-check chat card directly.
+ * Launch a combat maneuver by opening AttackConfigurationDialog with the
+ * maneuver penalty pre-applied. The slug is propagated through the attack
+ * chat message and into the combat result so that the chat hook can auto-post
+ * the opposed-check card once damage is resolved.
  *
- * Validation:
- *  - Maneuver Item + slug + registry definition must resolve.
- *  - Attacker token must exist on the scene.
- *  - At least one target must be selected.
- *  - Weapon restrictions are NOT enforced (table decision).
- *
- * Note: this is the "social" flow — no AttackConfigurationDialog. The attack
- * roll with penalty and damage is rolled separately by the player; the GM
- * adjusts %damage on the opposed-check card if needed (defaults to 100%).
- * This keeps the integration surface minimal: the combat flow is untouched.
+ * Validation: maneuver Item + slug + registry definition; attacker token on
+ * scene; at least one target selected. Weapon restrictions are NOT enforced
+ * (table decision).
  */
 export function executeCombatManeuver(sheet, e) {
   const maneuverId = e.currentTarget.dataset.maneuverId;
@@ -48,23 +44,19 @@ export function executeCombatManeuver(sheet, e) {
     );
   }
 
-  const firstTarget = snapshotTargets[0];
-  const defenderToken = canvas.tokens?.get?.(firstTarget.tokenId)
-    ?? canvas.tokens?.placeables?.find?.(t => t.document?.uuid === firstTarget.tokenUuid);
-  const defenderActor = defenderToken?.actor
-    ?? game.actors?.get?.(firstTarget.actorId);
+  const weapons = sheet.actor.system?.combat?.weapons ?? [];
+  const equipped = weapons.find(w => w.system?.equipped?.value);
+  const maneuverPenalty = def.getAttackPenalty(equipped);
 
-  if (!defenderActor) {
-    return ui.notifications.warn('No se pudo resolver el defensor.');
-  }
-
-  postManeuverOpposedCheck({
-    maneuverSlug: slug,
-    maneuverItemName: item.name,
-    maneuverIcon: item.img,
-    attackerActor: sheet.actor,
-    defenderActor,
-    attackerTokenUuid: attackerToken?.document?.uuid ?? null,
-    defenderTokenUuid: defenderToken?.document?.uuid ?? null
-  });
+  new AttackConfigurationDialog(
+    {
+      attacker: attackerToken,
+      weaponId: equipped?._id,
+      targets: snapshotTargets,
+      maneuverSlug: slug,
+      maneuverItemName: item.name,
+      maneuverPenalty
+    },
+    { allowed: true }
+  );
 }

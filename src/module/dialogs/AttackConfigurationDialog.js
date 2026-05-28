@@ -14,7 +14,7 @@ export class AttackConfigurationDialog extends FormApplication {
     this.render(true);
   }
 
-  static _buildInitialData({ attacker, weaponId, weapon, options = {}, targets }) {
+  static _buildInitialData({ attacker, weaponId, weapon, options = {}, targets, maneuverSlug, maneuverItemName, maneuverPenalty }) {
     if (!attacker || !attacker.actor) {
       ui.notifications?.error('AttackConfigurationDialog: attacker is required');
       return { allowed: false };
@@ -64,6 +64,13 @@ export class AttackConfigurationDialog extends FormApplication {
         distance: { value: 0, enable: false, check: false }
       },
       targets: Array.isArray(targets) && targets.length ? targets : fallbackSnapshot,
+      maneuver: maneuverSlug
+        ? {
+            slug: maneuverSlug,
+            itemName: maneuverItemName ?? maneuverSlug,
+            penalty: Number(maneuverPenalty ?? 0)
+          }
+        : null,
       allowed: options?.allowed ?? isOwner ?? false,
       config: ABFConfig,
       attackSent: false
@@ -156,7 +163,8 @@ export class AttackConfigurationDialog extends FormApplication {
       setTimeout(() => this.render(), 0);
 
       const baseAttack = Number(weapon.system.attack?.final?.value ?? 0);
-      const mod = Number(combat.modifier ?? 0);
+      const maneuverPenalty = Number(this.modalData.maneuver?.penalty ?? 0);
+      const mod = Number(combat.modifier ?? 0) + maneuverPenalty;
       const die =
         actor.system.combat.attack.base.value >= 200
           ? actor.system.general.diceSettings.abilityMasteryDie.value
@@ -194,10 +202,16 @@ export class AttackConfigurationDialog extends FormApplication {
         .critDamageBonus(Number(combat.critDamageBonus ?? 0))
         .attackerId(actor.id)
         .weaponId(weapon.id)
+        .maneuverSlug(this.modalData.maneuver?.slug ?? '')
+        .maneuverItemName(this.modalData.maneuver?.itemName ?? '')
         .targets(this.modalData.targets ?? [])
         .build();
 
-      await attackData.toChatMessage({ actor, weapon });
+      const attackMsg = await attackData.toChatMessage({ actor, weapon });
+      if (attackMsg && this.modalData.maneuver?.slug) {
+        await attackMsg.setFlag('animabf', 'maneuverSlug', this.modalData.maneuver.slug);
+        await attackMsg.setFlag('animabf', 'maneuverItemName', this.modalData.maneuver.itemName);
+      }
 
       await this.close();
     } catch (err) {

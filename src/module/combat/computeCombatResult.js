@@ -39,7 +39,17 @@ export function computeCombatResult(attackData, defenseData) {
   const counterAttackValue = Math.floor(rawBonus / 5) * 5;
 
   const baseDamage = getFinalBaseDamage(attackData, defenseData);
-  const finalArmor = getFinalArmor(attackData, defenseData);
+  let finalArmor = getFinalArmor(attackData, defenseData);
+
+  // Combat maneuver: if the maneuver definition forces TA to 0 (Presa, Derribo,
+  // Desarme, ...), ignore the defender's armor for the damage percentage
+  // calculation. Read the slug attached to the attackData by
+  // AttackConfigurationDialog when the attack was launched as a maneuver.
+  const maneuverSlug = attackData.maneuverSlug || '';
+  if (maneuverSlug) {
+    const def = game.animabf?.maneuvers?.get?.(maneuverSlug);
+    if (def?.forceTAZero) finalArmor = 0;
+  }
 
   const roundedDifference = Math.floor(difference / 10) * 10;
   const damagePercentage = Math.max(0, roundedDifference - finalArmor * 10 - 20);
@@ -58,7 +68,7 @@ export function computeCombatResult(attackData, defenseData) {
   const isCritical = lifePercentRemoved >= 50 || attackData.automaticCrit; //TO-DO: Add crit inmunity
   const critValue = finalDamage + attackData.critBonus + (attackData.critDamageBonus ?? 0);
 
-  return ABFCombatResultData.builder()
+  const result = ABFCombatResultData.builder()
     .difference(difference)
     .hasCounterAttack(hasCounterAttack)
     .counterAttackValue(counterAttackValue)
@@ -72,6 +82,16 @@ export function computeCombatResult(attackData, defenseData) {
     .baseCriticalValue(critValue)
     .attackBreak(attackData.breakage)
     .build();
+
+  // Attach maneuver context (consumed by the chat hook that auto-posts the
+  // maneuver opposed-check card once damage is resolved).
+  if (maneuverSlug) {
+    result.maneuverSlug = maneuverSlug;
+    result.maneuverItemName = attackData.maneuverItemName || maneuverSlug;
+    result.attackerId = attackData.attackerId || '';
+  }
+
+  return result;
 }
 
 /**

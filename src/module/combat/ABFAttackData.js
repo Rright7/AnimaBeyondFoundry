@@ -47,6 +47,11 @@ export class ABFAttackData {
     this.attackerId = p.attackerId ?? '';
     this.weaponId = p.weaponId ?? '';
 
+    // Combat maneuver context (set by AttackConfigurationDialog when the
+    // attack was launched as a maneuver from the actor sheet).
+    this.maneuverSlug = String(p.maneuverSlug ?? '');
+    this.maneuverItemName = String(p.maneuverItemName ?? '');
+
     // Defense tracking targets
     // Each target: {actorUuid, tokenUuid?, state, rolledBy?, defenseResult?, updatedAt?, label?, auto?}
     this.targets = Array.isArray(p.targets)
@@ -314,6 +319,16 @@ export class ABFAttackDataBuilder {
     this._p.attackerId = String(id ?? '');
     return this;
   }
+  maneuverSlug(slug) {
+    this._p.maneuverSlug = String(slug ?? '');
+    return this;
+  }
+
+  maneuverItemName(name) {
+    this._p.maneuverItemName = String(name ?? '');
+    return this;
+  }
+
   weaponId(id) {
     this._p.weaponId = String(id ?? '');
     return this;

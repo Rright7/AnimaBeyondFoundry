@@ -394,6 +394,67 @@ async function _handleChatMessage(message, html) {
 // renderChatMessageHTML available since v13 (renderChatMessage deprecated in v13, removed in v15)
 Hooks.on('renderChatMessageHTML', (message, html) => _handleChatMessage(message, html));
 
+// Auto-post the maneuver opposed-check card when a combatResult or
+// multiDefenseResult resulting from a maneuver attack reaches the threshold.
+Hooks.on('createChatMessage', async message => {
+  try {
+    if (!game.user.isGM) return;
+    const flags = message.flags?.[System.id];
+    if (!flags) return;
+
+    const post = async (slug, itemName, attackerId, defenderId, damagePercent) => {
+      const def = game.animabf?.maneuvers?.get?.(slug);
+      if (!def) return;
+      if (damagePercent < (def.damageThresholdPercent ?? 10)) return;
+      const attackerActor = game.actors?.get?.(attackerId);
+      const defenderActor = game.actors?.get?.(defenderId);
+      if (!attackerActor || !defenderActor) return;
+      const { postManeuverOpposedCheck } =
+        await import('./module/combat/maneuvers/postManeuverOpposedCheck.js');
+      await postManeuverOpposedCheck({
+        maneuverSlug: slug,
+        maneuverItemName: itemName || slug,
+        attackerActor,
+        defenderActor,
+        damagePercent
+      });
+    };
+
+    // Standalone combatResult (single-target DefenseConfigurationDialog).
+    if (flags.kind === 'combatResult') {
+      const result = flags.result ?? {};
+      const slug = result.maneuverSlug;
+      if (!slug) return;
+      await post(
+        slug,
+        result.maneuverItemName,
+        result.attackerId || flags.attacker?.actorId || '',
+        flags.defender?.actorId || '',
+        Number(result.damagePercentage ?? 0)
+      );
+      return;
+    }
+
+    // multiDefenseResult (auto-defense). The maneuver flags are copied onto
+    // the multiDefenseResult itself by the autoDefend handlers, so we don't
+    // depend on the (sometimes-null) sourceAttackMessageId.
+    if (flags.kind === 'multiDefenseResult') {
+      const slug = flags.maneuverSlug;
+      if (!slug) return;
+      const itemName = flags.maneuverItemName || slug;
+      const attackerId = flags.attackerId || '';
+      const entries = flags.entries ?? [];
+      for (const entry of entries) {
+        const defenderId = entry.actorId || '';
+        const dmg = Number(entry.damagePercentage ?? 0);
+        await post(slug, itemName, attackerId, defenderId, dmg);
+      }
+    }
+  } catch (err) {
+    console.error('[ABF] auto-post maneuverOpposedCheck failed:', err);
+  }
+});
+
 // ─── Active Effect drag-and-drop entry points ─────────────────────
 // Effects only materialized their AE when dropped on an open sheet. The same
 // item dropped on a token, an actor in the sidebar, or created via macro/code
