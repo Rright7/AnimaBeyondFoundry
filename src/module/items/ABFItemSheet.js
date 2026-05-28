@@ -1,5 +1,6 @@
 import { ABFItems } from './ABFItems';
 import { ITEM_CONFIGURATIONS } from '../actor/utils/prepareItems/constants';
+import { ensureLinkedEffectForItem } from '../actor/utils/ensureLinkedEffectForItem.js';
 
 const ItemSheetV1 = foundry.appv1?.sheets?.ItemSheet ?? ItemSheet;
 export default class ABFItemSheet extends ItemSheetV1 {
@@ -34,6 +35,8 @@ export default class ABFItemSheet extends ItemSheetV1 {
         return 1000;
       case ABFItems.WEAPON:
         return 815;
+      case ABFItems.COMBAT_MANEUVER:
+        return 560;
       default:
         return 900;
     }
@@ -51,6 +54,8 @@ export default class ABFItemSheet extends ItemSheetV1 {
         return 144;
       case ABFItems.PSYCHIC_POWER:
         return 540;
+      case ABFItems.COMBAT_MANEUVER:
+        return 560;
       default:
         return 450;
     }
@@ -64,7 +69,33 @@ export default class ABFItemSheet extends ItemSheetV1 {
     sheet.system = sheet.item.system;
     sheet.config = CONFIG.config;
 
+    // Combat maneuver: enrich with definition preview from registry
+    if (sheet.item.type === ABFItems.COMBAT_MANEUVER) {
+      sheet.maneuverPreview = this._buildManeuverPreview(sheet.item);
+    }
+
     return sheet;
+  }
+
+  /**
+   * Build a read-only preview block from the ManeuverDefinition registry,
+   * looked up by the Item's slug. Returns null if no slug is set or the
+   * registry has no entry for that slug.
+   * @param {Item} item
+   * @returns {object|null}
+   */
+  _buildManeuverPreview(item) {
+    const slug = item.system?.slug?.value;
+    if (!slug) return null;
+    const def = game.animabf?.maneuvers?.get?.(slug);
+    if (!def) return null;
+    return {
+      attackPenalty: def.attackPenalty ?? 0,
+      forceTAZero: def.forceTAZero === true,
+      attackerStats: (def.attackerStats ?? []).join(' / ').toUpperCase(),
+      defenderStats: (def.defenderStats ?? []).join(' / ').toUpperCase(),
+      grantsQuadrupedBonus: def.grantsQuadrupedBonus === true
+    };
   }
 
   // ABFItemSheet.js
@@ -128,18 +159,10 @@ export default class ABFItemSheet extends ItemSheetV1 {
     // ============================
     // Owned Item (inside an Actor)
     // ============================
+    // Delegate to the central helper (single source of truth, in-flight guard
+    // against the race condition where two render passes both create an AE).
     const actor = parent;
-
-    // Find the linked AE by origin
-    let effect = actor.effects.find(e => e.origin === this.item.uuid) ?? null;
-
-    // If missing, create it once
-    if (!effect) {
-      const [created] = await actor.createEmbeddedDocuments('ActiveEffect', [
-        { ...aeData, origin: this.item.uuid }
-      ]);
-      effect = created ?? null;
-    }
+    const effect = await ensureLinkedEffectForItem(actor, this.item);
 
     if (!effect) return super._render(force, options);
 
