@@ -1,0 +1,25 @@
+{
+    "name": "Engatillar",
+    "type": "combatManeuver",
+    "img": "icons/skills/melee/strike-weapon-sword-blade.webp",
+    "system": {
+        "slug": {
+            "value": "engatillar"
+        },
+        "description": {
+            "value": "Penalizador -100 al ataque, sí aplica TA. No causa daño. Si supera daño 1%, el defensor queda en estado Amenazado. Sin control enfrentado."
+        },
+        "actionType": {
+            "value": "active"
+        },
+        "traits": ["melee"],
+        "visible": false
+    },
+    "effects": [],
+    "ownership": {
+        "default": 0
+    },
+    "flags": {},
+    "_id": "aBfEngatillarl01",
+    "_key": "!items!aBfEngatillarl01"
+}

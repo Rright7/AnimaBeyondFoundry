@@ -409,6 +409,22 @@ Hooks.on('createChatMessage', async message => {
       const attackerActor = game.actors?.get?.(attackerId);
       const defenderActor = game.actors?.get?.(defenderId);
       if (!attackerActor || !defenderActor) return;
+
+      // Family A — no opposed check. Apply the maneuver's effects directly.
+      if (def.noOpposedCheck) {
+        const { applyManeuverEffectsDirectly } =
+          await import('./module/combat/maneuvers/applyManeuverEffectsDirectly.js');
+        await applyManeuverEffectsDirectly({
+          maneuver: def,
+          maneuverItemName: itemName || slug,
+          attackerActor,
+          defenderActor,
+          damagePercent
+        });
+        return;
+      }
+
+      // Family default — opposed check between attacker and defender.
       const { postManeuverOpposedCheck } =
         await import('./module/combat/maneuvers/postManeuverOpposedCheck.js');
       await postManeuverOpposedCheck({

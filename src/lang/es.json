@@ -992,5 +992,11 @@
   "anima.ui.combat.combatManeuvers.opposedCheck.rollD10": "Tirar D10",
   "anima.ui.combat.combatManeuvers.opposedCheck.waitingDefender": "esperando defensor…",
   "anima.ui.combat.combatManeuvers.opposedCheck.attackerWins": "Gana atacante por",
-  "anima.ui.combat.combatManeuvers.opposedCheck.defenderWins": "Resiste el defensor"
+  "anima.ui.combat.combatManeuvers.opposedCheck.defenderWins": "Resiste el defensor",
+  "anima.maneuvers.engatillar.name": "Engatillar",
+  "anima.maneuvers.engatillar.description": "Penalizador -100 al ataque, sí aplica TA. No causa daño. El defensor queda en estado Amenazado. Sin control enfrentado.",
+  "anima.maneuvers.inutilizar.name": "Inutilizar",
+  "anima.maneuvers.inutilizar.description": "Golpe apuntado a brazo o pierna (-20). Daño/2, crítico cuenta el daño pleno. La extremidad cuenta como punto débil.",
+  "anima.maneuvers.inconsciencia.name": "Inconsciencia",
+  "anima.maneuvers.inconsciencia.description": "Golpe apuntado a cabeza (-60). Con arma contundente. Si crítico >50, defensor inconsciente. Con arma no-contundente, -40 extra."
 }

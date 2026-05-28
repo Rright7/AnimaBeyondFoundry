@@ -1,0 +1,25 @@
+{
+    "name": "Inconsciencia",
+    "type": "combatManeuver",
+    "img": "icons/skills/melee/blade-tip-narrow-purple.webp",
+    "system": {
+        "slug": {
+            "value": "inconsciencia"
+        },
+        "description": {
+            "value": "Golpe apuntado a la cabeza (-60 según Tabla 45) con un arma contundente para dejar inconsciente al adversario. Daño / 2, crítico pleno. Si crítico >50, el defensor queda inconsciente automáticamente. Con arma no-contundente, el penalizador aumenta en -40 adicional (total -100)."
+        },
+        "actionType": {
+            "value": "active"
+        },
+        "traits": ["melee", "aimed", "impact"],
+        "visible": false
+    },
+    "effects": [],
+    "ownership": {
+        "default": 0
+    },
+    "flags": {},
+    "_id": "aBfInconscia0001",
+    "_key": "!items!aBfInconscia0001"
+}

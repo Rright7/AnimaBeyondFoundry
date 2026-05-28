@@ -1,0 +1,25 @@
+{
+    "name": "Inutilizar",
+    "type": "combatManeuver",
+    "img": "icons/skills/melee/strike-weapon-knife-yellow.webp",
+    "system": {
+        "slug": {
+            "value": "inutilizar"
+        },
+        "description": {
+            "value": "Golpe apuntado a brazo o pierna (-20 según Tabla 45). Daño final / 2, pero crítico cuenta el daño pleno. La extremidad cuenta como punto débil. Sin control enfrentado. No funciona contra criaturas con acumulación de daño."
+        },
+        "actionType": {
+            "value": "active"
+        },
+        "traits": ["melee", "aimed"],
+        "visible": false
+    },
+    "effects": [],
+    "ownership": {
+        "default": 0
+    },
+    "flags": {},
+    "_id": "aBfInutilizarl001",
+    "_key": "!items!aBfInutilizarl001"
+}

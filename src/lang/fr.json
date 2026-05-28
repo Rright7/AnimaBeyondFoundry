@@ -874,5 +874,11 @@
   "anima.ui.combat.combatManeuvers.opposedCheck.rollD10": "Lancer D10",
   "anima.ui.combat.combatManeuvers.opposedCheck.waitingDefender": "en attente du défenseur…",
   "anima.ui.combat.combatManeuvers.opposedCheck.attackerWins": "L'attaquant gagne par",
-  "anima.ui.combat.combatManeuvers.opposedCheck.defenderWins": "Le défenseur résiste"
+  "anima.ui.combat.combatManeuvers.opposedCheck.defenderWins": "Le défenseur résiste",
+  "anima.maneuvers.engatillar.name": "Menacer",
+  "anima.maneuvers.engatillar.description": "-100 à l'attaque, TA s'applique. Pas de dégâts. Le défenseur devient Menacé. Sans jet opposé.",
+  "anima.maneuvers.inutilizar.name": "Mutiler",
+  "anima.maneuvers.inutilizar.description": "Coup visé bras ou jambe (-20). Dégâts/2, le critique utilise les dégâts pleins. Le membre compte comme point faible.",
+  "anima.maneuvers.inconsciencia.name": "Assommer",
+  "anima.maneuvers.inconsciencia.description": "Coup visé à la tête (-60) avec arme contondante. Si critique >50, défenseur inconscient. Arme non-contondante : -40 extra."
 }

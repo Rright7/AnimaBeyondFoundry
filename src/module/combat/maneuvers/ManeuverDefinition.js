@@ -88,6 +88,29 @@ export class ManeuverDefinition {
 
     this.grantsQuadrupedBonus = !!data.grantsQuadrupedBonus;
 
+    // Family A — non-opposed-check maneuvers.
+    // When noOpposedCheck is true, the maneuver applies its resolveEffects
+    // directly upon impact, with no D10 opposed check between attacker and
+    // defender. Used by Engatillar (Amenazado on hit), and by Inutilizar /
+    // Inconsciencia once the attack lands on the right aimed location.
+    this.noOpposedCheck = !!data.noOpposedCheck;
+
+    // Aimed attack info: if set, the maneuver implies a predetermined aimed
+    // location. aimedZone is the canonical English ID from Tabla 45
+    // (e.g. 'head', 'arm', 'thigh'). aimedZoneOptions is an optional list of
+    // allowed zones the player can pick from at the card level (Inutilizar
+    // lets the player choose between 'arm' and 'thigh').
+    this.aimedZone = data.aimedZone ?? '';
+    this.aimedZoneOptions = Array.isArray(data.aimedZoneOptions)
+      ? data.aimedZoneOptions
+      : [];
+
+    // Crit-type requirement: if set to 'impact', the maneuver is meant to be
+    // used with a bludgeoning weapon. Used by Inconsciencia, which adds an
+    // extra penalty when the weapon is not impact-type but still allows it.
+    this.requiresImpactCritic = !!data.requiresImpactCritic;
+    this.nonImpactCriticExtraPenalty = Number(data.nonImpactCriticExtraPenalty ?? 0);
+
     this.weaponRestrictions = data.weaponRestrictions ?? [];
 
     this.resolveEffects = typeof data.resolveEffects === 'function'
