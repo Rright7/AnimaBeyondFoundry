@@ -340,6 +340,124 @@ async function _handleChatMessage(message, html) {
 
 // renderChatMessageHTML available since v13 (renderChatMessage deprecated in v13, removed in v15)
 Hooks.on('renderChatMessageHTML', (message, html) => _handleChatMessage(message, html));
+
+// ─── Active Effect drag-and-drop entry points ─────────────────────
+// Effects only materialized their AE when dropped on an open sheet. The same
+// item dropped on a token, an actor in the sidebar, or created via macro/code
+// left the actor without the AE. Hook every entry point so all paths produce
+// a linked AE consistently.
+
+import { ensureLinkedEffectForItem } from './module/actor/utils/ensureLinkedEffectForItem.js';
+import { ABFItems as _ABFItems } from './module/items/ABFItems.js';
+
+Hooks.on('createItem', async (item, _options, userId) => {
+  if (userId !== game.user.id) return;
+  if (item?.type !== _ABFItems.EFFECT) return;
+  if (!item.parent || item.parent.documentName !== 'Actor') return;
+  try {
+    await ensureLinkedEffectForItem(item.parent, item);
+  } catch (e) {
+    console.warn('[ABF] ensureLinkedEffectForItem failed on createItem:', e);
+  }
+});
+
+// When an effect item is dropped on a token in the canvas, Foundry fires
+// `dropCanvasData` but does NOT auto-create the item on the token actor
+// (it ignores Item drops on tokens by default in some configs). Intercept
+// it ourselves so dropping on a token has the same effect as dropping on
+// the open sheet: the item is created on the token actor and its AE linked.
+Hooks.on('dropCanvasData', async (_canvas, data) => {
+  try {
+    if (!data || data.type !== 'Item') return true; // let other handlers run
+
+    // Resolve drop target token (under cursor) — Foundry stores it on data
+    // for tokens layer, fall back to currently hovered token.
+    const x = data.x;
+    const y = data.y;
+    let token = null;
+    if (typeof x === 'number' && typeof y === 'number') {
+      // Find token whose document bounds contain the drop point
+      token = canvas.tokens?.placeables?.find(t => {
+        const w = t.document?.width ?? 1;
+        const h = t.document?.height ?? 1;
+        const gs = canvas.grid?.size ?? 100;
+        const tx = t.document?.x ?? 0;
+        const ty = t.document?.y ?? 0;
+        return x >= tx && x < tx + w * gs && y >= ty && y < ty + h * gs;
+      }) ?? null;
+    }
+    if (!token?.actor) return true;
+
+    // Resolve the source Item document from drag uuid
+    const item = await fromUuid(data.uuid);
+    if (!item || item.documentName !== 'Item') return true;
+    if (item.type !== _ABFItems.EFFECT) return true;
+
+    // Build a fresh item to embed on the token actor (clone of source)
+    const itemData = item.toObject();
+    delete itemData._id;
+    delete itemData._key;
+    delete itemData.folder;
+
+    const [created] = await token.actor.createEmbeddedDocuments('Item', [itemData]);
+    if (!created) return true;
+
+    // ensureLinkedEffectForItem will also be called via the `createItem`
+    // hook above on most configurations; calling it here too is idempotent
+    // (returns the existing AE if it was already created).
+    await ensureLinkedEffectForItem(token.actor, created);
+    return false; // we handled the drop
+  } catch (e) {
+    console.warn('[ABF] dropCanvasData effect handler failed:', e);
+  }
+  return true;
+});
+
+// ─── Active Effect traceability on roll messages ──────────────────
+// Appends a short "Mod: AE-name (+/-N)" line to the flavor of any chat
+// message that carries a Roll, so the contribution of active effects to the
+// rolled attribute is visible in chat. Inferred from the flavor text (es/en/fr).
+
+import { inferAttributeFromFlavor } from './module/actor/utils/attributeDerivationMap.js';
+import {
+  getActiveEffectContributions,
+  formatContributions
+} from './module/actor/utils/activeEffectsBreakdown.js';
+import { resolveActorForRoll } from './module/actor/utils/resolveActorForRoll.js';
+
+Hooks.on('preCreateChatMessage', (message, _data, _options, _userId) => {
+  try {
+    const rolls = message.rolls;
+    if (!Array.isArray(rolls) || rolls.length === 0) return;
+
+    const flavor = message.flavor ?? message.flags?.core?.flavor ?? '';
+    const attribute = inferAttributeFromFlavor(flavor);
+    if (!attribute) return;
+
+    // Resolve actor — prefer the token actor when possible (unlinked AE).
+    const speaker = message.speaker ?? {};
+    const actor = resolveActorForRoll({
+      tokenId: speaker.token,
+      actorId: speaker.actor
+    });
+    if (!actor) return;
+
+    const contributions = getActiveEffectContributions(actor, attribute);
+    if (contributions.length === 0) return;
+
+    const line = formatContributions(contributions);
+    if (!line) return;
+
+    const newFlavor = flavor
+      ? `${flavor}<br><span class="animabf-ae-trace" style="opacity:.75;font-size:.85em;">${line}</span>`
+      : line;
+
+    message.updateSource({ flavor: newFlavor });
+  } catch (err) {
+    console.warn('[ABF] AE trace failed:', err);
+  }
+});
+
 Hooks.on('getChatMessageContextOptions', (_app, menu) => {
   const menuItemFactories = getChatContextMenuFactories();
 

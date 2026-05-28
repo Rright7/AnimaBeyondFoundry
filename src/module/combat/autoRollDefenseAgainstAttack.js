@@ -80,7 +80,9 @@ export async function autoRollDefenseAgainstAttack({
   attackData,
   defenseMod = 0
 }) {
-  const actor = defenderActor ?? defenderToken?.actor ?? null;
+  // Prefer the token's actor instance whenever a token is provided so AE on
+  // unlinked tokens are honoured. Fall back to the explicitly passed actor.
+  const actor = defenderToken?.actor ?? defenderActor ?? null;
   if (!actor) throw new Error('autoRollDefenseAgainstAttack: defender actor missing');
 
   const defenseMode = actor.system?.general?.settings?.defenseType?.value;

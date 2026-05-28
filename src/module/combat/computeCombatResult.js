@@ -1,6 +1,7 @@
 import { ABFAttackData } from './ABFAttackData.js';
 import { ABFDefenseData } from './ABFDefenseData.js';
 import { ABFCombatResultData } from './ABFCombatResultData.js';
+import { resolveActorForRoll } from '../actor/utils/resolveActorForRoll.js';
 
 /**
  * Computes a base combat result from the given attack and defense data.
@@ -9,18 +10,15 @@ import { ABFCombatResultData } from './ABFCombatResultData.js';
  * @returns {ABFCombatResultData}
  */
 export function computeCombatResult(attackData, defenseData) {
-  const defenderToken =
-    (defenseData.defenderTokenId &&
-      (canvas.tokens?.get?.(defenseData.defenderTokenId) ||
-        canvas.tokens?.placeables?.find(t => t.id === defenseData.defenderTokenId))) ||
-    canvas.tokens?.placeables?.find(t => t.actor?.id === defenseData.defenderId);
-
-  const defenderActor =
-    defenderToken?.actor ||
-    (defenseData.defenderId ? game.actors?.get?.(defenseData.defenderId) : null);
-  const attackerActor = attackData.attackerId
-    ? game.actors?.get?.(attackData.attackerId)
-    : null;
+  // Resolve actors via the token-aware helper so unlinked-token AE are honoured.
+  const defenderActor = resolveActorForRoll({
+    tokenId: defenseData.defenderTokenId,
+    actorId: defenseData.defenderId
+  });
+  const attackerActor = resolveActorForRoll({
+    tokenId: attackData.attackerTokenId,
+    actorId: attackData.attackerId
+  });
 
   const difference = (attackData.attackAbility ?? 0) - (defenseData.defenseAbility ?? 0);
 

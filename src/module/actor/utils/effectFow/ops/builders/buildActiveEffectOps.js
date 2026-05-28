@@ -1,5 +1,8 @@
 /* eslint-disable no-continue */
-import { applySingleActiveEffectChange } from '../../applicators/activeEffectApplicator.js';
+import {
+  applySingleActiveEffectChange,
+  resolveChangeMode
+} from '../../applicators/activeEffectApplicator.js';
 import { normalizePaths } from '../normalizePaths.js';
 
 function inferDepsFromChangeValue(value) {
@@ -23,14 +26,16 @@ function getFlaggedDeps(effect, index) {
 
 /**
  * Maps an ActiveEffect mode to a write kind.
- * - OVERRIDE => overwrite
+ * - override => overwrite
  * - others   => modify
  *
- * @param {number} mode
+ * Accepts both numeric (Foundry) and string (legacy) modes via resolveChangeMode.
+ *
+ * @param {string|number|undefined} rawMode
  * @returns {'overwrite'|'modify'}
  */
-function writeKindFromAEMode(type) {
-  return type === 'override' ? 'overwrite' : 'modify';
+function writeKindFromAEMode(rawMode) {
+  return resolveChangeMode(rawMode) === 'override' ? 'overwrite' : 'modify';
 }
 
 /**
@@ -47,7 +52,7 @@ export function buildActiveEffectChangeOp(effect, index, change) {
   const deps = normalizePaths([...flagged, ...inferred]);
 
   const [path] = normalizePaths([change.key]);
-  const kind = writeKindFromAEMode(change.type);
+  const kind = writeKindFromAEMode(change.mode ?? change.type);
 
   return {
     id: `ae:${effect.id}:${index}`,
@@ -73,7 +78,12 @@ export function buildActiveEffectChangeOps(actor) {
   for (const effect of actor.effects?.contents ?? []) {
     if (!effect.active) continue;
 
-    const changes = effect.system.changes;
+    // Foundry-standard path is `effect.changes` (top-level). Fall back to the
+    // legacy `effect.system.changes` shape that some older data may still use.
+    const changes = Array.isArray(effect.changes) && effect.changes.length > 0
+      ? effect.changes
+      : (effect.system?.changes ?? []);
+
     if (!Array.isArray(changes) || changes.length === 0) continue;
 
     for (let i = 0; i < changes.length; i++) {
