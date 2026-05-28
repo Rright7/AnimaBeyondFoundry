@@ -770,6 +770,7 @@
   "chat.combatResult.armor": "Armure (TA)",
   "chat.combatResult.reduced": "réduite",
   "chat.combatResult.finalDamage": "Dégâts finaux",
+  "chat.combatResult.baseDamage": "Dégâts de base",
   "chat.combatResult.lifePercentRemoved": "% de vie retiré",
   "chat.combatResult.isCritical": "Critique ?",
   "chat.combatResult.yes": "Oui",

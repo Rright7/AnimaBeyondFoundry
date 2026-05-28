@@ -888,6 +888,7 @@
   "chat.combatResult.armor": "Armadura (TA)",
   "chat.combatResult.reduced": "reducida",
   "chat.combatResult.finalDamage": "Daño final",
+  "chat.combatResult.baseDamage": "Daño base",
   "chat.combatResult.lifePercentRemoved": "Porcentaje de vida perdido",
   "chat.combatResult.isCritical": "¿Es crítico?",
   "chat.combatResult.yes": "Sí",

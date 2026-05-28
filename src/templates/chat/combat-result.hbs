@@ -16,13 +16,17 @@
     {{/if}}
 
     <p data-requires-permission="gm"><strong>{{localize "chat.combatResult.armor"}}:</strong> {{combatResult.finalArmor}}{{#if combatResult.reducedArmor}} (−{{combatResult.reducedArmor}} {{localize "chat.combatResult.reduced"}}){{/if}}</p>
-    <p><strong>{{localize "chat.combatResult.finalDamage"}}:</strong> {{combatResult.damageFinal}}<span data-requires-permission="gm"> ({{combatResult.damagePercentage}}% of {{combatResult.finalBaseDamage}})</span></p>
+    {{#if combatResult.appliedDamage}}
+      <p><strong>{{localize "chat.combatResult.finalDamage"}}:</strong> {{combatResult.appliedDamage}}<span data-requires-permission="gm"> ({{localize "chat.combatResult.baseDamage"}}: {{combatResult.damageFinal}}, {{combatResult.damagePercentage}}% of {{combatResult.finalBaseDamage}})</span></p>
+    {{else}}
+      <p data-requires-permission="gm"><strong>{{localize "chat.combatResult.baseDamage"}}:</strong> {{combatResult.damageFinal}} ({{combatResult.damagePercentage}}% of {{combatResult.finalBaseDamage}})</p>
+    {{/if}}
     <p data-requires-permission="owner"><strong>{{localize "chat.combatResult.lifePercentRemoved"}}:</strong> {{combatResult.lifePercentRemoved}}%</p>
 
     {{#if combatResult.isCritical}}
       <hr style="margin:.5rem 0; border-color:#c03050;">
       <p data-requires-permission="owner" style="color:#c03050;font-weight:bold;">{{localize "chat.combatResult.isCritical"}}: {{localize "chat.combatResult.yes"}}</p>
-      <p data-requires-permission="owner"><strong>{{localize "chat.combatResult.baseCriticalValue"}}:</strong> {{combatResult.baseCriticalValue}} <span style="opacity:.7">({{combatResult.appliedDamage}} {{localize "chat.combatResult.appliedDamage"}})</span></p>
+      <p data-requires-permission="owner"><strong>{{localize "chat.combatResult.baseCriticalValue"}}:</strong> {{combatResult.baseCriticalValue}}</p>
 
       {{! ── Phase 0: GM starts resolution ── }}
       {{#unless combatResult.critPhase}}

@@ -886,6 +886,7 @@
   "chat.combatResult.armor": "Armor (AT)",
   "chat.combatResult.reduced": "reduced",
   "chat.combatResult.finalDamage": "Final Damage",
+  "chat.combatResult.baseDamage": "Base Damage",
   "chat.combatResult.lifePercentRemoved": "Life % Removed",
   "chat.combatResult.isCritical": "Is Critical?",
   "chat.combatResult.yes": "Yes",
