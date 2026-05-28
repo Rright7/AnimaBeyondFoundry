@@ -151,7 +151,7 @@ export async function autoRollDefenseAgainstAttack({
     candidate.type === 'supernaturalShield' ? 'shield' : candidate.type;
 
   const defenseData = ABFDefenseData.builder()
-    .defenseAbility(roll.total)
+    .defenseAbility(Math.max(0, roll.total))
     .armor(taFinal)
     .inmodifiableArmor(false)
     .defenseType(defenseTypeNormalized)

@@ -388,7 +388,7 @@ export class DefenseConfigurationDialog extends FormApplication {
           : 0;
 
       const defenseData = ABFDefenseData.builder()
-        .defenseAbility(roll.total)
+        .defenseAbility(Math.max(0, roll.total))
         .armor(taFinal)
         .inmodifiableArmor(false)
         .defenseType(type)
@@ -422,6 +422,9 @@ export class DefenseConfigurationDialog extends FormApplication {
           animabf: {
             kind: 'combatResult',
             result: { ...combatResult, damageFinal },
+            attacker: {
+              actorId: attackData?.attackerId ?? ''
+            },
             defender: {
               actorId: actor.id,
               tokenId: defender?.token?.id ?? ''
