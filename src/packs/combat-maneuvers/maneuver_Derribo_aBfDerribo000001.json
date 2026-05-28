@@ -1,0 +1,25 @@
+{
+    "name": "Derribo",
+    "type": "combatManeuver",
+    "img": "icons/skills/melee/maneuver-sword-katana-yellow.webp",
+    "system": {
+        "slug": {
+            "value": "derribo"
+        },
+        "description": {
+            "value": "Penalizador -30 al ataque (-60 con arma pequeña), vs TA 0. Si el daño es ≥ 10%, se resuelve un control enfrentado FUE/DES vs FUE/AGI. Cuadrúpedo: +3 al defensor."
+        },
+        "actionType": {
+            "value": "active"
+        },
+        "traits": ["melee"],
+        "visible": false
+    },
+    "effects": [],
+    "ownership": {
+        "default": 0
+    },
+    "flags": {},
+    "_id": "aBfDerribo000001",
+    "_key": "!items!aBfDerribo000001"
+}

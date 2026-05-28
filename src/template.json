@@ -248,6 +248,7 @@
         },
         "combatSpecialSkills": [],
         "combatTables": [],
+        "combatManeuvers": [],
         "ammo": [],
         "weapons": [],
         "armors": [],
@@ -398,7 +399,8 @@
       "psychicPower",
       "technique",
       "weapon",
-      "effect"
+      "effect",
+      "combatManeuver"
     ],
     "ammo": {
       "amount": { "value": 0 },
@@ -674,6 +676,13 @@
       "active":   { "value": true },
       "category": { "value": "generic" },
       "modifiers": []
+    },
+    "combatManeuver": {
+      "slug": { "value": "" },
+      "description": { "value": "" },
+      "actionType": { "value": "active" },
+      "traits": [],
+      "visible": false
     }
 
   }

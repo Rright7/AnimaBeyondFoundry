@@ -3,22 +3,40 @@
   "title": "Anima Beyond Fantasy",
   "description": "Unofficial Anima Beyond Fantasy system for Foundry VTT",
   "version": "2.2.1",
-  "compatibility": { "minimum": "13", "verified": "14.359" },
+  "compatibility": {
+    "minimum": "13",
+    "verified": "14.359"
+  },
   "url": "https://github.com/AnimaBeyondDevelop/AnimaBeyondFoundry",
   "manifest": "https://raw.githubusercontent.com/AnimaBeyondDevelop/AnimaBeyondFoundry/main/src/system.json",
   "changelog": "https://github.com/AnimaBeyondDevelop/AnimaBeyondFoundry/releases/tag/v2.2.1",
   "download": "https://github.com/AnimaBeyondDevelop/AnimaBeyondFoundry/releases/download/v2.2.1/animabf.zip",
   "bugs": "https://github.com/AnimaBeyondDevelop/AnimaBeyondFoundry/issues",
   "authors": [
-    { "name": "Linkaynn", "url": "https://www.jeseromero.com" },
-    { "name": "Julen Bordonaba" },
-    { "name": "Alfonso Paiva" },
-    { "name": "Aitor Balmaseda" },
-    { "name": "Luisin" }
+    {
+      "name": "Linkaynn",
+      "url": "https://www.jeseromero.com"
+    },
+    {
+      "name": "Julen Bordonaba"
+    },
+    {
+      "name": "Alfonso Paiva"
+    },
+    {
+      "name": "Aitor Balmaseda"
+    },
+    {
+      "name": "Luisin"
+    }
   ],
   "scripts": [],
-  "esmodules": ["animabf.js"],
-  "styles": ["animabf.css"],
+  "esmodules": [
+    "animabf.js"
+  ],
+  "styles": [
+    "animabf.css"
+  ],
   "socket": true,
   "packs": [
     {
@@ -76,6 +94,15 @@
       "flags": {}
     },
     {
+      "name": "combat-maneuvers",
+      "label": "(ES) Maniobras de combate",
+      "system": "animabf",
+      "path": "./packs/combat-maneuvers",
+      "type": "Item",
+      "private": false,
+      "flags": {}
+    },
+    {
       "name": "macros",
       "label": "(ES) Macros",
       "type": "Macro",
@@ -86,11 +113,28 @@
     }
   ],
   "languages": [
-    { "lang": "es", "name": "Español", "path": "lang/es.json" },
-    { "lang": "en", "name": "English", "path": "lang/en.json" },
-    { "lang": "fr", "name": "Français", "path": "lang/fr.json" }
+    {
+      "lang": "es",
+      "name": "Español",
+      "path": "lang/es.json"
+    },
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "fr",
+      "name": "Français",
+      "path": "lang/fr.json"
+    }
   ],
-  "relationships": { "requires": [] },
+  "relationships": {
+    "requires": []
+  },
   "primaryTokenAttribute": "characteristics.secondaries.lifePoints",
-  "grid": { "distance": 1, "units": "m" }
+  "grid": {
+    "distance": 1,
+    "units": "m"
+  }
 }
