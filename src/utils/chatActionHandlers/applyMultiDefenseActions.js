@@ -123,7 +123,8 @@ async function applyDamageToActor(actor, amount) {
     for (const path of fallbacks) {
       cur = getProperty(actor, path);
       if (typeof cur === 'number' && !Number.isNaN(cur)) {
-        const next = Math.max(0, cur - amount);
+        // Life points may legitimately go negative — no floor.
+        const next = cur - amount;
         await actor.update({ [path]: next });
         ui.notifications?.info(`${actor.name}: -${amount} LP`);
         return true;

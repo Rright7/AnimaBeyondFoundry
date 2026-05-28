@@ -47,9 +47,11 @@ mutateActVias.abfFlow = {
 
 export const mutateInnateMagicMain = data => {
   const { mystic } = data;
-  mystic.innateMagic.main.final.value =
+  mystic.innateMagic.main.final.value = Math.max(
+    0,
     mystic.innateMagic.main.base.value +
-    calculateInnateMagic(mystic.act.main.final.value);
+      calculateInnateMagic(mystic.act.main.final.value)
+  );
 };
 
 mutateInnateMagicMain.abfFlow = {
@@ -71,8 +73,10 @@ export const mutateInnateMagicVias = data => {
         mystic.act.via.length !== 0 && actVia
           ? actVia.system.final.value
           : mystic.act.main.final.value;
-      innateMagicVia.system.final.value =
-        innateMagicVia.system.base.value + calculateInnateMagic(actViaValue);
+      innateMagicVia.system.final.value = Math.max(
+        0,
+        innateMagicVia.system.base.value + calculateInnateMagic(actViaValue)
+      );
     }
   }
 };
@@ -160,6 +164,8 @@ export const mutateZeonMaintenance = data => {
   const manualMaintained = Number(mystic.zeonMaintained?.max) || 0;
   mystic.zeonMaintained.value = perTurnZeon + manualMaintained;
 
+  // Zeon regeneration may legitimately be negative when daily zeon spent on
+  // maintained spells exceeds the regeneration rate. No floor here.
   mystic.zeonRegeneration.final.value = mystic.zeonRegeneration.base.value - dailyZeon;
 };
 
@@ -182,8 +188,10 @@ mutateZeonMaintenance.abfFlow = {
 const makeSummoningMutator = key => {
   const fn = data => {
     const allActionsPenalty = data.general.modifiers.allActions.final.value;
-    data.mystic.summoning[key].final.value =
-      data.mystic.summoning[key].base.value + Math.min(allActionsPenalty, 0);
+    data.mystic.summoning[key].final.value = Math.max(
+      0,
+      data.mystic.summoning[key].base.value + Math.min(allActionsPenalty, 0)
+    );
   };
   fn.abfFlow = {
     deps: [

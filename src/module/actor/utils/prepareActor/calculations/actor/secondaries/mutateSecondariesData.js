@@ -56,6 +56,9 @@ export const mutateSecondariesData = data => {
           secondary.final.value += data.general.modifiers.physicalActions.final.value;
         }
       }
+
+      // Clamp floor at 0 — no skill can roll worse than its raw 1d100.
+      secondary.final.value = Math.max(0, secondary.final.value);
     }
   }
 };

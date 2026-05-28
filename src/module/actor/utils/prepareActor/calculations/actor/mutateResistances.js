@@ -2,7 +2,7 @@ const mutateResistance = (resistance, presence, attribute) => {
   let baseValue = presence;
   baseValue = presence + attribute.mod.value;
   resistance.base.value = baseValue;
-  resistance.final.value = baseValue + resistance.special.value;
+  resistance.final.value = Math.max(0, baseValue + resistance.special.value);
 };
 
 // ── Individual base+final per resistance ──────────────────────────────────────
@@ -25,7 +25,10 @@ const makeResistanceMutator = (key, attrKey) => {
 
   const fnFinal = data => {
     const resistance = data.characteristics.secondaries.resistances[key];
-    resistance.final.value = resistance.base.value + resistance.special.value;
+    resistance.final.value = Math.max(
+      0,
+      resistance.base.value + resistance.special.value
+    );
   };
   fnFinal.abfFlow = {
     deps: [
