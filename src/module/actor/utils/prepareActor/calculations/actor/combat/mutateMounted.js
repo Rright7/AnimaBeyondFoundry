@@ -58,17 +58,17 @@ export const mutateMounted = data => {
 };
 
 mutateMounted.abfFlow = {
-  // Dependemos de los valores finales de attack/block/dodge y de ride para
-  // garantizar que este mutator corra tras los Ability typed nodes y tras
-  // la skill `ride`.
+  // Only declare INPUT dependencies. Declaring attack/block/dodge.final
+  // here too would create a self-cycle (depend on what we write).
+  //
+  // The Ability typed nodes that compute attack/block/dodge.final declare
+  // their own write paths; the flow scheduler runs derivedFns AFTER all
+  // typed-node outputs have settled, so by the time mutateMounted runs,
+  // attack.final.value is already valid for us to read and overwrite.
   deps: [
-    'system.combat.attack.final.value',
-    'system.combat.block.final.value',
-    'system.combat.dodge.final.value',
     'system.secondaries.athletics.ride.final.value',
     'system.combat.mounted.value'
   ],
-  // Modificamos los tres finales de combate.
   mods: [
     'system.combat.attack.final.value',
     'system.combat.block.final.value',
