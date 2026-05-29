@@ -86,7 +86,10 @@ export function computeCombatResult(attackData, defenseData) {
 
   const roundedDifference = Math.floor(difference / 10) * 10;
   const damagePercentage = Math.max(0, roundedDifference - finalArmor * 10 - 20);
-  let finalDamage = (baseDamage * damagePercentage) / 100;
+  // Round damage up so half-points (e.g. base 45 halved by Presa = 22.5)
+  // never get silently truncated to the defender's favor. RAW expects
+  // the inflicted damage to be a clean integer at or above the math.
+  let finalDamage = Math.ceil((baseDamage * damagePercentage) / 100);
   if (suppressDamage) finalDamage = 0;
 
   // Apply supernatural shield wear centrally (works from any combat resolution)

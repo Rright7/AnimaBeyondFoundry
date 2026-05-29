@@ -111,7 +111,9 @@ export async function runSubGrappleManeuver(attackerActor, def, maneuverItem) {
 
   let damage = 0;
   if (typeof def.computeAutoDamage === 'function') {
-    damage = Number(def.computeAutoDamage(opposed.difference) ?? 0) || 0;
+    // Same rounding convention as computeCombatResult: never silently
+    // truncate fractional damage to the defender's favor.
+    damage = Math.ceil(Number(def.computeAutoDamage(opposed.difference) ?? 0) || 0);
   }
 
   if (damage > 0) {
