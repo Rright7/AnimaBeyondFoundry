@@ -403,6 +403,7 @@ export default class ABFActorSheet extends ActorSheetV1 {
         if (effect) {
           await effect.update({ disabled: !newActive });
         }
+        return;
       }
 
       case 'clearAll': {
