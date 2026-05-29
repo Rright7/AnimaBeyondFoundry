@@ -2,7 +2,11 @@ import { AttackConfigurationDialog } from '../../../dialogs/AttackConfigurationD
 import { getSnapshotTargets } from '../getSnapshotTargets.js';
 import { getAimedPenalty } from '../../../combat/criticalTables.js';
 import { toggleStatusManeuver } from '../toggleStatusManeuver.js';
-import { applyPreciseDiscount } from '../../../combat/weaponProperties.js';
+import { runSubGrappleManeuver } from '../../../combat/maneuvers/subGrappleRunner.js';
+import {
+  composeAimedPenalty,
+  composeManeuverPenalty
+} from '../../../equipment/qualities/composeWeaponEffects.js';
 
 /**
  * Launch a combat maneuver by opening AttackConfigurationDialog with the
@@ -52,6 +56,12 @@ export function executeCombatManeuver(sheet, e) {
   // require selected targets nor an attacker token in the scene.
   if (def.isStatusToggle) {
     return toggleStatusManeuver(sheet.actor, def, item);
+  }
+
+  // Sub-grapple maneuvers (Aplastar): skip the attack dialog and go
+  // straight to the opposed-check phase. Validation lives in the helper.
+  if (def.noAttackPhase) {
+    return runSubGrappleManeuver(sheet.actor, def, item);
   }
 
   const attackerToken = sheet.token ?? sheet.actor?.getActiveTokens?.()[0];
@@ -108,22 +118,47 @@ export function executeCombatManeuver(sheet, e) {
     }
   }
 
-  // Precisa (melee only): halves the maneuver penalty for both
-  //   - aimed-attack maneuvers (Inutilizar, Inconsciencia), where the
-  //     penalty comes from Tabla 45, AND
-  //   - Engatillar, called out explicitly by RAW.
-  // Other opposed-check maneuvers (Derribo, Desarme, Presa) are NOT aimed
-  // attacks and are NOT mentioned by the rule, so we skip them.
-  const isEngatillar = slug === 'engatillar';
-  if ((aimed || isEngatillar) && equipped) {
-    const discounted = applyPreciseDiscount(maneuverPenalty, equipped);
-    if (discounted.applied) {
+  // Apply weapon-quality modifiers to the maneuver penalty.
+  //
+  // Two distinct paths, never both: one would be double-counting since
+  // Precisa (and any future quality that halves penalties) lives in both
+  // hooks for two distinct call sites. Here we pick ONE based on whether
+  // this maneuver is aimed or not.
+  //
+  // RAW alignment:
+  //  - aimed maneuvers (Inutilizar, Inconsciencia, ...) → composeAimedPenalty
+  //    runs the modifyAimedPenalty hooks (Precisa halves Tabla 45 penalty).
+  //  - non-aimed maneuvers (Engatillar) → composeManeuverPenalty runs the
+  //    modifyManeuverPenalty hooks (Precisa halves only when slug=engatillar).
+  //
+  // Other future hooks will plug in here with no code change.
+  if (equipped) {
+    const before = maneuverPenalty;
+    const composed = aimed
+      ? composeAimedPenalty(maneuverPenalty, {
+          weapon: equipped,
+          actor: sheet.actor,
+          maneuverSlug: slug,
+          aimedZone
+        })
+      : composeManeuverPenalty(maneuverPenalty, {
+          weapon: equipped,
+          actor: sheet.actor,
+          maneuverSlug: slug
+        });
+    if (composed.appliedBy.length) {
       ui.notifications.info(
-        `${item.name} con arma Precisa: penalizador a la mitad (${maneuverPenalty} → ${discounted.penalty}).`
+        `${item.name}: cualidades [${composed.appliedBy.join(', ')}] ` +
+          `modifican el penalizador (${before} → ${composed.penalty}).`
       );
-      maneuverPenalty = discounted.penalty;
+      maneuverPenalty = composed.penalty;
     }
   }
+
+  // RAW for some sub-maneuvers (Aplastar) requires that the parent Presa
+  // was performed without weapons. Capture this here so the post-combat
+  // resolver can persist it as a relational flag on the actors.
+  const wasUnarmed = !equipped || !!equipped.system?.unarmed?.value;
 
   new AttackConfigurationDialog(
     {
@@ -133,6 +168,7 @@ export function executeCombatManeuver(sheet, e) {
       maneuverSlug: slug,
       maneuverItemName: item.name,
       maneuverPenalty,
+      maneuverWasUnarmed: wasUnarmed,
       aimed,
       aimedZone
     },

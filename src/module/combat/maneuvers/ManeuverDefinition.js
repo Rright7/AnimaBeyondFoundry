@@ -118,6 +118,26 @@ export class ManeuverDefinition {
     this.isStatusToggle = !!data.isStatusToggle;
     this.statusEffectName = String(data.statusEffectName ?? '');
 
+    // Sub-grapple maneuvers (e.g. Aplastar) skip the attack roll phase
+    // entirely. The attacker is already grappling the defender, so the
+    // execute path opens the opposed-check dialog directly with the
+    // characteristics declared by the definition. The runtime validates
+    // that the relational grapple flags exist and meet the maneuver's
+    // requirements before launching.
+    this.noAttackPhase = !!data.noAttackPhase;
+    this.requiresGrappling = !!data.requiresGrappling;
+    this.requiresUnarmedGrapple = !!data.requiresUnarmedGrapple;
+    this.requiredDefenderStates = Array.isArray(data.requiredDefenderStates)
+      ? data.requiredDefenderStates.slice()
+      : [];
+
+    // Damage formula for auto-damage maneuvers (Aplastar). The engine
+    // calls this with the opposed-check difference and the defender's
+    // impact armor to produce the final damage.
+    this.computeAutoDamage = typeof data.computeAutoDamage === 'function'
+      ? data.computeAutoDamage
+      : null;
+
     this.weaponRestrictions = data.weaponRestrictions ?? [];
 
     this.resolveEffects = typeof data.resolveEffects === 'function'

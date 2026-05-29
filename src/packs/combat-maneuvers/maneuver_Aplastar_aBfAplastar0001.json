@@ -1,0 +1,25 @@
+{
+    "name": "Aplastar",
+    "type": "combatManeuver",
+    "img": "icons/skills/melee/strike-fists-grappling-orange.webp",
+    "system": {
+        "slug": {
+            "value": "crush"
+        },
+        "description": {
+            "value": "Sub-maniobra de Presa. Requiere haber apresado al adversario SIN ARMAS y que esté en Parálisis Total o Completa (no parcial). Sin tirada de ataque: control enfrentado FUE vs FUE; el defensor suma +1 por cada punto de Armadura Contundente. Daño automático: 10 por cada punto de diferencia, o 20 por punto si la diferencia es mayor de 6. El control de Aplastar es distinto del de liberarse de la presa."
+        },
+        "actionType": {
+            "value": "active"
+        },
+        "traits": ["melee"],
+        "visible": false
+    },
+    "effects": [],
+    "ownership": {
+        "default": 0
+    },
+    "flags": {},
+    "_id": "aBfAplastar0001",
+    "_key": "!items!aBfAplastar0001"
+}
