@@ -25,6 +25,12 @@
         </p>
       {{/if}}
 
+      {{!-- Acumular defensa: checkbox oculto a propósito. La lógica
+            sigue activa (defender.combat.accumulateDefenses defaultea
+            a true en _buildInitialData, así que el contador acumula
+            como hasta ahora). Si en el futuro se quiere reexponer,
+            descomentar el horizontal-titled-input siguiente. --}}
+      {{!--
       {{>
         "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
         title=(localize 'macros.combat.dialog.combat.accumulateDefenses.title')
@@ -32,6 +38,20 @@
         inputName="defender.combat.accumulateDefenses"
         inputValue=(is 'eq' this.defender.combat.accumulateDefenses true)
       }}
+      --}}
+
+      {{!-- Resistir el golpe: -80 a la defensa, suelo 0, NO acumula
+            defensa múltiple (RAW). Solo tiene sentido con parar/esquivar
+            así que ocultamos en la pestaña shield. --}}
+      {{#unless (is 'eq' this.ui.activeTab 'shield')}}
+        {{>
+          "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
+          title=(localize 'macros.combat.dialog.resistTheHit.title')
+          inputType="checkbox"
+          inputName="defender.combat.resistTheHit"
+          inputValue=(is 'eq' this.defender.combat.resistTheHit true)
+        }}
+      {{/unless}}
 
       <nav class="animabf-tabs sheet-tabs tabs" data-group="primary">
         <a class="item" data-tab="dodge">{{localize "macros.combat.dialog.dodgeButton.title"}}</a>

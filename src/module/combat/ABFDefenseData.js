@@ -17,6 +17,12 @@ export class ABFDefenseData {
     this.stackDefense = !!p.stackDefense;
     this.applyMultipleDefensePenalty = !!p.applyMultipleDefensePenalty;
     this.projectilePenalty = Number(p.projectilePenalty ?? 0) || 0;
+
+    // Resistir el golpe: declares this defense is "encajar el golpe"
+    // (RAW: -80 already baked into defenseAbility; this flag is for
+    // downstream consumers, e.g. the critical resolver showing a warning
+    // when an effect-producing crit lands on a resisting defender).
+    this.resistTheHit = !!p.resistTheHit;
   }
 
   toJSON() {
@@ -100,6 +106,11 @@ export class ABFDefenseDataBuilder {
 
   projectilePenalty(v) {
     this._p.projectilePenalty = Number(v) || 0;
+    return this;
+  }
+
+  resistTheHit(b = true) {
+    this._p.resistTheHit = !!b;
     return this;
   }
 

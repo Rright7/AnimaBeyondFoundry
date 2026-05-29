@@ -108,6 +108,9 @@ export class DefenseConfigurationDialog extends FormApplication {
           // and the dialog only shows the resulting value as a read-only label.
           multipleDefensesPenalty: defensesCounterCheck(defensesCounter.accumulated),
           accumulateDefenses: defensesCounter.keepAccumulating,
+          // Resistir el golpe: -80 a la defensa, NO acumula defensa
+          // múltiple este asalto.
+          resistTheHit: false,
 
           weaponUsed: initialWeaponUsed,
           weapon: initialWeapon,
@@ -354,10 +357,24 @@ export class DefenseConfigurationDialog extends FormApplication {
       const isShieldDefense = type === 'shield';
       const effectiveMultiPenalty = isShieldDefense ? 0 : multiPenalty;
 
+      // Resistir el golpe: -80 a la habilidad de defensa (sólo cuando es
+      // parar/esquivar; no aplica a escudos). El suelo a 0 se enforza
+      // tras el roll vía Math.max para mantener la semántica RAW: el
+      // dado se tira igual, pero el total efectivo no baja de 0.
+      //
+      // RAW: los seres de acumulación (defenseType='resistance') y las
+      // masas (defenseType='mass') no pueden encajar el golpe. Esta
+      // regla queda automáticamente cubierta aguas arriba en
+      // defendActionHandler / defendTargetActionHandler, que enrutan
+      // ambos tipos a sendAccumulationZeroDefense y NUNCA abren este
+      // dialog, así que aquí no hace falta guarda adicional.
+      const resistTheHit = !!combat?.resistTheHit && !isShieldDefense;
+      const resistPenalty = resistTheHit ? -80 : 0;
+
       // Split each contribution into its own term so the Foundry roll tooltip
-      // shows the breakdown: defense ability, situational modifier, and the
-      // multiple-defenses penalty as three traceable parts.
-      const formula = `${die} + ${baseValue} + ${mod} + (${effectiveMultiPenalty})`;
+      // shows the breakdown: defense ability, situational modifier, the
+      // multiple-defenses penalty, and the resist-the-hit penalty.
+      const formula = `${die} + ${baseValue} + ${mod} + (${effectiveMultiPenalty}) + (${resistPenalty})`;
       const roll = new ABFFoundryRoll(formula, actor.system);
       await roll.evaluate({ async: true });
 
@@ -374,9 +391,22 @@ export class DefenseConfigurationDialog extends FormApplication {
         'macros.combat.dialog.defending.defend.title'
       );
 
+      // Append dialog-level contributions to the flavor so the chat
+      // shows where each modifier came from (mirrors the attack roll
+      // breakdown). Active Effect contributions are appended by the
+      // separate AE traceability hook on top of this.
+      const defenseContribs = [];
+      if (resistPenalty !== 0) {
+        defenseContribs.push(`Resiste el golpe (${resistPenalty})`);
+      }
+      const flavorParts = [defenseLabel];
+      if (defenseContribs.length) {
+        flavorParts.push(`Mods: ${defenseContribs.join(', ')}`);
+      }
+
       await roll.toMessage({
         speaker,
-        flavor: defenseLabel,
+        flavor: flavorParts.join(' — '),
         rollMode: vis.rollMode,
         flags: {
           animabf: {
@@ -404,6 +434,7 @@ export class DefenseConfigurationDialog extends FormApplication {
         .defenderTokenId(defender?.token?.id ?? '')
         .weaponId(weapon?._id ?? weapon?.id ?? '')
         .shieldId(shieldItemId)
+        .resistTheHit(resistTheHit)
         .build();
 
       const combatResult = computeCombatResult(attackData, defenseData);
@@ -468,7 +499,13 @@ export class DefenseConfigurationDialog extends FormApplication {
       // the `keepAccumulating` flag; ABFCombat hooks reset the counter when
       // the round changes. Supernatural-shield defenses do NOT stack (mirrors
       // RULES.supernaturalShield.stackDefense in DefenseStrategies.js).
-      if (!isShieldDefense && typeof actor?.accumulateDefenses === 'function') {
+      //
+      // Resistir el golpe (RAW): aplica el penalizador de defensas múltiples
+      // acumulado hasta este momento, pero NO incrementa el contador para la
+      // siguiente defensa del asalto. Confirmed by table consensus: the
+      // defender "no gasta" una defensa real al resistir.
+      const shouldAccumulate = !isShieldDefense && !resistTheHit;
+      if (shouldAccumulate && typeof actor?.accumulateDefenses === 'function') {
         actor.accumulateDefenses(!!combat?.accumulateDefenses);
       }
 
