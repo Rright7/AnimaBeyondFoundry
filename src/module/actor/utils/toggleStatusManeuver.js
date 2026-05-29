@@ -7,8 +7,9 @@
  *     the actor (matching how the rest of the AE engine handles toggles).
  *   - If the actor already has it, delete it.
  *
- * Posts a short chat message announcing the state change so the table and
- * the GM can see it.
+ * The system's global `createItem` hook (registered in animabf.js) takes
+ * care of linking the AE via ensureLinkedEffectForItem automatically, so
+ * we do NOT call the helper here — doing so would create a duplicate AE.
  *
  * Used by Cargar; will be reused by future status maneuvers (e.g. Atacar a
  * la ofensiva, A la defensiva).
