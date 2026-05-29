@@ -226,14 +226,59 @@
           }}
         {{/if}}
       {{/if}}
+      {{!-- Especial: read-only, derived from system.qualities.value.
+            Source of truth lives in the qualities array; this field is
+            just a localized comma-separated view. We use readonly (not
+            disabled) so the GM can focus + scroll the input to read the
+            full string when the list of qualities overflows the visible
+            width. --}}
       {{>
       "systems/animabf/templates/common/ui/vertical-titled-input.hbs"
         class="special"
+        readonly=true
         title=(localize "anima.ui.combat.weapons.special.title")
         inputType="text"
-        inputName="system.special.value"
-        inputValue=system.special.value
+        inputName="system.qualities.label"
+        inputValue=(equipmentQualitiesLabel system.qualities.value)
       }}
+
+      {{!-- Notas: free-form text for the GM. Anything not modeled as a
+            canonical quality goes here ("hecha de plata", etc.). --}}
+      {{>
+      "systems/animabf/templates/common/ui/vertical-titled-input.hbs"
+        class="notes"
+        title=(localize "anima.ui.combat.weapons.notes.title")
+        inputType="text"
+        inputName="system.notes.value"
+        inputValue=system.notes.value
+      }}
+
+      {{!-- Cualidades: drag&drop area + chip list. The drag target
+            accepts compendium items of type weaponQuality; each chip
+            shows the localized name and has a delete button. --}}
+      <div class='weapon-qualities-section'
+           data-drop-target='weaponQuality'>
+        <label class='weapon-qualities-section__title'>
+          {{localize "anima.ui.combat.weapons.qualities.title"}}
+        </label>
+        <div class='weapon-qualities-list'>
+          {{#each system.qualities.value as |slug|}}
+            <span class='weapon-quality-chip' data-quality-slug='{{slug}}'>
+              {{equipmentQualitiesLabel (jsonArray slug)}}{{equipmentQualityParamSuffix slug ../system.qualityParams.value}}
+              <a class='weapon-quality-chip__remove'
+                 data-action='removeQuality'
+                 data-quality-slug='{{slug}}'
+                 title='{{localize "anima.ui.combat.weapons.qualities.remove"}}'>
+                <i class='fas fa-times'></i>
+              </a>
+            </span>
+          {{else}}
+            <span class='weapon-qualities-list__empty'>
+              {{localize "anima.ui.combat.weapons.qualities.empty"}}
+            </span>
+          {{/each}}
+        </div>
+      </div>
     {{/"systems/animabf/templates/common/ui/group-body.hbs"}}
   {{/"systems/animabf/templates/common/ui/group.hbs"}}
 {{/"systems/animabf/templates/items/base/base-sheet.hbs"}}

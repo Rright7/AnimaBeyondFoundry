@@ -1,0 +1,24 @@
+{
+    "name": "Precisa",
+    "type": "weaponQuality",
+    "img": "icons/weapons/swords/sword-katana.webp",
+    "system": {
+        "slug": {
+            "value": "precise"
+        },
+        "description": {
+            "value": "Este tipo de armas permite al personaje disminuir a la mitad los penalizadores de los golpes apuntados, y los de la maniobra de Engatillar. Sólo se aplica en ataques cuerpo a cuerpo, no con proyectiles lanzados."
+        },
+        "appliesTo": {
+            "value": ["weapon"]
+        },
+        "visible": false
+    },
+    "effects": [],
+    "ownership": {
+        "default": 0
+    },
+    "flags": {},
+    "_id": "aBfPrecisa000001",
+    "_key": "!items!aBfPrecisa000001"
+}

@@ -1,0 +1,24 @@
+{
+    "name": "Arma a dos manos",
+    "type": "weaponQuality",
+    "img": "icons/weapons/swords/greatsword-blue.webp",
+    "system": {
+        "slug": {
+            "value": "twoHanded"
+        },
+        "description": {
+            "value": "Son las que se usan necesariamente con ambas manos. Las de este tipo permiten al personaje doblar el bono de Fuerza para calcular su daño final."
+        },
+        "appliesTo": {
+            "value": ["weapon"]
+        },
+        "visible": false
+    },
+    "effects": [],
+    "ownership": {
+        "default": 0
+    },
+    "flags": {},
+    "_id": "aBfTwoHand000001",
+    "_key": "!items!aBfTwoHand000001"
+}

@@ -98,6 +98,92 @@ export default class ABFItemSheet extends ItemSheetV1 {
     };
   }
 
+  // ============================
+  // Weapon qualities drag & drop
+  // ============================
+  // The weapon sheet shows a [data-drop-target="weaponQuality"] zone and
+  // chips that map to entries of system.qualities.value. Dropping a
+  // weaponQuality compendium item adds its slug; clicking the × on a chip
+  // removes it.
+  activateListeners(html) {
+    super.activateListeners(html);
+
+    if (this.item?.type !== ABFItems.WEAPON) return;
+
+    const root = html[0] ?? html;
+    if (!root) return;
+
+    const dropZone = root.querySelector('[data-drop-target="weaponQuality"]');
+    if (dropZone) {
+      dropZone.addEventListener('dragover', e => {
+        e.preventDefault();
+        dropZone.classList.add('weapon-qualities-section--drag-over');
+      });
+      dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('weapon-qualities-section--drag-over');
+      });
+      dropZone.addEventListener('drop', async e => {
+        e.preventDefault();
+        dropZone.classList.remove('weapon-qualities-section--drag-over');
+        await this._onDropWeaponQuality(e);
+      });
+    }
+
+    root
+      .querySelectorAll('[data-action="removeQuality"]')
+      .forEach(btn => {
+        btn.addEventListener('click', async e => {
+          e.preventDefault();
+          const slug = e.currentTarget?.dataset?.qualitySlug;
+          if (!slug) return;
+          await this._removeWeaponQuality(slug);
+        });
+      });
+  }
+
+  async _onDropWeaponQuality(event) {
+    let payload;
+    try {
+      payload = JSON.parse(event.dataTransfer?.getData('text/plain') ?? '{}');
+    } catch {
+      return;
+    }
+    if (!payload || payload.type !== 'Item') return;
+
+    const doc = await fromUuid(payload.uuid);
+    if (!doc || doc.type !== ABFItems.WEAPON_QUALITY) {
+      return ui.notifications?.warn(
+        'Solo se pueden arrastrar items de tipo Cualidad de arma aquí.'
+      );
+    }
+
+    const slug = String(doc.system?.slug?.value ?? '').trim();
+    if (!slug) {
+      return ui.notifications?.warn(
+        'La cualidad arrastrada no tiene slug definido.'
+      );
+    }
+
+    const current = Array.isArray(this.item.system?.qualities?.value)
+      ? this.item.system.qualities.value.slice()
+      : [];
+    if (current.includes(slug)) {
+      return ui.notifications?.info(`${doc.name} ya está en este arma.`);
+    }
+
+    current.push(slug);
+    await this.item.update({ 'system.qualities.value': current });
+  }
+
+  async _removeWeaponQuality(slug) {
+    const current = Array.isArray(this.item.system?.qualities?.value)
+      ? this.item.system.qualities.value.slice()
+      : [];
+    const next = current.filter(s => s !== slug);
+    if (next.length === current.length) return;
+    await this.item.update({ 'system.qualities.value': next });
+  }
+
   // ABFItemSheet.js
 
   async _render(force, options = {}) {

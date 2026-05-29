@@ -48,6 +48,7 @@
     <input
       {{#if this.addTooltips}}title='{{this.tooltip}}'{{/if}}
       {{#if this.disabled}}disabled{{/if}}
+      {{#if this.readonly}}readonly{{/if}}
       name='{{this.inputName}}'
       type='{{#if this.inputType}}{{this.inputType}}{{else}}number{{/if}}'
       class='input primary-input {{#if this.hasTertiaryInput}}primary-3{{else}}{{#if this.hasSecondaryInput}}primary-2{{else}}primary-1{{/if}}{{/if}} {{#if this.disabled}}disabled{{/if}}'

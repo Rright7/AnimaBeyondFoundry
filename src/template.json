@@ -606,7 +606,9 @@
       "isShield": { "value": false },
       "ignoreArmor": { "value": false },
       "special": { "value": "" },
+      "notes": { "value": "" },
       "qualities": { "value": [] },
+      "qualityParams": { "value": {} },
       "integrity": {
         "base": { "value": 0 },
         "final": { "value": 0 },

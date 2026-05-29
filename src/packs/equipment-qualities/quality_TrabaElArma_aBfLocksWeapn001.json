@@ -1,0 +1,24 @@
+{
+    "name": "Traba el arma",
+    "type": "weaponQuality",
+    "img": "icons/weapons/polearms/halberd-crescent-engraved-grey.webp",
+    "system": {
+        "slug": {
+            "value": "locksWeapon"
+        },
+        "description": {
+            "value": "Artefactos que, por su diseño y características, disponen de la oportunidad de trabar o desarmar al oponente. Si realizando una parada con una de estas armas se consigue un contraataque, el personaje podrá realizar un ataque para Desarmar al adversario sin ningún tipo de penalizador."
+        },
+        "appliesTo": {
+            "value": ["weapon"]
+        },
+        "visible": false
+    },
+    "effects": [],
+    "ownership": {
+        "default": 0
+    },
+    "flags": {},
+    "_id": "aBfLocksWeapn001",
+    "_key": "!items!aBfLocksWeapn001"
+}
