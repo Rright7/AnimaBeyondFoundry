@@ -1014,5 +1014,7 @@
   "anima.combat.aimedZone.knee": "Knee",
   "anima.combat.aimedZone.abdomen": "Abdomen",
   "anima.combat.aimedZone.torso": "Torso",
-  "anima.ui.effects.effectsList.clearAll": "Clear all"
+  "anima.ui.effects.effectsList.clearAll": "Clear all",
+  "macros.combat.dialog.aimed.title": "Aimed attack",
+  "macros.combat.dialog.aimed.zone": "Zone"
 }

@@ -898,5 +898,7 @@
   "anima.combat.aimedZone.knee": "Genou",
   "anima.combat.aimedZone.abdomen": "Abdomen",
   "anima.combat.aimedZone.torso": "Torse",
-  "anima.ui.effects.effectsList.clearAll": "Tout effacer"
+  "anima.ui.effects.effectsList.clearAll": "Tout effacer",
+  "macros.combat.dialog.aimed.title": "Coup visé",
+  "macros.combat.dialog.aimed.zone": "Zone"
 }

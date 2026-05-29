@@ -9,6 +9,31 @@
             inputValue=this.attacker.combat.modifier }}
       </div>
 
+      {{!-- Ataque apuntado: Variante B — checkbox alineado con el resto de
+            filas; la zona aparece como sub-fila indentada (border-left)
+            cuando se activa. Cada opción muestra "Zona −penalty" leído
+            del helper. Si la maniobra preselecciona la zona, ambos
+            controles quedan disabled. --}}
+      <div class='columns aim-row'>
+        {{> "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
+            title=(localize 'macros.combat.dialog.aimed.title')
+            inputType="checkbox"
+            inputName="attacker.combat.aimed"
+            inputValue=(is 'eq' this.attacker.combat.aimed true) }}
+      </div>
+      {{#if this.attacker.combat.aimed}}
+        <div class='columns aim-zone-row'>
+          <label class='aim-zone-row__label'>{{localize 'macros.combat.dialog.aimed.zone'}}</label>
+          <select name='attacker.combat.aimedZone' class='input aim-zone-row__select' {{#if this.maneuver}}disabled{{/if}}>
+            {{#each (aimedZonesWithPenalty) as |z|}}
+              <option value='{{z.id}}' {{#if (is 'eq' ../this.attacker.combat.aimedZone z.id)}}selected{{/if}}>
+                {{z.label}} {{z.penaltyLabel}}
+              </option>
+            {{/each}}
+          </select>
+        </div>
+      {{/if}}
+
       {{!-- {{#if this.ui.hasFatiguePoints}}
         {{#> 'systems/animabf/templates/common/ui/custom-select.hbs'
             title=(localize 'macros.combat.dialog.fatigue.title')

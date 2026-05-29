@@ -1016,5 +1016,7 @@
   "anima.combat.aimedZone.knee": "Rodilla",
   "anima.combat.aimedZone.abdomen": "Abdomen",
   "anima.combat.aimedZone.torso": "Torso",
-  "anima.ui.effects.effectsList.clearAll": "Limpiar todo"
+  "anima.ui.effects.effectsList.clearAll": "Limpiar todo",
+  "macros.combat.dialog.aimed.title": "Ataque apuntado",
+  "macros.combat.dialog.aimed.zone": "Zona"
 }
