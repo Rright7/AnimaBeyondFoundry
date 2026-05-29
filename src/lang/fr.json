@@ -688,6 +688,7 @@
   "macros.combat.dialog.defender.title": "Défenseur",
   "macros.combat.dialog.defenderCustomModifier.title": "Modificateur classique du Défenseur",
   "macros.combat.dialog.defending.defend.title": "Défense",
+  "macros.combat.dialog.resistTheHit.title": "Encaisser le coup",
   "macros.combat.dialog.defending.title": "Se défendre de ",
   "macros.combat.dialog.defense.title": "Défense",
   "macros.combat.dialog.defenseButton.title": "Envoyer la défense",

@@ -829,6 +829,7 @@
   "macros.combat.dialog.showResultsButton.title": "Enviar al chat los resultados",
   "macros.combat.dialog.showRoll.title": "Mostrar tirada",
   "macros.combat.dialog.combat.accumulateDefenses.title": "Acumular defensa",
+  "macros.combat.dialog.resistTheHit.title": "Resistir el golpe",
   "macros.combat.dialog.surprised.title": "Sorprendido",
   "macros.combat.dialog.spell.title": "Hechizo",
   "macros.combat.dialog.mysticShield.title": "Escudo místico",

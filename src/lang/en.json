@@ -827,6 +827,7 @@
   "macros.combat.dialog.showResultsButton.title": "Send to chat the results",
   "macros.combat.dialog.showRoll.title": "Show roll",
   "macros.combat.dialog.combat.accumulateDefenses.title": "Accumulate defense",
+  "macros.combat.dialog.resistTheHit.title": "Resist the hit",
   "macros.combat.dialog.surprised.title": "Surprised",
   "macros.combat.dialog.spell.title": "Spell",
   "macros.combat.dialog.mysticShield.title": "Mystic shield",
