@@ -51,6 +51,15 @@ export class ABFAttackData {
     // attack was launched as a maneuver from the actor sheet).
     this.maneuverSlug = String(p.maneuverSlug ?? '');
     this.maneuverItemName = String(p.maneuverItemName ?? '');
+    // When the maneuver is one that allows the attacker to opt for
+    // damage (Derribo, Presa, Inutilizar, Inconsciencia), this flag
+    // mirrors the player's "Causar daño" checkbox. False by default RAW.
+    this.causesDamage = !!p.causesDamage;
+    // Set true when the maneuver was launched without an equipped
+    // weapon (or with an unarmed weapon). Persisted so post-combat
+    // resolvers can decide e.g. whether the resulting Presa allows
+    // Aplastar (RAW: solo si la Presa fue sin armas).
+    this.maneuverWasUnarmed = !!p.maneuverWasUnarmed;
 
     // Defense tracking targets
     // Each target: {actorUuid, tokenUuid?, state, rolledBy?, defenseResult?, updatedAt?, label?, auto?}
@@ -326,6 +335,16 @@ export class ABFAttackDataBuilder {
 
   maneuverItemName(name) {
     this._p.maneuverItemName = String(name ?? '');
+    return this;
+  }
+
+  causesDamage(b = true) {
+    this._p.causesDamage = !!b;
+    return this;
+  }
+
+  maneuverWasUnarmed(b = true) {
+    this._p.maneuverWasUnarmed = !!b;
     return this;
   }
 

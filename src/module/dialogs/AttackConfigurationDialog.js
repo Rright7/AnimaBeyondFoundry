@@ -1,7 +1,7 @@
 import { Templates } from '../utils/constants';
 import { ABFConfig } from '../ABFConfig';
 import { getAimedPenalty } from '../combat/criticalTables.js';
-import { applyPreciseDiscount } from '../combat/weaponProperties.js';
+import { composeAimedPenalty } from '../equipment/qualities/composeWeaponEffects.js';
 import { ABFAttackData } from '../combat/ABFAttackData';
 import { getSnapshotTargets } from '../actor/utils/getSnapshotTargets.js';
 ///dialogs/AttackConfigurationDialog.js
@@ -16,7 +16,7 @@ export class AttackConfigurationDialog extends FormApplication {
     this.render(true);
   }
 
-  static _buildInitialData({ attacker, weaponId, weapon, options = {}, targets, maneuverSlug, maneuverItemName, maneuverPenalty, aimed, aimedZone }) {
+  static _buildInitialData({ attacker, weaponId, weapon, options = {}, targets, maneuverSlug, maneuverItemName, maneuverPenalty, maneuverWasUnarmed, aimed, aimedZone }) {
     if (!attacker || !attacker.actor) {
       ui.notifications?.error('AttackConfigurationDialog: attacker is required');
       return { allowed: false };
@@ -66,17 +66,28 @@ export class AttackConfigurationDialog extends FormApplication {
           // dialog pre-aimed, these come pre-filled from the `aim` block and
           // the UI shows them locked.
           aimed: !!aimed,
-          aimedZone: String(aimedZone ?? '')
+          aimedZone: String(aimedZone ?? ''),
+          // For maneuvers with damageAllowed=true, the attacker decides
+          // whether to inflict damage. OFF by default per RAW. The
+          // checkbox is only shown in the dialog when the maneuver
+          // supports it.
+          causesDamage: false
         },
         distance: { value: 0, enable: false, check: false }
       },
       targets: Array.isArray(targets) && targets.length ? targets : fallbackSnapshot,
       maneuver: maneuverSlug
-        ? {
-            slug: maneuverSlug,
-            itemName: maneuverItemName ?? maneuverSlug,
-            penalty: Number(maneuverPenalty ?? 0)
-          }
+        ? (() => {
+            const def = game.animabf?.maneuvers?.get?.(maneuverSlug);
+            return {
+              slug: maneuverSlug,
+              itemName: maneuverItemName ?? maneuverSlug,
+              penalty: Number(maneuverPenalty ?? 0),
+              wasUnarmed: !!maneuverWasUnarmed,
+              damageAllowed: !!def?.damageAllowed,
+              damageHalvedIfApplied: !!def?.damageHalvedIfApplied
+            };
+          })()
         : null,
       aim: aimed
         ? { active: true, zone: String(aimedZone ?? '') }
@@ -179,17 +190,25 @@ export class AttackConfigurationDialog extends FormApplication {
       // chosen zone. Maneuvers that preload aimed pass the penalty through
       // `maneuverPenalty`, so for those we skip this branch (otherwise we
       // would double-count).
+      //
+      // The weapon's qualities can modify the penalty (e.g. Precisa halves
+      // it for melee). The registry composer runs every applicable hook
+      // and reports which qualities took effect so chat can show them.
       let aimedPenalty = 0;
-      let aimedPreciseApplied = false;
+      let aimedAppliedBy = [];
       if (combat.aimed && combat.aimedZone && !this.modalData.maneuver?.slug) {
-        aimedPenalty = Number(getAimedPenalty(combat.aimedZone) ?? 0);
-        // Precisa (melee only): the aimed penalty is halved. All Tabla 45
-        // values are even multiples of 10, so the halved result is always
-        // a clean multiple of 5.
-        const discounted = applyPreciseDiscount(aimedPenalty, weapon);
-        aimedPenalty = discounted.penalty;
-        aimedPreciseApplied = discounted.applied;
+        const rawAimed = Number(getAimedPenalty(combat.aimedZone) ?? 0);
+        const composed = composeAimedPenalty(rawAimed, {
+          weapon,
+          actor,
+          aimedZone: combat.aimedZone
+        });
+        aimedPenalty = composed.penalty;
+        aimedAppliedBy = composed.appliedBy;
       }
+      // Kept as a boolean for the chat-flavor breakdown below; will be
+      // generalized once more qualities feed into appliedBy.
+      const aimedPreciseApplied = aimedAppliedBy.includes('precise');
 
       // Crítico secundario: -10 when the player picks the weapon's secondary
       // critic instead of the primary one.
@@ -273,6 +292,8 @@ export class AttackConfigurationDialog extends FormApplication {
         .weaponId(weapon.id)
         .maneuverSlug(this.modalData.maneuver?.slug ?? '')
         .maneuverItemName(this.modalData.maneuver?.itemName ?? '')
+        .maneuverWasUnarmed(!!this.modalData.maneuver?.wasUnarmed)
+        .causesDamage(!!combat.causesDamage)
         .aimed(!!combat.aimed)
         .aimedWhere(combat.aimedZone || '')
         .targets(this.modalData.targets ?? [])

@@ -38,22 +38,56 @@ export function computeCombatResult(attackData, defenseData) {
   const rawBonus = hasCounterAttack ? -difference * counterAttackMultiplier : 0;
   const counterAttackValue = Math.floor(rawBonus / 5) * 5;
 
-  const baseDamage = getFinalBaseDamage(attackData, defenseData);
+  let baseDamage = getFinalBaseDamage(attackData, defenseData);
   let finalArmor = getFinalArmor(attackData, defenseData);
 
-  // Combat maneuver: if the maneuver definition forces TA to 0 (Presa, Derribo,
-  // Desarme, ...), ignore the defender's armor for the damage percentage
-  // calculation. Read the slug attached to the attackData by
-  // AttackConfigurationDialog when the attack was launched as a maneuver.
+  // Combat maneuver: three RAW interactions with damage and armor:
+  //
+  // 1. Maneuver but no damage opted (causesDamage=false):
+  //    - forceTAZero (Derribo, Presa, Desarme, ...) applies → TA = 0.
+  //    - finalDamage is forced to 0 below (the maneuver passes through
+  //      armor but does no harm).
+  //
+  // 2. Maneuver with damage opted (causesDamage=true) and
+  //    damageHalvedIfApplied=true (Derribo, Presa, Inutilizar,
+  //    Inconsciencia):
+  //    - baseDamage /= 2 and TA applies NORMALLY (forceTAZero ignored).
+  //    - RAW: "el atacante puede causar daño si lo desea, pero queda
+  //      reducido a la mitad y sí se aplica la armadura del defensor".
+  //
+  // 3. Maneuver with damage opted but damageHalvedIfApplied=false:
+  //    - Damage and TA computed normally (no special interaction).
   const maneuverSlug = attackData.maneuverSlug || '';
+  let suppressDamage = false;
+  let damageHalvedApplied = false;
   if (maneuverSlug) {
     const def = game.animabf?.maneuvers?.get?.(maneuverSlug);
-    if (def?.forceTAZero) finalArmor = 0;
+    const causesDamage = !!attackData.causesDamage;
+    if (def) {
+      if (def.damageAllowed && !causesDamage) {
+        // Path 1: maneuver without damage — armor bypass + 0 damage.
+        if (def.forceTAZero) finalArmor = 0;
+        suppressDamage = true;
+      } else if (
+        def.damageAllowed &&
+        causesDamage &&
+        def.damageHalvedIfApplied
+      ) {
+        // Path 2: damage with halved base and normal TA.
+        baseDamage = Math.floor(baseDamage / 2);
+        damageHalvedApplied = true;
+      } else if (def.forceTAZero && !def.damageAllowed) {
+        // Maneuvers like Engatillar that never deal damage but still
+        // ignore TA when checking thresholds.
+        finalArmor = 0;
+      }
+    }
   }
 
   const roundedDifference = Math.floor(difference / 10) * 10;
   const damagePercentage = Math.max(0, roundedDifference - finalArmor * 10 - 20);
-  const finalDamage = (baseDamage * damagePercentage) / 100;
+  let finalDamage = (baseDamage * damagePercentage) / 100;
+  if (suppressDamage) finalDamage = 0;
 
   // Apply supernatural shield wear centrally (works from any combat resolution)
   tryApplySupernaturalShieldWear(defenderActor, attackData, defenseData, difference);

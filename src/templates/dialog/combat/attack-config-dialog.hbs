@@ -25,7 +25,7 @@
         <div class='columns aim-zone-row'>
           <label class='aim-zone-row__label'>{{localize 'macros.combat.dialog.aimed.zone'}}</label>
           <select name='attacker.combat.aimedZone' class='input aim-zone-row__select' {{#if this.maneuver}}disabled{{/if}}>
-            {{#each (aimedZonesWithPenalty) as |z|}}
+            {{#each (aimedZonesWithPenalty this.attacker.combat.weapon) as |z|}}
               <option value='{{z.id}}' {{#if (is 'eq' ../this.attacker.combat.aimedZone z.id)}}selected{{/if}}>
                 {{z.label}} {{z.penaltyLabel}}
               </option>
@@ -111,6 +111,21 @@
             inputName="attacker.combat.automaticCrit"
             inputValue=(is 'eq' this.attacker.combat.automaticCrit true) }}
       </div></div>
+
+      {{!-- Causar daño: only shown when the active maneuver permits the
+            attacker to opt for damage (Derribo, Presa, Inutilizar,
+            Inconsciencia). OFF by default per RAW: the attacker
+            explicitly chooses to deal damage; if marked, the base
+            damage is halved and the defender's armor applies normally. --}}
+      {{#if this.maneuver.damageAllowed}}
+        <div class='columns'><div>
+          {{> "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
+              title=(localize 'macros.combat.dialog.causesDamage.title')
+              inputType="checkbox"
+              inputName="attacker.combat.causesDamage"
+              inputValue=(is 'eq' this.attacker.combat.causesDamage true) }}
+        </div></div>
+      {{/if}}
 
       {{!-- {{#if this.attacker.combat.projectile.value}}
 
