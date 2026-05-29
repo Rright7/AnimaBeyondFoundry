@@ -1,6 +1,6 @@
 {
   "folder": "Xnc7DkNi5GnpMsWV",
-  "name": "Parálisis total",
+  "name": "Parálisis completa",
   "type": "effect",
   "img": "icons/svg/item-bag.svg",
   "system": {
@@ -173,7 +173,7 @@
       "_key": "!items.effects!2CP4vc8klj56BKEw.YuVy7N6auJhBK7Qq"
     },
     {
-      "name": "Parálisis total",
+      "name": "Parálisis completa",
       "disabled": true,
       "changes": [
         {
