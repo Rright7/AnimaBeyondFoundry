@@ -253,7 +253,8 @@
         "weapons": [],
         "armors": [],
         "supernaturalShields": [],
-        "damageReduction": { "__type": "{\"type\":\"NumericalValue\"}" }
+        "damageReduction": { "__type": "{\"type\":\"NumericalValue\"}" },
+        "mounted": { "value": false }
       },
       "mystic": {
         "act": {

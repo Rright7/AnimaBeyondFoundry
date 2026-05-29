@@ -14,6 +14,7 @@ import { mutatePerceptionPenalty } from './calculations/actor/modifiers/mutatePe
 import { mutateAllActionsModifier } from './calculations/actor/modifiers/mutateAllActionsModifier';
 import { mutateSecondariesData } from './calculations/actor/secondaries/mutateSecondariesData';
 import { mutateCombatData } from './calculations/actor/combat/mutateCombatData';
+import { mutateMounted } from './calculations/actor/combat/mutateMounted';
 import { mutateMovementType, mutateMovementDistances } from './calculations/actor/general/mutateMovementType';
 import {
   mutateActMain,
@@ -100,6 +101,10 @@ const DERIVED_DATA_FUNCTIONS = [
   //mutateSecondariesData,
   mutateAmmoData,
   mutateWeaponsData,
+  // Mounted: corrects attack/block/dodge finals based on the ride skill
+  // when the actor is flagged as Montado. Declares deps on attack/block/
+  // dodge/ride finals so the flow orders it after those are computed.
+  mutateMounted,
   mutateInitiative,
   // Mystic — ACT before InnateMagic (InnateMagic depends on ACT final)
   mutateActMain,

@@ -28,6 +28,10 @@ export async function toggleStatusManeuver(actor, def, maneuverItem) {
 
   if (existing) {
     await existing.delete();
+    // Some status maneuvers also flip a persistent flag in system data so
+    // a prepareActor derivedFn can react (e.g. Montado, which adjusts
+    // attack/block/dodge by reading the ride skill).
+    await maybeUpdatePersistentFlag(actor, def, false);
     const speaker = ChatMessage.getSpeaker({ actor });
     await ChatMessage.create({
       speaker,
@@ -63,9 +67,36 @@ export async function toggleStatusManeuver(actor, def, maneuverItem) {
 
   await actor.createEmbeddedDocuments('Item', [data]);
 
+  await maybeUpdatePersistentFlag(actor, def, true);
+
   const speaker = ChatMessage.getSpeaker({ actor });
   await ChatMessage.create({
     speaker,
     content: `<p><strong>${actor.name}</strong> está ahora <em>${effectName}</em>.</p>`
   });
 }
+
+/**
+ * Flips a persistent boolean flag in `actor.system` for status maneuvers
+ * whose effects can't be expressed as static AE changes (e.g. Montado,
+ * which derives modifiers from the ride skill value). The mapping from
+ * slug → flag path lives here, narrow on purpose: when a new conditional
+ * status arrives, declare it.
+ */
+async function maybeUpdatePersistentFlag(actor, def, value) {
+  const slug = def?.slug;
+  const path = SLUG_TO_FLAG_PATH[slug];
+  if (!path) return;
+  try {
+    await actor.update({ [path]: !!value });
+  } catch (err) {
+    console.warn(
+      `[ABF] toggleStatusManeuver: failed to update ${path}:`,
+      err
+    );
+  }
+}
+
+const SLUG_TO_FLAG_PATH = {
+  mounted: 'system.combat.mounted.value'
+};

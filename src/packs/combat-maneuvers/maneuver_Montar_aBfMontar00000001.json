@@ -1,0 +1,25 @@
+{
+    "name": "Montar",
+    "type": "combatManeuver",
+    "img": "icons/environment/creatures/horse-white.webp",
+    "system": {
+        "slug": {
+            "value": "mounted"
+        },
+        "description": {
+            "value": "Estado, no acción. Marca al personaje como Montado. Aplica modificadores derivados según el valor de la habilidad de Montar: si es 0 o menos, -20 a ataque y parar; si supera 40, +20 a ataque por posición superior. La esquiva queda limitada por el valor de Montar. Pulsa Ejecutar para activar o desactivar el estado."
+        },
+        "actionType": {
+            "value": "active"
+        },
+        "traits": ["melee"],
+        "visible": false
+    },
+    "effects": [],
+    "ownership": {
+        "default": 0
+    },
+    "flags": {},
+    "_id": "aBfMontar00000001",
+    "_key": "!items!aBfMontar00000001"
+}

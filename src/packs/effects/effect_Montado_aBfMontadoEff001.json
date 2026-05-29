@@ -1,0 +1,37 @@
+{
+  "folder": "3JHGrI3z8yZ7GbSQ",
+  "name": "Montado",
+  "type": "effect",
+  "img": "icons/environment/creatures/horse-white.webp",
+  "system": {
+    "active": false,
+    "category": {
+      "value": "generic"
+    },
+    "modifiers": [],
+    "effectData": {
+      "icon": "icons/environment/creatures/horse-white.webp",
+      "disabled": true,
+      "changes": [],
+      "duration": {
+        "startTime": null,
+        "combat": null,
+        "seconds": null,
+        "rounds": null,
+        "turns": null,
+        "startRound": null,
+        "startTurn": null
+      },
+      "transfer": false,
+      "flags": {}
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "aBfMontadoEff001",
+  "sort": 50000,
+  "_key": "!items!aBfMontadoEff001"
+}
