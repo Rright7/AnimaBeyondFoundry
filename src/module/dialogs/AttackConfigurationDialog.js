@@ -1,5 +1,6 @@
 import { Templates } from '../utils/constants';
 import { ABFConfig } from '../ABFConfig';
+import { getAimedPenalty } from '../combat/criticalTables.js';
 import { ABFAttackData } from '../combat/ABFAttackData';
 import { getSnapshotTargets } from '../actor/utils/getSnapshotTargets.js';
 ///dialogs/AttackConfigurationDialog.js
@@ -59,7 +60,12 @@ export class AttackConfigurationDialog extends FormApplication {
           projectile: { value: false, type: '' },
           damage: { special: 0, final: 0 },
           critDamageBonus: attackerActor.system.general.modifiers.critDamageBonus?.final?.value ?? 0,
-          automaticCrit: !!(attackerActor.system.general.modifiers.automaticCrit?.value)
+          automaticCrit: !!(attackerActor.system.general.modifiers.automaticCrit?.value),
+          // Aimed attack toggle + chosen zone. When a maneuver opens the
+          // dialog pre-aimed, these come pre-filled from the `aim` block and
+          // the UI shows them locked.
+          aimed: !!aimed,
+          aimedZone: String(aimedZone ?? '')
         },
         distance: { value: 0, enable: false, check: false }
       },
@@ -167,7 +173,36 @@ export class AttackConfigurationDialog extends FormApplication {
 
       const baseAttack = Number(weapon.system.attack?.final?.value ?? 0);
       const maneuverPenalty = Number(this.modalData.maneuver?.penalty ?? 0);
-      const mod = Number(combat.modifier ?? 0) + maneuverPenalty;
+
+      // Ataque apuntado: when active, apply the Tabla 45 penalty for the
+      // chosen zone. Maneuvers that preload aimed pass the penalty through
+      // `maneuverPenalty`, so for those we skip this branch (otherwise we
+      // would double-count).
+      let aimedPenalty = 0;
+      if (combat.aimed && combat.aimedZone && !this.modalData.maneuver?.slug) {
+        aimedPenalty = Number(getAimedPenalty(combat.aimedZone) ?? 0);
+      }
+
+      // Crítico secundario: -10 when the player picks the weapon's secondary
+      // critic instead of the primary one.
+      let secondaryCritPenalty = 0;
+      const primaryCritic = weapon.system?.critic?.primary?.value;
+      const secondaryCritic = weapon.system?.critic?.secondary?.value;
+      if (
+        combat.criticSelected &&
+        secondaryCritic &&
+        secondaryCritic !== '-' &&
+        combat.criticSelected === secondaryCritic &&
+        combat.criticSelected !== primaryCritic
+      ) {
+        secondaryCritPenalty = -10;
+      }
+
+      const mod =
+        Number(combat.modifier ?? 0)
+        + maneuverPenalty
+        + aimedPenalty
+        + secondaryCritPenalty;
       const die =
         actor.system.combat.attack.base.value >= 200
           ? actor.system.general.diceSettings.abilityMasteryDie.value
@@ -186,9 +221,31 @@ export class AttackConfigurationDialog extends FormApplication {
         ? { ...ChatMessage.getSpeaker({ token: tokenForSpeaker }), alias: tokenName }
         : ChatMessage.getSpeaker({ actor });
 
+      // Build a short breakdown of the penalties this dialog applied so the
+      // chat message shows where each modifier came from (similar to the AE
+      // breakdown line in the actor flow).
+      const dialogContribs = [];
+      if (maneuverPenalty !== 0 && this.modalData.maneuver?.itemName) {
+        const sign = maneuverPenalty > 0 ? '+' : '';
+        dialogContribs.push(`${this.modalData.maneuver.itemName} (${sign}${maneuverPenalty})`);
+      }
+      if (aimedPenalty !== 0 && combat.aimedZone) {
+        const sign = aimedPenalty > 0 ? '+' : '';
+        const zoneKey = `anima.combat.aimedZone.${combat.aimedZone}`;
+        const zoneLabel = game.i18n.has(zoneKey) ? game.i18n.localize(zoneKey) : combat.aimedZone;
+        dialogContribs.push(`Apuntado: ${zoneLabel} (${sign}${aimedPenalty})`);
+      }
+      if (secondaryCritPenalty !== 0) {
+        dialogContribs.push(`Crit. secundario (${secondaryCritPenalty})`);
+      }
+      const flavorParts = ['Rolling attack'];
+      if (dialogContribs.length) {
+        flavorParts.push(`Mods: ${dialogContribs.join(', ')}`);
+      }
+
       await roll.toMessage({
         speaker,
-        flavor: 'Rolling attack'
+        flavor: flavorParts.join(' — ')
       });
 
       const attackData = ABFAttackData.builder()
@@ -207,8 +264,8 @@ export class AttackConfigurationDialog extends FormApplication {
         .weaponId(weapon.id)
         .maneuverSlug(this.modalData.maneuver?.slug ?? '')
         .maneuverItemName(this.modalData.maneuver?.itemName ?? '')
-        .aimed(this.modalData.aim?.active === true)
-        .aimedWhere(this.modalData.aim?.zone ?? '')
+        .aimed(!!combat.aimed)
+        .aimedWhere(combat.aimedZone || '')
         .targets(this.modalData.targets ?? [])
         .build();
 
