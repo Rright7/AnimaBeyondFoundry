@@ -138,6 +138,27 @@ Hooks.once('ready', async () => {
     console.warn('[ABF] maneuvers API not initialized:', e);
   }
 
+  // --- Equipment qualities API ---
+  // Auto-registers Precisa / Compleja / Lanzable / Presa / Traba el arma /
+  // Arma a dos manos / Arma a una o dos manos via the index module.
+  try {
+    const { equipmentQualityRegistry } = await import(
+      './module/equipment/qualities/index.js'
+    );
+    const composeMod = await import(
+      './module/equipment/qualities/composeWeaponEffects.js'
+    );
+    game.animabf.equipmentQualities = {
+      get: slug => equipmentQualityRegistry.get(slug),
+      all: () => equipmentQualityRegistry.all(),
+      allForSlot: slot => equipmentQualityRegistry.allForSlot(slot),
+      composeAimedPenalty: composeMod.composeAimedPenalty,
+      composeManeuverPenalty: composeMod.composeManeuverPenalty
+    };
+  } catch (e) {
+    console.warn('[ABF] equipment qualities API not initialized:', e);
+  }
+
   game.animabf.macros ??= {};
 
   game.animabf.macros.execute = async ({ id, actorUuid, itemUuid }) => {

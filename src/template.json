@@ -400,7 +400,8 @@
       "technique",
       "weapon",
       "effect",
-      "combatManeuver"
+      "combatManeuver",
+      "weaponQuality"
     ],
     "ammo": {
       "amount": { "value": 0 },
@@ -605,6 +606,7 @@
       "isShield": { "value": false },
       "ignoreArmor": { "value": false },
       "special": { "value": "" },
+      "qualities": { "value": [] },
       "integrity": {
         "base": { "value": 0 },
         "final": { "value": 0 },
@@ -684,6 +686,12 @@
       "traits": [],
       "visible": false,
       "selectedAimedZone": { "value": "" }
+    },
+    "weaponQuality": {
+      "slug": { "value": "" },
+      "description": { "value": "" },
+      "appliesTo": { "value": ["weapon"] },
+      "visible": false
     }
 
   }

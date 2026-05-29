@@ -36,7 +36,8 @@ export const ABFItems = /** @type {const} */ ({
   SUPERNATURAL_SHIELD: 'supernaturalShield',
   INVENTORY_ITEM: 'inventoryItem',
   EFFECT: 'effect',
-  COMBAT_MANEUVER: 'combatManeuver'
+  COMBAT_MANEUVER: 'combatManeuver',
+  WEAPON_QUALITY: 'weaponQuality'
 });
 
 /** @typedef {ValueOf<typeof ABFItems>} ABFItemsEnum */
