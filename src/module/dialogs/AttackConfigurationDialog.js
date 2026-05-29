@@ -1,6 +1,7 @@
 import { Templates } from '../utils/constants';
 import { ABFConfig } from '../ABFConfig';
 import { getAimedPenalty } from '../combat/criticalTables.js';
+import { applyPreciseDiscount } from '../combat/weaponProperties.js';
 import { ABFAttackData } from '../combat/ABFAttackData';
 import { getSnapshotTargets } from '../actor/utils/getSnapshotTargets.js';
 ///dialogs/AttackConfigurationDialog.js
@@ -179,8 +180,15 @@ export class AttackConfigurationDialog extends FormApplication {
       // `maneuverPenalty`, so for those we skip this branch (otherwise we
       // would double-count).
       let aimedPenalty = 0;
+      let aimedPreciseApplied = false;
       if (combat.aimed && combat.aimedZone && !this.modalData.maneuver?.slug) {
         aimedPenalty = Number(getAimedPenalty(combat.aimedZone) ?? 0);
+        // Precisa (melee only): the aimed penalty is halved. All Tabla 45
+        // values are even multiples of 10, so the halved result is always
+        // a clean multiple of 5.
+        const discounted = applyPreciseDiscount(aimedPenalty, weapon);
+        aimedPenalty = discounted.penalty;
+        aimedPreciseApplied = discounted.applied;
       }
 
       // Crítico secundario: -10 when the player picks the weapon's secondary
@@ -233,7 +241,8 @@ export class AttackConfigurationDialog extends FormApplication {
         const sign = aimedPenalty > 0 ? '+' : '';
         const zoneKey = `anima.combat.aimedZone.${combat.aimedZone}`;
         const zoneLabel = game.i18n.has(zoneKey) ? game.i18n.localize(zoneKey) : combat.aimedZone;
-        dialogContribs.push(`Apuntado: ${zoneLabel} (${sign}${aimedPenalty})`);
+        const precisaTag = aimedPreciseApplied ? ' [Precisa]' : '';
+        dialogContribs.push(`Apuntado: ${zoneLabel} (${sign}${aimedPenalty})${precisaTag}`);
       }
       if (secondaryCritPenalty !== 0) {
         dialogContribs.push(`Crit. secundario (${secondaryCritPenalty})`);
