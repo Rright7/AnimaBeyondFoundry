@@ -5,6 +5,7 @@ import { presa } from './definitions/presa.js';
 import { engatillar } from './definitions/engatillar.js';
 import { inutilizar } from './definitions/inutilizar.js';
 import { inconsciencia } from './definitions/inconsciencia.js';
+import { carga } from './definitions/carga.js';
 
 maneuverRegistry.register(derribo);
 maneuverRegistry.register(desarme);
@@ -12,5 +13,6 @@ maneuverRegistry.register(presa);
 maneuverRegistry.register(engatillar);
 maneuverRegistry.register(inutilizar);
 maneuverRegistry.register(inconsciencia);
+maneuverRegistry.register(carga);
 
 export { maneuverRegistry };

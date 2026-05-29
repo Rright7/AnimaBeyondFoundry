@@ -996,6 +996,8 @@
   "anima.ui.combat.combatManeuvers.opposedCheck.defenderWins": "Resiste el defensor",
   "anima.maneuvers.engatillar.name": "Engatillar",
   "anima.maneuvers.engatillar.description": "Penalizador -100 al ataque, sí aplica TA. No causa daño. El defensor queda en estado Amenazado. Sin control enfrentado.",
+  "anima.maneuvers.charging.name": "Cargar",
+  "anima.maneuvers.charging.description": "Estado: +10 Ataque, -10 Parada, -20 Esquiva. Declarar antes de iniciativa. Pulsa Ejecutar para activar o desactivar el estado Cargando.",
   "anima.maneuvers.inutilizar.name": "Inutilizar",
   "anima.maneuvers.inutilizar.description": "Golpe apuntado a brazo o pierna (-20). Daño/2, crítico cuenta el daño pleno. La extremidad cuenta como punto débil.",
   "anima.maneuvers.inconsciencia.name": "Inconsciencia",

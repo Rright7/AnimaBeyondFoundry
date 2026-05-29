@@ -994,6 +994,8 @@
   "anima.ui.combat.combatManeuvers.opposedCheck.defenderWins": "Defender resists",
   "anima.maneuvers.engatillar.name": "Threaten",
   "anima.maneuvers.engatillar.description": "-100 attack, armor applies. No damage. Defender becomes Threatened. No opposed check.",
+  "anima.maneuvers.charging.name": "Charge",
+  "anima.maneuvers.charging.description": "Status: +10 Attack, -10 Block, -20 Dodge. Declare before initiative. Press Execute to toggle the Charging state.",
   "anima.maneuvers.inutilizar.name": "Disable",
   "anima.maneuvers.inutilizar.description": "Aimed at arm or leg (-20). Damage/2, crit uses full damage. Limb counts as weak point.",
   "anima.maneuvers.inconsciencia.name": "Knock unconscious",

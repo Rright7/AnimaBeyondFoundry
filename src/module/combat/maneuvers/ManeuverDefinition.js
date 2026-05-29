@@ -111,6 +111,13 @@ export class ManeuverDefinition {
     this.requiresImpactCritic = !!data.requiresImpactCritic;
     this.nonImpactCriticExtraPenalty = Number(data.nonImpactCriticExtraPenalty ?? 0);
 
+    // Status-toggle maneuvers (e.g. Cargar): do not open the attack dialog
+    // when executed. Instead, the engine applies the named Active Effect to
+    // the actor if absent, or removes it if already present. The effect
+    // itself is what carries the +/- combat modifiers RAW.
+    this.isStatusToggle = !!data.isStatusToggle;
+    this.statusEffectName = String(data.statusEffectName ?? '');
+
     this.weaponRestrictions = data.weaponRestrictions ?? [];
 
     this.resolveEffects = typeof data.resolveEffects === 'function'

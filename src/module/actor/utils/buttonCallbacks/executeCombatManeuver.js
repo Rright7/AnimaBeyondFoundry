@@ -1,6 +1,8 @@
 import { AttackConfigurationDialog } from '../../../dialogs/AttackConfigurationDialog.js';
 import { getSnapshotTargets } from '../getSnapshotTargets.js';
 import { getAimedPenalty } from '../../../combat/criticalTables.js';
+import { toggleStatusManeuver } from '../toggleStatusManeuver.js';
+import { applyPreciseDiscount } from '../../../combat/weaponProperties.js';
 
 /**
  * Launch a combat maneuver by opening AttackConfigurationDialog with the
@@ -12,6 +14,13 @@ import { getAimedPenalty } from '../../../combat/criticalTables.js';
  * For Inconsciencia: the weapon's critic type is inspected; if it is not
  * impact-type, the extra penalty declared in the ManeuverDefinition is
  * added on top (and the user is warned).
+ *
+ * For status-toggle maneuvers (e.g. Cargar) we short-circuit before the
+ * attack dialog and just toggle the associated Active Effect on the actor.
+ *
+ * Precise weapons (melee): the aimed-attack penalty and the Engatillar
+ * penalty are halved automatically when the equipped weapon is Precise
+ * and not ranged.
  *
  * Validation: maneuver Item + slug + registry definition; attacker token on
  * scene; at least one target selected. Weapon restrictions are NOT enforced
@@ -36,6 +45,13 @@ export function executeCombatManeuver(sheet, e) {
     return ui.notifications.warn(
       `Slug "${slug}" no encontrado en el registry de maniobras.`
     );
+  }
+
+  // Status-toggle maneuvers (e.g. Cargar): not an attack — toggles a named
+  // Active Effect on the actor and posts a short chat note. Does not
+  // require selected targets nor an attacker token in the scene.
+  if (def.isStatusToggle) {
+    return toggleStatusManeuver(sheet.actor, def, item);
   }
 
   const attackerToken = sheet.token ?? sheet.actor?.getActiveTokens?.()[0];
@@ -89,6 +105,23 @@ export function executeCombatManeuver(sheet, e) {
           `${item.name} con arma no-contundente: ${extra} adicional (total ${maneuverPenalty}).`
         );
       }
+    }
+  }
+
+  // Precisa (melee only): halves the maneuver penalty for both
+  //   - aimed-attack maneuvers (Inutilizar, Inconsciencia), where the
+  //     penalty comes from Tabla 45, AND
+  //   - Engatillar, called out explicitly by RAW.
+  // Other opposed-check maneuvers (Derribo, Desarme, Presa) are NOT aimed
+  // attacks and are NOT mentioned by the rule, so we skip them.
+  const isEngatillar = slug === 'engatillar';
+  if ((aimed || isEngatillar) && equipped) {
+    const discounted = applyPreciseDiscount(maneuverPenalty, equipped);
+    if (discounted.applied) {
+      ui.notifications.info(
+        `${item.name} con arma Precisa: penalizador a la mitad (${maneuverPenalty} → ${discounted.penalty}).`
+      );
+      maneuverPenalty = discounted.penalty;
     }
   }
 

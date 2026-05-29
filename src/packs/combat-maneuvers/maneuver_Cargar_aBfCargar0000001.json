@@ -1,0 +1,25 @@
+{
+    "name": "Cargar",
+    "type": "combatManeuver",
+    "img": "icons/svg/wingfoot.svg",
+    "system": {
+        "slug": {
+            "value": "charging"
+        },
+        "description": {
+            "value": "Estado, no acción. Aplica +10 Ataque, -10 Parada, -20 Esquiva mientras dura. Pre-condiciones RAW: estar corriendo hacia el enemigo desde el asalto anterior, declarar antes de la iniciativa, y no estar trabado en combate físico con el objetivo. Como excepción RAW, este asalto NO aplica el penalizador por moverse por encima de 1/4 del Tipo de Movimiento. Pulsa Ejecutar para activar o desactivar el estado Cargando en tu actor."
+        },
+        "actionType": {
+            "value": "active"
+        },
+        "traits": ["melee"],
+        "visible": false
+    },
+    "effects": [],
+    "ownership": {
+        "default": 0
+    },
+    "flags": {},
+    "_id": "aBfCargar0000001",
+    "_key": "!items!aBfCargar0000001"
+}
