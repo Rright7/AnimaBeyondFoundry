@@ -73,6 +73,36 @@ export async function resolveManeuverOpposedCheck(msg) {
     if (ok) appliedNames.push(`<strong>${ef.effectSlug}</strong> → ${target.name}`);
   }
 
+  // Relational state for Presa: when the attacker wins, both actors get
+  // bidirectional flags pointing at each other, plus the "was unarmed"
+  // detail required by sub-Presa maneuvers like Aplastar.
+  //
+  // Detection of unarmed: an actor "fought unarmed" if the equipped weapon
+  // is missing or its system marks it as unarmed=true. This is conservative
+  // enough — false positives are limited to e.g. someone presando con
+  // garras innatas que no estén modeladas con allowsPresa, which is
+  // acceptable: in those cases Aplastar makes RAW sense anyway.
+  if (
+    flags.maneuverSlug === 'presa' &&
+    attackerWins &&
+    attackerActor &&
+    defenderActor
+  ) {
+    try {
+      const equipped = attackerActor.system?.combat?.weapons?.find(
+        w => w?.system?.equipped?.value
+      );
+      const wasUnarmed =
+        flags.maneuverWasUnarmed ?? (!equipped || !!equipped?.system?.unarmed?.value);
+
+      await attackerActor.setFlag(SYSTEM_ID, 'grappling', defenderActor.id);
+      await defenderActor.setFlag(SYSTEM_ID, 'grappledBy', attackerActor.id);
+      await defenderActor.setFlag(SYSTEM_ID, 'grappleWasUnarmed', !!wasUnarmed);
+    } catch (err) {
+      console.warn('[ABF] failed to set grapple relational flags:', err);
+    }
+  }
+
   const effectsAppliedText = appliedNames.length
     ? `Aplicado: ${appliedNames.join(' · ')}`
     : '';

@@ -38,7 +38,10 @@ export async function postManeuverOpposedCheck({
   defenderActor,
   attackerTokenUuid = null,
   defenderTokenUuid = null,
-  damagePercent = 100
+  damagePercent = 100,
+  // Persisted so post-resolution hooks can decide e.g. whether the
+  // resulting Presa allows Aplastar (RAW: solo si fue sin armas).
+  maneuverWasUnarmed = false
 }) {
   if (!attackerActor || !defenderActor) {
     ui.notifications?.error('postManeuverOpposedCheck: actores faltan.');
@@ -58,6 +61,7 @@ export async function postManeuverOpposedCheck({
     defenderTokenUuid,
     defenderIsQuadruped: false,
     damagePercent: Number(damagePercent) || 100,
+    maneuverWasUnarmed: !!maneuverWasUnarmed,
     attackerRoll: null,
     defenderRoll: null,
     resolution: null

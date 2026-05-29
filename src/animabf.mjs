@@ -129,11 +129,15 @@ Hooks.once('ready', async () => {
     const { executeManeuverPostCombat } = await import(
       './module/combat/maneuvers/executeManeuver.js'
     );
+    const { registerGrappleRelationalSync } = await import(
+      './module/combat/maneuvers/grappleRelationalSync.js'
+    );
     game.animabf.maneuvers = {
       get: slug => maneuverRegistry.get(slug),
       all: () => maneuverRegistry.all(),
       executePostCombat: executeManeuverPostCombat
     };
+    registerGrappleRelationalSync();
   } catch (e) {
     console.warn('[ABF] maneuvers API not initialized:', e);
   }

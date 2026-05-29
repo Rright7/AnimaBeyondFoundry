@@ -462,12 +462,16 @@ export class DefenseConfigurationDialog extends FormApplication {
             kind: 'combatResult',
             result: { ...combatResult, damageFinal },
             // Persist the aimed flag so the critical resolver can skip the
-            // location roll when the attack was aimed.
+            // location roll when the attack was aimed. Also persist
+            // maneuverWasUnarmed so the relational-grapple flag setter
+            // (in resolveManeuverOpposedCheck) can decide whether the
+            // resulting Presa allows Aplastar later.
             attackData: {
               attackerId: attackData?.attackerId ?? '',
               aimed: !!attackData?.aimed,
               aimedWhere: attackData?.aimedWhere ?? '',
-              maneuverSlug: attackData?.maneuverSlug ?? ''
+              maneuverSlug: attackData?.maneuverSlug ?? '',
+              maneuverWasUnarmed: !!attackData?.maneuverWasUnarmed
             },
             attacker: {
               actorId: attackData?.attackerId ?? ''
