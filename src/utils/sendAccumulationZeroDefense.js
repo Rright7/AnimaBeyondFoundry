@@ -85,7 +85,8 @@ export async function sendAccumulationZeroDefense({
           attackerId: attackData?.attackerId ?? '',
           aimed: !!attackData?.aimed,
           aimedWhere: attackData?.aimedWhere ?? '',
-          maneuverSlug: attackData?.maneuverSlug ?? ''
+          maneuverSlug: attackData?.maneuverSlug ?? '',
+          maneuverWasUnarmed: !!attackData?.maneuverWasUnarmed
         },
         attacker: { actorId: attackData?.attackerId ?? '' },
         defender: { actorId: actor.id, tokenId: defenderToken?.id ?? '' },

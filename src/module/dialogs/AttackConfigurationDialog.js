@@ -303,7 +303,7 @@ export class AttackConfigurationDialog extends FormApplication {
         .weaponId(weapon.id)
         .maneuverSlug(this.modalData.maneuver?.slug ?? '')
         .maneuverItemName(this.modalData.maneuver?.itemName ?? '')
-        .maneuverWasUnarmed(!!this.modalData.maneuver?.wasUnarmed)
+        .maneuverWasUnarmed(!combat.weapon || !!combat.weapon.system?.isUnarmed?.value)
         .causesDamage(!!combat.causesDamage)
         .aimed(!!combat.aimed)
         .aimedWhere(combat.aimedZone || '')

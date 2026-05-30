@@ -49,8 +49,18 @@ export async function resolveManeuverOpposedCheck(msg) {
     return;
   }
 
-  const attackerActor = game.actors?.get?.(flags.attackerId);
-  const defenderActor = game.actors?.get?.(flags.defenderId);
+  // Resolve via the stored token refs first (token uuid or token id) so
+  // unlinked tokens map to their own on-map token actor instead of the base
+  // sidebar actor. Falls back to the actor id for legacy data.
+  const { resolveActorFromRef } = await import(
+    '../../actor/utils/resolveActorForRoll.js'
+  );
+  const attackerActor =
+    resolveActorFromRef(flags.attackerTokenUuid) ??
+    resolveActorFromRef(flags.attackerId);
+  const defenderActor =
+    resolveActorFromRef(flags.defenderTokenUuid) ??
+    resolveActorFromRef(flags.defenderId);
 
   const difference = flags.attackerRoll.total - flags.defenderRoll.total;
   const attackerWins = difference > 0;
@@ -93,18 +103,53 @@ export async function resolveManeuverOpposedCheck(msg) {
         w => w?.system?.equipped?.value
       );
       const wasUnarmed =
-        flags.maneuverWasUnarmed ?? (!equipped || !!equipped?.system?.unarmed?.value);
+        flags.maneuverWasUnarmed ?? (!equipped || !!equipped?.system?.isUnarmed?.value);
 
-      // Relational pointers between the two actors.
-      await attackerActor.setFlag(SYSTEM_ID, 'grappling', defenderActor.id);
-      await defenderActor.setFlag(SYSTEM_ID, 'grappledBy', attackerActor.id);
+      // Build stable token refs (token uuid preferred) for both actors. Storing
+      // a token ref — not a bare actor id — is what makes the grapple point at
+      // the correct on-map token for UNLINKED tokens, where two tokens of the
+      // same base actor share an actor id.
+      const { buildActorRef } = await import(
+        '../../actor/utils/resolveActorForRoll.js'
+      );
+      const attackerRef = buildActorRef({
+        actor: attackerActor,
+        tokenUuid: flags.attackerTokenUuid
+      });
+      const defenderRef = buildActorRef({
+        actor: defenderActor,
+        tokenUuid: flags.defenderTokenUuid
+      });
 
-      // `grappleWasUnarmed` belongs to the ATTACKER: it is the attacker that
-      // either used weapons or not, and buildGrappleOptions reads it from the
-      // attacker to decide self:grapple:unarmed. Writing it always (true OR
-      // false) resets any stale value from a previous grapple, fixing the case
-      // where a weaponed Presa left it false and a later unarmed Presa would
-      // otherwise inherit that.
+      // Relational pointers between the two actors (token refs).
+      await attackerActor.setFlag(SYSTEM_ID, 'grappling', defenderRef);
+      await defenderActor.setFlag(SYSTEM_ID, 'grappledBy', attackerRef);
+
+      // Relational sources (per-defender): "was unarmed" belongs to THIS
+      // attacker->defender pairing, not to the attacker globally. Record it on
+      // the attacker's "Apresando" effect item under system.sources, keyed by
+      // the defender's token ref (upsert), so two attackers / two grapples
+      // never clobber each other. The key matches what buildGrappleOptions
+      // derives for the defender, so the lookup is consistent.
+      const apresando = attackerActor.items?.find(
+        i => i.type === 'effect' && i.name === 'Apresando'
+      );
+      if (apresando) {
+        try {
+          const { upsertGrappleSource } = await import('./grappleSources.js');
+          const next = upsertGrappleSource(
+            apresando.system?.sources,
+            defenderRef,
+            wasUnarmed
+          );
+          await apresando.update({ 'system.sources': next });
+        } catch (e) {
+          console.warn('[ABF] failed to write grapple sources:', e);
+        }
+      }
+
+      // `grappleWasUnarmed` flag: single-target fallback. Written to the
+      // resolved value so it never carries a stale value from a previous grapple.
       await attackerActor.setFlag(SYSTEM_ID, 'grappleWasUnarmed', !!wasUnarmed);
     } catch (err) {
       console.warn('[ABF] failed to set grapple relational flags:', err);

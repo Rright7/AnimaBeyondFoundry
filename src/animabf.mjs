@@ -439,8 +439,14 @@ Hooks.on('updateChatMessage', async (message, _changes) => {
     // Guard against double application: tag the result once and bail next time.
     if (result.unconsciousApplied) return;
 
-    const defenderId = flags.defender?.actorId ?? '';
-    const defenderActor = defenderId ? game.actors?.get?.(defenderId) : null;
+    // Token-aware: prefer the stored token id so the effect lands on the
+    // on-map (possibly unlinked) token actor, not the base sidebar actor.
+    const { resolveActorFromRef } = await import(
+      './module/actor/utils/resolveActorForRoll.js'
+    );
+    const defenderActor =
+      resolveActorFromRef(flags.defender?.tokenId) ??
+      resolveActorFromRef(flags.defender?.actorId);
     if (!defenderActor) return;
 
     const pack = game.packs.get(`${System.id}.effects`);
@@ -475,12 +481,25 @@ Hooks.on('createChatMessage', async message => {
     const flags = message.flags?.[System.id];
     if (!flags) return;
 
-    const post = async (slug, itemName, attackerId, defenderId, damagePercent) => {
+    // refs may be a token uuid, a plain token id, or (legacy) an actor id.
+    // resolveActorFromRef resolves all three, preferring the token so unlinked
+    // tokens map to their own token actor instead of the base sidebar actor.
+    const { resolveActorFromRef } =
+      await import('./module/actor/utils/resolveActorForRoll.js');
+
+    const post = async (
+      slug,
+      itemName,
+      attackerRef,
+      defenderRef,
+      damagePercent,
+      maneuverWasUnarmed = false
+    ) => {
       const def = game.animabf?.maneuvers?.get?.(slug);
       if (!def) return;
       if (damagePercent < (def.damageThresholdPercent ?? 10)) return;
-      const attackerActor = game.actors?.get?.(attackerId);
-      const defenderActor = game.actors?.get?.(defenderId);
+      const attackerActor = resolveActorFromRef(attackerRef);
+      const defenderActor = resolveActorFromRef(defenderRef);
       if (!attackerActor || !defenderActor) return;
 
       // Family A — no opposed check. Apply the maneuver's effects directly.
@@ -497,7 +516,9 @@ Hooks.on('createChatMessage', async message => {
         return;
       }
 
-      // Family default — opposed check between attacker and defender.
+      // Family default — opposed check between attacker and defender. Pass the
+      // token refs through so the resolver (and the relational grapple flags)
+      // keep pointing at the on-map token actors.
       const { postManeuverOpposedCheck } =
         await import('./module/combat/maneuvers/postManeuverOpposedCheck.js');
       await postManeuverOpposedCheck({
@@ -505,38 +526,52 @@ Hooks.on('createChatMessage', async message => {
         maneuverItemName: itemName || slug,
         attackerActor,
         defenderActor,
-        damagePercent
+        attackerTokenUuid: attackerRef,
+        defenderTokenUuid: defenderRef,
+        damagePercent,
+        maneuverWasUnarmed
       });
     };
 
     // Standalone combatResult (single-target DefenseConfigurationDialog).
+    // flags.attacker/defender carry { actorId, tokenId } — prefer the tokenId.
     if (flags.kind === 'combatResult') {
       const result = flags.result ?? {};
       const slug = result.maneuverSlug;
       if (!slug) return;
+      const attackerRef =
+        flags.attacker?.tokenId ||
+        result.attackerId ||
+        flags.attacker?.actorId ||
+        '';
+      const defenderRef = flags.defender?.tokenId || flags.defender?.actorId || '';
+      const wasUnarmed = !!flags.attackData?.maneuverWasUnarmed;
       await post(
         slug,
         result.maneuverItemName,
-        result.attackerId || flags.attacker?.actorId || '',
-        flags.defender?.actorId || '',
-        Number(result.damagePercentage ?? 0)
+        attackerRef,
+        defenderRef,
+        Number(result.damagePercentage ?? 0),
+        wasUnarmed
       );
       return;
     }
 
     // multiDefenseResult (auto-defense). The maneuver flags are copied onto
     // the multiDefenseResult itself by the autoDefend handlers, so we don't
-    // depend on the (sometimes-null) sourceAttackMessageId.
+    // depend on the (sometimes-null) sourceAttackMessageId. Entries carry a
+    // full tokenUuid per defender; the attacker only has an actor id here.
     if (flags.kind === 'multiDefenseResult') {
       const slug = flags.maneuverSlug;
       if (!slug) return;
       const itemName = flags.maneuverItemName || slug;
-      const attackerId = flags.attackerId || '';
+      const attackerRef = flags.attackerId || '';
+      const wasUnarmed = !!flags.maneuverWasUnarmed;
       const entries = flags.entries ?? [];
       for (const entry of entries) {
-        const defenderId = entry.actorId || '';
+        const defenderRef = entry.tokenUuid || entry.actorUuid || entry.actorId || '';
         const dmg = Number(entry.damagePercentage ?? 0);
-        await post(slug, itemName, attackerId, defenderId, dmg);
+        await post(slug, itemName, attackerRef, defenderRef, dmg, wasUnarmed);
       }
     }
   } catch (err) {

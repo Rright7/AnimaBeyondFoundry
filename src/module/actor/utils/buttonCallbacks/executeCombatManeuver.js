@@ -158,7 +158,7 @@ export function executeCombatManeuver(sheet, e) {
   // RAW for some sub-maneuvers (Aplastar) requires that the parent Presa
   // was performed without weapons. Capture this here so the post-combat
   // resolver can persist it as a relational flag on the actors.
-  const wasUnarmed = !equipped || !!equipped.system?.unarmed?.value;
+  const wasUnarmed = !equipped || !!equipped.system?.isUnarmed?.value;
 
   new AttackConfigurationDialog(
     {

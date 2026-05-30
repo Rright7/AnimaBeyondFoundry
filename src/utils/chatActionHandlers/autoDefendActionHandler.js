@@ -84,6 +84,7 @@ export default async function autoDefendActionHandler(message, _html, ds) {
           sourceAttackMessageId: msg?.id ?? null,
           maneuverSlug: attackData?.maneuverSlug ?? '',
           maneuverItemName: attackData?.maneuverItemName ?? '',
+          maneuverWasUnarmed: !!attackData?.maneuverWasUnarmed,
           attackerId: attackData?.attackerId ?? '',
           batch: { createdAt: Date.now() },
           entries: entries.map(e => ({ ...e, applied: false }))

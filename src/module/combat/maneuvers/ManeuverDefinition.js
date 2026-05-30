@@ -188,7 +188,7 @@ export class ManeuverDefinition {
     if (this.weaponRestrictions.length === 0) return true;
     for (const r of this.weaponRestrictions) {
       if (r === 'unarmed') {
-        if (!weapon || weapon.system?.unarmed?.value) return true;
+        if (!weapon || weapon.system?.isUnarmed?.value) return true;
       } else if (r === 'allowsPresa') {
         if (weapon?.system?.allowsPresa?.value) return true;
       }

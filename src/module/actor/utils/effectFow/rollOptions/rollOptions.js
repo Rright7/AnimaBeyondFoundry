@@ -17,6 +17,8 @@
 // subject ("self:" / "defender:"). Slugs are derived from item names (effects
 // have no own slug field in animabf — the name is the identity).
 
+import { grappleWasUnarmedAgainst } from '../../../../combat/maneuvers/grappleSources.js';
+
 const SYSTEM_ID = 'animabf';
 
 // The effect item that represents "this actor is holding a grapple". Source of
@@ -65,6 +67,31 @@ function activeEffectItems(actor) {
 function hasActiveEffectNamed(actor, name) {
   const target = slugifyOption(name);
   return activeEffectItems(actor).some(it => slugifyOption(it.name) === target);
+}
+
+/**
+ * Candidate keys that identify a defender in the grapple sources list, most
+ * specific first: token uuid, token id, then actor id. Mirrors the ref that
+ * resolveManeuverOpposedCheck stores (token uuid preferred) while still
+ * matching legacy actor-id-keyed sources and bare mock actors in unit tests.
+ * Touches only plain properties — no Foundry globals — so it stays pure.
+ *
+ * @param {object} defender
+ * @returns {string[]} non-empty candidate keys
+ */
+function defenderKeys(defender, defenderRef) {
+  const token =
+    defender?.token ??
+    defender?.getActiveTokens?.()?.[0]?.document ??
+    defender?.getActiveTokens?.()?.[0] ??
+    null;
+  // defenderRef (the raw flag the grapple was stored under) goes FIRST: it is
+  // exactly the key resolveManeuverOpposedCheck wrote the source with, so it
+  // matches even when the resolved TokenActor no longer exposes `.token`
+  // (fromUuidSync(uuid).actor often doesn't), which would otherwise leave only
+  // the base actor id and miss a token-keyed source.
+  return [defenderRef, token?.uuid, token?.id, defender?.id]
+    .filter(k => typeof k === 'string' && k.length > 0);
 }
 
 /**
@@ -139,9 +166,11 @@ function effectOptionsFor(actor, prefix) {
  *
  * @param {object} attacker
  * @param {object} defender
+ * @param {string} [defenderRef] the raw ref the grapple was stored under
+ *   (the attacker's `grappling` flag) — used as the most specific source key.
  * @returns {Set<string>}
  */
-export function buildGrappleOptions(attacker, defender) {
+export function buildGrappleOptions(attacker, defender, defenderRef = '') {
   const opts = new Set();
 
   if (attacker) {
@@ -149,15 +178,32 @@ export function buildGrappleOptions(attacker, defender) {
     if (type) opts.add(`self:type:${type}`);
 
     // Derive grappling from the live effect, not the flag.
-    const isGrappling = hasActiveEffectNamed(attacker, GRAPPLING_EFFECT_NAME);
+    const apresando = attacker.items?.find?.(
+      i => i.type === 'effect' && i.name === GRAPPLING_EFFECT_NAME
+    ) ?? null;
+    const isGrappling = !!apresando || hasActiveEffectNamed(attacker, GRAPPLING_EFFECT_NAME);
     if (isGrappling) {
       opts.add('self:grappling');
 
-      // "Was unarmed" is a one-shot fact captured when the Presa resolved; it
-      // is only meaningful while the grapple is actually held, so we only
-      // surface it when self:grappling is true (prevents a stale flag from a
-      // previous grapple leaking into a new context).
-      const wasUnarmed = attacker.getFlag?.(SYSTEM_ID, 'grappleWasUnarmed');
+      // "Was unarmed" is RELATIONAL: it depends on which defender this grapple
+      // is against. Read it from the Apresando effect's per-defender sources,
+      // matched to the CURRENT defender — so a weaponed grapple on one victim
+      // and an unarmed grapple on another never clobber each other. Fall back
+      // to the legacy single-target flag when sources/defender are absent.
+      //
+      // The source key is the defender's stable token ref (what
+      // resolveManeuverOpposedCheck writes). Try the token ref first, then the
+      // plain actor id, so both new (token-keyed) and legacy (id-keyed) sources
+      // resolve. defenderKeys() derives candidate keys without needing any
+      // Foundry globals, so this stays unit-testable with mock actors.
+      let wasUnarmed = false;
+      const keys = defenderKeys(defender, defenderRef);
+      if (apresando && keys.length > 0) {
+        const sources = apresando.system?.sources;
+        wasUnarmed = keys.some(key => grappleWasUnarmedAgainst(sources, key));
+      } else {
+        wasUnarmed = !!attacker.getFlag?.(SYSTEM_ID, 'grappleWasUnarmed');
+      }
       if (wasUnarmed) opts.add('self:grapple:unarmed');
     }
 
