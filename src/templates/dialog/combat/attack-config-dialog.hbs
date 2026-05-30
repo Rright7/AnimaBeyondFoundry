@@ -49,17 +49,34 @@
       {{/if}} --}}
 
       {{#if this.attacker.combat.weapon}}
-        {{#> 'systems/animabf/templates/common/ui/custom-select.hbs'
-            title=(localize 'macros.combat.dialog.weapon.title')
-            disabled=true }}
-          <option selected>
-            {{localize 'macros.combat.dialog.weaponRow.attack.title'
-              name=this.attacker.combat.weapon.name
-              value=this.attacker.combat.weapon.system.attack.final.value}}
-          </option>
-        {{/'systems/animabf/templates/common/ui/custom-select.hbs'}}
+        {{#if this.ui.lockedWeapon}}
+          {{!-- Locked weapon (plain attack from a weapon button): show it fixed. --}}
+          {{#> 'systems/animabf/templates/common/ui/custom-select.hbs'
+              title=(localize 'macros.combat.dialog.weapon.title')
+              disabled=true }}
+            <option selected>
+              {{localize 'macros.combat.dialog.weaponRow.attack.title'
+                name=this.attacker.combat.weapon.name
+                value=this.attacker.combat.weapon.system.attack.final.value}}
+            </option>
+          {{/'systems/animabf/templates/common/ui/custom-select.hbs'}}
 
-        <input type="hidden" name="attacker.combat.weaponUsed" value="{{this.attacker.combat.weapon._id}}" />
+          <input type="hidden" name="attacker.combat.weaponUsed" value="{{this.attacker.combat.weapon._id}}" />
+        {{else}}
+          {{!-- Unlocked (maneuver): let the player choose any of the actor's
+                weapons. Default selection is the resolved/equipped one. --}}
+          {{#> 'systems/animabf/templates/common/ui/custom-select.hbs'
+              title=(localize 'macros.combat.dialog.weapon.title')
+              inputName='attacker.combat.weaponUsed' }}
+            {{#each this.ui.weapons as |w|}}
+              <option value='{{w._id}}' {{#if (is 'eq' w._id ../this.attacker.combat.weaponUsed)}}selected{{/if}}>
+                {{localize 'macros.combat.dialog.weaponRow.attack.title'
+                  name=w.name
+                  value=w.system.attack.final.value}}
+              </option>
+            {{/each}}
+          {{/'systems/animabf/templates/common/ui/custom-select.hbs'}}
+        {{/if}}
       {{else}}
         <p class='label'>{{localize 'macros.combat.dialog.weapon.notFound'}}</p>
       {{/if}}

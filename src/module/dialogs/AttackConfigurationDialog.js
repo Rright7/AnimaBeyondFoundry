@@ -39,13 +39,20 @@ export class AttackConfigurationDialog extends FormApplication {
       CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER
     );
 
+    // A maneuver may be performed with any of the actor's weapons, so when the
+    // dialog is opened from a maneuver we do NOT lock the weapon: the resolved
+    // (equipped) weapon is only the default selection and the player can pick
+    // another from the dropdown. A plain weapon attack keeps the weapon locked
+    // (the player already chose it by clicking that weapon's button).
+    const lockWeapon = !!resolvedWeapon && !maneuverSlug;
+
     return {
       ui: {
         isGM: !!game.user?.isGM,
         hasFatiguePoints:
           (attackerActor.system?.characteristics?.secondaries?.fatigue?.value ?? 0) > 0,
         weaponHasSecondaryCritic: undefined,
-        lockedWeapon: !!resolvedWeapon
+        lockedWeapon: lockWeapon
       },
       attacker: {
         token: attacker,
@@ -125,6 +132,10 @@ export class AttackConfigurationDialog extends FormApplication {
 
     const { weapons } = this.attackerActor.system.combat;
     const combat = attacker.combat;
+
+    // Expose the full weapon list so the template can render a picker when the
+    // weapon is not locked (e.g. a maneuver, where any weapon may be used).
+    ui.weapons = weapons ?? [];
 
     // If locked, keep the resolved weapon; otherwise resolve from current id
     const weapon = ui.lockedWeapon
