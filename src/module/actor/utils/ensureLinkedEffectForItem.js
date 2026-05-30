@@ -120,3 +120,48 @@ export function findEffectByItemOrigin(actor, item) {
   }
   return null;
 }
+
+/**
+ * Remove the ActiveEffect that ensureLinkedEffectForItem created for `item`,
+ * if it is still present on `actor`. Counterpart to the create path: an
+ * effect Item carries its modifiers in `system.effectData`, which we
+ * materialise as a *separate* AE on the actor (origin -> item.uuid). When the
+ * Item is deleted Foundry cascades only the AEs *embedded in the Item*
+ * (`item.effects`), NOT this externally-created one, so without an explicit
+ * cleanup it lingers and keeps applying its changes forever — the symptom
+ * being a "Cargando" modifier that survives toggling the maneuver off.
+ *
+ * Matching is by linked flag first (authoritative), then by origin as a
+ * fallback for AEs created before the flag existed.
+ *
+ * @param {Actor} actor
+ * @param {Item} item — the effect Item being deleted
+ * @returns {Promise<number>} how many AEs were removed
+ */
+export async function removeLinkedEffectForItem(actor, item) {
+  if (!actor?.effects || !item) return 0;
+
+  const linkedId = item.getFlag?.('animabf', 'linkedEffectId') ?? null;
+  const toDelete = new Set();
+
+  // 1) Authoritative: the AE id we stored on the item when we created it.
+  if (linkedId && actor.effects.get(linkedId)) {
+    toDelete.add(linkedId);
+  }
+
+  // 2) Fallback: any AE whose origin still points at this item (covers AEs
+  // created before linkedEffectId was written, or if the flag was lost).
+  const uuid = item.uuid ?? '';
+  const tail = `.Item.${item.id ?? ''}`;
+  for (const e of actor.effects.contents) {
+    if (!e?.origin) continue;
+    if (e.origin === uuid || (tail && e.origin.endsWith(tail))) {
+      toDelete.add(e.id);
+    }
+  }
+
+  if (toDelete.size === 0) return 0;
+
+  await actor.deleteEmbeddedDocuments('ActiveEffect', [...toDelete]);
+  return toDelete.size;
+}

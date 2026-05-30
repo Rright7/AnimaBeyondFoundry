@@ -550,7 +550,10 @@ Hooks.on('createChatMessage', async message => {
 // left the actor without the AE. Hook every entry point so all paths produce
 // a linked AE consistently.
 
-import { ensureLinkedEffectForItem } from './module/actor/utils/ensureLinkedEffectForItem.js';
+import {
+  ensureLinkedEffectForItem,
+  removeLinkedEffectForItem
+} from './module/actor/utils/ensureLinkedEffectForItem.js';
 import { ABFItems as _ABFItems } from './module/items/ABFItems.js';
 
 Hooks.on('createItem', async (item, _options, userId) => {
@@ -561,6 +564,22 @@ Hooks.on('createItem', async (item, _options, userId) => {
     await ensureLinkedEffectForItem(item.parent, item);
   } catch (e) {
     console.warn('[ABF] ensureLinkedEffectForItem failed on createItem:', e);
+  }
+});
+
+// Counterpart to the createItem hook: when an effect Item is removed from an
+// actor, delete the AE we materialised from its `system.effectData`. Foundry
+// cascade-deletes only the AEs embedded *inside* the Item, not the separate
+// origin-linked AE we created, so without this the modifiers (e.g. Cargando's
+// +10/-10/-20) survive after the maneuver is toggled off or the item deleted.
+Hooks.on('deleteItem', async (item, _options, userId) => {
+  if (userId !== game.user.id) return;
+  if (item?.type !== _ABFItems.EFFECT) return;
+  if (!item.parent || item.parent.documentName !== 'Actor') return;
+  try {
+    await removeLinkedEffectForItem(item.parent, item);
+  } catch (e) {
+    console.warn('[ABF] removeLinkedEffectForItem failed on deleteItem:', e);
   }
 });
 

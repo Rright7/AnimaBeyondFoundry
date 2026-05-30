@@ -2,7 +2,7 @@
   "folder": "3JHGrI3z8yZ7GbSQ",
   "name": "Cargando",
   "type": "effect",
-  "img": "icons/svg/item-bag.svg",
+  "img": "icons/svg/lightning.svg",
   "system": {
     "active": false,
     "category": {
@@ -10,7 +10,7 @@
     },
     "modifiers": [],
     "effectData": {
-      "icon": "icons/svg/wingfoot.svg",
+      "icon": "icons/svg/lightning.svg",
       "disabled": true,
       "changes": [
         {
@@ -45,62 +45,7 @@
       "flags": {}
     }
   },
-  "effects": [
-    {
-      "name": "A la ofensiva 2",
-      "disabled": true,
-      "changes": [
-        {
-          "key": "system.combat.attack.base.value",
-          "type": "add",
-          "value": "10",
-          "priority": null
-        },
-        {
-          "key": "system.combat.block.base.value",
-          "type": "add",
-          "value": "-30",
-          "priority": null
-        },
-        {
-          "key": "system.combat.dodge.base.value",
-          "type": "add",
-          "value": "-30",
-          "priority": null
-        }
-      ],
-      "duration": {
-        "startTime": null,
-        "combat": null,
-        "seconds": null,
-        "rounds": null,
-        "turns": null,
-        "startRound": null,
-        "startTurn": null
-      },
-      "transfer": false,
-      "flags": {},
-      "img": "icons/svg/sword.svg",
-      "_id": "EzEJPZQgdEFejjjh",
-      "type": "base",
-      "system": {},
-      "description": "",
-      "origin": null,
-      "tint": "#ffffff",
-      "statuses": [],
-      "sort": 0,
-      "_stats": {
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null,
-        "coreVersion": "13.351",
-        "systemId": "animabf",
-        "systemVersion": "2.0.7",
-        "lastModifiedBy": null
-      },
-      "_key": "!items.effects!P8B4keMHQmyVchc1.EzEJPZQgdEFejjjh"
-    }
-  ],
+  "effects": [],
   "ownership": {
     "default": 0,
     "s1iIg3oHOkECBfdY": 3
