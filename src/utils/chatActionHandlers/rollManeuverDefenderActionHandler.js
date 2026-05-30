@@ -14,7 +14,14 @@ export default async function rollManeuverDefenderActionHandler(message, _html, 
     if (!flags || flags.kind !== 'maneuverOpposedCheck') return;
     if (flags.defenderRoll) return;
 
-    const defender = game.actors?.get?.(flags.defenderId);
+    // Token-aware resolution: prefer the stored token ref so an unlinked
+    // token rolls with its own characteristics/AE, not the base sidebar actor.
+    const { resolveActorFromRef } = await import(
+      '../../module/actor/utils/resolveActorForRoll.js'
+    );
+    const defender =
+      resolveActorFromRef(flags.defenderTokenUuid) ??
+      resolveActorFromRef(flags.defenderId);
     if (!defender) return ui.notifications?.warn('Actor defensor no encontrado.');
 
     const isOwner = defender.testUserPermission?.(

@@ -1,14 +1,22 @@
 /**
  * Keeps the relational grapple flags in sync with the underlying Active
- * Effect items. When a Parálisis (parcial / completa) item is
- * removed from the defender, the defender's `grappledBy` flag and the
- * attacker's `grappling` flag must be cleared too. Same when the
- * attacker's "Apresando" item is removed.
+ * Effect items. When a Parálisis (parcial / completa) item is removed from the
+ * defender, the defender's `grappledBy` flag and the attacker's `grappling`
+ * flag must be cleared too. Same when the attacker's "Apresando" item is
+ * removed.
+ *
+ * The grapple flags store a TOKEN REF (token uuid preferred, token id, or a
+ * legacy actor id) — see resolveManeuverOpposedCheck. So the reciprocal actor
+ * is resolved with resolveActorFromRef, not game.actors.get, and the
+ * back-pointer is matched by resolving it to the SAME actor rather than by
+ * comparing against a bare actor id (which would never match a token ref).
  *
  * Hook: deleteItem.
  *
  * Registered from animabf.mjs at ready time.
  */
+
+import { resolveActorFromRef } from '../../actor/utils/resolveActorForRoll.js';
 
 const SYSTEM_ID = 'animabf';
 
@@ -22,39 +30,51 @@ const PARALYSIS_NAMES = new Set([
 
 const ATTACKER_NAMES = new Set(['Apresando']);
 
+/**
+ * True when `ref` resolves to `actor` (same Actor document). Token refs and
+ * actor ids both resolve through resolveActorFromRef, so this matches a
+ * back-pointer regardless of which format it was stored in.
+ */
+function refPointsAt(ref, actor) {
+  if (!ref || !actor) return false;
+  const resolved = resolveActorFromRef(ref);
+  return !!resolved && resolved === actor;
+}
+
 export function registerGrappleRelationalSync() {
   Hooks.on('deleteItem', async (item, options, userId) => {
     try {
       if (!item || item.type !== 'effect') return;
-      if (game.user.id !== userId) return; // single-client guard
+      if (game.user.id !== userId) return;
 
       const actor = item.actor;
       if (!actor) return;
 
-      // Defender side: a paralysis was lifted → clear defender flags and
-      // the attacker's grappling flag too.
       if (PARALYSIS_NAMES.has(item.name)) {
-        const attackerId = actor.getFlag(SYSTEM_ID, 'grappledBy');
+        const attackerRef = actor.getFlag(SYSTEM_ID, 'grappledBy');
         await actor.unsetFlag(SYSTEM_ID, 'grappledBy');
         await actor.unsetFlag(SYSTEM_ID, 'grappleWasUnarmed');
-        if (attackerId) {
-          const attacker = game.actors?.get(attackerId);
-          if (attacker?.getFlag(SYSTEM_ID, 'grappling') === actor.id) {
+        if (attackerRef) {
+          const attacker = resolveActorFromRef(attackerRef);
+          if (
+            attacker &&
+            refPointsAt(attacker.getFlag(SYSTEM_ID, 'grappling'), actor)
+          ) {
             await attacker.unsetFlag(SYSTEM_ID, 'grappling');
           }
         }
         return;
       }
 
-      // Attacker side: Apresando lifted → clear attacker's grappling and
-      // mirror flags on the defender (he may still keep the paralysis
-      // until naturally removed, but the relational pointer is gone).
       if (ATTACKER_NAMES.has(item.name)) {
-        const defenderId = actor.getFlag(SYSTEM_ID, 'grappling');
+        const defenderRef = actor.getFlag(SYSTEM_ID, 'grappling');
         await actor.unsetFlag(SYSTEM_ID, 'grappling');
-        if (defenderId) {
-          const defender = game.actors?.get(defenderId);
-          if (defender?.getFlag(SYSTEM_ID, 'grappledBy') === actor.id) {
+        if (defenderRef) {
+          const defender = resolveActorFromRef(defenderRef);
+          if (
+            defender &&
+            refPointsAt(defender.getFlag(SYSTEM_ID, 'grappledBy'), actor)
+          ) {
             await defender.unsetFlag(SYSTEM_ID, 'grappledBy');
             await defender.unsetFlag(SYSTEM_ID, 'grappleWasUnarmed');
           }

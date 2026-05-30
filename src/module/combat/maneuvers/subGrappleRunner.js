@@ -7,33 +7,33 @@
  *
  * Preconditions are declared on the maneuver as a `predicate` (Phase 3) and
  * evaluated against the combined grapple option set (self:* attacker +
- * defender:*). We keep specific warning messages by checking which atomic
- * fact is missing, so the user knows WHY the maneuver can't run.
+ * defender:*). Specific warnings tell the user WHY it can't run.
  */
 
 import { openOpposedCheckDialog } from './opposedCheck/OpposedCheckDialog.js';
 import { testPredicate } from '../../actor/utils/effectFow/predicates/Predicate.js';
 import { buildGrappleOptions } from '../../actor/utils/effectFow/rollOptions/rollOptions.js';
+import { resolveActorFromRef } from '../../actor/utils/resolveActorForRoll.js';
 
 const SYSTEM_ID = 'animabf';
 
 /**
- * Resolve the grappled defender actor from the attacker's relational flag.
+ * Resolve the grappled defender from the attacker's relational flag. The flag
+ * stores a TOKEN UUID so unlinked tokens resolve to their own token actor (not
+ * the base sidebar actor); resolveActorFromRef falls back to game.actors.get
+ * for a legacy plain actor id.
+ *
  * @param {Actor} attackerActor
  * @returns {Actor|null}
  */
 function resolveGrappledDefender(attackerActor) {
-  const defenderId = attackerActor.getFlag(SYSTEM_ID, 'grappling');
-  return defenderId ? game.actors?.get(defenderId) ?? null : null;
+  const ref = attackerActor.getFlag(SYSTEM_ID, 'grappling');
+  return ref ? resolveActorFromRef(ref) : null;
 }
 
 /**
- * Produce a specific warning when the predicate fails, by checking which
- * precondition is missing against the option set. Returns the message or null
- * if everything actually passes.
- *
- * Note: "Parálisis total" is intentionally not checked — it is the same state
- * as "completa", whose standard name the system uses everywhere.
+ * Specific warning when the predicate fails, by checking which atomic fact is
+ * missing. "Parálisis total" is not checked — same state as "completa".
  *
  * @param {Set<string>} options
  * @param {string} maneuverName
@@ -63,12 +63,13 @@ function explainPredicateFailure(options, maneuverName) {
 export async function runSubGrappleManeuver(attackerActor, def, maneuverItem) {
   if (!attackerActor || !def || !maneuverItem) return;
 
+  // The raw grapple ref (token uuid / token id / actor id) is the exact key the
+  // source was stored under. Pass it through so the unarmed lookup matches even
+  // if the resolved TokenActor no longer exposes its own token handle.
+  const defenderRef = attackerActor.getFlag(SYSTEM_ID, 'grappling') ?? '';
   const defenderActor = resolveGrappledDefender(attackerActor);
 
-  // Build the combined option set (self:* attacker + defender:*) and evaluate
-  // the maneuver's declarative predicate. If it fails, surface a specific
-  // reason. A maneuver without a predicate passes trivially.
-  const options = buildGrappleOptions(attackerActor, defenderActor);
+  const options = buildGrappleOptions(attackerActor, defenderActor, defenderRef);
   if (Array.isArray(def.predicate) && def.predicate.length > 0) {
     if (!testPredicate(def.predicate, options)) {
       const msg = explainPredicateFailure(options, maneuverItem.name);
@@ -76,24 +77,17 @@ export async function runSubGrappleManeuver(attackerActor, def, maneuverItem) {
     }
   }
 
-  // After the predicate passes we still need a concrete defender actor to run
-  // the opposed check against (the predicate only proves the facts hold).
   if (!defenderActor) {
     return ui.notifications?.warn(
       `${maneuverItem.name}: no se encontró el defensor apresado.`
     );
   }
 
-  // Defender's impact armor adds +1 per point to his check.
   const defenderArmorBonus =
     def.defenderArmorBonusType === 'impact'
       ? Number(defenderActor.system?.combat?.totalArmor?.at?.impact?.value ?? 0)
       : 0;
 
-  // Run the opposed check. The dialog does not natively support a "defender
-  // extra bonus" yet, so we adjust the resulting difference afterwards:
-  // subtracting from `difference` is mathematically the same as adding to the
-  // defender's roll.
   const rawOpposed = await openOpposedCheckDialog({
     maneuver: def,
     attacker: attackerActor,
@@ -102,7 +96,7 @@ export async function runSubGrappleManeuver(attackerActor, def, maneuverItem) {
     defenderIsQuadruped: false
   });
 
-  if (!rawOpposed) return; // cancelled
+  if (!rawOpposed) return;
 
   const adjustedDifference = (rawOpposed.difference ?? 0) - defenderArmorBonus;
   const opposed = {
@@ -111,23 +105,13 @@ export async function runSubGrappleManeuver(attackerActor, def, maneuverItem) {
     attackerWins: adjustedDifference > 0
   };
 
-  // Damage: only when the attacker wins, and only when the maneuver declares
-  // an auto-damage formula.
   if (!opposed.attackerWins) {
-    await postSummary({
-      attackerActor,
-      defenderActor,
-      maneuverItem,
-      opposed,
-      damage: 0
-    });
+    await postSummary({ attackerActor, defenderActor, maneuverItem, opposed, damage: 0 });
     return;
   }
 
   let damage = 0;
   if (typeof def.computeAutoDamage === 'function') {
-    // Same rounding convention as computeCombatResult: never silently
-    // truncate fractional damage to the defender's favor.
     damage = Math.ceil(Number(def.computeAutoDamage(opposed.difference) ?? 0) || 0);
   }
 
@@ -145,22 +129,10 @@ export async function runSubGrappleManeuver(attackerActor, def, maneuverItem) {
     }
   }
 
-  await postSummary({
-    attackerActor,
-    defenderActor,
-    maneuverItem,
-    opposed,
-    damage
-  });
+  await postSummary({ attackerActor, defenderActor, maneuverItem, opposed, damage });
 }
 
-async function postSummary({
-  attackerActor,
-  defenderActor,
-  maneuverItem,
-  opposed,
-  damage
-}) {
+async function postSummary({ attackerActor, defenderActor, maneuverItem, opposed, damage }) {
   const flavor = `<strong>${attackerActor.name}</strong> usa <strong>${maneuverItem.name}</strong> contra <strong>${defenderActor.name}</strong>`;
   const winText = opposed.attackerWins
     ? `<strong>Gana por ${opposed.difference}</strong>`
