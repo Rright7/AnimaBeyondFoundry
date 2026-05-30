@@ -95,9 +95,17 @@ export async function resolveManeuverOpposedCheck(msg) {
       const wasUnarmed =
         flags.maneuverWasUnarmed ?? (!equipped || !!equipped?.system?.unarmed?.value);
 
+      // Relational pointers between the two actors.
       await attackerActor.setFlag(SYSTEM_ID, 'grappling', defenderActor.id);
       await defenderActor.setFlag(SYSTEM_ID, 'grappledBy', attackerActor.id);
-      await defenderActor.setFlag(SYSTEM_ID, 'grappleWasUnarmed', !!wasUnarmed);
+
+      // `grappleWasUnarmed` belongs to the ATTACKER: it is the attacker that
+      // either used weapons or not, and buildGrappleOptions reads it from the
+      // attacker to decide self:grapple:unarmed. Writing it always (true OR
+      // false) resets any stale value from a previous grapple, fixing the case
+      // where a weaponed Presa left it false and a later unarmed Presa would
+      // otherwise inherit that.
+      await attackerActor.setFlag(SYSTEM_ID, 'grappleWasUnarmed', !!wasUnarmed);
     } catch (err) {
       console.warn('[ABF] failed to set grapple relational flags:', err);
     }
