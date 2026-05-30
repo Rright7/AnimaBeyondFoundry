@@ -552,9 +552,27 @@ Hooks.on('createChatMessage', async message => {
 
 import {
   ensureLinkedEffectForItem,
-  removeLinkedEffectForItem
+  removeLinkedEffectForItem,
+  actorHasEffectItemNamed
 } from './module/actor/utils/ensureLinkedEffectForItem.js';
 import { ABFItems as _ABFItems } from './module/items/ABFItems.js';
+
+// Prevent duplicate status effects: in Anima no compendium effect is meant to
+// be present twice on the same actor. If an effect-type Item with the same name
+// is already there, cancel the creation (returning false aborts it). This stops
+// e.g. two "Derribado" / "Ceguera parcial" Items piling up and double-applying
+// their modifiers. Returning false here means the second copy never exists.
+Hooks.on('preCreateItem', (item, _data, _options, userId) => {
+  if (userId !== game.user.id) return true;
+  if (item?.type !== _ABFItems.EFFECT) return true;
+  const parent = item.parent;
+  if (!parent || parent.documentName !== 'Actor') return true;
+  if (actorHasEffectItemNamed(parent, item.name)) {
+    ui.notifications?.info(`"${item.name}" ya está activo; no se duplica.`);
+    return false; // abort creation
+  }
+  return true;
+});
 
 Hooks.on('createItem', async (item, _options, userId) => {
   if (userId !== game.user.id) return;

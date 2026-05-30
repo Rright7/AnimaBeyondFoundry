@@ -1,5 +1,7 @@
 // /module/actor/utils/effectFow/applicators/activeEffectApplicator.js
 
+import { depositModifier } from '../modifiers/synthetics.js';
+
 /**
  * Resolve an AE change.mode/type to a canonical string mode.
  * Accepts:
@@ -83,4 +85,18 @@ export function applySingleActiveEffectChange(actor, effect, change) {
   }
 
   foundry.utils.setProperty(actor, key, nextValue);
+
+  // Non-invasive attribution: record this contribution in the synthetics
+  // mailbox so the chat breakdown can be built from a single reliable source.
+  // Only add-mode numeric deltas are meaningful as a signed contribution; the
+  // write above is unchanged regardless.
+  if (mode === 'add' && haveNumbers) {
+    depositModifier(actor, {
+      path: key,
+      value: numericValue,
+      source: effect?.name ?? effect?.label ?? 'AE',
+      slug: effect?.slug ?? effect?.id ?? null,
+      mode
+    });
+  }
 }

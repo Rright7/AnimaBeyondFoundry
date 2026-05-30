@@ -1,5 +1,6 @@
 import { buildAllFlowOps } from './ops/buildOps';
 import { orderFlowOps } from './toposort';
+import { resetSynthetics } from './modifiers/synthetics.js';
 
 /**
  * Build -> order -> apply the flow operations.
@@ -9,6 +10,10 @@ import { orderFlowOps } from './toposort';
  * @returns {Promise<any[]>} ordered ops (useful for debugging/tests)
  */
 export async function runEffectFlow(actor, options = {}) {
+  // Start each preparation with a clean modifiers mailbox so deposits from a
+  // previous run never leak into this one. Populated as AE ops apply below.
+  resetSynthetics(actor);
+
   const ops = buildAllFlowOps(actor, options);
   const ordered = orderFlowOps(ops);
 

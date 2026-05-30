@@ -1,5 +1,7 @@
 import { ATTRIBUTE_PATHS } from './attributeDerivationMap.js';
 import { resolveChangeMode } from './effectFow/applicators/activeEffectApplicator.js';
+import { readModifiers } from './effectFow/modifiers/synthetics.js';
+import { applyStackingRules } from './effectFow/modifiers/stacking.js';
 
 /**
  * @typedef {object} AEContribution
@@ -9,9 +11,37 @@ import { resolveChangeMode } from './effectFow/applicators/activeEffectApplicato
  */
 
 /**
- * Enumerate the Active Effects on `actor` that contribute to a given logical
- * attribute (one of the keys of ATTRIBUTE_PATHS). Only ADD-mode contributions
- * resolve to a numeric value; other modes are reported with `value=null`.
+ * Collapse a contribution list so the same (name, value, mode) never appears
+ * twice. The synthetics mailbox can, in some preparation paths, end up with a
+ * contribution recorded more than once (e.g. an actor prepared twice, or the
+ * same effect present as two separate items). The chat trace must show each
+ * source once, so we de-dupe by content here as the single guard.
+ *
+ * @param {AEContribution[]} contributions
+ * @returns {AEContribution[]}
+ */
+function dedupeContributions(contributions) {
+  const seen = new Set();
+  const out = [];
+  for (const c of contributions) {
+    const key = `${c.name}|${c.value}|${c.mode}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(c);
+  }
+  return out;
+}
+
+/**
+ * Enumerate the contributions to a given logical attribute (a key of
+ * ATTRIBUTE_PATHS), for the chat traceability line.
+ *
+ * Preferred source: the synthetics mailbox populated during the effect flow.
+ * Anima stacking is applied so the line shows the modifiers that actually
+ * count (everything sums; grouped modifiers substitute — the Cargar
+ * exception). Falls back to scanning Active Effects when the mailbox has
+ * nothing for these paths (e.g. a roll before any prepare cycle, or unmigrated
+ * data). The result is de-duped by content so a source never appears twice.
  *
  * @param {Actor} actor
  * @param {keyof typeof ATTRIBUTE_PATHS} attribute
@@ -19,7 +49,20 @@ import { resolveChangeMode } from './effectFow/applicators/activeEffectApplicato
  */
 export function getActiveEffectContributions(actor, attribute) {
   const paths = ATTRIBUTE_PATHS[attribute];
-  if (!actor?.effects || !Array.isArray(paths)) return [];
+  if (!Array.isArray(paths)) return [];
+
+  const fromMailbox = readModifiers(actor, paths);
+  if (fromMailbox.length > 0) {
+    const { applied } = applyStackingRules(fromMailbox);
+    const contributions = applied.map(rec => ({
+      name: rec.source ?? 'AE',
+      value: typeof rec.value === 'number' ? rec.value : null,
+      mode: rec.mode ?? 'add'
+    }));
+    return dedupeContributions(contributions);
+  }
+
+  if (!actor?.effects) return [];
 
   const pathSet = new Set(paths);
   const out = [];
@@ -57,12 +100,11 @@ export function getActiveEffectContributions(actor, attribute) {
     }
   }
 
-  return out;
+  return dedupeContributions(out);
 }
 
 /**
  * Format a list of contributions as a single short string for chat flavor.
- * Examples:
  *   "Mod: Ceguera parcial (-30), Sorpresa (-90)"
  *   "Mod: Posición superior (+20)"
  *   "" if nothing relevant.

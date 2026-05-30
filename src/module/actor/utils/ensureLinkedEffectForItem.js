@@ -165,3 +165,30 @@ export async function removeLinkedEffectForItem(actor, item) {
   await actor.deleteEmbeddedDocuments('ActiveEffect', [...toDelete]);
   return toDelete.size;
 }
+
+/**
+ * Whether `actor` already owns an effect-type Item with the given `name`,
+ * excluding the item with id `exceptId` (the one being created). Used to keep
+ * status effects from stacking as duplicate Items: in Anima no compendium
+ * effect is meant to be present twice on the same actor (Derribado, Ceguera,
+ * Cargando, the per-characteristic "Mod XXX", ...), so adding one that is
+ * already there should be a no-op.
+ *
+ * Name match is case-insensitive and trimmed. Effect-type only; other item
+ * types are never considered duplicates here.
+ *
+ * @param {Actor} actor
+ * @param {string} name
+ * @param {string} [exceptId]
+ * @returns {boolean}
+ */
+export function actorHasEffectItemNamed(actor, name, exceptId = null) {
+  if (!actor?.items || !name) return false;
+  const target = String(name).trim().toLowerCase();
+  for (const it of actor.items) {
+    if (it.type !== 'effect') continue;
+    if (exceptId && it.id === exceptId) continue;
+    if (String(it.name ?? '').trim().toLowerCase() === target) return true;
+  }
+  return false;
+}
