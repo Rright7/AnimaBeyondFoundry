@@ -4,6 +4,7 @@ import {
   resolveChangeMode
 } from '../../applicators/activeEffectApplicator.js';
 import { normalizePaths } from '../normalizePaths.js';
+import { resolveSelector } from '../../selectors/selectorResolver.js';
 
 function inferDepsFromChangeValue(value) {
   if (typeof value !== 'string') return [];
@@ -39,36 +40,54 @@ function writeKindFromAEMode(rawMode) {
 }
 
 /**
- * Crea un FlowOp de un change concreto.
+ * Build the FlowOp(s) for a single change.
+ *
+ * The change's `key` may be a logical selector (Phase 2). It resolves to one or
+ * more absolute paths:
+ *   - 1->1 selector or raw path -> a single op (unchanged behaviour)
+ *   - 1->N selector (e.g. "defense", "magicProjectionImbalance") -> ONE op PER
+ *     resolved path, so each write is scheduled and ordered independently by
+ *     the toposort. Each op applies the change against its concrete path.
+ *
+ * Backward-compatible: a raw path resolves to itself, so existing effects that
+ * store absolute paths produce exactly the same single op as before.
  *
  * @param {any} effect
  * @param {number} index
  * @param {{key:string, mode:number, value:any}} change
+ * @returns {object[]} one or more flow ops
  */
-export function buildActiveEffectChangeOp(effect, index, change) {
+export function buildActiveEffectChangeOps_forChange(effect, index, change) {
   const flagged = getFlaggedDeps(effect, index);
   const inferred = flagged.length > 0 ? [] : inferDepsFromChangeValue(change.value);
-
   const deps = normalizePaths([...flagged, ...inferred]);
 
-  const [path] = normalizePaths([change.key]);
   const kind = writeKindFromAEMode(change.mode ?? change.type);
+  const paths = resolveSelector(change.key);
+  if (paths.length === 0) return [];
 
-  return {
-    id: `ae:${effect.id}:${index}`,
-    deps,
-    writes: [{ path, kind }],
-    _tie: {
-      priority: Number(effect.priority ?? 0),
-      effectId: String(effect.id),
-      index
-    },
-    apply: actor => applySingleActiveEffectChange(actor, effect, change)
-  };
+  return paths.map((path, pathIdx) => {
+    // The applicator writes against change.key, so hand it a change whose key
+    // is the concrete resolved path (not the selector).
+    const resolvedChange = { ...change, key: path };
+    return {
+      id: paths.length > 1
+        ? `ae:${effect.id}:${index}:${pathIdx}`
+        : `ae:${effect.id}:${index}`,
+      deps,
+      writes: [{ path, kind }],
+      _tie: {
+        priority: Number(effect.priority ?? 0),
+        effectId: String(effect.id),
+        index: index * 100 + pathIdx
+      },
+      apply: actor => applySingleActiveEffectChange(actor, effect, resolvedChange)
+    };
+  });
 }
 
 /**
- * Devuelve una lista plana de ops (1 por change).
+ * Devuelve una lista plana de ops (1+ por change).
  *
  * @param {any} actor
  */
@@ -89,7 +108,7 @@ export function buildActiveEffectChangeOps(actor) {
     for (let i = 0; i < changes.length; i++) {
       const change = changes[i];
       if (!change?.key) continue;
-      ops.push(buildActiveEffectChangeOp(effect, i, change));
+      ops.push(...buildActiveEffectChangeOps_forChange(effect, i, change));
     }
   }
 
