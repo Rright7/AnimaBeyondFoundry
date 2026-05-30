@@ -664,6 +664,7 @@ import {
   formatContributions
 } from './module/actor/utils/activeEffectsBreakdown.js';
 import { resolveActorForRoll } from './module/actor/utils/resolveActorForRoll.js';
+import { getRollOptions } from './module/actor/utils/effectFow/rollOptions/rollOptions.js';
 
 Hooks.on('preCreateChatMessage', (message, _data, _options, _userId) => {
   try {
@@ -698,7 +699,11 @@ Hooks.on('preCreateChatMessage', (message, _data, _options, _userId) => {
     });
     if (!actor) return;
 
-    const contributions = getActiveEffectContributions(actor, attribute);
+    // Pass the actor's roll options so predicate-gated contributions only
+    // appear when their condition holds (Phase 3 wiring). getRollOptions builds
+    // the set if the actor wasn't prepared through the flow yet.
+    const rollOptions = getRollOptions(actor);
+    const contributions = getActiveEffectContributions(actor, attribute, rollOptions);
     if (contributions.length === 0) return;
 
     const line = formatContributions(contributions);

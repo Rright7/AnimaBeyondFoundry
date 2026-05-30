@@ -43,17 +43,23 @@ function dedupeContributions(contributions) {
  * nothing for these paths (e.g. a roll before any prepare cycle, or unmigrated
  * data). The result is de-duped by content so a source never appears twice.
  *
+ * `options` are the actor's roll options (Phase 3). When provided, modifiers
+ * whose predicate does not pass are excluded from the line — so a conditional
+ * effect only shows up when its condition holds. When omitted, predicates are
+ * ignored (every contribution shows), preserving prior behaviour.
+ *
  * @param {Actor} actor
  * @param {keyof typeof ATTRIBUTE_PATHS} attribute
+ * @param {Set<string>|string[]} [options] actor roll options for predicate gating
  * @returns {AEContribution[]}
  */
-export function getActiveEffectContributions(actor, attribute) {
+export function getActiveEffectContributions(actor, attribute, options) {
   const paths = ATTRIBUTE_PATHS[attribute];
   if (!Array.isArray(paths)) return [];
 
   const fromMailbox = readModifiers(actor, paths);
   if (fromMailbox.length > 0) {
-    const { applied } = applyStackingRules(fromMailbox);
+    const { applied } = applyStackingRules(fromMailbox, options);
     const contributions = applied.map(rec => ({
       name: rec.source ?? 'AE',
       value: typeof rec.value === 'number' ? rec.value : null,
