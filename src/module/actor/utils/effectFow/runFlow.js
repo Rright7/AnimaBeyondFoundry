@@ -1,6 +1,7 @@
 import { buildAllFlowOps } from './ops/buildOps';
 import { orderFlowOps } from './toposort';
 import { resetSynthetics } from './modifiers/synthetics.js';
+import { resetRollOptions } from './rollOptions/rollOptions.js';
 
 /**
  * Build -> order -> apply the flow operations.
@@ -13,6 +14,11 @@ export async function runEffectFlow(actor, options = {}) {
   // Start each preparation with a clean modifiers mailbox so deposits from a
   // previous run never leak into this one. Populated as AE ops apply below.
   resetSynthetics(actor);
+
+  // Rebuild the actor's roll options for this cycle (self:type, self:effect:*…)
+  // so predicate-gated modifiers are evaluated against fresh context. Cheap and
+  // side-effect-light; stored on actor.rollOptions.
+  resetRollOptions(actor);
 
   const ops = buildAllFlowOps(actor, options);
   const ordered = orderFlowOps(ops);

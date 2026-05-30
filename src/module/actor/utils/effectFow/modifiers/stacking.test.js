@@ -112,3 +112,55 @@ describe('applyStackingRules — breakdown', () => {
     expect(applied.map(m => m.source)).toEqual(['Habilidad', 'Herida', 'Flanco']);
   });
 });
+
+describe('predicates (Phase 3) — conditional modifiers', () => {
+  const OPTS = new Set(['self:condition:prone', 'target:flanked']);
+
+  test('with NO options, predicates are ignored (backward compatible)', () => {
+    expect(sumModifiers([mod(10, { predicate: ['x:y'] }), mod(5)])).toBe(15);
+  });
+
+  test('modifier whose predicate passes is kept', () => {
+    expect(sumModifiers([mod(10, { predicate: ['self:condition:prone'] }), mod(5)], OPTS)).toBe(15);
+  });
+
+  test('modifier whose predicate fails is dropped', () => {
+    expect(sumModifiers([mod(10, { predicate: ['self:condition:blind'] }), mod(5)], OPTS)).toBe(5);
+  });
+
+  test('modifier without predicate always applies', () => {
+    expect(sumModifiers([mod(10), mod(5, { predicate: ['target:flanked'] })], OPTS)).toBe(15);
+  });
+
+  test('empty predicate passes', () => {
+    expect(sumModifiers([mod(10, { predicate: [] })], OPTS)).toBe(10);
+  });
+
+  test('compound and / or / not', () => {
+    expect(sumModifiers([mod(20, { predicate: [{ and: ['self:condition:prone', 'target:flanked'] }] })], OPTS)).toBe(20);
+    expect(sumModifiers([mod(20, { predicate: [{ and: ['self:condition:prone', 'x'] }] })], OPTS)).toBe(0);
+    expect(sumModifiers([mod(7, { predicate: [{ not: 'self:condition:blind' }] })], OPTS)).toBe(7);
+    expect(sumModifiers([mod(3, { predicate: [{ or: ['x', 'target:flanked'] }] })], OPTS)).toBe(3);
+  });
+
+  test('options may be an array', () => {
+    expect(sumModifiers([mod(9, { predicate: ['a'] })], ['a'])).toBe(9);
+  });
+
+  test('a predicate-dropped modifier does not participate in its group', () => {
+    const mods = [
+      mod(10, { slug: 'a', group: 'g', predicate: ['self:condition:blind'] }), // dropped
+      mod(30, { slug: 'b', group: 'g' })
+    ];
+    expect(sumModifiers(mods, OPTS)).toBe(30);
+  });
+
+  test('breakdown respects predicates', () => {
+    const { applied, total } = applyStackingRules(
+      [mod(10, { source: 'A', predicate: ['self:condition:prone'] }), mod(5, { source: 'B', predicate: ['x'] })],
+      OPTS
+    );
+    expect(total).toBe(10);
+    expect(applied.map(m => m.source)).toEqual(['A']);
+  });
+});
