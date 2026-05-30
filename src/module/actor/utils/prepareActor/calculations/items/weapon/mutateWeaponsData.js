@@ -96,6 +96,14 @@ mutateWeaponsData.abfFlow = {
     // Whole weapon array is read extensively
     'system.combat.weapons',
 
+    // The weapon's attack/block are derived FROM the actor's combat
+    // attack/block final values (see calculateWeaponAttack / calculateWeaponBlock).
+    // Declaring these forces the flow to compute weapons AFTER any Active
+    // Effect has modified the actor's attack/block, so on-actor modifiers
+    // (Derribado, Ceguera, Cargando, ...) reach the weapon's roll value too.
+    'system.combat.attack.final.value',
+    'system.combat.block.final.value',
+
     // These helpers use actor data (common patterns in your system)
     'system.general.modifiers.allActions.final.value',
     'system.general.modifiers.physicalActions.final.value',
