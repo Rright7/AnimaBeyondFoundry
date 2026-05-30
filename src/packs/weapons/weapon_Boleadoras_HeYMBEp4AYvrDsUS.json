@@ -1,228 +1,231 @@
 {
-    "name": "Boleadoras",
-    "type": "weapon",
-    "img": "icons/weapons/thrown/bolas-stone.webp",
-    "effects": [],
-    "folder": "uASDtU3IpO7KCaNi",
-    "flags": {
-        "core": {},
-        "cf": {
-            "id": "temp_ch5s71h6u7o",
-            "color": "#000000"
+  "name": "Boleadoras",
+  "type": "weapon",
+  "img": "icons/weapons/thrown/bolas-stone.webp",
+  "effects": [],
+  "folder": "uASDtU3IpO7KCaNi",
+  "flags": {
+    "core": {},
+    "cf": {
+      "id": "temp_ch5s71h6u7o",
+      "color": "#000000"
+    }
+  },
+  "system": {
+    "special": {
+      "value": "Ver"
+    },
+    "integrity": {
+      "base": {
+        "value": 6
+      },
+      "final": {
+        "value": 0
+      },
+      "special": {
+        "value": 0
+      },
+      "value": 6
+    },
+    "breaking": {
+      "base": {
+        "value": 2
+      },
+      "final": {
+        "value": 0
+      },
+      "special": {
+        "value": 0
+      },
+      "value": 2
+    },
+    "attack": {
+      "base": {
+        "value": 0
+      },
+      "final": {
+        "value": 0
+      },
+      "special": {
+        "value": 0
+      },
+      "value": 0
+    },
+    "block": {
+      "base": {
+        "value": 0
+      },
+      "final": {
+        "value": 0
+      },
+      "special": {
+        "value": 0
+      },
+      "value": 0
+    },
+    "damage": {
+      "base": {
+        "value": 30
+      },
+      "final": {
+        "value": 0
+      },
+      "special": {
+        "value": 0
+      },
+      "value": 30
+    },
+    "initiative": {
+      "base": {
+        "value": -10
+      },
+      "final": {
+        "value": 0
+      },
+      "special": {
+        "value": 0
+      },
+      "value": -10
+    },
+    "presence": {
+      "base": {
+        "value": 15
+      },
+      "final": {
+        "value": 0
+      },
+      "special": {
+        "value": 0
+      },
+      "value": 0
+    },
+    "size": {
+      "value": "medium"
+    },
+    "strRequired": {
+      "oneHand": {
+        "base": {
+          "value": 5
+        },
+        "final": {
+          "value": 0
+        },
+        "value": 5
+      },
+      "twoHands": {
+        "base": {
+          "value": 0
+        },
+        "final": {
+          "value": 0
+        },
+        "value": 0
+      }
+    },
+    "quality": {
+      "value": 0
+    },
+    "oneOrTwoHanded": {
+      "value": ""
+    },
+    "knowledgeType": {
+      "value": ""
+    },
+    "manageabilityType": {
+      "value": "one_hand"
+    },
+    "shotType": {
+      "value": "throw"
+    },
+    "isRanged": {
+      "value": true
+    },
+    "range": {
+      "base": {
+        "value": 20
+      },
+      "final": {
+        "value": 0
+      },
+      "value": 0
+    },
+    "cadence": {
+      "value": 80
+    },
+    "reload": {
+      "base": {
+        "value": 0
+      },
+      "final": {
+        "value": 0
+      },
+      "value": 0
+    },
+    "sizeProportion": {
+      "value": "normal"
+    },
+    "weaponStrength": {
+      "base": {
+        "value": 0
+      },
+      "final": {
+        "value": 0
+      }
+    },
+    "critic": {
+      "primary": {
+        "value": "impact"
+      },
+      "secondary": {
+        "value": "-"
+      }
+    },
+    "weaponFue": {
+      "value": 0
+    },
+    "initiativeBase": {
+      "value": 0
+    },
+    "fueRequired": {
+      "value": ""
+    },
+    "isShield": {
+      "value": false
+    },
+    "qualities": {
+      "value": [
+        "grappling",
+        "complex",
+        "throwable"
+      ]
+    },
+    "notes": {
+      "value": ""
+    },
+    "qualityParams": {
+      "value": {
+        "grappling": {
+          "grappleStrength": 10
         }
+      }
     },
-    "system": {
-        "special": {
-            "value": "Ver"
-        },
-        "integrity": {
-            "base": {
-                "value": 6
-            },
-            "final": {
-                "value": 0
-            },
-            "special": {
-                "value": 0
-            },
-            "value": 6
-        },
-        "breaking": {
-            "base": {
-                "value": 2
-            },
-            "final": {
-                "value": 0
-            },
-            "special": {
-                "value": 0
-            },
-            "value": 2
-        },
-        "attack": {
-            "base": {
-                "value": 0
-            },
-            "final": {
-                "value": 0
-            },
-            "special": {
-                "value": 0
-            },
-            "value": 0
-        },
-        "block": {
-            "base": {
-                "value": 0
-            },
-            "final": {
-                "value": 0
-            },
-            "special": {
-                "value": 0
-            },
-            "value": 0
-        },
-        "damage": {
-            "base": {
-                "value": 30
-            },
-            "final": {
-                "value": 0
-            },
-            "special": {
-                "value": 0
-            },
-            "value": 30
-        },
-        "initiative": {
-            "base": {
-                "value": -10
-            },
-            "final": {
-                "value": 0
-            },
-            "special": {
-                "value": 0
-            },
-            "value": -10
-        },
-        "presence": {
-            "base": {
-                "value": 15
-            },
-            "final": {
-                "value": 0
-            },
-            "special": {
-                "value": 0
-            },
-            "value": 0
-        },
-        "size": {
-            "value": "medium"
-        },
-        "strRequired": {
-            "oneHand": {
-                "base": {
-                    "value": 5
-                },
-                "final": {
-                    "value": 0
-                },
-                "value": 5
-            },
-            "twoHands": {
-                "base": {
-                    "value": 0
-                },
-                "final": {
-                    "value": 0
-                },
-                "value": 0
-            }
-        },
-        "quality": {
-            "value": 0
-        },
-        "oneOrTwoHanded": {
-            "value": ""
-        },
-        "knowledgeType": {
-            "value": ""
-        },
-        "manageabilityType": {
-            "value": "one_hand"
-        },
-        "shotType": {
-            "value": "throw"
-        },
-        "isRanged": {
-            "value": true
-        },
-        "range": {
-            "base": {
-                "value": 20
-            },
-            "final": {
-                "value": 0
-            },
-            "value": 0
-        },
-        "cadence": {
-            "value": 80
-        },
-        "reload": {
-            "base": {
-                "value": 0
-            },
-            "final": {
-                "value": 0
-            },
-            "value": 0
-        },
-        "sizeProportion": {
-            "value": "normal"
-        },
-        "weaponStrength": {
-            "base": {
-                "value": 0
-            },
-            "final": {
-                "value": 0
-            }
-        },
-        "critic": {
-            "primary": {
-                "value": "impact"
-            },
-            "secondary": {
-                "value": "-"
-            }
-        },
-        "weaponFue": {
-            "value": 0
-        },
-        "initiativeBase": {
-            "value": 0
-        },
-        "fueRequired": {
-            "value": ""
-        },
-        "isShield": {
-            "value": false
-        },
-        "qualities": {
-            "value": [
-                "grappling",
-                "complex",
-                "throwable"
-            ]
-        },
-        "notes": {
-            "value": ""
-        },
-        "qualityParams": {
-            "value": {
-                "grappling": {
-                    "grappleStrength": 10
-                }
-            }
-        }
-    },
-    "_stats": {
-        "systemId": "animabf",
-        "systemVersion": "2.0.1",
-        "coreVersion": "13.345",
-        "createdTime": 1690991077233,
-        "modifiedTime": 1691058443100,
-        "lastModifiedBy": "jsmBo00pwrK7EnHs"
-    },
-    "_id": "HeYMBEp4AYvrDsUS",
-    "sort": 0,
-    "ownership": {
-        "default": 0,
-        "jsmBo00pwrK7EnHs": 3
-    },
-    "_key": "!items!HeYMBEp4AYvrDsUS"
+    "allowsPresa": {
+      "value": true
+    }
+  },
+  "_stats": {
+    "systemId": "animabf",
+    "systemVersion": "2.0.1",
+    "coreVersion": "13.345",
+    "createdTime": 1690991077233,
+    "modifiedTime": 1691058443100,
+    "lastModifiedBy": "jsmBo00pwrK7EnHs"
+  },
+  "_id": "HeYMBEp4AYvrDsUS",
+  "sort": 0,
+  "ownership": {
+    "default": 0,
+    "jsmBo00pwrK7EnHs": 3
+  },
+  "_key": "!items!HeYMBEp4AYvrDsUS"
 }

@@ -1,258 +1,261 @@
 {
-    "name": "Piscis",
-    "type": "weapon",
-    "img": "icons/svg/item-bag.svg",
-    "effects": [],
-    "folder": "3IjK7OoUu4uHOuK3",
-    "flags": {
-        "core": {},
-        "cf": {
-            "id": "temp_tz3kaxdm2zq",
-            "color": "#000000"
+  "name": "Piscis",
+  "type": "weapon",
+  "img": "icons/svg/item-bag.svg",
+  "effects": [],
+  "folder": "3IjK7OoUu4uHOuK3",
+  "flags": {
+    "core": {},
+    "cf": {
+      "id": "temp_tz3kaxdm2zq",
+      "color": "#000000"
+    }
+  },
+  "system": {
+    "equipped": {
+      "value": false
+    },
+    "isShield": {
+      "value": false
+    },
+    "ignoreArmor": {
+      "value": false
+    },
+    "special": {
+      "value": "Alcance (8m)"
+    },
+    "integrity": {
+      "base": {
+        "value": 8
+      },
+      "final": {
+        "value": 0
+      },
+      "special": {
+        "value": 0
+      },
+      "value": 8
+    },
+    "breaking": {
+      "base": {
+        "value": -2
+      },
+      "final": {
+        "value": 0
+      },
+      "special": {
+        "value": 0
+      },
+      "value": -2
+    },
+    "reducedArmor": {
+      "base": {
+        "value": 0
+      },
+      "final": {
+        "value": 0
+      },
+      "special": {
+        "value": 0
+      }
+    },
+    "attack": {
+      "base": {
+        "value": 0
+      },
+      "final": {
+        "value": 0
+      },
+      "special": {
+        "value": 0
+      },
+      "value": 0
+    },
+    "block": {
+      "base": {
+        "value": 0
+      },
+      "final": {
+        "value": 0
+      },
+      "special": {
+        "value": 0
+      },
+      "value": 0
+    },
+    "damage": {
+      "base": {
+        "value": 30
+      },
+      "final": {
+        "value": 0
+      },
+      "special": {
+        "value": 0
+      },
+      "formula": {
+        "value": "30+@characteristics.primaries.dexterity.mod"
+      },
+      "applyQualityInFormula": {
+        "value": true
+      },
+      "value": 30
+    },
+    "initiative": {
+      "base": {
+        "value": 20
+      },
+      "final": {
+        "value": 0
+      },
+      "special": {
+        "value": 0
+      },
+      "value": 20
+    },
+    "presence": {
+      "base": {
+        "value": 20
+      },
+      "final": {
+        "value": 0
+      },
+      "special": {
+        "value": 0
+      },
+      "value": 0
+    },
+    "size": {
+      "value": "small"
+    },
+    "strRequired": {
+      "oneHand": {
+        "base": {
+          "value": 0
+        },
+        "final": {
+          "value": 0
+        },
+        "value": 0
+      },
+      "twoHands": {
+        "base": {
+          "value": 0
+        },
+        "final": {
+          "value": 0
+        },
+        "value": 0
+      }
+    },
+    "quality": {
+      "value": 0
+    },
+    "oneOrTwoHanded": {
+      "value": ""
+    },
+    "knowledgeType": {
+      "value": ""
+    },
+    "manageabilityType": {
+      "value": "one_hand"
+    },
+    "shotType": {
+      "value": "throw"
+    },
+    "isRanged": {
+      "value": false
+    },
+    "range": {
+      "base": {
+        "value": 0
+      },
+      "final": {
+        "value": 0
+      },
+      "value": 0
+    },
+    "cadence": {
+      "value": ""
+    },
+    "reload": {
+      "base": {
+        "value": 0
+      },
+      "final": {
+        "value": 0
+      },
+      "value": 0
+    },
+    "sizeProportion": {
+      "value": "normal"
+    },
+    "hasOwnStr": {
+      "value": false
+    },
+    "weaponStrength": {
+      "base": {
+        "value": 0
+      },
+      "final": {
+        "value": 0
+      }
+    },
+    "critic": {
+      "primary": {
+        "value": "impact"
+      },
+      "secondary": {
+        "value": "-"
+      }
+    },
+    "useCustomFormula": {
+      "value": true
+    },
+    "weaponFue": {
+      "value": 0
+    },
+    "initiativeBase": {
+      "value": 0
+    },
+    "fueRequired": {
+      "value": ""
+    },
+    "qualities": {
+      "value": [
+        "grappling"
+      ]
+    },
+    "notes": {
+      "value": ""
+    },
+    "qualityParams": {
+      "value": {
+        "grappling": {
+          "grappleStrength": 8
         }
+      }
     },
-    "system": {
-        "equipped": {
-            "value": false
-        },
-        "isShield": {
-            "value": false
-        },
-        "ignoreArmor": {
-            "value": false
-        },
-        "special": {
-            "value": "Alcance (8m)"
-        },
-        "integrity": {
-            "base": {
-                "value": 8
-            },
-            "final": {
-                "value": 0
-            },
-            "special": {
-                "value": 0
-            },
-            "value": 8
-        },
-        "breaking": {
-            "base": {
-                "value": -2
-            },
-            "final": {
-                "value": 0
-            },
-            "special": {
-                "value": 0
-            },
-            "value": -2
-        },
-        "reducedArmor": {
-            "base": {
-                "value": 0
-            },
-            "final": {
-                "value": 0
-            },
-            "special": {
-                "value": 0
-            }
-        },
-        "attack": {
-            "base": {
-                "value": 0
-            },
-            "final": {
-                "value": 0
-            },
-            "special": {
-                "value": 0
-            },
-            "value": 0
-        },
-        "block": {
-            "base": {
-                "value": 0
-            },
-            "final": {
-                "value": 0
-            },
-            "special": {
-                "value": 0
-            },
-            "value": 0
-        },
-        "damage": {
-            "base": {
-                "value": 30
-            },
-            "final": {
-                "value": 0
-            },
-            "special": {
-                "value": 0
-            },
-            "formula": {
-                "value": "30+@characteristics.primaries.dexterity.mod"
-            },
-            "applyQualityInFormula": {
-                "value": true
-            },
-            "value": 30
-        },
-        "initiative": {
-            "base": {
-                "value": 20
-            },
-            "final": {
-                "value": 0
-            },
-            "special": {
-                "value": 0
-            },
-            "value": 20
-        },
-        "presence": {
-            "base": {
-                "value": 20
-            },
-            "final": {
-                "value": 0
-            },
-            "special": {
-                "value": 0
-            },
-            "value": 0
-        },
-        "size": {
-            "value": "small"
-        },
-        "strRequired": {
-            "oneHand": {
-                "base": {
-                    "value": 0
-                },
-                "final": {
-                    "value": 0
-                },
-                "value": 0
-            },
-            "twoHands": {
-                "base": {
-                    "value": 0
-                },
-                "final": {
-                    "value": 0
-                },
-                "value": 0
-            }
-        },
-        "quality": {
-            "value": 0
-        },
-        "oneOrTwoHanded": {
-            "value": ""
-        },
-        "knowledgeType": {
-            "value": ""
-        },
-        "manageabilityType": {
-            "value": "one_hand"
-        },
-        "shotType": {
-            "value": "throw"
-        },
-        "isRanged": {
-            "value": false
-        },
-        "range": {
-            "base": {
-                "value": 0
-            },
-            "final": {
-                "value": 0
-            },
-            "value": 0
-        },
-        "cadence": {
-            "value": ""
-        },
-        "reload": {
-            "base": {
-                "value": 0
-            },
-            "final": {
-                "value": 0
-            },
-            "value": 0
-        },
-        "sizeProportion": {
-            "value": "normal"
-        },
-        "hasOwnStr": {
-            "value": false
-        },
-        "weaponStrength": {
-            "base": {
-                "value": 0
-            },
-            "final": {
-                "value": 0
-            }
-        },
-        "critic": {
-            "primary": {
-                "value": "impact"
-            },
-            "secondary": {
-                "value": "-"
-            }
-        },
-        "useCustomFormula": {
-            "value": true
-        },
-        "weaponFue": {
-            "value": 0
-        },
-        "initiativeBase": {
-            "value": 0
-        },
-        "fueRequired": {
-            "value": ""
-        },
-        "qualities": {
-            "value": [
-                "grappling"
-            ]
-        },
-        "notes": {
-            "value": ""
-        },
-        "qualityParams": {
-            "value": {
-                "grappling": {
-                    "grappleStrength": 8
-                }
-            }
-        }
-    },
-    "_stats": {
-        "systemId": "animabf",
-        "systemVersion": "2.0.5",
-        "coreVersion": "13.351",
-        "createdTime": 1690991077555,
-        "modifiedTime": 1764249579218,
-        "lastModifiedBy": "s1iIg3oHOkECBfdY",
-        "compendiumSource": null,
-        "duplicateSource": null,
-        "exportSource": null
-    },
-    "_id": "Q5S8BWlJkXkU19JD",
-    "sort": 700000,
-    "ownership": {
-        "default": 0,
-        "jsmBo00pwrK7EnHs": 3
-    },
-    "_key": "!items!Q5S8BWlJkXkU19JD"
+    "allowsPresa": {
+      "value": true
+    }
+  },
+  "_stats": {
+    "systemId": "animabf",
+    "systemVersion": "2.0.5",
+    "coreVersion": "13.351",
+    "createdTime": 1690991077555,
+    "modifiedTime": 1764249579218,
+    "lastModifiedBy": "s1iIg3oHOkECBfdY",
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null
+  },
+  "_id": "Q5S8BWlJkXkU19JD",
+  "sort": 700000,
+  "ownership": {
+    "default": 0,
+    "jsmBo00pwrK7EnHs": 3
+  },
+  "_key": "!items!Q5S8BWlJkXkU19JD"
 }
