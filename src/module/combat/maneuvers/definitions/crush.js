@@ -2,8 +2,8 @@ import { ManeuverDefinition } from '../ManeuverDefinition.js';
 
 /**
  * Aplastar (sub-Presa)
- * Core — el personaje que ya ha apresado (sin armas) a un enemigo en
- * Parálisis total o completa puede triturarlo con su fuerza física.
+ * Core — el personaje que ya ha apresado (sin armas) a un enemigo puede
+ * triturarlo con su fuerza física.
  *
  * - Sin tirada de ataque previa: se ejecuta como control enfrentado FUE
  *   vs FUE.
@@ -14,9 +14,17 @@ import { ManeuverDefinition } from '../ManeuverDefinition.js';
  * - El control de Aplastar es DISTINTO del control para liberarse: la
  *   víctima puede seguir intentando escapar en su asalto.
  *
- * RAW excluye:
- *   - Parálisis parcial (insuficiente para sujetar al rival).
- *   - Apresar con armas (la maniobra requiere "fuerza física").
+ * Precondiciones (RAW + corrección de mesa):
+ *   - El atacante debe estar apresando a alguien.
+ *   - La Presa debe haberse hecho sin armas ("fuerza física").
+ *   - El defensor debe estar en Parálisis parcial o completa.
+ *     (Corrección de mesa: parcial SÍ permite Aplastar. "Total" y "completa"
+ *     son el mismo estado; el nombre estándar del sistema es "completa".)
+ *
+ * Estas precondiciones se declaran como `predicate` (Fase 3) y las evalúa el
+ * runner contra el set combinado self:* (atacante) + defender:* (defensor).
+ * `requiredDefenderStates` se mantiene por compatibilidad y como dato para los
+ * mensajes de aviso del runner.
  */
 export const crush = new ManeuverDefinition({
   slug: 'crush',
@@ -28,7 +36,22 @@ export const crush = new ManeuverDefinition({
   noAttackPhase: true,
   requiresGrappling: true,
   requiresUnarmedGrapple: true,
-  requiredDefenderStates: ['Parálisis total', 'Parálisis completa'],
+  requiredDefenderStates: ['Parálisis parcial', 'Parálisis completa'],
+
+  // Declarative preconditions (Phase 3). Evaluated against the combined
+  // grapple option set (self:* attacker + defender:*). Mirrors the three
+  // requirements above; parcial is allowed (table correction). "Total" is
+  // not listed because it is the same state as "completa" (standard name).
+  predicate: [
+    'self:grappling',
+    'self:grapple:unarmed',
+    {
+      or: [
+        'defender:condition:paralisis-parcial',
+        'defender:condition:paralisis-completa'
+      ]
+    }
+  ],
 
   // Inert fields the framework expects.
   attackPenalty: 0,

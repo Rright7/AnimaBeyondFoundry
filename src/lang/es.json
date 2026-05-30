@@ -1020,7 +1020,7 @@
   "anima.maneuvers.mounted.name": "Montar",
   "anima.maneuvers.mounted.description": "Estado: si Montar<0 aplica -20 a ataque y parar; si Montar>40 aplica +20 a ataque (posición superior); siempre limita la esquiva al valor de Montar. Declarar al subirse a la montura. Pulsa Ejecutar para activar o desactivar.",
   "anima.maneuvers.crush.name": "Aplastar",
-  "anima.maneuvers.crush.description": "Sub-Presa. Solo si el atacante apresó sin armas y el defensor está en Parálisis Total o Completa. Sin tirada de ataque: FUE vs FUE (defensor suma +1 por punto de TA contundente). Daño automático 10 por punto de diferencia, 20 por punto si diff>6.",
+  "anima.maneuvers.crush.description": "Sub-Presa. Solo si el atacante apresó sin armas y el defensor está en Parálisis Parcial o Completa. Sin tirada de ataque: FUE vs FUE (defensor suma +1 por punto de TA contundente). Daño automático 10 por punto de diferencia, 20 por punto si diff>6.",
   "anima.maneuvers.inutilizar.name": "Inutilizar",
   "anima.maneuvers.inutilizar.description": "Golpe apuntado a brazo o pierna (-20). Daño/2, crítico cuenta el daño pleno. La extremidad cuenta como punto débil.",
   "anima.maneuvers.inconsciencia.name": "Inconsciencia",

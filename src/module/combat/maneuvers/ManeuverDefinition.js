@@ -131,6 +131,15 @@ export class ManeuverDefinition {
       ? data.requiredDefenderStates.slice()
       : [];
 
+    // Optional predicate (Phase 3): preconditions for the maneuver expressed
+    // declaratively against roll options (see effectFow/predicates/Predicate
+    // and effectFow/rollOptions/buildGrappleOptions). An empty/absent
+    // predicate means "no precondition" — additive and inert by default, so
+    // existing maneuvers are unaffected. The runner evaluates it before
+    // launching the maneuver. For two-actor maneuvers (Aplastar) the option
+    // set combines self:* (attacker) and defender:* facts.
+    this.predicate = Array.isArray(data.predicate) ? data.predicate.slice() : [];
+
     // Damage formula for auto-damage maneuvers (Aplastar). The engine
     // calls this with the opposed-check difference and the defender's
     // impact armor to produce the final damage.
