@@ -20,6 +20,7 @@ import { ABFSettingsKeys } from '../registerSettings.js';
 
 export const handlers = {
   'animabf-resolve-critical': startCriticalResolution,
+  'animabf-force-critical': forceCritical,
   'animabf-crit-roll-level': rollCritLevel,
   'animabf-crit-roll-phr': rollPhR,
   'animabf-crit-roll-location': rollLocation
@@ -170,6 +171,32 @@ async function startCriticalResolution(message, _html, ds) {
     await patchAndRender(msg, { critPhase: 'rollCritLevel' });
   } catch (err) {
     console.error('[ABF] startCriticalResolution error:', err);
+  }
+}
+
+// ─── GM forces a critical that did not auto-trigger ──────────────
+
+/**
+ * GM-only: mark a non-critical hit as critical and start the normal critical
+ * resolution flow. Reuses startCriticalResolution (immunity check + phase
+ * 'rollCritLevel'); the only extra step is setting isCritical=true first, since
+ * startCriticalResolution bails when isCritical is false. Triggered by the
+ * "Forzar crítico" button shown on the chat card when the hit landed but did
+ * not reach the critical threshold.
+ */
+async function forceCritical(message, _html, ds) {
+  try {
+    if (!game.user.isGM) return;
+    const msg = getMsg(message, ds);
+    if (!msg) return;
+
+    const result = msg.flags?.animabf?.result;
+    if (!result || result.isCritical || result.critResolved) return;
+
+    await patchAndRender(msg, { isCritical: true });
+    await startCriticalResolution(message, _html, ds);
+  } catch (err) {
+    console.error('[ABF] forceCritical error:', err);
   }
 }
 

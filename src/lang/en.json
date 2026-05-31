@@ -926,6 +926,7 @@
   "chat.combatResult.no": "No",
   "chat.combatResult.baseCriticalValue": "Base Critical Value",
   "chat.combatResult.rollCritLevel": "Roll critical level",
+  "chat.combatResult.forceCriticalButton": "Force critical",
   "chat.combatResult.rollPhR": "Roll Physical Resistance",
   "chat.combatResult.rollLocation": "Roll location",
   "chat.combatResult.appliedDamage": "damage applied",

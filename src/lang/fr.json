@@ -810,6 +810,7 @@
   "chat.combatResult.no": "Non",
   "chat.combatResult.baseCriticalValue": "Valeur critique de base",
   "chat.combatResult.rollCritLevel": "Lancer le niveau de critique",
+  "chat.combatResult.forceCriticalButton": "Forcer le critique",
   "chat.combatResult.rollPhR": "Lancer la Résistance Physique",
   "chat.combatResult.rollLocation": "Lancer la localisation",
   "chat.combatResult.appliedDamage": "dégâts appliqués",
