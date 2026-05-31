@@ -1,0 +1,43 @@
+{
+  "name": "Desangrándose",
+  "type": "effect",
+  "img": "icons/svg/blood.svg",
+  "system": {
+    "active": true,
+    "category": {
+      "value": "generic"
+    },
+    "modifiers": [],
+    "effectData": {
+      "icon": "icons/svg/blood.svg",
+      "disabled": false,
+      "changes": [
+        {
+          "key": "system.general.modifiers.allActions.final.value",
+          "type": "add",
+          "value": "0",
+          "priority": null
+        }
+      ],
+      "duration": {
+        "startTime": null,
+        "combat": null,
+        "seconds": null,
+        "rounds": null,
+        "turns": null,
+        "startRound": null,
+        "startTurn": null
+      },
+      "transfer": false,
+      "flags": {}
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "DsngrBld00000001",
+  "sort": 510000,
+  "_key": "!items!DsngrBld00000001"
+}

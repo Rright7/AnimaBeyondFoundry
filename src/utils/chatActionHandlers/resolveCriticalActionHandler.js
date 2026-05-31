@@ -2,6 +2,7 @@ import { lookupLocation, determineCriticalEffects } from '../../module/combat/cr
 import { Templates } from '../../module/utils/constants.js';
 import { openCriticalRollDialog } from '../../module/dialogs/combat/CriticalRollDialog.js';
 import { ABFSettingsKeys } from '../registerSettings.js';
+import { startBleeding } from '../../module/combat/bleedingEffect.js';
 
 /**
  * Multi-phase critical hit resolution via chat buttons.
@@ -166,6 +167,13 @@ async function startCriticalResolution(message, _html, ds) {
       });
       return;
     }
+
+    // Desangramiento (RAW "Desangrarse"): recibir un crítico provoca hemorragia
+    // aunque luego se resista (incluso si no produce efectos), salvo inmunes
+    // (regen>=6/sin sangre) y ataques de energía. Best-effort: no bloquea la
+    // resolución del crítico. startBleeding hace sus propias comprobaciones.
+    const critType = animabf.attackData?.armorType ?? result?.armorType ?? '';
+    await startBleeding(defenderActor, { critType });
 
     // Move to phase: roll crit level
     await patchAndRender(msg, { critPhase: 'rollCritLevel' });

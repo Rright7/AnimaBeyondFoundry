@@ -1,4 +1,5 @@
 import { openModDialog } from '../utils/dialogs/openSimpleInputDialog';
+import { tickBleeding } from './bleedingEffect.js';
 
 export default class ABFCombat extends Combat {
   /**
@@ -35,6 +36,9 @@ export default class ABFCombat extends Combat {
       token?.actor?.resetDefensesCounter();
       token?.actor?.consumeMaintainedZeon();
       token?.actor?.psychicShieldsMaintenance();
+      // Desangramiento: 1 PV cada 20 asaltos mientras dure el sangrado.
+      // (Guarded internamente; no bloquea el avance de ronda.)
+      if (token?.actor) await tickBleeding(token.actor, 1);
     }
 
     return super.nextRound();
