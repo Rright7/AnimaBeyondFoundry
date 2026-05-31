@@ -92,7 +92,8 @@ export class AttackConfigurationDialog extends FormApplication {
               penalty: Number(maneuverPenalty ?? 0),
               wasUnarmed: !!maneuverWasUnarmed,
               damageAllowed: !!def?.damageAllowed,
-              damageHalvedIfApplied: !!def?.damageHalvedIfApplied
+              damageHalvedIfApplied: !!def?.damageHalvedIfApplied,
+              damageMandatory: !!def?.dealsMandatoryDamage
             };
           })()
         : null,

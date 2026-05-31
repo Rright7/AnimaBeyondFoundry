@@ -41,6 +41,11 @@ export function computeCombatResult(attackData, defenseData) {
   let baseDamage = getFinalBaseDamage(attackData, defenseData);
   let finalArmor = getFinalArmor(attackData, defenseData);
 
+  // Full (pre-halving) base damage, kept for the critical calculation: aimed
+  // maneuvers (Inutilizar/Inconsciencia) deal half damage to HP but the crit is
+  // computed from the FULL damage (RAW). baseDamage itself may be halved below.
+  const baseDamageFull = baseDamage;
+
   // Combat maneuver: three RAW interactions with damage and armor:
   //
   // 1. Maneuver but no damage opted (causesDamage=false):
@@ -48,21 +53,30 @@ export function computeCombatResult(attackData, defenseData) {
   //    - finalDamage is forced to 0 below (the maneuver passes through
   //      armor but does no harm).
   //
-  // 2. Maneuver with damage opted (causesDamage=true) and
+  // 2. Maneuver with damage (causesDamage=true) and
   //    damageHalvedIfApplied=true (Derribo, Presa, Inutilizar,
   //    Inconsciencia):
   //    - baseDamage /= 2 and TA applies NORMALLY (forceTAZero ignored).
   //    - RAW: "el atacante puede causar daño si lo desea, pero queda
   //      reducido a la mitad y sí se aplica la armadura del defensor".
+  //    - For maneuvers whose damage is INTRINSIC (def.dealsMandatoryDamage:
+  //      Inutilizar, Inconsciencia) causesDamage is forced true below, so they
+  //      always take this halving path regardless of the "Causar daño" checkbox.
   //
   // 3. Maneuver with damage opted but damageHalvedIfApplied=false:
   //    - Damage and TA computed normally (no special interaction).
   const maneuverSlug = attackData.maneuverSlug || '';
   let suppressDamage = false;
-  let damageHalvedApplied = false;
+  // When true, the critical uses the FULL (pre-halved) damage even though HP
+  // loss stays halved — set only for maneuvers whose damage is intrinsic and
+  // halved (def.dealsMandatoryDamage: Inutilizar, Inconsciencia).
+  let critUsesFullDamage = false;
   if (maneuverSlug) {
     const def = game.animabf?.maneuvers?.get?.(maneuverSlug);
-    const causesDamage = !!attackData.causesDamage;
+    // Maneuvers with intrinsic damage (def.dealsMandatoryDamage) always deal
+    // (halved) damage — the attacker does not choose, so treat them as if
+    // "Causar daño" were checked.
+    const causesDamage = !!attackData.causesDamage || !!def?.dealsMandatoryDamage;
     if (def) {
       if (def.damageAllowed && !causesDamage) {
         // Path 1: maneuver without damage — armor bypass + 0 damage.
@@ -75,7 +89,9 @@ export function computeCombatResult(attackData, defenseData) {
       ) {
         // Path 2: damage with halved base and normal TA.
         baseDamage = Math.floor(baseDamage / 2);
-        damageHalvedApplied = true;
+        // RAW: aimed maneuvers count the FULL damage for the critical (trigger
+        // + level), while HP loss stays halved.
+        critUsesFullDamage = !!def.dealsMandatoryDamage;
       } else if (def.forceTAZero && !def.damageAllowed) {
         // Maneuvers like Engatillar that never deal damage but still
         // ignore TA when checking thresholds.
@@ -107,9 +123,19 @@ export function computeCombatResult(attackData, defenseData) {
   // critical drops from 50% to 10% of the defender's life. Maneuvers like
   // Inutilizar mark the targeted limb as vulnerable too so a relatively low
   // damage still triggers the critical roll.
+  // Critical uses the FULL damage for aimed maneuvers (Inutilizar/Inconsciencia):
+  // both the trigger (% of life vs threshold) and the level are computed from
+  // the un-halved damage, while HP loss (finalDamage) stays halved. In every
+  // other case critDamage === finalDamage, so behaviour is unchanged.
+  const critDamage = critUsesFullDamage
+    ? Math.ceil((baseDamageFull * damagePercentage) / 100)
+    : finalDamage;
+  const critLifePercent =
+    lifeBeforeAttack > 0 ? (critDamage / lifeBeforeAttack) * 100 : 100;
+
   const criticThreshold = isAimedAtVulnerableZone(attackData) ? 10 : 50;
-  const isCritical = lifePercentRemoved >= criticThreshold || attackData.automaticCrit; //TO-DO: Add crit inmunity
-  const critValue = finalDamage + attackData.critBonus + (attackData.critDamageBonus ?? 0);
+  const isCritical = critLifePercent >= criticThreshold || attackData.automaticCrit; //TO-DO: Add crit inmunity
+  const critValue = critDamage + attackData.critBonus + (attackData.critDamageBonus ?? 0);
 
   const result = ABFCombatResultData.builder()
     .difference(difference)

@@ -27,6 +27,8 @@ export const inutilizar = new ManeuverDefinition({
   forceTAZero: false,
   damageAllowed: true,
   // Damage is halved on application; crit calculation uses the full base.
+  // Because forceTAZero is false, ManeuverDefinition.dealsMandatoryDamage is
+  // true → the halved damage is applied always (not an opt-in checkbox).
   damageHalvedIfApplied: true,
 
   damageThresholdPercent: 1,

@@ -129,19 +129,22 @@
             inputValue=(is 'eq' this.attacker.combat.automaticCrit true) }}
       </div></div>
 
-      {{!-- Causar daño: only shown when the active maneuver permits the
-            attacker to opt for damage (Derribo, Presa, Inutilizar,
-            Inconsciencia). OFF by default per RAW: the attacker
-            explicitly chooses to deal damage; if marked, the base
-            damage is halved and the defender's armor applies normally. --}}
+      {{!-- Causar daño: opt-in checkbox, only for maneuvers where damage is a
+            CHOICE (Derribo, Presa, Desarme). OFF by default per RAW: the
+            attacker explicitly chooses to deal damage; if marked, the base
+            damage is halved and the defender's armor applies normally.
+            Maneuvers with damageMandatory (Inutilizar, Inconsciencia) ALWAYS
+            deal halved damage, so the checkbox is hidden — it is not a choice. --}}
       {{#if this.maneuver.damageAllowed}}
-        <div class='columns'><div>
-          {{> "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
-              title=(localize 'macros.combat.dialog.causesDamage.title')
-              inputType="checkbox"
-              inputName="attacker.combat.causesDamage"
-              inputValue=(is 'eq' this.attacker.combat.causesDamage true) }}
-        </div></div>
+        {{#unless this.maneuver.damageMandatory}}
+          <div class='columns'><div>
+            {{> "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
+                title=(localize 'macros.combat.dialog.causesDamage.title')
+                inputType="checkbox"
+                inputName="attacker.combat.causesDamage"
+                inputValue=(is 'eq' this.attacker.combat.causesDamage true) }}
+          </div></div>
+        {{/unless}}
       {{/if}}
 
       {{!-- {{#if this.attacker.combat.projectile.value}}

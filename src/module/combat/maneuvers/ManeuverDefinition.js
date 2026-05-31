@@ -155,6 +155,19 @@ export class ManeuverDefinition {
   }
 
   /**
+   * True when this maneuver's damage is INTRINSIC (always dealt, halved) rather
+   * than an opt-in choice. Derived from the existing flags — no separate data
+   * field needed: a maneuver that halves damage but does NOT force TA to zero is
+   * an aimed damaging strike (Inutilizar, Inconsciencia), where RAW makes the
+   * halved damage mandatory. forceTAZero maneuvers (Presa/Derribo/Desarme) are
+   * grapples where dealing damage stays optional, so they are excluded.
+   * @returns {boolean}
+   */
+  get dealsMandatoryDamage() {
+    return this.damageHalvedIfApplied && !this.forceTAZero;
+  }
+
+  /**
    * Compute the actual attack penalty given the weapon used.
    * @param {Item|null} weapon
    * @returns {number}

@@ -19,6 +19,8 @@ export const inconsciencia = new ManeuverDefinition({
 
   forceTAZero: false,
   damageAllowed: true,
+  // forceTAZero is false → ManeuverDefinition.dealsMandatoryDamage is true, so
+  // the halved damage is applied always (not an opt-in checkbox).
   damageHalvedIfApplied: true,
 
   damageThresholdPercent: 1,
