@@ -109,22 +109,12 @@ export function executeCombatManeuver(sheet, e) {
     maneuverPenalty = def.getAttackPenalty(equipped);
   }
 
-  // Inconsciencia: if a bludgeoning weapon is required and the equipped one
-  // is not, add the declared extra penalty and warn the user.
-  if (def.requiresImpactCritic && equipped) {
-    const primaryCritic = equipped.system?.critic?.primary?.value;
-    if (primaryCritic && primaryCritic !== 'impact') {
-      const extra = Number(def.nonImpactCriticExtraPenalty ?? 0);
-      if (extra !== 0) {
-        maneuverPenalty += extra;
-        ui.notifications.info(
-          `${name} con arma no-contundente: ${extra} adicional (total ${maneuverPenalty}).`
-        );
-      }
-    }
-  }
-
-  // Apply weapon-quality modifiers to the maneuver penalty.
+  // Apply weapon-quality modifiers to the AIMED/base penalty FIRST, BEFORE any
+  // maneuver-specific extra penalty is added (see requiresImpactCritic below).
+  // This matters for Inconsciencia: Precisa (RAW) halves only the aimed-location
+  // penalty (Tabla 45), NOT the -40 for using a non-bludgeoning weapon — so the
+  // composition must run before that extra is applied, or Precisa would halve
+  // the combined penalty (the -50 bug).
   //
   // Two distinct paths, never both: one would be double-counting since
   // Precisa (and any future quality that halves penalties) lives in both
@@ -158,6 +148,23 @@ export function executeCombatManeuver(sheet, e) {
           `modifican el penalizador (${before} → ${composed.penalty}).`
       );
       maneuverPenalty = composed.penalty;
+    }
+  }
+
+  // Inconsciencia: if a bludgeoning weapon is required and the equipped one is
+  // not, add the declared extra penalty. Added AFTER quality composition so a
+  // quality like Precisa never halves this -40 — Precisa only halves the aimed
+  // penalty above (RAW).
+  if (def.requiresImpactCritic && equipped) {
+    const primaryCritic = equipped.system?.critic?.primary?.value;
+    if (primaryCritic && primaryCritic !== 'impact') {
+      const extra = Number(def.nonImpactCriticExtraPenalty ?? 0);
+      if (extra !== 0) {
+        maneuverPenalty += extra;
+        ui.notifications.info(
+          `${name} con arma no-contundente: ${extra} adicional (total ${maneuverPenalty}).`
+        );
+      }
     }
   }
 
