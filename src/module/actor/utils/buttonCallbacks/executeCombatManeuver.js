@@ -31,17 +31,17 @@ import {
  * (table decision).
  */
 export function executeCombatManeuver(sheet, e) {
-  const maneuverId = e.currentTarget.dataset.maneuverId;
-  if (!maneuverId) return;
+  const ds = e.currentTarget.dataset;
 
-  const item = sheet.actor?.items?.get(maneuverId);
-  if (!item) return ui.notifications.warn('Maniobra no encontrada.');
+  // The maneuver may come from a CUSTOM embedded Item (data-maneuver-id) or
+  // from a CANONICAL registry maneuver rendered straight in the tab
+  // (data-maneuver-slug, no embedded Item). Resolve both shapes.
+  const item = ds.maneuverId ? sheet.actor?.items?.get(ds.maneuverId) : null;
+  if (ds.maneuverId && !item) return ui.notifications.warn('Maniobra no encontrada.');
 
-  const slug = item.system?.slug?.value;
+  const slug = item ? item.system?.slug?.value : ds.maneuverSlug;
   if (!slug) {
-    return ui.notifications.warn(
-      `La maniobra "${item.name}" no tiene slug; no se puede ejecutar.`
-    );
+    return ui.notifications.warn('La maniobra no tiene slug; no se puede ejecutar.');
   }
 
   const def = game.animabf?.maneuvers?.get?.(slug);
@@ -51,17 +51,23 @@ export function executeCombatManeuver(sheet, e) {
     );
   }
 
+  // Display name + a minimal item-like object so the runners that expect an
+  // Item (toggleStatusManeuver / runSubGrappleManeuver — they read .name and
+  // .system.slug.value) also work for canonical maneuvers with no embedded Item.
+  const name = item?.name ?? game.i18n?.localize?.(def.nameKey) ?? slug;
+  const maneuver = item ?? { name, system: { slug: { value: slug } } };
+
   // Status-toggle maneuvers (e.g. Cargar): not an attack — toggles a named
   // Active Effect on the actor and posts a short chat note. Does not
   // require selected targets nor an attacker token in the scene.
   if (def.isStatusToggle) {
-    return toggleStatusManeuver(sheet.actor, def, item);
+    return toggleStatusManeuver(sheet.actor, def, maneuver);
   }
 
   // Sub-grapple maneuvers (Aplastar): skip the attack dialog and go
   // straight to the opposed-check phase. Validation lives in the helper.
   if (def.noAttackPhase) {
-    return runSubGrappleManeuver(sheet.actor, def, item);
+    return runSubGrappleManeuver(sheet.actor, def, maneuver);
   }
 
   const attackerToken = sheet.token ?? sheet.actor?.getActiveTokens?.()[0];
@@ -112,7 +118,7 @@ export function executeCombatManeuver(sheet, e) {
       if (extra !== 0) {
         maneuverPenalty += extra;
         ui.notifications.info(
-          `${item.name} con arma no-contundente: ${extra} adicional (total ${maneuverPenalty}).`
+          `${name} con arma no-contundente: ${extra} adicional (total ${maneuverPenalty}).`
         );
       }
     }
@@ -148,7 +154,7 @@ export function executeCombatManeuver(sheet, e) {
         });
     if (composed.appliedBy.length) {
       ui.notifications.info(
-        `${item.name}: cualidades [${composed.appliedBy.join(', ')}] ` +
+        `${name}: cualidades [${composed.appliedBy.join(', ')}] ` +
           `modifican el penalizador (${before} → ${composed.penalty}).`
       );
       maneuverPenalty = composed.penalty;
@@ -166,7 +172,7 @@ export function executeCombatManeuver(sheet, e) {
       weaponId: equipped?._id,
       targets: snapshotTargets,
       maneuverSlug: slug,
-      maneuverItemName: item.name,
+      maneuverItemName: name,
       maneuverPenalty,
       maneuverWasUnarmed: wasUnarmed,
       aimed,

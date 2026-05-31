@@ -8,15 +8,17 @@
   {{#> "systems/animabf/templates/common/ui/group-body.hbs"
     class="combat-maneuvers"
   }}
-    {{#if system.combat.combatManeuvers.length}}
+    {{#with (combatManeuverCatalog system.combat.combatManeuvers) as |maneuvers|}}
+    {{#if maneuvers.length}}
       <div class='combat-maneuvers-grid'>
-        {{#each system.combat.combatManeuvers as |maneuver|}}
-          <div data-item-id='{{maneuver._id}}' class='combat-maneuver-card'>
+        {{#each maneuvers as |maneuver|}}
+          <div data-item-id='{{maneuver._id}}' class='combat-maneuver-card{{#if maneuver.isCanonical}} combat-maneuver-card--canonical{{/if}}'>
             <img
               src='{{maneuver.img}}'
               alt='{{maneuver.name}}'
               data-on-click='openCombatManeuver'
               data-maneuver-id='{{maneuver._id}}'
+              data-maneuver-slug='{{maneuver.slug}}'
               title='{{localize "anima.ui.combat.combatManeuvers.openSheet"}}'
               class='combat-maneuver-card__icon'
             />
@@ -24,33 +26,33 @@
               <div class='combat-maneuver-card__header'>
                 <div class='combat-maneuver-card__heading'>
                   <strong class='combat-maneuver-card__name'>{{maneuver.name}}</strong>
-                  {{#if maneuver.system.slug.value}}
-                    <span class='combat-maneuver-card__slug'>{{maneuver.system.slug.value}}</span>
+                  {{#if maneuver.slug}}
+                    <span class='combat-maneuver-card__slug'>{{maneuver.slug}}</span>
                   {{/if}}
                 </div>
-                <a
-                  data-on-click='deleteCombatManeuver'
-                  data-maneuver-id='{{maneuver._id}}'
-                  title='{{localize "anima.ui.combat.combatManeuvers.delete"}}'
-                  class='combat-maneuver-card__delete'
-                >
-                  <i class='fas fa-trash'></i>
-                </a>
+                {{#unless maneuver.isCanonical}}
+                  <a
+                    data-on-click='deleteCombatManeuver'
+                    data-maneuver-id='{{maneuver._id}}'
+                    title='{{localize "anima.ui.combat.combatManeuvers.delete"}}'
+                    class='combat-maneuver-card__delete'
+                  >
+                    <i class='fas fa-trash'></i>
+                  </a>
+                {{/unless}}
               </div>
-              {{#if maneuver.system.slug.value}}
+              {{#if maneuver.slug}}
                 <div class='combat-maneuver-card__rules'>
-                  {{combatManeuverRulesSummary maneuver.system.slug.value}}
+                  {{combatManeuverRulesSummary maneuver.slug}}
                 </div>
               {{/if}}
-              {{#with (combatManeuverAimedZoneOptions maneuver.system.slug.value) as |zones|}}
+              {{#with (combatManeuverAimedZoneOptions maneuver.slug) as |zones|}}
                 {{#if zones.length}}
                   <div class='combat-maneuver-card__zone'>
                     <label>{{localize "anima.ui.combat.combatManeuvers.aimedZone"}}</label>
-                    <select data-maneuver-id='{{maneuver._id}}' class='combat-maneuver-card__zone-select'>
+                    <select data-maneuver-id='{{maneuver._id}}' data-maneuver-slug='{{maneuver.slug}}' class='combat-maneuver-card__zone-select'>
                       {{#each zones as |z|}}
-                        <option value='{{z}}' {{#if (is 'eq' maneuver.system.selectedAimedZone.value z)}}selected{{/if}}>
-                          {{aimedZoneLabel z}}
-                        </option>
+                        <option value='{{z}}'>{{aimedZoneLabel z}}</option>
                       {{/each}}
                     </select>
                   </div>
@@ -60,6 +62,7 @@
                 type='button'
                 data-on-click='executeCombatManeuver'
                 data-maneuver-id='{{maneuver._id}}'
+                data-maneuver-slug='{{maneuver.slug}}'
                 class='combat-maneuver-card__execute'
                 title='{{localize "anima.ui.combat.combatManeuvers.execute"}}'
               >
@@ -78,5 +81,6 @@
         {{localize "anima.ui.combat.combatManeuvers.empty"}}
       </p>
     {{/if}}
+    {{/with}}
   {{/"systems/animabf/templates/common/ui/group-body.hbs"}}
 {{/"systems/animabf/templates/common/ui/group.hbs"}}
