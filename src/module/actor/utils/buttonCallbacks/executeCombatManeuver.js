@@ -1,30 +1,22 @@
 import { AttackConfigurationDialog } from '../../../dialogs/AttackConfigurationDialog.js';
 import { getSnapshotTargets } from '../getSnapshotTargets.js';
-import { getAimedPenalty } from '../../../combat/criticalTables.js';
 import { toggleStatusManeuver } from '../toggleStatusManeuver.js';
 import { runSubGrappleManeuver } from '../../../combat/maneuvers/subGrappleRunner.js';
-import {
-  composeAimedPenalty,
-  composeManeuverPenalty
-} from '../../../equipment/qualities/composeWeaponEffects.js';
 
 /**
  * Launch a combat maneuver by opening AttackConfigurationDialog with the
- * maneuver penalty pre-applied. For aimed maneuvers (Inutilizar,
- * Inconsciencia) the dialog also receives aimed=true and aimedWhere so the
- * critical resolution knows the zone, and the penalty is computed from the
- * aimed zone (Tabla 45) instead of from the static attackPenalty.
+ * maneuver context (slug, aimed, aimedZone). For aimed maneuvers (Inutilizar,
+ * Inconsciencia) the dialog receives aimed=true and aimedWhere so the critical
+ * resolution knows the zone.
  *
- * For Inconsciencia: the weapon's critic type is inspected; if it is not
- * impact-type, the extra penalty declared in the ManeuverDefinition is
- * added on top (and the user is warned).
+ * The weapon-DEPENDENT penalty (aimed/base penalty, weapon qualities like
+ * Precisa, and the non-bludgeoning -40) is NOT computed here: it depends on the
+ * weapon the player SELECTS in the dialog (which may differ from the first
+ * equipped one when several are equipped). AttackConfigurationDialog computes it
+ * at roll time from the selected weapon via resolveManeuverAttackPenalty.
  *
  * For status-toggle maneuvers (e.g. Cargar) we short-circuit before the
  * attack dialog and just toggle the associated Active Effect on the actor.
- *
- * Precise weapons (melee): the aimed-attack penalty and the Engatillar
- * penalty are halved automatically when the equipped weapon is Precise
- * and not ranged.
  *
  * Validation: maneuver Item + slug + registry definition; attacker token on
  * scene; at least one target selected. Weapon restrictions are NOT enforced
@@ -100,79 +92,12 @@ export function executeCombatManeuver(sheet, e) {
     aimed = true;
   }
 
-  // Compute the attack penalty. For aimed maneuvers, prefer the Tabla 45
-  // penalty for the chosen zone. Otherwise fall back to the static penalty.
-  let maneuverPenalty;
-  if (aimed && aimedZone) {
-    maneuverPenalty = getAimedPenalty(aimedZone);
-  } else {
-    maneuverPenalty = def.getAttackPenalty(equipped);
-  }
-
-  // Apply weapon-quality modifiers to the AIMED/base penalty FIRST, BEFORE any
-  // maneuver-specific extra penalty is added (see requiresImpactCritic below).
-  // This matters for Inconsciencia: Precisa (RAW) halves only the aimed-location
-  // penalty (Tabla 45), NOT the -40 for using a non-bludgeoning weapon — so the
-  // composition must run before that extra is applied, or Precisa would halve
-  // the combined penalty (the -50 bug).
-  //
-  // Two distinct paths, never both: one would be double-counting since
-  // Precisa (and any future quality that halves penalties) lives in both
-  // hooks for two distinct call sites. Here we pick ONE based on whether
-  // this maneuver is aimed or not.
-  //
-  // RAW alignment:
-  //  - aimed maneuvers (Inutilizar, Inconsciencia, ...) → composeAimedPenalty
-  //    runs the modifyAimedPenalty hooks (Precisa halves Tabla 45 penalty).
-  //  - non-aimed maneuvers (Engatillar) → composeManeuverPenalty runs the
-  //    modifyManeuverPenalty hooks (Precisa halves only when slug=engatillar).
-  //
-  // Other future hooks will plug in here with no code change.
-  if (equipped) {
-    const before = maneuverPenalty;
-    const composed = aimed
-      ? composeAimedPenalty(maneuverPenalty, {
-          weapon: equipped,
-          actor: sheet.actor,
-          maneuverSlug: slug,
-          aimedZone
-        })
-      : composeManeuverPenalty(maneuverPenalty, {
-          weapon: equipped,
-          actor: sheet.actor,
-          maneuverSlug: slug
-        });
-    if (composed.appliedBy.length) {
-      ui.notifications.info(
-        `${name}: cualidades [${composed.appliedBy.join(', ')}] ` +
-          `modifican el penalizador (${before} → ${composed.penalty}).`
-      );
-      maneuverPenalty = composed.penalty;
-    }
-  }
-
-  // Inconsciencia: if a bludgeoning weapon is required and the equipped one is
-  // not, add the declared extra penalty. Added AFTER quality composition so a
-  // quality like Precisa never halves this -40 — Precisa only halves the aimed
-  // penalty above (RAW).
-  if (def.requiresImpactCritic && equipped) {
-    const primaryCritic = equipped.system?.critic?.primary?.value;
-    if (primaryCritic && primaryCritic !== 'impact') {
-      const extra = Number(def.nonImpactCriticExtraPenalty ?? 0);
-      if (extra !== 0) {
-        maneuverPenalty += extra;
-        ui.notifications.info(
-          `${name} con arma no-contundente: ${extra} adicional (total ${maneuverPenalty}).`
-        );
-      }
-    }
-  }
-
-  // RAW for some sub-maneuvers (Aplastar) requires that the parent Presa
-  // was performed without weapons. Capture this here so the post-combat
-  // resolver can persist it as a relational flag on the actors.
-  const wasUnarmed = !equipped || !!equipped.system?.isUnarmed?.value;
-
+  // Open the attack dialog with the maneuver context. The weapon-dependent
+  // penalty (aimed/base + qualities like Precisa + non-bludgeoning -40) is
+  // computed INSIDE the dialog from the SELECTED weapon via
+  // resolveManeuverAttackPenalty — not from `equipped`. `weaponId` below is only
+  // the dropdown's default selection. `maneuverWasUnarmed` is likewise recomputed
+  // by the dialog from the selected weapon.
   new AttackConfigurationDialog(
     {
       attacker: attackerToken,
@@ -180,8 +105,6 @@ export function executeCombatManeuver(sheet, e) {
       targets: snapshotTargets,
       maneuverSlug: slug,
       maneuverItemName: name,
-      maneuverPenalty,
-      maneuverWasUnarmed: wasUnarmed,
       aimed,
       aimedZone
     },

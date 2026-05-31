@@ -2,6 +2,7 @@ import { Templates } from '../utils/constants';
 import { ABFConfig } from '../ABFConfig';
 import { getAimedPenalty } from '../combat/criticalTables.js';
 import { composeAimedPenalty } from '../equipment/qualities/composeWeaponEffects.js';
+import { resolveManeuverAttackPenalty } from '../combat/maneuvers/resolveManeuverPenalty.js';
 import { ABFAttackData } from '../combat/ABFAttackData';
 import { getSnapshotTargets } from '../actor/utils/getSnapshotTargets.js';
 ///dialogs/AttackConfigurationDialog.js
@@ -16,7 +17,7 @@ export class AttackConfigurationDialog extends FormApplication {
     this.render(true);
   }
 
-  static _buildInitialData({ attacker, weaponId, weapon, options = {}, targets, maneuverSlug, maneuverItemName, maneuverPenalty, maneuverWasUnarmed, aimed, aimedZone }) {
+  static _buildInitialData({ attacker, weaponId, weapon, options = {}, targets, maneuverSlug, maneuverItemName, aimed, aimedZone }) {
     if (!attacker || !attacker.actor) {
       ui.notifications?.error('AttackConfigurationDialog: attacker is required');
       return { allowed: false };
@@ -89,8 +90,6 @@ export class AttackConfigurationDialog extends FormApplication {
             return {
               slug: maneuverSlug,
               itemName: maneuverItemName ?? maneuverSlug,
-              penalty: Number(maneuverPenalty ?? 0),
-              wasUnarmed: !!maneuverWasUnarmed,
               damageAllowed: !!def?.damageAllowed,
               damageHalvedIfApplied: !!def?.damageHalvedIfApplied,
               damageMandatory: !!def?.dealsMandatoryDamage
@@ -196,7 +195,27 @@ export class AttackConfigurationDialog extends FormApplication {
       setTimeout(() => this.render(), 0);
 
       const baseAttack = Number(weapon.system.attack?.final?.value ?? 0);
-      const maneuverPenalty = Number(this.modalData.maneuver?.penalty ?? 0);
+
+      // Maneuver penalty computed against the SELECTED weapon (not the first
+      // equipped one): base/aimed penalty → weapon qualities (Precisa) →
+      // non-bludgeoning -40. Changing the weapon in the dropdown changes the
+      // penalty correctly. See resolveManeuverAttackPenalty.
+      let maneuverPenalty = 0;
+      let maneuverAppliedBy = [];
+      let maneuverNonImpactExtra = 0;
+      if (this.modalData.maneuver?.slug) {
+        const def = game.animabf?.maneuvers?.get?.(this.modalData.maneuver.slug);
+        const resolved = resolveManeuverAttackPenalty({
+          def,
+          weapon,
+          aimed: !!combat.aimed,
+          aimedZone: combat.aimedZone,
+          actor
+        });
+        maneuverPenalty = resolved.penalty;
+        maneuverAppliedBy = resolved.appliedBy;
+        maneuverNonImpactExtra = resolved.nonImpactExtra;
+      }
 
       // Ataque apuntado: when active, apply the Tabla 45 penalty for the
       // chosen zone. Maneuvers that preload aimed pass the penalty through
@@ -266,7 +285,13 @@ export class AttackConfigurationDialog extends FormApplication {
       const dialogContribs = [];
       if (maneuverPenalty !== 0 && this.modalData.maneuver?.itemName) {
         const sign = maneuverPenalty > 0 ? '+' : '';
-        dialogContribs.push(`${this.modalData.maneuver.itemName} (${sign}${maneuverPenalty})`);
+        const qualityTag = maneuverAppliedBy.length ? ` [${maneuverAppliedBy.join(', ')}]` : '';
+        const nonImpactTag = maneuverNonImpactExtra !== 0
+          ? ` [no-contundente ${maneuverNonImpactExtra}]`
+          : '';
+        dialogContribs.push(
+          `${this.modalData.maneuver.itemName} (${sign}${maneuverPenalty})${qualityTag}${nonImpactTag}`
+        );
       }
       if (aimedPenalty !== 0 && combat.aimedZone) {
         const sign = aimedPenalty > 0 ? '+' : '';
