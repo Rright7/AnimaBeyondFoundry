@@ -67,4 +67,18 @@ describe('synthetics mailbox', () => {
     const actor = { synthetics: 'broken' };
     expect(getSynthetics(actor).modifiers).toEqual({});
   });
+
+  test('persists a predicate array on the record (Phase 3)', () => {
+    const actor = {};
+    depositModifier(actor, { path: ATTACK, value: 10, source: 'Flanco', predicate: ['target:flanked'] });
+    expect(readModifiers(actor, ATTACK)[0].predicate).toEqual(['target:flanked']);
+  });
+
+  test('defaults predicate to null when absent or not an array', () => {
+    const actor = {};
+    depositModifier(actor, { path: ATTACK, value: 10, source: 'A' });
+    depositModifier(actor, { path: DODGE, value: 5, source: 'B', predicate: 'not-an-array' });
+    expect(readModifiers(actor, ATTACK)[0].predicate).toBeNull();
+    expect(readModifiers(actor, DODGE)[0].predicate).toBeNull();
+  });
 });

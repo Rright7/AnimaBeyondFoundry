@@ -49,4 +49,25 @@ describe('AE applicator', () => {
     applySingleActiveEffectChange(actor, {}, { key: KEY, type: 'override', value: '0' });
     expect(actor.system.combat.attack.final.value).toBe(0);
   });
+
+  test('add-mode deposits a synthetics record carrying the change predicate (Phase 3)', () => {
+    const actor = makeActor(120);
+    applySingleActiveEffectChange(
+      actor,
+      { name: 'Flanqueo', id: 'eff1' },
+      { key: KEY, type: 'add', value: '-30', predicate: ['target:flanked'] }
+    );
+    expect(actor.system.combat.attack.final.value).toBe(90); // write is unconditional
+    const recs = actor.synthetics.modifiers[KEY];
+    expect(recs).toHaveLength(1);
+    expect(recs[0]).toMatchObject({
+      value: -30, source: 'Flanqueo', mode: 'add', predicate: ['target:flanked']
+    });
+  });
+
+  test('add-mode without a predicate deposits a record with predicate null', () => {
+    const actor = makeActor(120);
+    applySingleActiveEffectChange(actor, { name: 'Herida' }, { key: KEY, type: 'add', value: '-10' });
+    expect(actor.synthetics.modifiers[KEY][0].predicate).toBeNull();
+  });
 });

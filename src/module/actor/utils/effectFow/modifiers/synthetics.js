@@ -17,13 +17,20 @@
 // before; the mailbox merely records, in parallel, what each source added.
 //
 // Entry shape (a "modifier record"):
-//   { path, value, source, slug, mode, group }
-//     - path   : absolute actor data path targeted
-//     - value  : signed numeric delta contributed (add-mode only)
-//     - source : human-readable provenance for the breakdown (effect name)
-//     - slug   : stable id of the source (effect slug / id), for de-dupe
-//     - mode   : the change mode ('add' for now)
-//     - group  : optional exclusivity bucket (combat stances)
+//   { path, value, source, slug, mode, group, predicate }
+//     - path      : absolute actor data path targeted
+//     - value     : signed numeric delta contributed (add-mode only)
+//     - source    : human-readable provenance for the breakdown (effect name)
+//     - slug      : stable id of the source (effect slug / id), for de-dupe
+//     - mode      : the change mode ('add' for now)
+//     - group     : optional exclusivity bucket (combat stances)
+//     - predicate : optional array of predicate statements (Phase 3). The record
+//                   is ALWAYS deposited; the predicate rides along as metadata so
+//                   a consumer can gate it at READ time against the full roll-option
+//                   set (see ./stacking.js + ../predicates/Predicate.js). We do NOT
+//                   filter at deposit time on purpose: a modifier conditional on a
+//                   target (e.g. "defender:flanked") is unknown during the actor's
+//                   own prepare cycle and must survive to be tested at roll time.
 
 /**
  * Reset the synthetics container at the start of a prepare cycle. Idempotent.
@@ -65,6 +72,8 @@ export function getSynthetics(actor) {
  * @param {string} [record.slug]
  * @param {string} [record.mode]
  * @param {string} [record.group]
+ * @param {Array<string|object>} [record.predicate] predicate statements (Phase 3);
+ *   stored as metadata and tested at read time, never at deposit time.
  * @returns {void}
  */
 export function depositModifier(actor, record) {
@@ -80,7 +89,8 @@ export function depositModifier(actor, record) {
     source: record.source ?? 'AE',
     slug: record.slug ?? null,
     mode: record.mode ?? 'add',
-    group: typeof record.group === 'string' ? record.group : null
+    group: typeof record.group === 'string' ? record.group : null,
+    predicate: Array.isArray(record.predicate) ? record.predicate : null
   });
 }
 

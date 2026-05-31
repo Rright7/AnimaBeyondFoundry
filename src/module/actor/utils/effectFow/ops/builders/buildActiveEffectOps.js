@@ -26,6 +26,30 @@ function getFlaggedDeps(effect, index) {
 }
 
 /**
+ * Resolve the predicate (Phase 3) for a single change. Mirrors getFlaggedDeps:
+ * a per-change predicate (flag `animabf.flowChangePredicates[index]`) takes
+ * precedence, falling back to an effect-level predicate (flag
+ * `animabf.flowPredicate`) that applies to every change of the effect.
+ *
+ * Returns an array of predicate statements, or null when none is declared — so
+ * existing effects (no flags) stay unconditional, unchanged.
+ *
+ * @param {any} effect
+ * @param {number} index
+ * @returns {Array<string|object>|null}
+ */
+function getChangePredicate(effect, index) {
+  const perChange = effect.getFlag?.('animabf', 'flowChangePredicates') ?? null;
+  const own = Array.isArray(perChange) ? perChange[index] : null;
+  if (Array.isArray(own) && own.length > 0) return own;
+
+  const effectLevel = effect.getFlag?.('animabf', 'flowPredicate') ?? null;
+  if (Array.isArray(effectLevel) && effectLevel.length > 0) return effectLevel;
+
+  return null;
+}
+
+/**
  * Maps an ActiveEffect mode to a write kind.
  * - override => overwrite
  * - others   => modify
@@ -63,13 +87,16 @@ export function buildActiveEffectChangeOps_forChange(effect, index, change) {
   const deps = normalizePaths([...flagged, ...inferred]);
 
   const kind = writeKindFromAEMode(change.mode ?? change.type);
+  const predicate = getChangePredicate(effect, index);
   const paths = resolveSelector(change.key);
   if (paths.length === 0) return [];
 
   return paths.map((path, pathIdx) => {
     // The applicator writes against change.key, so hand it a change whose key
-    // is the concrete resolved path (not the selector).
-    const resolvedChange = { ...change, key: path };
+    // is the concrete resolved path (not the selector). The runtime-only
+    // `predicate` (Phase 3) rides on this in-memory change so the applicator can
+    // attach it to the synthetics record; it is never persisted to the AE.
+    const resolvedChange = { ...change, key: path, predicate };
     return {
       id: paths.length > 1
         ? `ae:${effect.id}:${index}:${pathIdx}`

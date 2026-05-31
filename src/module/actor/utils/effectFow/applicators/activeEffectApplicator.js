@@ -90,13 +90,19 @@ export function applySingleActiveEffectChange(actor, effect, change) {
   // mailbox so the chat breakdown can be built from a single reliable source.
   // Only add-mode numeric deltas are meaningful as a signed contribution; the
   // write above is unchanged regardless.
+  //
+  // Phase 3: the resolved change may carry a `predicate` (attached by the op
+  // builder from the effect's flags). It travels with the record as metadata so
+  // a consumer can gate this contribution at read time against the roll options.
+  // The write above is intentionally NOT gated — the mailbox stays advisory.
   if (mode === 'add' && haveNumbers) {
     depositModifier(actor, {
       path: key,
       value: numericValue,
       source: effect?.name ?? effect?.label ?? 'AE',
       slug: effect?.slug ?? effect?.id ?? null,
-      mode
+      mode,
+      predicate: Array.isArray(change.predicate) ? change.predicate : null
     });
   }
 }
