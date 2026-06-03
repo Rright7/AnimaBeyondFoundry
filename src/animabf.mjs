@@ -487,6 +487,22 @@ Hooks.on('createChatMessage', async message => {
     const { resolveActorFromRef } =
       await import('./module/actor/utils/resolveActorForRoll.js');
 
+    // Desangramiento automático: al CREARSE la tarjeta de un crítico, iniciar la
+    // hemorragia sin esperar a "Resolver crítico" (RAW: recibir un crítico
+    // desangra aunque luego se resista). startBleeding se auto-protege
+    // (inmunidad/energía/no apila), así que es idempotente con el disparo del
+    // flujo de resolución/forzado. Va antes del bloque `post` porque ese hace
+    // return temprano cuando el mensaje no proviene de una maniobra.
+    if (flags.kind === 'combatResult' && flags.result?.isCritical) {
+      const defRef = flags.defender?.tokenId || flags.defender?.actorId || '';
+      const defenderActor = resolveActorFromRef(defRef);
+      if (defenderActor) {
+        const critType = flags.attackData?.armorType ?? flags.result?.armorType ?? '';
+        const { startBleeding } = await import('./module/combat/bleedingEffect.js');
+        await startBleeding(defenderActor, { critType });
+      }
+    }
+
     const post = async (
       slug,
       itemName,

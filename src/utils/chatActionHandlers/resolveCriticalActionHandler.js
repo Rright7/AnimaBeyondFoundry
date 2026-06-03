@@ -172,6 +172,9 @@ async function startCriticalResolution(message, _html, ds) {
     // aunque luego se resista (incluso si no produce efectos), salvo inmunes
     // (regen>=6/sin sangre) y ataques de energía. Best-effort: no bloquea la
     // resolución del crítico. startBleeding hace sus propias comprobaciones.
+    // Para críticos naturales el hook createChatMessage ya lo disparó al crear
+    // la tarjeta (idempotente, no apila); esta llamada cubre el crítico FORZADO
+    // (que nace como no-crítico) y sirve de red de seguridad.
     const critType = animabf.attackData?.armorType ?? result?.armorType ?? '';
     await startBleeding(defenderActor, { critType });
 
