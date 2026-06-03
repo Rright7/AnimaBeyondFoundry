@@ -471,7 +471,8 @@ export class DefenseConfigurationDialog extends FormApplication {
               aimed: !!attackData?.aimed,
               aimedWhere: attackData?.aimedWhere ?? '',
               maneuverSlug: attackData?.maneuverSlug ?? '',
-              maneuverWasUnarmed: !!attackData?.maneuverWasUnarmed
+              maneuverWasUnarmed: !!attackData?.maneuverWasUnarmed,
+              delayRounds: Number(attackData?.delayRounds ?? 0) || 0
             },
             attacker: {
               actorId: attackData?.attackerId ?? ''

@@ -61,6 +61,10 @@ export class ABFAttackData {
     // Aplastar (RAW: solo si la Presa fue sin armas).
     this.maneuverWasUnarmed = !!p.maneuverWasUnarmed;
 
+    // Daño retrasado: asaltos (1-5) declarados para que el daño se manifieste
+    // más tarde. 0 = sin retraso. Persiste hasta los flags del resultado.
+    this.delayRounds = Number(p.delayRounds ?? 0) || 0;
+
     // Defense tracking targets
     // Each target: {actorUuid, tokenUuid?, state, rolledBy?, defenseResult?, updatedAt?, label?, auto?}
     this.targets = Array.isArray(p.targets)
@@ -345,6 +349,11 @@ export class ABFAttackDataBuilder {
 
   maneuverWasUnarmed(b = true) {
     this._p.maneuverWasUnarmed = !!b;
+    return this;
+  }
+
+  delayRounds(n) {
+    this._p.delayRounds = Number(n) || 0;
     return this;
   }
 

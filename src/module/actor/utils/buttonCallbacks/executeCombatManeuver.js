@@ -2,6 +2,8 @@ import { AttackConfigurationDialog } from '../../../dialogs/AttackConfigurationD
 import { getSnapshotTargets } from '../getSnapshotTargets.js';
 import { toggleStatusManeuver } from '../toggleStatusManeuver.js';
 import { runSubGrappleManeuver } from '../../../combat/maneuvers/subGrappleRunner.js';
+import { buildRollOptions } from '../effectFow/rollOptions/rollOptions.js';
+import { testPredicate } from '../effectFow/predicates/Predicate.js';
 
 /**
  * Launch a combat maneuver by opening AttackConfigurationDialog with the
@@ -62,6 +64,17 @@ export function executeCombatManeuver(sheet, e) {
     return runSubGrappleManeuver(sheet.actor, def, maneuver);
   }
 
+  // Declarative preconditions for ATTACK maneuvers, tested against the actor's
+  // own roll options (e.g. mastery: 'self:mastery:attack' for master maneuvers).
+  // Sub-grapple maneuvers evaluate their own predicate with grapple options in
+  // their runner, so this only gates the standard attack path.
+  if (Array.isArray(def.predicate) && def.predicate.length > 0) {
+    const opts = buildRollOptions(sheet.actor);
+    if (!testPredicate(def.predicate, opts)) {
+      return ui.notifications.warn(`${name}: no cumples los requisitos (¿Maestría?).`);
+    }
+  }
+
   const attackerToken = sheet.token ?? sheet.actor?.getActiveTokens?.()[0];
   if (!attackerToken) {
     return ui.notifications.warn('No hay token del atacante en la escena.');
@@ -92,6 +105,15 @@ export function executeCombatManeuver(sheet, e) {
     aimed = true;
   }
 
+  // Daño retrasado y similares: el jugador declara los asaltos de retraso (1-5)
+  // en el <select> de la tarjeta (espejo del de zona apuntada).
+  let delayRounds = 0;
+  if (def.hasDelayRoundsOption) {
+    const card = e.currentTarget.closest('.combat-maneuver-card');
+    const select = card?.querySelector('.combat-maneuver-card__delay-select');
+    delayRounds = Number(select?.value) || 0;
+  }
+
   // Open the attack dialog with the maneuver context. The weapon-dependent
   // penalty (aimed/base + qualities like Precisa + non-bludgeoning -40) is
   // computed INSIDE the dialog from the SELECTED weapon via
@@ -106,7 +128,8 @@ export function executeCombatManeuver(sheet, e) {
       maneuverSlug: slug,
       maneuverItemName: name,
       aimed,
-      aimedZone
+      aimedZone,
+      delayRounds
     },
     { allowed: true }
   );

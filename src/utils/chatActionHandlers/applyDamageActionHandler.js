@@ -108,7 +108,7 @@ export const action = 'animabf-apply-damage';
  * Uses the template path: system.characteristics.secondaries.lifePoints.value
  * Falls back to a few legacy/common paths if the main one is missing.
  */
-async function applyDamageToActor(actor, amount) {
+export async function applyDamageToActor(actor, amount) {
   try {
     const primaryPath = 'system.characteristics.secondaries.lifePoints.value'; // from template
     let cur = getProperty(actor, primaryPath);

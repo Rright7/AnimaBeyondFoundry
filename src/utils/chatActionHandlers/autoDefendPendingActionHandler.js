@@ -82,6 +82,7 @@ export default async function autoDefendPendingActionHandler(message, _html, ds)
           sourceAttackMessageId: msg.id,
           maneuverSlug: attackData?.maneuverSlug ?? '',
           maneuverItemName: attackData?.maneuverItemName ?? '',
+          delayRounds: Number(attackData?.delayRounds ?? 0) || 0,
           attackerId: attackData?.attackerId ?? '',
           batch: { createdAt: Date.now() },
           entries: entries.map(e => ({ ...e, applied: false }))

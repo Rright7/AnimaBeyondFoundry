@@ -1,5 +1,6 @@
 import { openModDialog } from '../utils/dialogs/openSimpleInputDialog';
 import { tickBleeding } from './bleedingEffect.js';
+import { processDueDelayedDamage } from './delayedDamageEffect.js';
 
 export default class ABFCombat extends Combat {
   /**
@@ -39,6 +40,9 @@ export default class ABFCombat extends Combat {
       // Desangramiento: 1 PV cada 20 asaltos mientras dure el sangrado.
       // (Guarded internamente; no bloquea el avance de ronda.)
       if (token?.actor) await tickBleeding(token.actor, 1);
+      // Daño retrasado: aplica los daños programados que vencen en la ronda que
+      // se entra (this.round aún es la anterior; super.nextRound la incrementa).
+      if (token?.actor) await processDueDelayedDamage(token.actor, (this.round ?? 0) + 1);
     }
 
     return super.nextRound();

@@ -37,6 +37,23 @@ describe('buildRollOptions', () => {
     expect(buildRollOptions(mockActor()).has('self:type:character')).toBe(true);
   });
 
+  test('emits self:mastery:attack when attack base >= 200', () => {
+    const actor = {
+      type: 'character',
+      items: { contents: [] },
+      system: { combat: { attack: { base: { value: 200 } }, block: { base: { value: 199 } } } }
+    };
+    const opts = buildRollOptions(actor);
+    expect(opts.has('self:mastery:attack')).toBe(true);
+    expect(opts.has('self:mastery:block')).toBe(false);
+  });
+
+  test('no mastery option when base < 200 or missing', () => {
+    const opts = buildRollOptions({ type: 'character', items: { contents: [] }, system: { combat: { attack: { base: { value: 150 } } } } });
+    expect(opts.has('self:mastery:attack')).toBe(false);
+    expect(buildRollOptions(mockActor()).has('self:mastery:attack')).toBe(false);
+  });
+
   test('emits self:effect / self:item for each active effect', () => {
     const o = buildRollOptions(mockActor());
     expect(o.has('self:effect:derribado')).toBe(true);

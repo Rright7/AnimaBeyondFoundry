@@ -121,6 +121,18 @@ export function buildRollOptions(actor) {
     opts.add(`self:item:${slug}`);
   }
 
+  // Maestría (RAW): una habilidad base >= 200 convierte al personaje en maestro.
+  // Las maniobras maestras se gatean con estos rollOptions vía su `predicate`
+  // (p.ej. ['self:mastery:attack']).
+  const combat = actor.system?.combat;
+  if (Number(combat?.attack?.base?.value) >= 200) opts.add('self:mastery:attack');
+  if (Number(combat?.block?.base?.value) >= 200) opts.add('self:mastery:block');
+  if (Number(combat?.dodge?.base?.value) >= 200) opts.add('self:mastery:dodge');
+  const magicBase = actor.system?.mystic?.magicProjection?.imbalance?.offensive?.base?.value;
+  if (Number(magicBase) >= 200) opts.add('self:mastery:magic');
+  const psychicBase = actor.system?.psychic?.psychicProjection?.imbalance?.offensive?.base?.value;
+  if (Number(psychicBase) >= 200) opts.add('self:mastery:psychic');
+
   return opts;
 }
 

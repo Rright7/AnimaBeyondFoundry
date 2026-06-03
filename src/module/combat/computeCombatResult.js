@@ -158,6 +158,9 @@ export function computeCombatResult(attackData, defenseData) {
     result.maneuverSlug = maneuverSlug;
     result.maneuverItemName = attackData.maneuverItemName || maneuverSlug;
     result.attackerId = attackData.attackerId || '';
+    // Daño retrasado: asaltos declarados, para que la tarjeta de resultado
+    // muestre el botón "Programar daño retrasado (N)".
+    result.delayRounds = Number(attackData.delayRounds ?? 0) || 0;
   }
 
   return result;

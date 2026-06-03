@@ -8,6 +8,7 @@ import { inconsciencia } from './definitions/inconsciencia.js';
 import { carga } from './definitions/carga.js';
 import { mounted } from './definitions/mounted.js';
 import { crush } from './definitions/crush.js';
+import { danoRetrasado } from './definitions/danoRetrasado.js';
 
 maneuverRegistry.register(derribo);
 maneuverRegistry.register(desarme);
@@ -18,5 +19,6 @@ maneuverRegistry.register(inconsciencia);
 maneuverRegistry.register(carga);
 maneuverRegistry.register(mounted);
 maneuverRegistry.register(crush);
+maneuverRegistry.register(danoRetrasado);
 
 export { maneuverRegistry };

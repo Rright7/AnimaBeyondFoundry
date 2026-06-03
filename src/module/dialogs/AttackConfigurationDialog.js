@@ -17,7 +17,7 @@ export class AttackConfigurationDialog extends FormApplication {
     this.render(true);
   }
 
-  static _buildInitialData({ attacker, weaponId, weapon, options = {}, targets, maneuverSlug, maneuverItemName, aimed, aimedZone }) {
+  static _buildInitialData({ attacker, weaponId, weapon, options = {}, targets, maneuverSlug, maneuverItemName, aimed, aimedZone, delayRounds }) {
     if (!attacker || !attacker.actor) {
       ui.notifications?.error('AttackConfigurationDialog: attacker is required');
       return { allowed: false };
@@ -92,7 +92,8 @@ export class AttackConfigurationDialog extends FormApplication {
               itemName: maneuverItemName ?? maneuverSlug,
               damageAllowed: !!def?.damageAllowed,
               damageHalvedIfApplied: !!def?.damageHalvedIfApplied,
-              damageMandatory: !!def?.dealsMandatoryDamage
+              damageMandatory: !!def?.dealsMandatoryDamage,
+              delayRounds: Number(delayRounds ?? 0) || 0
             };
           })()
         : null,
@@ -330,6 +331,7 @@ export class AttackConfigurationDialog extends FormApplication {
         .maneuverSlug(this.modalData.maneuver?.slug ?? '')
         .maneuverItemName(this.modalData.maneuver?.itemName ?? '')
         .maneuverWasUnarmed(!combat.weapon || !!combat.weapon.system?.isUnarmed?.value)
+        .delayRounds(this.modalData.maneuver?.delayRounds ?? 0)
         .causesDamage(!!combat.causesDamage)
         .aimed(!!combat.aimed)
         .aimedWhere(combat.aimedZone || '')

@@ -139,6 +139,12 @@
     {{/if}}
 
     {{#if (gt combatResult.damageFinal 0)}}
+      {{#if (eq combatResult.maneuverSlug "dano-retrasado")}}
+        {{! Daño retrasado: el daño se programa solo (hook createChatMessage); no hay botón ni aplicación inmediata. }}
+        <p data-requires-permission="owner" style="margin-top:.5rem;color:#7a4ca0;font-weight:bold;">
+          <i class="fas fa-clock"></i> {{localize "chat.combatResult.delayedDamageScheduled"}} ({{combatResult.delayRounds}})
+        </p>
+      {{else}}
       <div class="animabf-result-damage-controls"
            data-requires-permission="owner"
            style="margin-top:.5rem; display:flex; gap:.5rem; flex-wrap:wrap;">
@@ -175,6 +181,7 @@
           {{localize "chat.result.applyDouble"}}
         </button>
       </div>
+      {{/if}}
     {{/if}}
   {{/"systems/animabf/templates/common/ui/group-body.hbs"}}
 {{/"systems/animabf/templates/common/ui/group.hbs"}}

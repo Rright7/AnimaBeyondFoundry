@@ -105,6 +105,11 @@ export class ManeuverDefinition {
       ? data.aimedZoneOptions
       : [];
 
+    // Maniobras que declaran un retraso en asaltos antes de tirar (Daño
+    // retrasado: el jugador elige 1-5 asaltos en la tarjeta). Habilita el
+    // <select> de retraso y el flujo de daño programado.
+    this.hasDelayRoundsOption = !!data.hasDelayRoundsOption;
+
     // Crit-type requirement: if set to 'impact', the maneuver is meant to be
     // used with a bludgeoning weapon. Used by Inconsciencia, which adds an
     // extra penalty when the weapon is not impact-type but still allows it.

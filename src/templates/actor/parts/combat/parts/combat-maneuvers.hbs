@@ -58,6 +58,18 @@
                   </div>
                 {{/if}}
               {{/with}}
+              {{#with (combatManeuverDelayRoundsOptions maneuver.slug) as |rounds|}}
+                {{#if rounds.length}}
+                  <div class='combat-maneuver-card__delay'>
+                    <label>{{localize "anima.ui.combat.combatManeuvers.delayRounds"}}</label>
+                    <select data-maneuver-id='{{maneuver._id}}' data-maneuver-slug='{{maneuver.slug}}' class='combat-maneuver-card__delay-select'>
+                      {{#each rounds as |r|}}
+                        <option value='{{r}}'>{{r}}</option>
+                      {{/each}}
+                    </select>
+                  </div>
+                {{/if}}
+              {{/with}}
               <button
                 type='button'
                 data-on-click='executeCombatManeuver'
