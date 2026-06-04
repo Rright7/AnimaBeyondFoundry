@@ -1,0 +1,25 @@
+{
+    "name": "Lluvia de proyectiles",
+    "type": "combatManeuver",
+    "img": "icons/svg/target.svg",
+    "system": {
+        "slug": {
+            "value": "lluvia-de-proyectiles"
+        },
+        "description": {
+            "value": "Maniobra maestra (requiere Maestría en Ataque: valor base de Ataque ≥ 200).\n\nUn solo movimiento lanza una oleada de proyectiles: un ATAQUE EN ÁREA a distancia.\n\nRADIO del área (en metros):\n• CF ≤ 50: 1 m por cada 20 de Habilidad de Ataque.\n• CF > 50: 1 m por cada 40 de Habilidad de Ataque.\n(Ej.: 240 de Ataque → 12 m con CF ≤ 50, o 6 m con CF > 50.)\n\nDAÑO: dobla el Daño Base del arma. Si se emplean armas de varios tipos, se promedian sus Daños.\n\nPENALIZADOR: ninguno. Si quieres elegir blancos concretos dentro del área, -50 al ataque.\n\nEs una ACCIÓN DE ATAQUE COMPLETA: no permite ataques adicionales. Requiere poder lanzar al menos 5 proyectiles en un asalto (consume mucha munición: 3-4 armas por metro de radio).\n\nTERMINOLOGÍA:\n• CF (Cadencia de Fuego): ritmo de disparo del arma (campo «Cadencia» del arma). Determina qué fórmula de radio se usa.\n• Habilidad de Ataque: tu valor de Ataque en Combate.\n• Daño Base: el daño del arma antes de aplicar el porcentaje del resultado del asalto.\n\nEN FOUNDRY: elige CF (≤ 50 / > 50) en la tarjeta de la maniobra, coloca el círculo de área (con el radio calculado), se seleccionan los tokens dentro y se ataca a todos con el Daño Base doblado. Marca «Elegir blancos (-50)» si apuntas a objetivos concretos."
+        },
+        "actionType": {
+            "value": "active"
+        },
+        "traits": ["ranged"],
+        "visible": false
+    },
+    "effects": [],
+    "ownership": {
+        "default": 0
+    },
+    "flags": {},
+    "_id": "aBfLluviaProy001",
+    "_key": "!items!aBfLluviaProy001"
+}
