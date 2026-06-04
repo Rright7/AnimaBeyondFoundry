@@ -103,6 +103,15 @@
       "flags": {}
     },
     {
+      "name": "ki-nemesis-skills",
+      "label": "(ES) Habilidades de Ki y Némesis",
+      "system": "animabf",
+      "path": "./packs/ki-nemesis-skills",
+      "type": "JournalEntry",
+      "private": false,
+      "flags": {}
+    },
+    {
       "name": "equipment-qualities",
       "label": "(ES) Cualidades de equipo",
       "system": "animabf",

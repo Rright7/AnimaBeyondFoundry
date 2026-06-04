@@ -708,6 +708,24 @@ export const KI_SKILLS = [
     tree: { parent: null, depth: 0 },
     aliases: { es: ['Indetección'] },
     effects: []
+  },
+  {
+    id: 'inhumanityNemesis',
+    name: 'Inhumanidad',
+    type: 'nemesis',
+    martialKnowledge: 20,
+    tree: { parent: null, depth: 0 },
+    aliases: { es: ['Inhumanidad'] },
+    effects: []
+  },
+  {
+    id: 'zenNemesis',
+    name: 'Zen',
+    type: 'nemesis',
+    martialKnowledge: 40,
+    tree: { parent: 'inhumanityNemesis', depth: 1 },
+    aliases: { es: ['Zen'] },
+    effects: []
   }
 ];
 

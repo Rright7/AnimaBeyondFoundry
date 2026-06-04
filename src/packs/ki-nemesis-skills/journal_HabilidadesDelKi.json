@@ -1,0 +1,1417 @@
+{
+  "name": "Habilidades del Ki",
+  "pages": [
+    {
+      "sort": 100000,
+      "name": "Uso del Ki",
+      "type": "text",
+      "_id": "689a657284253a4b",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 40 CM</p>\n<hr>\n<p>Habilidad básica necesaria para desarrollar las demás. Permite al personaje despertar su energía interna y utilizarla inconscientemente.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.689a657284253a4b"
+    },
+    {
+      "sort": 200000,
+      "name": "Control del Ki",
+      "type": "text",
+      "_id": "c92eabe44353e432",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 30 CM</p>\n<hr>\n<p>Otorga un control absoluto de la energía interna. El personaje es completamente consciente de su poder anímico y puede <strong>acumular su Ki</strong>. Una vez la domina, puede utilizar Técnicas de Dominio.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.c92eabe44353e432"
+    },
+    {
+      "sort": 300000,
+      "name": "Detección del Ki",
+      "type": "text",
+      "_id": "7021b44a36dff527",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 20 CM</p>\n<p><strong>Deriva de:</strong> Control del Ki</p>\n<hr>\n<p>Detecta las energías de los seres del entorno: es consciente de que algo desprende energía cerca, aunque no puede determinar su forma, tamaño o intensidad. Penetra objetos sólidos y espacios cerrados, pero no lugares sellados con energía.</p>\n<p>Cuenta como una habilidad secundaria especial: se calcula como la <strong>media entre el CM total y la habilidad de Advertir</strong>. Alcance según la dificultad conseguida:</p>\n<ul><li>Rutinario: contacto físico.</li><li>Fácil: 1 m.</li><li>Media: 5 m.</li><li>Difícil: 10 m.</li><li>Muy Difícil: 20 m.</li><li>Absurdo: 50 m.</li><li>Casi Imposible: 100 m.</li><li>Imposible: 250 m.</li><li>Inhumano: 1 km (requiere Inhumanidad).</li><li>Zen: cientos de km (requiere Zen).</li></ul>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.7021b44a36dff527"
+    },
+    {
+      "sort": 400000,
+      "name": "Erudición",
+      "type": "text",
+      "_id": "f77253df3ccf56fc",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Deriva de:</strong> Detección del Ki</p>\n<hr>\n<p>Al realizar una detección, permite determinar la potencia y la forma de las energías percibidas: saber si alguien concentra Ki, si un adversario es especialmente fuerte, o reconocer el tipo de energía de un individuo concreto si se le busca específicamente.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.f77253df3ccf56fc"
+    },
+    {
+      "sort": 500000,
+      "name": "Aura de combate",
+      "type": "text",
+      "_id": "ae73d6a28f6f553c",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 40 CM</p>\n<p><strong>Deriva de:</strong> Control del Ki</p>\n<hr>\n<p>También llamada «instinto asesino». Más que una habilidad, es consecuencia del elevado poder espiritual del personaje: al exteriorizar su Presencia influye en quienes lo rodean aunque no perciban su energía (inquietud, miedo o parálisis).</p>\n<p>Los afectados superan un control de RF usando solo su <strong>Presencia base</strong> (con el bono de Frialdad si la tienen). Dificultad = Presencia base + un bono según la suma de Acumulaciones: 6-8 +0, 9-10 +10, 11-13 +20, 14-16 +30, 17-22 +40, 23-27 +50, 28+ +60.</p>\n<p>Según el nivel de fracaso: 0 a -19 <strong>Afectado</strong> (-10 a toda Acción); -20 a -49 <strong>Miedo</strong>; -50 a -99 <strong>Paralización</strong>; -100 o menos <strong>Desvanecimiento</strong>. No afecta a quien tenga Presencia ≤10 puntos inferior. Activarla es pasivo y gratuito; mantenerla cuesta 1 Ki genérico cada 5 Turnos. Radio en metros = Presencia/5.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.ae73d6a28f6f553c"
+    },
+    {
+      "sort": 600000,
+      "name": "Dominio físico",
+      "type": "text",
+      "_id": "e810e3df388c8f23",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Deriva de:</strong> Control del Ki</p>\n<hr>\n<p>Fusiona energía y cuerpo: otorga un bono de <strong>+10 a la RF</strong> contra cualquier tipo de Daño.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.e810e3df388c8f23"
+    },
+    {
+      "sort": 700000,
+      "name": "Cambio físico",
+      "type": "text",
+      "_id": "0cb9703f2666e9c7",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 30 CM</p>\n<p><strong>Deriva de:</strong> Dominio físico</p>\n<hr>\n<p>Altera levemente la apariencia física (solo superficial). No cambia el sexo (solo aparentarlo) ni la altura más de 20 cm, ni la expresividad o forma de moverse (conviene combinar con Disfraz).</p>\n<p>Percatarse requiere Advertir a Imposible, Buscar a Absurdo, o Detección del Ki a Difícil (a Absurdo se ve la forma real). Activar cuesta 10 Ki + 1 por minuto; mientras esté activa, -80 a la Ocultación del Ki.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.0cb9703f2666e9c7"
+    },
+    {
+      "sort": 800000,
+      "name": "Cambio superior",
+      "type": "text",
+      "_id": "bc1ae114c3fdc1ee",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 20 CM</p>\n<p><strong>Deriva de:</strong> Cambio físico</p>\n<hr>\n<p>Dominio absoluto del cambio: adoptar formas muy diferentes, aumentar dimensiones (hasta tamaño Grande) o reducir la altura a la mitad, e imitar formas no humanas sencillas o elementos inanimados. Coste de activación 20 Ki y mantenimiento 2 por minuto.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.bc1ae114c3fdc1ee"
+    },
+    {
+      "sort": 900000,
+      "name": "Mult. de cuerpos",
+      "type": "text",
+      "_id": "93a4f09a318957cd",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 30 CM</p>\n<p><strong>Deriva de:</strong> Dominio físico</p>\n<hr>\n<p>Crea copias de sí mismo, imágenes residuales tangibles (trabajan, hablan, luchan) con su apariencia y equipo, pero sin cualidades especiales o místicas. Aplican <strong>-80 a toda Acción</strong> (-4 a Características). Las controla como Acción pasiva aun a distancia.</p>\n<p>Crearlas es una Acción activa de un Turno completo (no puede hacer nada más, ni defenderse). Número = un tercio de Poder (redondeo abajo). Cada copia cuesta 4 Ki + 1 cada 5 asaltos. Una copia desaparece si pierde aunque sea 1 punto de vida; no obtiene Iniciativa mayor que su creador ni usa Técnicas/magia/psíquica (salvo Habilidades de Ki sin coste).</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.93a4f09a318957cd"
+    },
+    {
+      "sort": 1000000,
+      "name": "Mult. mayor",
+      "type": "text",
+      "_id": "68084669982fbcc6",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 30 CM</p>\n<p><strong>Deriva de:</strong> Mult. de cuerpos</p>\n<hr>\n<p>Mejora la Multiplicación de cuerpos: el coste baja a 2 Ki por copia y el número máximo simultáneo sube hasta un valor igual a Poder.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.68084669982fbcc6"
+    },
+    {
+      "sort": 1100000,
+      "name": "Mult. arcana",
+      "type": "text",
+      "_id": "857321ccfbcacf9c",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 40 CM</p>\n<p><strong>Deriva de:</strong> Mult. mayor</p>\n<hr>\n<p>Máximo grado de la Multiplicación de cuerpos: el coste baja a 1 Ki por copia y el número máximo simultáneo sube hasta cinco veces Poder.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.857321ccfbcacf9c"
+    },
+    {
+      "sort": 1200000,
+      "name": "Magnitud",
+      "type": "text",
+      "_id": "6ed8375db6e6007a",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 30 CM</p>\n<p><strong>Deriva de:</strong> Mult. de cuerpos</p>\n<hr>\n<p>Mejora la capacidad física de las copias: invirtiendo 3 Ki adicionales al formar una sombra, su penalizador a la Acción baja a <strong>-60</strong> (-3 a Características). Es voluntario; puede seguir creando copias sin Magnitud.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.6ed8375db6e6007a"
+    },
+    {
+      "sort": 1300000,
+      "name": "Mag. arcana",
+      "type": "text",
+      "_id": "6e2964771990de85",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 40 CM</p>\n<p><strong>Deriva de:</strong> Magnitud</p>\n<hr>\n<p>Igual que Magnitud, pero el penalizador de las sombras baja a <strong>-20</strong> (-1 a Características) invirtiendo 6 Ki adicionales al crearlas. Voluntario.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.6e2964771990de85"
+    },
+    {
+      "sort": 1400000,
+      "name": "Control de la edad",
+      "type": "text",
+      "_id": "11c200a5f18a0bbd",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 20 CM</p>\n<p><strong>Deriva de:</strong> Dominio físico</p>\n<hr>\n<p>Influye en el envejecimiento: envejece más lentamente y conserva sus capacidades físicas incluso de anciano. Incrementa 3-4 veces la esperanza de vida y reduce a la mitad los penalizadores físicos por edad avanzada.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.11c200a5f18a0bbd"
+    },
+    {
+      "sort": 1500000,
+      "name": "Imitación de técnicas",
+      "type": "text",
+      "_id": "d862d8b4cf38b6fa",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 50 CM</p>\n<p><strong>Deriva de:</strong> Control del Ki</p>\n<hr>\n<p>Al presenciar o ser blanco de una Técnica, el personaje la domina de inmediato si tiene CM libre suficiente, añadiéndola a su repertorio. Coste: 10 CM menos que la original si es de 1er nivel, 20 menos de 2º, 30 menos de 3º. Las Técnicas copiadas no cuentan para el número total propio. No funciona con Técnicas que requieran Legados de Sangre.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.d862d8b4cf38b6fa"
+    },
+    {
+      "sort": 1600000,
+      "name": "Forzar técnicas",
+      "type": "text",
+      "_id": "1d8b53f4137e89bf",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 20 CM</p>\n<p><strong>Deriva de:</strong> Control del Ki</p>\n<hr>\n<p>Incrementa los efectos de una Técnica invirtiendo más energía: hay que <strong>Acumular el doble de Ki</strong> de su coste original. Los efectos aumentan en la mitad de su valor (un +100 al ataque → +150; 5 Ataques Adicionales → 7; multiplicadores de Daño +1; RF +40). Se pueden forzar todas las Técnicas conocidas; las mantenidas solo en su momento inicial.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.1d8b53f4137e89bf"
+    },
+    {
+      "sort": 1700000,
+      "name": "Eliminación de peso",
+      "type": "text",
+      "_id": "6cf729ec7c8a8056",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<hr>\n<p>Afecta su masa corporal e ignora parcialmente la gravedad: durante un asalto completo puede correr por cualquier superficie (paredes, agua) hasta el máximo de su desplazamiento. Si no completa el recorrido, acaba hundiéndose. Invirtiendo 1 Ki genérico por asalto prolonga los efectos. Su peso real sigue igual a otros efectos (viento, golpes...).</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.6cf729ec7c8a8056"
+    },
+    {
+      "sort": 1800000,
+      "name": "Levitación",
+      "type": "text",
+      "_id": "1b309fbbc745d9e0",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 20 CM</p>\n<p><strong>Deriva de:</strong> Eliminación de peso</p>\n<hr>\n<p>Usa la energía física para elevarse y moverse por el aire. Cada nivel de Tipo de vuelo cuesta 1 Ki genérico. El máximo Tipo de vuelo es <strong>una cuarta parte</strong> del Tipo de movimiento (redondeo arriba). Mantenerse en el aire cuesta 1 Ki adicional por minuto.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.1b309fbbc745d9e0"
+    },
+    {
+      "sort": 1900000,
+      "name": "Movimiento de objetos",
+      "type": "text",
+      "_id": "58c4bc076091968d",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Deriva de:</strong> Levitación</p>\n<hr>\n<p>Exterioriza su energía como prolongación del cuerpo para tocar y mover cosas a distancia. El objeto debe estar a la vista o tener una idea muy concreta de su posición. Cuesta 1 Ki por asalto por cada 5 kg de peso.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.58c4bc076091968d"
+    },
+    {
+      "sort": 2000000,
+      "name": "Mov. de masas",
+      "type": "text",
+      "_id": "d80c6d664e5bb699",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 20 CM</p>\n<p><strong>Deriva de:</strong> Movimiento de objetos</p>\n<hr>\n<p>Aumenta la masa que puede mover a distancia: el peso afectado sube a <strong>50 kg por Ki</strong> gastado, y puede controlar varios objetos en lugar de uno solo.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.d80c6d664e5bb699"
+    },
+    {
+      "sort": 2100000,
+      "name": "Vuelo",
+      "type": "text",
+      "_id": "afbc1f232d9a051d",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 20 CM</p>\n<p><strong>Deriva de:</strong> Levitación</p>\n<hr>\n<p>Control completo de su masa: se mueve por el aire como por el suelo, alcanzando un Tipo de vuelo igual a su Movimiento (en lugar de un cuarto como en la Levitación). Cuesta 1 Ki genérico por cada Tipo de vuelo; mantenimiento 1 por minuto.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.afbc1f232d9a051d"
+    },
+    {
+      "sort": 2200000,
+      "name": "Extrusión de presencia",
+      "type": "text",
+      "_id": "0b08e2bba7a0f287",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<hr>\n<p>Concentra el Ki como un aura invisible: puede tocar físicamente energía pura e intangibles (fuego, espectros, magia). Luchando con su cuerpo, daña a seres solo afectados por ataques sobrenaturales hasta <strong>el doble de su Presencia</strong> (presencia 50 → daña como arma mística de 100). También permite defenderse de efectos sobrenaturales con su habilidad de Parada.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.0b08e2bba7a0f287"
+    },
+    {
+      "sort": 2300000,
+      "name": "Armadura de energía",
+      "type": "text",
+      "_id": "b472093151a85e4b",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Deriva de:</strong> Extrusión de presencia</p>\n<hr>\n<p>Usa su aura como armadura espiritual contra efectos esotéricos y ataques de energía pura: concede una <strong>TA 2 natural contra Energía</strong>. Aunque cuenta como armadura, no aplica penalizadores al Turno por capas adicionales.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.b472093151a85e4b"
+    },
+    {
+      "sort": 2400000,
+      "name": "Armadura mayor",
+      "type": "text",
+      "_id": "5e333391f5103861",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Deriva de:</strong> Armadura de energía</p>\n<hr>\n<p>Aumenta la Armadura de energía hasta <strong>TA 4</strong>. Su activación no es innata: cuesta 1 Ki genérico cada 5 Turnos que se mantenga. Sin penalizadores al Turno por capas adicionales.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.5e333391f5103861"
+    },
+    {
+      "sort": 2500000,
+      "name": "Arm. arcana",
+      "type": "text",
+      "_id": "3155f3eeea6d76a7",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Deriva de:</strong> Armadura mayor</p>\n<hr>\n<p>La Armadura contra Energía sube automáticamente a <strong>TA 4</strong> sin activación ni mantenimiento; puede subirla hasta TA 6 invirtiendo 1 Ki cada 5 asaltos. Sin penalizadores al Turno por capas adicionales.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.3155f3eeea6d76a7"
+    },
+    {
+      "sort": 2600000,
+      "name": "Extensión del aura al arma",
+      "type": "text",
+      "_id": "6fc37c9bded7548f",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Deriva de:</strong> Extrusión de presencia</p>\n<hr>\n<p>Despliega energía a cualquier arma empuñada: el arma usa las Resistencias del personaje en lugar de las suyas, y extiende los poderes de Extrusión de presencia (dañar/detener energía como un artefacto místico). Aumenta <strong>+10 el Daño base</strong> del arma, +10 a su Resistencia y +5 a su rotura. También puede extenderse a la armadura.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.6fc37c9bded7548f"
+    },
+    {
+      "sort": 2700000,
+      "name": "Ataque elemental",
+      "type": "text",
+      "_id": "21f9cd9a85ca0f83",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Deriva de:</strong> Extensión del aura al arma</p>\n<hr>\n<p>Dota a sus ataques de carácter elemental. Al adquirirla elige un elemento: Fuego, Aire, Agua, Tierra, Luz u Oscuridad (obligado a elegir el de su desequilibrio, si lo tiene). Fuego/Aire/Agua permiten usar como Crítico secundario Calor/Electricidad/Frío. Tierra permite atacar en la Tabla de Contundente como Crítico secundario con cualquier arma (si ya es Contundente primario, +10 al Daño base). Puede elegirse varias veces, especializándose en distintos elementos.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.21f9cd9a85ca0f83"
+    },
+    {
+      "sort": 2800000,
+      "name": "Daño incrementado",
+      "type": "text",
+      "_id": "fbcff81c9637b7f0",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Deriva de:</strong> Extensión del aura al arma</p>\n<hr>\n<p>Amplifica la potencia destructiva: <strong>+10 al Daño base</strong> del arma o ataque. Funciona también con proyectiles.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.fbcff81c9637b7f0"
+    },
+    {
+      "sort": 2900000,
+      "name": "Alcance incrementado",
+      "type": "text",
+      "_id": "6f79846f5c5682bc",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Deriva de:</strong> Extensión del aura al arma</p>\n<hr>\n<p>Agranda el tamaño efectivo de sus ataques: en Ataques en área, las armas duplican el número de blancos (Pequeñas 6, Medianas 8, Grandes 10 enemigos).</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.6f79846f5c5682bc"
+    },
+    {
+      "sort": 3000000,
+      "name": "Velocidad incrementada",
+      "type": "text",
+      "_id": "4bdd19ee83195767",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Deriva de:</strong> Extensión del aura al arma</p>\n<hr>\n<p>Usa el flujo de Ki para incrementar su velocidad y los movimientos de las armas: bono especial de <strong>+10 al Turno</strong>. Sirve también en combate desarmado.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.4bdd19ee83195767"
+    },
+    {
+      "sort": 3100000,
+      "name": "Destrucción por Ki",
+      "type": "text",
+      "_id": "4e37bf6ea046fe04",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 20 CM</p>\n<p><strong>Deriva de:</strong> Extrusión de presencia</p>\n<hr>\n<p>Proyecta su energía para destruir algo en contacto. Cuesta 1 Ki genérico: el objetivo supera una <strong>RF contra la Presencia base</strong> del personaje. Contra un ser vivo, causa daño = nivel de fracaso de la Resistencia. Contra un objeto inorgánico, si no lo supera por más de 40 queda destruido (o baja un grado de calidad). Cada Ki adicional suma +5 a la Resistencia a superar (hasta el doble de la presencia). Puede usar su habilidad de ataque para alcanzar físicamente al enemigo. Daña seres solo afectados por energía. Es un ataque: no se mantiene (se invierte Ki cada asalto).</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.4e37bf6ea046fe04"
+    },
+    {
+      "sort": 3200000,
+      "name": "Absorción de energía",
+      "type": "text",
+      "_id": "09dc19e7e126b7cf",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 30 CM</p>\n<p><strong>Deriva de:</strong> Extrusión de presencia</p>\n<hr>\n<p>Usa su energía interior como protección, absorbiendo Daño plenamente sobrenatural o energético (p.ej. una Descarga de Luz o una Técnica sobrenatural, pero NO un espadazo que solo dañe Energía). En lugar de perder vida, sacrifica 1 Ki genérico por cada 5 de Daño recibido. Es voluntario. No funciona contra Daños de efectos que obliguen a superar controles de Resistencia.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.09dc19e7e126b7cf"
+    },
+    {
+      "sort": 3300000,
+      "name": "Escudo físico",
+      "type": "text",
+      "_id": "e7386461ddb0cebf",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Deriva de:</strong> Extrusión de presencia</p>\n<hr>\n<p>La energía residual actúa como escudo físico: los impactos sin la potencia necesaria rebotan sin causar Daño. Otorga una <strong>Barrera de Daño natural igual a su Presencia base</strong>.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.e7386461ddb0cebf"
+    },
+    {
+      "sort": 3400000,
+      "name": "Transmisión del Ki",
+      "type": "text",
+      "_id": "ae549b249579524e",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<hr>\n<p>Transmite o absorbe Ki de otros. Dos individuos con esta habilidad intercambian puntos libremente (entre las mismas características de origen). El índice de transmisión por asalto es la acumulación de los personajes.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.ae549b249579524e"
+    },
+    {
+      "sort": 3500000,
+      "name": "Curación por Ki",
+      "type": "text",
+      "_id": "a4fc52d0b3bac574",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Deriva de:</strong> Transmisión del Ki</p>\n<hr>\n<p>Cura <strong>2 puntos de vida por cada Ki genérico</strong> gastado, a sí mismo o a quien esté en contacto. Solo permite recuperar la mitad del Daño sufrido.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.a4fc52d0b3bac574"
+    },
+    {
+      "sort": 3600000,
+      "name": "Curación superior",
+      "type": "text",
+      "_id": "86ce7daa77d91de2",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Deriva de:</strong> Curación por Ki</p>\n<hr>\n<p>Mejora la Curación por Ki: recupera <strong>5 puntos de vida por cada Ki genérico</strong>. Sigue sin poder recuperar más de la mitad del Daño recibido.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.86ce7daa77d91de2"
+    },
+    {
+      "sort": 3700000,
+      "name": "Estabilizar",
+      "type": "text",
+      "_id": "946a7d3fe8910efd",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Deriva de:</strong> Curación por Ki</p>\n<hr>\n<p>Detiene desangramientos y saca a otros del estado de entre la vida y la muerte. Contra el desangramiento invierte 2-5 Ki genéricos según la gravedad. Para estabilizar a alguien con vida negativa, permite un nuevo control de Resistencia; cada 2 Ki adicionales dan +5 a la RF de ese control.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.946a7d3fe8910efd"
+    },
+    {
+      "sort": 3800000,
+      "name": "Sacrificio vital",
+      "type": "text",
+      "_id": "f5549eac69702d37",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Deriva de:</strong> Transmisión del Ki</p>\n<hr>\n<p>Consume su fuerza vital para convertirla en energía física: por cada 2 puntos de vida sacrificados recupera 1 Ki de su reserva. Esos puntos cuentan como Sacrificio y se recuperan a un ritmo distinto al de otras heridas.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.f5549eac69702d37"
+    },
+    {
+      "sort": 3900000,
+      "name": "Uso de la energía necesaria",
+      "type": "text",
+      "_id": "0c07f203a51a577b",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<hr>\n<p>Controla su energía para usar solo la cantidad requerida: <strong>multiplica por 10</strong> el tiempo que puede hacer trabajo físico/correr sin perder Cansancio (p.ej. 1 Cansancio cada 50 asaltos en vez de cada 5).</p>\n<p>También permite forzar maniobras corporales gastando hasta 5 puntos de Cansancio por asalto (en vez de 2), pudiendo sumar +75 a una única acción o varios +15 a varias.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.0c07f203a51a577b"
+    },
+    {
+      "sort": 4000000,
+      "name": "Ocultación del Ki",
+      "type": "text",
+      "_id": "e7e74ffe8235b7b2",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Deriva de:</strong> Uso de la energía necesaria</p>\n<hr>\n<p>Oculta los rastros de su energía, invisible a Detección y Erudición del Ki. Cuenta como habilidad secundaria especial: media entre el CM total y Ocultarse. Quien intente localizarle con Detección hace un control enfrentado: la ocultación se resta de la detección. Acumular Ki resta 10 por cada punto empleado. También puede falsear la información de Erudición. Además, contra detecciones sobrenaturales suma la mitad de su Ocultación del Ki a la Resistencia.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.e7e74ffe8235b7b2"
+    },
+    {
+      "sort": 4100000,
+      "name": "Aura de ocultación",
+      "type": "text",
+      "_id": "7aee7c696471c695",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Deriva de:</strong> Ocultación del Ki</p>\n<hr>\n<p>Permite ocultar también el Ki de otros junto a él o en contacto, aplicando un penalizador: -40 en contacto directo, -120 a escasos metros. Cada individuo adicional añade -10. La tirada de ocultación es global (le incluye a él mismo).</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.7aee7c696471c695"
+    },
+    {
+      "sort": 4200000,
+      "name": "Falsa muerte",
+      "type": "text",
+      "_id": "4cb393be504cd6a0",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Deriva de:</strong> Ocultación del Ki</p>\n<hr>\n<p>Entra en un estado de coma similar a la muerte: no se mueve pero es consciente del entorno. No respira, ni late su corazón, ni desprende energía. Descubrir que no está muerto requiere Medicina a Imposible. Recuperar el control del cuerpo al terminar requiere un Turno completo.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.4cb393be504cd6a0"
+    },
+    {
+      "sort": 4300000,
+      "name": "Eliminación de necesidades",
+      "type": "text",
+      "_id": "7c3e29e011e2937c",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Deriva de:</strong> Uso de la energía necesaria</p>\n<hr>\n<p>Solo necesita comer, beber o dormir una décima parte de lo que requiere una persona normal.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.7c3e29e011e2937c"
+    },
+    {
+      "sort": 4400000,
+      "name": "Inmunidad elem. FUE",
+      "type": "text",
+      "_id": "5d58ae5e1ab676dc",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 20 CM</p>\n<p><strong>Deriva de:</strong> Eliminación de necesidades</p>\n<hr>\n<p>Inmunidad al calor: resistencia innata contra 5 intensidades de Fuego. Puede incrementarla invirtiendo 1 Ki genérico por cada intensidad superior a 5 (p.ej. 10 Ki para 15 intensidades), manteniéndolo cada asalto. Quien sea naturalmente vulnerable al fuego no puede elegirla.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.5d58ae5e1ab676dc"
+    },
+    {
+      "sort": 4500000,
+      "name": "Inmunidad elem. FRI",
+      "type": "text",
+      "_id": "943edacef6f8bdf5",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 20 CM</p>\n<p><strong>Deriva de:</strong> Eliminación de necesidades</p>\n<hr>\n<p>Inmunidad a bajas temperaturas: resistencia innata contra 5 intensidades de Frío. +1 Ki por intensidad superior a 5, manteniéndolo cada asalto. Quien sea vulnerable al frío no puede elegirla.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.943edacef6f8bdf5"
+    },
+    {
+      "sort": 4600000,
+      "name": "Inmunidad elem. ELE",
+      "type": "text",
+      "_id": "444c19bf0efd296f",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 20 CM</p>\n<p><strong>Deriva de:</strong> Eliminación de necesidades</p>\n<hr>\n<p>Inmunidad a corrientes eléctricas: resistencia innata contra 5 intensidades de Electricidad. +1 Ki por intensidad superior a 5, manteniéndolo cada asalto. Quien sea vulnerable a la electricidad no puede elegirla.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.444c19bf0efd296f"
+    },
+    {
+      "sort": 4700000,
+      "name": "Eliminación de penalizadores",
+      "type": "text",
+      "_id": "d615ac1e77b273a3",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 20 CM</p>\n<p><strong>Deriva de:</strong> Uso de la energía necesaria</p>\n<hr>\n<p>Reduce a la mitad los penalizadores por cansancio o por críticos. No afecta a negativos por amputaciones u otros daños similares, ni a los de origen mágico o psíquico.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.d615ac1e77b273a3"
+    },
+    {
+      "sort": 4800000,
+      "name": "Recuperación",
+      "type": "text",
+      "_id": "a4f4ddb438d27237",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 20 CM</p>\n<p><strong>Deriva de:</strong> Eliminación de penalizadores</p>\n<hr>\n<p>Usa Ki para recuperarse del agotamiento físico: 1 punto de Cansancio por cada 5 Ki genéricos. Solo 1 punto por turno.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.a4f4ddb438d27237"
+    },
+    {
+      "sort": 4900000,
+      "name": "Restituir a otros",
+      "type": "text",
+      "_id": "943979332aa6e0b7",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Deriva de:</strong> Recuperación</p>\n<hr>\n<p>Permite usar Recuperación sobre otros individuos. El coste de Ki es el mismo y se mantiene el límite de 1 punto por asalto.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.943979332aa6e0b7"
+    },
+    {
+      "sort": 5000000,
+      "name": "Aumento de características",
+      "type": "text",
+      "_id": "a1c3bdb1c34707dd",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 20 CM</p>\n<p><strong>Deriva de:</strong> Uso de la energía necesaria</p>\n<hr>\n<p>Aumenta sus atributos físicos hasta <strong>3 grados</strong> sobre su valor original. Debe invertir tantos Ki como la cifra a alcanzar (del atributo que sube). Después pierde 1 Ki por asalto para mantenerla.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.a1c3bdb1c34707dd"
+    },
+    {
+      "sort": 5100000,
+      "name": "Incremento superior",
+      "type": "text",
+      "_id": "3ed9f7f2b1629417",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 20 CM</p>\n<p><strong>Deriva de:</strong> Aumento de características</p>\n<hr>\n<p>El Aumento de Características puede subir hasta <strong>4 puntos</strong> (en vez de 3). El coste de activación es el mismo, pero el mantenimiento baja a 1 Ki cada 10 asaltos.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.3ed9f7f2b1629417"
+    },
+    {
+      "sort": 5200000,
+      "name": "Técnicas de combate improvisadas",
+      "type": "text",
+      "_id": "bfdadb635acaa7d0",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 50 CM</p>\n<hr>\n<p>Da acceso a la Tabla de creación de Técnicas improvisadas (explicadas en el Capítulo 5).</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.bfdadb635acaa7d0"
+    },
+    {
+      "sort": 5300000,
+      "name": "Inhumanidad",
+      "type": "text",
+      "_id": "e3fc337bd8d87f5c",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 30 CM</p>\n<hr>\n<p>Permite realizar acciones físicas imposibles para otros humanos: alcanzar el nivel <strong>Inhumano</strong> en la Tabla de dificultades y sacar el máximo provecho de sus características.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.e3fc337bd8d87f5c"
+    },
+    {
+      "sort": 5400000,
+      "name": "Zen",
+      "type": "text",
+      "_id": "4292851f487b9fb1",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 50 CM</p>\n<p><strong>Deriva de:</strong> Inhumanidad</p>\n<hr>\n<p>Estado de perfección completa entre cuerpo y alma. Actúa igual que la Inhumanidad, salvo que capacita al personaje para alcanzar la dificultad de <strong>Zen</strong> en sus controles y habilidades.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.4292851f487b9fb1"
+    }
+  ],
+  "folder": null,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_id": "784d3cb5888fdd67",
+  "sort": 100000,
+  "_key": "!journal!784d3cb5888fdd67"
+}

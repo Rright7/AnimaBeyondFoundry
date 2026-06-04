@@ -1,0 +1,559 @@
+{
+  "name": "Habilidades de Némesis",
+  "pages": [
+    {
+      "sort": 100000,
+      "name": "Uso del Némesis",
+      "type": "text",
+      "_id": "5ea4a7eb22ce6a55",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 70 CM</p>\n<hr>\n<p>Base de todas las habilidades de vacío existencial y requisito previo para acceder al resto. Una vez adquirido, el personaje puede usar su CM para dominar otras habilidades del Némesis. El Némesis por sí solo no permite desarrollar Técnicas (sigue requiriendo Control del Ki).</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!06410bc680202965.5ea4a7eb22ce6a55"
+    },
+    {
+      "sort": 200000,
+      "name": "Armadura de vacío",
+      "type": "text",
+      "_id": "29719979983e991a",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 20 CM</p>\n<hr>\n<p>Usa el Némesis como pantalla de vacío contra cualquier impacto: todos los ataques recibidos reducen automáticamente <strong>10 puntos su Daño base</strong>. Si el Daño llega a 0, no producen Daño alguno.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!06410bc680202965.29719979983e991a"
+    },
+    {
+      "sort": 300000,
+      "name": "Noht",
+      "type": "text",
+      "_id": "3296dc339e53c6fe",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 30 CM</p>\n<p><strong>Deriva de:</strong> Armadura de vacío</p>\n<hr>\n<p>Versión amplificada de la Armadura de vacío: amplía hasta <strong>-30</strong> el negativo al Daño base de cualquier ataque dirigido contra el personaje.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!06410bc680202965.3296dc339e53c6fe"
+    },
+    {
+      "sort": 400000,
+      "name": "Anulación de Ki",
+      "type": "text",
+      "_id": "7442dbd589135482",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 30 CM</p>\n<hr>\n<p>Genera un aura de frío espiritual que reduce las Acumulaciones de todos alrededor, según la suma de las Acumulaciones propias: 1-8 sin efecto, 9-12 -1, 13-16 -2, 17-20 -3, 21-24 -4, 25-27 -5, 28+ -6. Si una Acumulación afectada baja a 0, no puede usar Ki de esa Característica.</p>\n<p>Activar es pasivo; cuesta 2 Ki por Turno (5 si se concentra en un único blanco). Afecta a aliados y enemigos por igual en el radio (Tabla de áreas, según Poder). No se superpone (solo el mayor). Compatible con otras anulaciones.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!06410bc680202965.7442dbd589135482"
+    },
+    {
+      "sort": 500000,
+      "name": "Anulación de Ki mayor",
+      "type": "text",
+      "_id": "ccb32bae77b6501f",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 20 CM</p>\n<p><strong>Deriva de:</strong> Anulación de Ki</p>\n<hr>\n<p>Como la Anulación de Ki, pero con mayor potencia (segunda columna de su tabla). Coste 5 Ki por Turno (10 sobre un único blanco). A máximo poder interfiere con las propias Acumulaciones, impidiendo realizar Técnicas de Ki.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!06410bc680202965.ccb32bae77b6501f"
+    },
+    {
+      "sort": 600000,
+      "name": "Anulación de Magia",
+      "type": "text",
+      "_id": "a6fe7cca58fabfb8",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 30 CM</p>\n<hr>\n<p>Frío espiritual que interfiere las fibras de la magia: reduce el Zeon de los conjuros lanzados o activos en el radio (de -10 a -80 de Zeon, según las Acumulaciones). Si el potencial baja por debajo de su valor base de lanzamiento, el conjuro se anula; los mantenidos solo disminuyen sus efectos mientras dure (recuperan 1 Efecto por asalto al cesar).</p>\n<p>Activar cuesta 2 Ki por Turno (5 sobre un único blanco). No se superpone. Un mago puede lanzar mientras la mantiene, con un negativo a la ACT igual al Zeon que reduce.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!06410bc680202965.a6fe7cca58fabfb8"
+    },
+    {
+      "sort": 700000,
+      "name": "Anulación de Magia mayor",
+      "type": "text",
+      "_id": "90821b7bb62c5ad7",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 20 CM</p>\n<p><strong>Deriva de:</strong> Anulación de Magia</p>\n<hr>\n<p>Versión amplificada de la Anulación de Magia (segunda columna de su tabla, más Zeon anulado). Coste 5 Ki por asalto (10 sobre un único individuo).</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!06410bc680202965.90821b7bb62c5ad7"
+    },
+    {
+      "sort": 800000,
+      "name": "Anulación de Matrices",
+      "type": "text",
+      "_id": "992d7f349861fb45",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 30 CM</p>\n<hr>\n<p>Frío espiritual que reduce el potencial de cualquier poder psíquico en el radio, innatos o usados ese asalto. Los mantenidos/innatos recuperan 10 puntos por asalto al cesar; los usados en el momento, si bajan de su valor base, no funcionan (sin Fatiga por ese fracaso). Activar cuesta 2 Ki por Turno (5 sobre un único blanco).</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!06410bc680202965.992d7f349861fb45"
+    },
+    {
+      "sort": 900000,
+      "name": "Anulación de Matrices mayor",
+      "type": "text",
+      "_id": "91a92817acc6d2a3",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 20 CM</p>\n<p><strong>Deriva de:</strong> Anulación de Matrices</p>\n<hr>\n<p>Versión amplificada de la Anulación de Matrices (segunda columna de su tabla). Coste 5 Ki por asalto (10 sobre un único blanco).</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!06410bc680202965.91a92817acc6d2a3"
+    },
+    {
+      "sort": 1000000,
+      "name": "Anulación de Lazos",
+      "type": "text",
+      "_id": "a2731fb16f57926e",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 30 CM</p>\n<hr>\n<p>Afecta la estructura de la existencia impidiendo las habilidades de convocatoria: en el área, cualquiera aplica un negativo a Convocar, Desconvocar, Atar y Controlar (según las Acumulaciones). No afecta a lazos o dominios creados con anterioridad, ni al control del convocador sobre sus criaturas.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!06410bc680202965.a2731fb16f57926e"
+    },
+    {
+      "sort": 1100000,
+      "name": "Extrusión de Vacío",
+      "type": "text",
+      "_id": "7beecf2a89d7d7a3",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 30 CM</p>\n<hr>\n<p>Extiende el Némesis alrededor de sí: toca físicamente Energía (daña intangibles hasta el doble de su Presencia, detiene ataques inmateriales con la Parada). Además, todos sus ataques —aunque sean físicos— usan la <strong>Tabla de Energía y producen Daño por Frío</strong>. A su alrededor baja la temperatura y la luz se atenúa.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!06410bc680202965.7beecf2a89d7d7a3"
+    },
+    {
+      "sort": 1200000,
+      "name": "Cuerpo de Vacío",
+      "type": "text",
+      "_id": "aef1719e88b97ab0",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<hr>\n<p>Fusiona el Némesis con su cuerpo: <strong>+20 a todas sus Resistencias</strong> (físicas, mentales y mágicas), y deja de sufrir los efectos del desangramiento.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!06410bc680202965.aef1719e88b97ab0"
+    },
+    {
+      "sort": 1300000,
+      "name": "Sin necesidades",
+      "type": "text",
+      "_id": "c45851e3ece63f4c",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Deriva de:</strong> Cuerpo de Vacío</p>\n<hr>\n<p>Carece absolutamente de cualquier necesidad física (comer, dormir). Un individuo adicto a la comida/bebida o con sueño profundo conserva la necesidad psicológica.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!06410bc680202965.c45851e3ece63f4c"
+    },
+    {
+      "sort": 1400000,
+      "name": "Movimiento de Vacío",
+      "type": "text",
+      "_id": "26679dcc16df73d1",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 20 CM</p>\n<p><strong>Deriva de:</strong> Cuerpo de Vacío</p>\n<hr>\n<p>Se mueve a través de los bucles existenciales del Némesis: usa su <strong>Poder en lugar de Agilidad</strong> para su Tipo de Movimiento, y no requiere Inhumanidad/Zen para superar velocidad 10. Sus movimientos son extraños y caóticos; no sufre el -80 a Sigilo aunque se desplace al máximo.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!06410bc680202965.26679dcc16df73d1"
+    },
+    {
+      "sort": 1500000,
+      "name": "Forma de Vacío",
+      "type": "text",
+      "_id": "9f868ae76a9bba96",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 30 CM</p>\n<p><strong>Deriva de:</strong> Cuerpo de Vacío</p>\n<hr>\n<p>Sustituye su forma física por energía del Némesis, volviéndose un ente espectral: completamente intangible, solo dañable/detenible por ataques o cuerpos capaces de afectar Energía; sus golpes también se vuelven intangibles. Activarla cuesta 1 Ki + 1 cada 5 asaltos.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!06410bc680202965.9f868ae76a9bba96"
+    },
+    {
+      "sort": 1600000,
+      "name": "Esencia de Vacío",
+      "type": "text",
+      "_id": "e3139a03525005fe",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 20 CM</p>\n<p><strong>Deriva de:</strong> Cuerpo de Vacío</p>\n<hr>\n<p>Se alimenta de la propia esencia de la nada: deja de sufrir penalizadores por dolor o cansancio, e ignora los negativos de Críticos que no produzcan verdaderas carencias físicas (miembros inutilizados o amputaciones).</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!06410bc680202965.e3139a03525005fe"
+    },
+    {
+      "sort": 1700000,
+      "name": "Uno con la nada",
+      "type": "text",
+      "_id": "d136d9fb4cd6b150",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 40 CM</p>\n<p><strong>Deriva de:</strong> Esencia de Vacío</p>\n<hr>\n<p>Su forma física y espiritual se funden con el Némesis: está más allá del dolor, el cansancio o el daño físico. Su energía mantiene su forma original anulando menoscabos (un brazo mutilado se mantiene; uno amputado se sustituye por energía funcional). Sobrevive mientras le queden la cabeza y algunos órganos vitales.</p>\n<p>A efectos de juego, jamás recibe penalizador por causas físicas, ni siquiera por daños masivos; todos los Críticos se anulan salvo los dirigidos a puntos vulnerables. No funciona contra negativos de magia, poderes psíquicos, Magnus o Legados de Sangre.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!06410bc680202965.d136d9fb4cd6b150"
+    },
+    {
+      "sort": 1800000,
+      "name": "Aura de Vacío",
+      "type": "text",
+      "_id": "e43b3eaa5f8a96b9",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 30 CM</p>\n<hr>\n<p>Exterioriza un frío existencial alrededor de sí: cualquier ser vivo que entre debe superar una <strong>RF contra el doble de su Presencia base</strong> o sufrir -20 a toda Acción. Quien la supere no repite hasta pasadas horas; quien falle reintenta cada 5 asaltos. No se superpone. Automática y voluntaria, sin coste.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!06410bc680202965.e43b3eaa5f8a96b9"
+    },
+    {
+      "sort": 1900000,
+      "name": "Indetección",
+      "type": "text",
+      "_id": "4745dd984fba05c6",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<hr>\n<p>El vacío que cubre su presencia lo hace muy difícil de percibir por medios sobrenaturales (mágicos, psíquicos o de Ki): obtiene un bono igual al <strong>doble de su Presencia</strong> a la RM y la RP contra detecciones mágicas/psíquicas, y quien use Detección del Ki para encontrarlo sufre un penalizador del mismo valor.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!06410bc680202965.4745dd984fba05c6"
+    },
+    {
+      "sort": 2000000,
+      "name": "Inhumanidad",
+      "type": "text",
+      "_id": "8af9ba58d6495d19",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 20 CM</p>\n<hr>\n<p>Permite realizar acciones físicas imposibles para otros humanos: alcanzar el nivel <strong>Inhumano</strong> en la Tabla de dificultades y sacar el máximo provecho de sus características.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!06410bc680202965.8af9ba58d6495d19"
+    },
+    {
+      "sort": 2100000,
+      "name": "Zen",
+      "type": "text",
+      "_id": "589f8532d1bae2b2",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 40 CM</p>\n<p><strong>Deriva de:</strong> Inhumanidad</p>\n<hr>\n<p>Estado de perfección completa entre cuerpo y alma. Actúa igual que la Inhumanidad, salvo que capacita al personaje para alcanzar la dificultad de <strong>Zen</strong> en sus controles y habilidades.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!06410bc680202965.589f8532d1bae2b2"
+    }
+  ],
+  "folder": null,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_id": "06410bc680202965",
+  "sort": 200000,
+  "_key": "!journal!06410bc680202965"
+}
