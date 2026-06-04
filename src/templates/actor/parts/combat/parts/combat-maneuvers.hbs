@@ -21,113 +21,24 @@
       </div>
       <div class='combat-maneuvers-grid'>
         {{#each maneuvers as |maneuver|}}
-          <div data-item-id='{{maneuver._id}}' class='combat-maneuver-card{{#if maneuver.isCanonical}} combat-maneuver-card--canonical{{/if}}'>
-            <img
-              src='{{maneuver.img}}'
-              alt='{{maneuver.name}}'
-              data-on-click='openCombatManeuver'
-              data-maneuver-id='{{maneuver._id}}'
-              data-maneuver-slug='{{maneuver.slug}}'
-              title='{{localize "anima.ui.combat.combatManeuvers.openSheet"}}'
-              class='combat-maneuver-card__icon'
-            />
-            <div class='combat-maneuver-card__body'>
-              <div class='combat-maneuver-card__header'>
-                <div class='combat-maneuver-card__heading'>
-                  <strong class='combat-maneuver-card__name'>{{maneuver.name}}</strong>
-                  {{#if maneuver.slug}}
-                    <span class='combat-maneuver-card__slug'>{{maneuver.slug}}</span>
-                  {{/if}}
-                </div>
-                {{#unless maneuver.isCanonical}}
-                  <a
-                    data-on-click='deleteCombatManeuver'
-                    data-maneuver-id='{{maneuver._id}}'
-                    title='{{localize "anima.ui.combat.combatManeuvers.delete"}}'
-                    class='combat-maneuver-card__delete'
-                  >
-                    <i class='fas fa-trash'></i>
-                  </a>
-                {{/unless}}
-              </div>
-              {{#if maneuver.slug}}
-                <div class='combat-maneuver-card__rules'>
-                  {{combatManeuverRulesSummary maneuver.slug}}
-                </div>
-              {{/if}}
-              {{#with (combatManeuverAimedZoneOptions maneuver.slug) as |zones|}}
-                {{#if zones.length}}
-                  <div class='combat-maneuver-card__zone'>
-                    <label>{{localize "anima.ui.combat.combatManeuvers.aimedZone"}}</label>
-                    <select data-maneuver-id='{{maneuver._id}}' data-maneuver-slug='{{maneuver.slug}}' class='combat-maneuver-card__zone-select'>
-                      {{#each zones as |z|}}
-                        <option value='{{z}}'>{{aimedZoneLabel z}}</option>
-                      {{/each}}
-                    </select>
-                  </div>
-                {{/if}}
-              {{/with}}
-              {{#with (combatManeuverDelayRoundsOptions maneuver.slug) as |rounds|}}
-                {{#if rounds.length}}
-                  <div class='combat-maneuver-card__delay'>
-                    <label>{{localize "anima.ui.combat.combatManeuvers.delayRounds"}}</label>
-                    <select data-maneuver-id='{{maneuver._id}}' data-maneuver-slug='{{maneuver.slug}}' class='combat-maneuver-card__delay-select'>
-                      {{#each rounds as |r|}}
-                        <option value='{{r}}'>{{r}}</option>
-                      {{/each}}
-                    </select>
-                  </div>
-                {{/if}}
-              {{/with}}
-              {{#with (combatManeuverCadenceOptions maneuver.slug) as |cads|}}
-                {{#if cads.length}}
-                  <div class='combat-maneuver-card__cadence'>
-                    <label>{{localize "anima.ui.combat.combatManeuvers.cadenceLabel"}}</label>
-                    <select data-maneuver-id='{{maneuver._id}}' data-maneuver-slug='{{maneuver.slug}}' class='combat-maneuver-card__cadence-select'>
-                      {{#each cads as |c|}}
-                        <option value='{{c}}'>{{localize (concat "anima.ui.combat.combatManeuvers.cadence." c)}}</option>
-                      {{/each}}
-                    </select>
-                  </div>
-                {{/if}}
-              {{/with}}
-              {{#with (combatManeuverPenaltyOptions maneuver.slug) as |pens|}}
-                {{#if pens.length}}
-                  <div class='combat-maneuver-card__penalty'>
-                    <label>{{localize "anima.ui.combat.combatManeuvers.penaltyChoice"}}</label>
-                    <select data-maneuver-id='{{maneuver._id}}' data-maneuver-slug='{{maneuver.slug}}' class='combat-maneuver-card__penalty-select'>
-                      {{#each pens as |p|}}
-                        <option value='{{p.value}}'>{{localize p.labelKey}}</option>
-                      {{/each}}
-                    </select>
-                  </div>
-                {{/if}}
-              {{/with}}
-              {{#if (combatManeuverHasOptionalPenalty maneuver.slug)}}
-                <div class='combat-maneuver-card__choose-targets'>
-                  <label>
-                    <input type='checkbox' class='combat-maneuver-card__choose-targets-checkbox' />
-                    {{localize "anima.ui.combat.combatManeuvers.chooseTargets"}}
-                  </label>
-                </div>
-              {{/if}}
-              <button
-                type='button'
-                data-on-click='executeCombatManeuver'
-                data-maneuver-id='{{maneuver._id}}'
-                data-maneuver-slug='{{maneuver.slug}}'
-                class='combat-maneuver-card__execute'
-                title='{{localize "anima.ui.combat.combatManeuvers.execute"}}'
-              >
-                <i class='fas fa-dice-d10'></i>
-                {{localize "anima.ui.combat.combatManeuvers.execute"}}
-              </button>
-            </div>
-          </div>
+          {{#unless maneuver.isMaster}}
+            {{> "systems/animabf/templates/actor/parts/combat/parts/combat-maneuver-card.hbs" maneuver=maneuver}}
+          {{/unless}}
         {{/each}}
         <div class='combat-maneuver-card combat-maneuver-card--placeholder'>
           {{localize "anima.ui.combat.combatManeuvers.dragHint"}}
         </div>
+      </div>
+      <h4 class='combat-maneuvers-subtitle'>
+        <i class='fas fa-crown'></i>
+        {{localize "anima.ui.combat.combatManeuvers.masterTitle"}}
+      </h4>
+      <div class='combat-maneuvers-grid combat-maneuvers-grid--master'>
+        {{#each maneuvers as |maneuver|}}
+          {{#if maneuver.isMaster}}
+            {{> "systems/animabf/templates/actor/parts/combat/parts/combat-maneuver-card.hbs" maneuver=maneuver}}
+          {{/if}}
+        {{/each}}
       </div>
       <p class='combat-maneuvers-no-results'>
         {{localize "anima.ui.combat.combatManeuvers.noResults"}}

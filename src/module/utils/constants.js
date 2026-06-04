@@ -171,6 +171,7 @@ export const Templates = {
       CombatSpecialSkills: T('actor/parts/combat/parts/combat-special-skills.hbs'),
       CombatTables: T('actor/parts/combat/parts/combat-tables.hbs'),
       CombatManeuvers: T('actor/parts/combat/parts/combat-maneuvers.hbs'),
+      CombatManeuverCard: T('actor/parts/combat/parts/combat-maneuver-card.hbs'),
       Ammo: T('actor/parts/combat/parts/ammo.hbs'),
       Armors: T('actor/parts/combat/parts/armors.hbs'),
       Weapons: T('actor/parts/combat/parts/weapons.hbs'),

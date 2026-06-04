@@ -328,6 +328,32 @@
     width: 100%;
   }
 
+  .combat-maneuvers-subtitle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0.85rem 0 0.5rem;
+    padding-bottom: 0.25rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--abf-text);
+    border-bottom: 2px solid var(--abf-gold);
+
+    i {
+      color: var(--abf-gold);
+    }
+  }
+
+  .combat-maneuvers-grid--master .combat-maneuver-card {
+    border-color: var(--abf-gold);
+    background: var(--abf-gold-soft);
+
+    &:hover {
+      border-color: var(--abf-gold);
+      box-shadow: var(--abf-shadow);
+    }
+  }
+
   .combat-maneuver-card {
     display: flex;
     gap: 0.625rem;

@@ -330,6 +330,7 @@ export default class ABFActorSheet extends ActorSheetV1 {
     input.on('input', event => {
       const query = normalize(event.currentTarget.value.trim());
       let visible = 0;
+      let masterVisible = 0;
 
       html.find('.combat-maneuver-card').each((_, card) => {
         if (card.classList.contains('combat-maneuver-card--placeholder')) {
@@ -340,8 +341,17 @@ export default class ABFActorSheet extends ActorSheetV1 {
         const name = normalize(card.querySelector('.combat-maneuver-card__name')?.textContent);
         const match = !query || name.includes(query);
         card.style.display = match ? '' : 'none';
-        if (match) visible += 1;
+        if (match) {
+          visible += 1;
+          if (card.closest('.combat-maneuvers-grid--master')) masterVisible += 1;
+        }
       });
+
+      const hideMaster = !!query && masterVisible === 0;
+      const subtitle = html.find('.combat-maneuvers-subtitle')[0];
+      const masterGrid = html.find('.combat-maneuvers-grid--master')[0];
+      if (subtitle) subtitle.style.display = hideMaster ? 'none' : '';
+      if (masterGrid) masterGrid.style.display = hideMaster ? 'none' : '';
 
       const noResults = html.find('.combat-maneuvers-no-results')[0];
       if (noResults) noResults.style.display = query && visible === 0 ? 'block' : 'none';

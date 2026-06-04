@@ -83,4 +83,22 @@ describe('combatManeuverCatalog helper', () => {
     setRegistry(DEFS, I18N);
     expect(fn(undefined)).toHaveLength(2);
   });
+
+  test('flags master maneuvers via the mastery predicate', () => {
+    setRegistry(
+      [
+        { slug: 'derribo', nameKey: 'anima.maneuvers.derribo.name', icon: 'd.svg' },
+        {
+          slug: 'dano-retrasado',
+          nameKey: 'anima.maneuvers.dano-retrasado.name',
+          icon: 'r.svg',
+          predicate: ['self:mastery:attack']
+        }
+      ],
+      {}
+    );
+    const out = fn([]);
+    expect(out.find(m => m.slug === 'derribo').isMaster).toBe(false);
+    expect(out.find(m => m.slug === 'dano-retrasado').isMaster).toBe(true);
+  });
 });

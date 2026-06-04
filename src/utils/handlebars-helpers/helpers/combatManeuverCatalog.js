@@ -43,6 +43,7 @@ export const combatManeuverCatalogHelper = {
         name: localized && localized !== def.nameKey ? localized : def.slug,
         img: def.icon || 'icons/svg/sword.svg',
         isCanonical: true,
+        isMaster: Array.isArray(def.predicate) && def.predicate.includes('self:mastery:attack'),
         _id: null
       });
     }
@@ -58,6 +59,7 @@ export const combatManeuverCatalogHelper = {
         name: item?.name ?? '',
         img: item?.img ?? 'icons/svg/sword.svg',
         isCanonical: false,
+        isMaster: false,
         _id: item?._id ?? null
       });
     }

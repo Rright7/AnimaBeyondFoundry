@@ -29,6 +29,9 @@ img {
   --abf-text: #{$black};
   --abf-text-muted: #3b3b3b;
   --abf-on-accent: #{$white};
+  --abf-gold: #b8860b;
+  --abf-gold-soft: rgba(184, 134, 11, 0.1);
+  --abf-gold-border: rgba(184, 134, 11, 0.55);
   --abf-border: #{rgba($black, 0.18)};
   --abf-border-strong: #{rgba($black, 0.3)};
   --abf-radius: #{$border-radius};
