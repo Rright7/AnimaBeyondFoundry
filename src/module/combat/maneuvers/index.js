@@ -9,6 +9,7 @@ import { carga } from './definitions/carga.js';
 import { mounted } from './definitions/mounted.js';
 import { crush } from './definitions/crush.js';
 import { danoRetrasado } from './definitions/danoRetrasado.js';
+import { lluviaDeProyectiles } from './definitions/lluviaDeProyectiles.js';
 
 maneuverRegistry.register(derribo);
 maneuverRegistry.register(desarme);
@@ -20,5 +21,6 @@ maneuverRegistry.register(carga);
 maneuverRegistry.register(mounted);
 maneuverRegistry.register(crush);
 maneuverRegistry.register(danoRetrasado);
+maneuverRegistry.register(lluviaDeProyectiles);
 
 export { maneuverRegistry };

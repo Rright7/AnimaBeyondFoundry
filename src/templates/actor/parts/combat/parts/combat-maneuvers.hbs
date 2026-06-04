@@ -79,6 +79,26 @@
                   </div>
                 {{/if}}
               {{/with}}
+              {{#with (combatManeuverCadenceOptions maneuver.slug) as |cads|}}
+                {{#if cads.length}}
+                  <div class='combat-maneuver-card__cadence'>
+                    <label>{{localize "anima.ui.combat.combatManeuvers.cadenceLabel"}}</label>
+                    <select data-maneuver-id='{{maneuver._id}}' data-maneuver-slug='{{maneuver.slug}}' class='combat-maneuver-card__cadence-select'>
+                      {{#each cads as |c|}}
+                        <option value='{{c}}'>{{localize (concat "anima.ui.combat.combatManeuvers.cadence." c)}}</option>
+                      {{/each}}
+                    </select>
+                  </div>
+                {{/if}}
+              {{/with}}
+              {{#if (combatManeuverHasOptionalPenalty maneuver.slug)}}
+                <div class='combat-maneuver-card__choose-targets'>
+                  <label>
+                    <input type='checkbox' class='combat-maneuver-card__choose-targets-checkbox' />
+                    {{localize "anima.ui.combat.combatManeuvers.chooseTargets"}}
+                  </label>
+                </div>
+              {{/if}}
               <button
                 type='button'
                 data-on-click='executeCombatManeuver'

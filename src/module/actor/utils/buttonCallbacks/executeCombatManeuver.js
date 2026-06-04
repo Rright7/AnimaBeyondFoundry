@@ -4,6 +4,12 @@ import { toggleStatusManeuver } from '../toggleStatusManeuver.js';
 import { runSubGrappleManeuver } from '../../../combat/maneuvers/subGrappleRunner.js';
 import { buildRollOptions } from '../effectFow/rollOptions/rollOptions.js';
 import { testPredicate } from '../effectFow/predicates/Predicate.js';
+import { areaRadiusMeters } from '../../../combat/lluviaProyectiles.js';
+import {
+  createAreaTemplate,
+  tokensInRadius,
+  pickAreaCenter
+} from '../../../combat/maneuvers/areaTemplate.js';
 
 /**
  * Launch a combat maneuver by opening AttackConfigurationDialog with the
@@ -80,6 +86,12 @@ export function executeCombatManeuver(sheet, e) {
     return ui.notifications.warn('No hay token del atacante en la escena.');
   }
 
+  // Maniobras de ataque en ÁREA (Lluvia de proyectiles): el jugador COLOCA el
+  // área con el cursor y se auto-targetean los tokens dentro del radio.
+  if (def.isAreaAttack) {
+    return runAreaAttack(sheet, e, def, slug, name, attackerToken);
+  }
+
   const snapshotTargets = getSnapshotTargets();
   if (!snapshotTargets || snapshotTargets.length === 0) {
     return ui.notifications.warn(
@@ -130,6 +142,64 @@ export function executeCombatManeuver(sheet, e) {
       aimed,
       aimedZone,
       delayRounds
+    },
+    { allowed: true }
+  );
+}
+
+/**
+ * Ataque en área (Lluvia de proyectiles): calcula el radio desde la Habilidad de
+ * Ataque + el toggle de Cadencia, deja al jugador COLOCAR el área con el cursor
+ * (pickAreaCenter), auto-targetea a los tokens dentro del radio y abre el diálogo
+ * de ataque (que dispara el flujo multiDefensa). El gate de Maestría ya corre antes.
+ */
+async function runAreaAttack(sheet, e, def, slug, name, attackerToken) {
+  const card = e.currentTarget.closest('.combat-maneuver-card');
+
+  let cfOver50 = false;
+  if (def.hasCadenceOption) {
+    const sel = card?.querySelector('.combat-maneuver-card__cadence-select');
+    cfOver50 = sel?.value === 'gt50';
+  }
+
+  let chooseTargets = false;
+  if (def.hasOptionalPenaltyOption) {
+    const cb = card?.querySelector('.combat-maneuver-card__choose-targets-checkbox');
+    chooseTargets = !!cb?.checked;
+  }
+
+  const ability =
+    Number(
+      sheet.actor.system?.combat?.attack?.final?.value ??
+        sheet.actor.system?.combat?.attack?.base?.value ??
+        0
+    ) || 0;
+  const radius = areaRadiusMeters(ability, cfOver50);
+  if (radius <= 0) {
+    return ui.notifications.warn(`${name}: radio de área 0 (Habilidad insuficiente).`);
+  }
+
+  const center = await pickAreaCenter(radius);
+  if (!center) return; // colocación cancelada por el jugador
+  await createAreaTemplate(center.x, center.y, radius);
+  const targets = tokensInRadius(center.x, center.y, radius, {
+    excludeActorId: sheet.actor.id
+  });
+  if (!targets.length) {
+    return ui.notifications.warn(`${name}: no hay objetivos dentro del área.`);
+  }
+
+  const weapons = sheet.actor.system?.combat?.weapons ?? [];
+  const equipped = weapons.find(w => w.system?.equipped?.value);
+
+  new AttackConfigurationDialog(
+    {
+      attacker: attackerToken,
+      weaponId: equipped?._id,
+      targets,
+      maneuverSlug: slug,
+      maneuverItemName: name,
+      chooseTargets
     },
     { allowed: true }
   );

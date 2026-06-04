@@ -110,6 +110,21 @@ export class ManeuverDefinition {
     // <select> de retraso y el flujo de daño programado.
     this.hasDelayRoundsOption = !!data.hasDelayRoundsOption;
 
+    // Maniobras de ATAQUE EN ÁREA (Lluvia de proyectiles): no exigen pre-target;
+    // colocan una plantilla de radio calculado y auto-targetean a los tokens
+    // dentro. damageMultiplier dobla el Daño Base. hasCadenceOption habilita el
+    // toggle CF≤50/>50 (define el divisor del radio: 20 o 40).
+    this.isAreaAttack = !!data.isAreaAttack;
+    this.damageMultiplier = Number(data.damageMultiplier ?? 1) || 1;
+    this.hasCadenceOption = !!data.hasCadenceOption;
+
+    // Penalización OPCIONAL declarada por la maniobra, activable con un checkbox
+    // en la tarjeta (Lluvia de proyectiles: -50 al "elegir blancos"). Aditiva e
+    // inerte si no se marca.
+    this.optionalPenalty = Number(data.optionalPenalty ?? 0) || 0;
+    this.hasOptionalPenaltyOption = !!data.hasOptionalPenaltyOption;
+    this.optionalPenaltyLabelKey = String(data.optionalPenaltyLabelKey ?? '');
+
     // Crit-type requirement: if set to 'impact', the maneuver is meant to be
     // used with a bludgeoning weapon. Used by Inconsciencia, which adds an
     // extra penalty when the weapon is not impact-type but still allows it.

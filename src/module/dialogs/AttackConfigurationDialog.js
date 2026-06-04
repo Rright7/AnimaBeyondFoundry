@@ -17,7 +17,7 @@ export class AttackConfigurationDialog extends FormApplication {
     this.render(true);
   }
 
-  static _buildInitialData({ attacker, weaponId, weapon, options = {}, targets, maneuverSlug, maneuverItemName, aimed, aimedZone, delayRounds }) {
+  static _buildInitialData({ attacker, weaponId, weapon, options = {}, targets, maneuverSlug, maneuverItemName, aimed, aimedZone, delayRounds, chooseTargets }) {
     if (!attacker || !attacker.actor) {
       ui.notifications?.error('AttackConfigurationDialog: attacker is required');
       return { allowed: false };
@@ -93,7 +93,10 @@ export class AttackConfigurationDialog extends FormApplication {
               damageAllowed: !!def?.damageAllowed,
               damageHalvedIfApplied: !!def?.damageHalvedIfApplied,
               damageMandatory: !!def?.dealsMandatoryDamage,
-              delayRounds: Number(delayRounds ?? 0) || 0
+              delayRounds: Number(delayRounds ?? 0) || 0,
+              damageMultiplier: Number(def?.damageMultiplier ?? 1) || 1,
+              optionalPenalty: Number(def?.optionalPenalty ?? 0) || 0,
+              chooseTargets: !!chooseTargets
             };
           })()
         : null,
@@ -218,6 +221,13 @@ export class AttackConfigurationDialog extends FormApplication {
         maneuverNonImpactExtra = resolved.nonImpactExtra;
       }
 
+      // Penalización opcional de la maniobra (Lluvia de proyectiles: -50 al
+      // elegir blancos dentro del área), activada por el checkbox de la tarjeta.
+      if (this.modalData.maneuver?.chooseTargets && this.modalData.maneuver?.optionalPenalty) {
+        maneuverPenalty += Number(this.modalData.maneuver.optionalPenalty) || 0;
+        maneuverAppliedBy = [...maneuverAppliedBy, 'elegir-blancos'];
+      }
+
       // Ataque apuntado: when active, apply the Tabla 45 penalty for the
       // chosen zone. Maneuvers that preload aimed pass the penalty through
       // `maneuverPenalty`, so for those we skip this branch (otherwise we
@@ -316,7 +326,10 @@ export class AttackConfigurationDialog extends FormApplication {
 
       const attackData = ABFAttackData.builder()
         .attackAbility(roll.total)
-        .damage(Number(combat.damage?.final ?? weapon.system.damage?.final?.value ?? 0))
+        .damage(
+          Number(combat.damage?.final ?? weapon.system.damage?.final?.value ?? 0) *
+            (this.modalData.maneuver?.damageMultiplier ?? 1)
+        )
         .ignoreArmor(!!weapon.system.ignoreArmor?.value)
         .reducedArmor(Number(weapon.system.reducedArmor?.final?.value ?? 0))
         .armorType(combat.criticSelected ?? weapon.system.critic?.primary?.value)
