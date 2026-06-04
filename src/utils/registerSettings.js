@@ -21,6 +21,15 @@ export const registerSettings = systemId => {
     type: Boolean
   });
 
+  game.settings.register(systemId, ABFSettingsKeys.USE_BREAKAGE_RULE, {
+    name: 'anima.ui.systemSettings.breakageRule.title',
+    hint: 'anima.ui.systemSettings.breakageRule.hint.title',
+    scope: 'world',
+    config: true,
+    default: false,
+    type: Boolean
+  });
+
   game.settings.register(
     systemId,
     ABFSettingsKeys.SEND_ROLL_MESSAGES_ON_COMBAT_BY_DEFAULT,
