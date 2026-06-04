@@ -63,6 +63,12 @@
  * @property {string} [reason] — short text shown in chat
  */
 
+/** ¿El arma tiene la cualidad de slug dado (p.ej. 'precise')? */
+function weaponHasQuality(weapon, slug) {
+  const arr = weapon?.system?.qualities?.value;
+  return Array.isArray(arr) && arr.map(s => String(s).toLowerCase()).includes(slug);
+}
+
 export class ManeuverDefinition {
   /** @param {ManeuverDefinitionData} data */
   constructor(data) {
@@ -137,6 +143,14 @@ export class ManeuverDefinition {
       ? data.penaltyOptions.slice()
       : [];
 
+    // Penalizador base alternativo si el arma seleccionada tiene Precisa (Ataque
+    // apuntado Ropa: -150 normal, -100 con Precisa). Lo aplica getAttackPenalty.
+    this.precisePenalty = Number(data.precisePenalty ?? 0) || 0;
+
+    // Modificador plano al Daño Base de la maniobra (Disparo apuntado Rebote: -10
+    // por perder potencia). Se aplica al construir el ataque en el diálogo.
+    this.damageDelta = Number(data.damageDelta ?? 0) || 0;
+
     // Crit-type requirement: if set to 'impact', the maneuver is meant to be
     // used with a bludgeoning weapon. Used by Inconsciencia, which adds an
     // extra penalty when the weapon is not impact-type but still allows it.
@@ -206,6 +220,10 @@ export class ManeuverDefinition {
    */
   getAttackPenalty(weapon) {
     let penalty = this.attackPenalty;
+    // Ropa: el penalizador base cambia (p.ej. -150 → -100) si el arma tiene Precisa.
+    if (this.precisePenalty && weaponHasQuality(weapon, 'precise')) {
+      penalty = this.precisePenalty;
+    }
     if (this.attackPenaltyByWeaponSize && weapon?.system?.size?.value) {
       const extra = this.attackPenaltyByWeaponSize[weapon.system.size.value];
       if (typeof extra === 'number') penalty += extra;

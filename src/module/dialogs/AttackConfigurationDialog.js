@@ -98,7 +98,8 @@ export class AttackConfigurationDialog extends FormApplication {
               damageMultiplier: Number(def?.damageMultiplier ?? 1) || 1,
               optionalPenalty: Number(def?.optionalPenalty ?? 0) || 0,
               chooseTargets: !!chooseTargets,
-              chosenPenalty: Number(chosenPenalty ?? 0) || 0
+              chosenPenalty: Number(chosenPenalty ?? 0) || 0,
+              damageDelta: Number(def?.damageDelta ?? 0) || 0
             };
           })()
         : null,
@@ -336,8 +337,11 @@ export class AttackConfigurationDialog extends FormApplication {
       const attackData = ABFAttackData.builder()
         .attackAbility(roll.total)
         .damage(
-          Number(combat.damage?.final ?? weapon.system.damage?.final?.value ?? 0) *
-            (this.modalData.maneuver?.damageMultiplier ?? 1)
+          Math.max(
+            0,
+            Number(combat.damage?.final ?? weapon.system.damage?.final?.value ?? 0) +
+              (this.modalData.maneuver?.damageDelta ?? 0)
+          ) * (this.modalData.maneuver?.damageMultiplier ?? 1)
         )
         .ignoreArmor(!!weapon.system.ignoreArmor?.value)
         .reducedArmor(Number(weapon.system.reducedArmor?.final?.value ?? 0))

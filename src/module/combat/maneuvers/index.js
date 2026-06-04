@@ -11,6 +11,8 @@ import { crush } from './definitions/crush.js';
 import { danoRetrasado } from './definitions/danoRetrasado.js';
 import { lluviaDeProyectiles } from './definitions/lluviaDeProyectiles.js';
 import { inmovilizarDistancia } from './definitions/inmovilizarDistancia.js';
+import { ataqueRopa } from './definitions/ataqueRopa.js';
+import { disparoRebote } from './definitions/disparoRebote.js';
 
 maneuverRegistry.register(derribo);
 maneuverRegistry.register(desarme);
@@ -24,5 +26,7 @@ maneuverRegistry.register(crush);
 maneuverRegistry.register(danoRetrasado);
 maneuverRegistry.register(lluviaDeProyectiles);
 maneuverRegistry.register(inmovilizarDistancia);
+maneuverRegistry.register(ataqueRopa);
+maneuverRegistry.register(disparoRebote);
 
 export { maneuverRegistry };
