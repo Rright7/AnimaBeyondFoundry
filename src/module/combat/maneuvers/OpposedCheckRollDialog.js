@@ -32,7 +32,10 @@ export async function openOpposedCheckRollDialog({
   defenderIsQuadruped = false
 }) {
   const stats = role === 'attacker' ? maneuver.attackerStats : maneuver.defenderStats;
-  if (!Array.isArray(stats) || stats.length === 0) {
+  // Inmovilizar a distancia: el atacante usa un valor de característica FIJO (8)
+  // en vez de elegir FUE/DES. El "Modificador extra" sirve de ±3 del DJ.
+  const useFixed = role === 'attacker' && Number(maneuver?.fixedAttackerValue) > 0;
+  if (!useFixed && (!Array.isArray(stats) || stats.length === 0)) {
     ui.notifications?.error('La maniobra no define características para este rol.');
     return null;
   }
@@ -71,11 +74,16 @@ export async function openOpposedCheckRollDialog({
   const titleRole = role === 'attacker' ? 'Atacante' : 'Defensor';
   const title = `Control enfrentado · ${game.i18n.localize(maneuver.nameKey)} (${titleRole})`;
 
+  const charField = useFixed
+    ? `<label style="font-size:.85em;opacity:.7;">Característica</label>
+       <div style="font-weight:600;padding:2px 0;">${Number(maneuver.fixedAttackerValue)} (fija)</div>`
+    : `<label style="font-size:.85em;opacity:.7;">Característica</label>
+       <select name="stat" style="width:100%;">${options}</select>`;
+
   const content = `
     <form style="display:flex;flex-direction:column;gap:.5rem;padding:.25rem 0;">
       <div style="display:flex;flex-direction:column;gap:.25rem;">
-        <label style="font-size:.85em;opacity:.7;">Característica</label>
-        <select name="stat" style="width:100%;">${options}</select>
+        ${charField}
       </div>
       <div style="display:flex;flex-direction:column;gap:.25rem;">
         <label style="font-size:.85em;opacity:.7;">Modificador extra</label>
@@ -88,7 +96,7 @@ export async function openOpposedCheckRollDialog({
   const DialogV2 = foundry.applications?.api?.DialogV2;
 
   const readForm = formEl => {
-    const stat = formEl.elements['stat']?.value;
+    const stat = useFixed ? '__fixed__' : formEl.elements['stat']?.value;
     const extraMod = parseInt(formEl.elements['extraMod']?.value, 10) || 0;
     return { stat, extraMod };
   };
@@ -142,11 +150,13 @@ export async function openOpposedCheckRollDialog({
 
   if (!chosen?.stat) return null;
 
-  const statValue = getCharacteristicValue(actor, chosen.stat);
+  const statValue = useFixed
+    ? Number(maneuver.fixedAttackerValue)
+    : getCharacteristicValue(actor, chosen.stat);
   const { face: dieFace, value: dieValue } = await rollOpenD10();
 
   const total = dieValue + statValue + (role === 'attacker' ? damageMod : 0) + quadrupedBonus + chosen.extraMod;
-  const statLabel = STAT_LABELS[chosen.stat] ?? chosen.stat.toUpperCase();
+  const statLabel = useFixed ? 'Fija' : (STAT_LABELS[chosen.stat] ?? chosen.stat.toUpperCase());
 
   // Pre-format the breakdown string for the chat template (avoids needing
   // math helpers in HBS). On a 10 face, show "10→12" so the rule is visible.

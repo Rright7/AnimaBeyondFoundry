@@ -1,0 +1,25 @@
+{
+    "name": "Inmovilizar a distancia",
+    "type": "combatManeuver",
+    "img": "icons/svg/net.svg",
+    "system": {
+        "slug": {
+            "value": "inmovilizar-distancia"
+        },
+        "description": {
+            "value": "Maniobra maestra (requiere Maestría en Ataque: valor base de Ataque ≥ 200).\n\nParaliza a un adversario con una oleada de proyectiles, clavando su ropa a una pared (sin daño) o atravesando sus extremidades. El objetivo debe estar junto a una pared o escenografía que sirva para sujetarlo.\n\nPENALIZADOR (a elegir en la tarjeta):\n• −80: si NO quieres causar daño.\n• −50: si te es indiferente dañarlo.\n\nResuelve un CONTROL ENFRENTADO estilo Presa, pero el atacante usa un valor de Característica FIJO de 8 (en vez de FUE/DES), que el DJ puede subir o bajar hasta ±3 según la resistencia de la ropa y el arma (se introduce en el «Modificador extra» del control). El defensor resiste con FUE o AGI. Si el atacante gana, el objetivo queda con Parálisis según la diferencia: >10 completa, ≥3 parcial, <3 menor.\n\nEs una acción de ataque completa: no permite ataques adicionales.\n\nTERMINOLOGÍA:\n• Control enfrentado: ambos lanzan D10 + su valor; gana el total más alto.\n• Característica fija 8 (±3 DJ): el atacante no usa su Fuerza/Destreza, sino 8 ajustable por el DJ.\n• Parálisis (menor/parcial/completa): grados de inmovilización del objetivo.\n\nEN FOUNDRY: targetea al enemigo, declara la maniobra, elige −80/−50 en la tarjeta y ataca con arma a distancia. Al impactar se abre el control enfrentado; el atacante tira con «Característica 8 (fija)» + Modificador extra (±3). Con −80 no se aplica daño; con −50 sí."
+        },
+        "actionType": {
+            "value": "active"
+        },
+        "traits": ["ranged"],
+        "visible": false
+    },
+    "effects": [],
+    "ownership": {
+        "default": 0
+    },
+    "flags": {},
+    "_id": "aBfInmovDist0001",
+    "_key": "!items!aBfInmovDist0001"
+}

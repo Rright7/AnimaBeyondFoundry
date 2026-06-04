@@ -125,6 +125,18 @@ export class ManeuverDefinition {
     this.hasOptionalPenaltyOption = !!data.hasOptionalPenaltyOption;
     this.optionalPenaltyLabelKey = String(data.optionalPenaltyLabelKey ?? '');
 
+    // Control enfrentado con valor de característica FIJO para el atacante
+    // (Inmovilizar a distancia: 8 en vez de FUE/DES; el ±3 lo pone el GM en el
+    // "Modificador extra" del diálogo del control). 0 = característica normal.
+    this.fixedAttackerValue = Number(data.fixedAttackerValue ?? 0) || 0;
+
+    // Penalizador a ELEGIR en la tarjeta (Inmovilizar a distancia: -80 sin daño /
+    // -50 con daño). Cada opción: { value, labelKey, causesDamage }. El valor se
+    // suma al ataque; causesDamage decide si el golpe aplica daño.
+    this.penaltyOptions = Array.isArray(data.penaltyOptions)
+      ? data.penaltyOptions.slice()
+      : [];
+
     // Crit-type requirement: if set to 'impact', the maneuver is meant to be
     // used with a bludgeoning weapon. Used by Inconsciencia, which adds an
     // extra penalty when the weapon is not impact-type but still allows it.

@@ -126,6 +126,20 @@ export function executeCombatManeuver(sheet, e) {
     delayRounds = Number(select?.value) || 0;
   }
 
+  // Inmovilizar a distancia: penalizador a elegir en la tarjeta (-80/-50), que
+  // además decide si el golpe causa daño (causesDamage de la opción).
+  let chosenPenalty = 0;
+  let causesDamage = false;
+  if (Array.isArray(def.penaltyOptions) && def.penaltyOptions.length) {
+    const card = e.currentTarget.closest('.combat-maneuver-card');
+    const select = card?.querySelector('.combat-maneuver-card__penalty-select');
+    const val = Number(select?.value);
+    const opt =
+      def.penaltyOptions.find(o => Number(o.value) === val) ?? def.penaltyOptions[0];
+    chosenPenalty = Number(opt?.value) || 0;
+    causesDamage = !!opt?.causesDamage;
+  }
+
   // Open the attack dialog with the maneuver context. The weapon-dependent
   // penalty (aimed/base + qualities like Precisa + non-bludgeoning -40) is
   // computed INSIDE the dialog from the SELECTED weapon via
@@ -141,7 +155,9 @@ export function executeCombatManeuver(sheet, e) {
       maneuverItemName: name,
       aimed,
       aimedZone,
-      delayRounds
+      delayRounds,
+      chosenPenalty,
+      causesDamage
     },
     { allowed: true }
   );

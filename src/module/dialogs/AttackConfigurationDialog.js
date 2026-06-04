@@ -17,7 +17,7 @@ export class AttackConfigurationDialog extends FormApplication {
     this.render(true);
   }
 
-  static _buildInitialData({ attacker, weaponId, weapon, options = {}, targets, maneuverSlug, maneuverItemName, aimed, aimedZone, delayRounds, chooseTargets }) {
+  static _buildInitialData({ attacker, weaponId, weapon, options = {}, targets, maneuverSlug, maneuverItemName, aimed, aimedZone, delayRounds, chooseTargets, chosenPenalty, causesDamage }) {
     if (!attacker || !attacker.actor) {
       ui.notifications?.error('AttackConfigurationDialog: attacker is required');
       return { allowed: false };
@@ -78,8 +78,9 @@ export class AttackConfigurationDialog extends FormApplication {
           // For maneuvers with damageAllowed=true, the attacker decides
           // whether to inflict damage. OFF by default per RAW. The
           // checkbox is only shown in the dialog when the maneuver
-          // supports it.
-          causesDamage: false
+          // supports it. Inmovilizar a distancia lo prefija desde la opción
+          // elegida en la tarjeta (-80 sin daño / -50 con daño).
+          causesDamage: !!causesDamage
         },
         distance: { value: 0, enable: false, check: false }
       },
@@ -96,7 +97,8 @@ export class AttackConfigurationDialog extends FormApplication {
               delayRounds: Number(delayRounds ?? 0) || 0,
               damageMultiplier: Number(def?.damageMultiplier ?? 1) || 1,
               optionalPenalty: Number(def?.optionalPenalty ?? 0) || 0,
-              chooseTargets: !!chooseTargets
+              chooseTargets: !!chooseTargets,
+              chosenPenalty: Number(chosenPenalty ?? 0) || 0
             };
           })()
         : null,
@@ -226,6 +228,13 @@ export class AttackConfigurationDialog extends FormApplication {
       if (this.modalData.maneuver?.chooseTargets && this.modalData.maneuver?.optionalPenalty) {
         maneuverPenalty += Number(this.modalData.maneuver.optionalPenalty) || 0;
         maneuverAppliedBy = [...maneuverAppliedBy, 'elegir-blancos'];
+      }
+
+      // Inmovilizar a distancia: penalizador a elegir (-80/-50) declarado en la
+      // tarjeta; se suma al penalizador de la maniobra.
+      if (this.modalData.maneuver?.chosenPenalty) {
+        maneuverPenalty += Number(this.modalData.maneuver.chosenPenalty) || 0;
+        maneuverAppliedBy = [...maneuverAppliedBy, 'inmovilizar'];
       }
 
       // Ataque apuntado: when active, apply the Tabla 45 penalty for the

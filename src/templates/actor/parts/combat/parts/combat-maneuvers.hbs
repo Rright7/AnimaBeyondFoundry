@@ -91,6 +91,18 @@
                   </div>
                 {{/if}}
               {{/with}}
+              {{#with (combatManeuverPenaltyOptions maneuver.slug) as |pens|}}
+                {{#if pens.length}}
+                  <div class='combat-maneuver-card__penalty'>
+                    <label>{{localize "anima.ui.combat.combatManeuvers.penaltyChoice"}}</label>
+                    <select data-maneuver-id='{{maneuver._id}}' data-maneuver-slug='{{maneuver.slug}}' class='combat-maneuver-card__penalty-select'>
+                      {{#each pens as |p|}}
+                        <option value='{{p.value}}'>{{localize p.labelKey}}</option>
+                      {{/each}}
+                    </select>
+                  </div>
+                {{/if}}
+              {{/with}}
               {{#if (combatManeuverHasOptionalPenalty maneuver.slug)}}
                 <div class='combat-maneuver-card__choose-targets'>
                   <label>

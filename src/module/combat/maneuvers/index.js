@@ -10,6 +10,7 @@ import { mounted } from './definitions/mounted.js';
 import { crush } from './definitions/crush.js';
 import { danoRetrasado } from './definitions/danoRetrasado.js';
 import { lluviaDeProyectiles } from './definitions/lluviaDeProyectiles.js';
+import { inmovilizarDistancia } from './definitions/inmovilizarDistancia.js';
 
 maneuverRegistry.register(derribo);
 maneuverRegistry.register(desarme);
@@ -22,5 +23,6 @@ maneuverRegistry.register(mounted);
 maneuverRegistry.register(crush);
 maneuverRegistry.register(danoRetrasado);
 maneuverRegistry.register(lluviaDeProyectiles);
+maneuverRegistry.register(inmovilizarDistancia);
 
 export { maneuverRegistry };
