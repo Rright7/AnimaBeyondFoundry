@@ -2,15 +2,15 @@
   "id": "animabf",
   "title": "Anima Beyond Fantasy",
   "description": "Unofficial Anima Beyond Fantasy system for Foundry VTT",
-  "version": "3.0.0-dev-beta.1",
+  "version": "3.1.0-dev-beta",
   "compatibility": {
     "minimum": "13",
     "verified": "14.359"
   },
   "url": "https://github.com/Rright7/AnimaBeyondFoundry",
-  "manifest": "https://github.com/Rright7/AnimaBeyondFoundry/releases/download/v3.0.0-dev-beta.1/system.json",
-  "changelog": "https://github.com/Rright7/AnimaBeyondFoundry/releases/tag/v3.0.0-dev-beta.1",
-  "download": "https://github.com/Rright7/AnimaBeyondFoundry/releases/download/v3.0.0-dev-beta.1/animabf-v3.0.0-dev-beta.1.zip",
+  "manifest": "https://github.com/Rright7/AnimaBeyondFoundry/releases/download/v3.1.0-dev-beta/system.json",
+  "changelog": "https://github.com/Rright7/AnimaBeyondFoundry/releases/tag/v3.1.0-dev-beta",
+  "download": "https://github.com/Rright7/AnimaBeyondFoundry/releases/download/v3.1.0-dev-beta/v3.1.0-dev-beta.zip",
   "bugs": "https://github.com/Rright7/AnimaBeyondFoundry/issues",
   "authors": [
     {

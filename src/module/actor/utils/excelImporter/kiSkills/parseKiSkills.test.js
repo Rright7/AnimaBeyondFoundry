@@ -29,10 +29,10 @@ function makeActor() {
 }
 
 describe('canonical data', () => {
-  test('has 73 entries — 54 Ki + 19 Nemesis', () => {
-    expect(KI_SKILLS).toHaveLength(73);
+  test('has 75 entries — 54 Ki + 21 Nemesis', () => {
+    expect(KI_SKILLS).toHaveLength(75);
     expect(KI_SKILLS.filter(s => s.type === 'ki')).toHaveLength(54);
-    expect(KI_SKILLS.filter(s => s.type === 'nemesis')).toHaveLength(19);
+    expect(KI_SKILLS.filter(s => s.type === 'nemesis')).toHaveLength(21);
   });
 
   test('every entry has the required fields', () => {
