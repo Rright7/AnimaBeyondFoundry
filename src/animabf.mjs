@@ -493,13 +493,48 @@ Hooks.on('createChatMessage', async message => {
     // (inmunidad/energía/no apila), así que es idempotente con el disparo del
     // flujo de resolución/forzado. Va antes del bloque `post` porque ese hace
     // return temprano cuando el mensaje no proviene de una maniobra.
-    if (flags.kind === 'combatResult' && flags.result?.isCritical) {
+    // Excepción: Daño retrasado difiere el daño Y su desangrado a cuando se
+    // manifiesta (processDueDelayedDamage), así que NO sangra en el impacto.
+    if (
+      flags.kind === 'combatResult' &&
+      flags.result?.isCritical &&
+      flags.result?.maneuverSlug !== 'dano-retrasado'
+    ) {
       const defRef = flags.defender?.tokenId || flags.defender?.actorId || '';
       const defenderActor = resolveActorFromRef(defRef);
       if (defenderActor) {
         const critType = flags.attackData?.armorType ?? flags.result?.armorType ?? '';
         const { startBleeding } = await import('./module/combat/bleedingEffect.js');
         await startBleeding(defenderActor, { critType });
+      }
+    }
+
+    // Daño retrasado: programar automáticamente el daño diferido al crearse la
+    // tarjeta (sin botón). Mismo punto GM-only que el auto-sangrado; reutiliza
+    // makeDelayedDamageEntry y el flag scheduledDamages que procesa
+    // ABFCombat.nextRound. Requiere combate activo para fijar la ronda de venc.
+    if (
+      flags.kind === 'combatResult' &&
+      flags.result?.maneuverSlug === 'dano-retrasado' &&
+      Number(flags.result?.damageFinal ?? 0) > 0 &&
+      Number.isFinite(game.combat?.round)
+    ) {
+      const defRef = flags.defender?.tokenId || flags.defender?.actorId || '';
+      const defenderActor = resolveActorFromRef(defRef);
+      if (defenderActor) {
+        const { makeDelayedDamageEntry } = await import('./module/combat/delayedDamage.js');
+        const entry = makeDelayedDamageEntry({
+          currentRound: game.combat.round,
+          delayRounds: Number(flags.result?.delayRounds ?? 0) || 0,
+          amount: Number(flags.result?.damageFinal ?? 0) || 0,
+          attackerId: flags.result?.attackerId ?? flags.attacker?.actorId ?? '',
+          bleeding: true
+        });
+        if (entry) {
+          const prev = defenderActor.getFlag(System.id, 'scheduledDamages');
+          const list = Array.isArray(prev) ? [...prev, entry] : [entry];
+          await defenderActor.setFlag(System.id, 'scheduledDamages', list);
+        }
       }
     }
 
