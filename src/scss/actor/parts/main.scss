@@ -18,13 +18,13 @@
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
 
-  border-top: 1px solid $red;
-  border-bottom: 1px solid $red;
+  border-top: 1px solid var(--abf-accent);
+  border-bottom: 1px solid var(--abf-accent);
 
   .item {
     background: transparent;
-    border-radius: $border-radius;
-    color: $black;
+    border-radius: var(--abf-radius);
+    color: var(--abf-text);
     font-weight: 600;
 
     max-height: 2rem;
@@ -37,19 +37,11 @@
 
   .active {
     text-shadow: none;
-    background-color: $red;
-    color: $white;
+    background-color: var(--abf-accent);
+    color: var(--abf-on-accent);
     font-weight: 600;
   }
 }
-
-// .tab {
-//   display: none;
-// }
-
-// .tab.active {
-//   display: block;
-// }
 
 .actor-sheet {
   display: flex;
@@ -66,6 +58,18 @@
         width: 1.5rem;
         height: 1.5rem;
         border-radius: 50%;
+        filter: brightness(0);
+        opacity: 0.55;
+        transition: opacity 0.15s ease;
+      }
+
+      &:hover img {
+        opacity: 1;
+      }
+
+      &.active img {
+        filter: brightness(0) invert(1);
+        opacity: 1;
       }
     }
   }

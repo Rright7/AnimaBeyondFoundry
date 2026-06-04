@@ -244,9 +244,9 @@
       .maintenance-total {
         margin-top: 1.5rem !important;
         padding: 0.4rem 0.5rem;
-        background: rgba($red, 0.1);
-        border: 1px solid rgba($red, 0.3);
-        border-radius: $border-radius;
+        background: var(--abf-accent-soft);
+        border: 1px solid var(--abf-accent-border);
+        border-radius: var(--abf-radius);
         text-align: center;
         font-size: 1rem;
 
@@ -392,11 +392,6 @@
         }
 
         .base-grade {
-          // margin-bottom: 0.5rem;
-
-          // .grade-name {
-          //   align-self: flex-end;
-          // }
           .spell-cast-button {
             margin-top: 1.5rem;
           }

@@ -1,20 +1,20 @@
 .maneuver-opposed-check {
-  background: #F4ECCF;
+  background: var(--abf-surface);
   border-radius: 6px;
   border: 1px solid rgba(0, 0, 0, 0.15);
   overflow: hidden;
   font-size: 13px;
 
   &__header {
-    background: #7A2613;
-    color: #FFF;
+    background: var(--abf-accent);
+    color: var(--abf-on-accent);
     padding: 8px 12px;
     font-weight: 500;
   }
 
   &__body {
     padding: 10px 12px;
-    color: #2A1408;
+    color: var(--abf-text);
   }
 
   &__participants {
@@ -26,7 +26,7 @@
     padding: 6px 8px;
     border-radius: 4px;
     font-size: 11px;
-    color: rgba(0, 0, 0, 0.7);
+    color: var(--abf-text-muted);
     margin-bottom: 10px;
   }
 
@@ -37,7 +37,7 @@
   }
 
   &__side {
-    background: #FFF;
+    background: var(--abf-on-accent);
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 4px;
     padding: 8px;
@@ -45,13 +45,13 @@
 
   &__side-title {
     font-size: 11px;
-    color: rgba(0, 0, 0, 0.55);
+    color: var(--abf-text-muted);
     margin-bottom: 4px;
   }
 
   &__breakdown {
     font-size: 11px;
-    color: rgba(0, 0, 0, 0.65);
+    color: var(--abf-text-muted);
     margin-bottom: 4px;
     line-height: 1.4;
   }
@@ -59,20 +59,20 @@
   &__total {
     font-weight: 500;
     font-size: 18px;
-    color: #2A1408;
+    color: var(--abf-text);
   }
 
   &__total--win {
-    color: #0F6E56;
+    color: #0a5a45;
   }
 
   &__total--loss {
-    color: #993556;
+    color: #8a2347;
   }
 
   &__roll-button {
-    background: #7A2613;
-    color: #FFF;
+    background: var(--abf-accent);
+    color: var(--abf-on-accent);
     border: none;
     padding: 6px 10px;
     border-radius: 4px;
@@ -81,13 +81,13 @@
     width: 100%;
 
     &:hover {
-      box-shadow: 0 0 5px #7A2613;
+      box-shadow: 0 0 5px var(--abf-accent);
     }
   }
 
   &__waiting {
     font-size: 10px;
-    color: rgba(0, 0, 0, 0.45);
+    color: var(--abf-text-muted);
     margin-top: 4px;
     text-align: center;
     font-style: italic;

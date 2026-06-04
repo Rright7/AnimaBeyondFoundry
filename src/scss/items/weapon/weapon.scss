@@ -64,10 +64,10 @@
         padding: 0.4rem 0.6rem;
         border: 1px dashed $red;
         border-radius: $border-radius;
-        background: rgba(110, 41, 23, 0.04);
+        background: rgba($red, 0.04);
 
         &.weapon-qualities-section--drag-over {
-          background: rgba(110, 41, 23, 0.15);
+          background: rgba($red, 0.15);
         }
 
         .weapon-qualities-section__title {
@@ -87,7 +87,7 @@
 
           .weapon-qualities-list__empty {
             font-style: italic;
-            color: $light-gray;
+            color: var(--abf-text-muted);
             font-size: 0.8rem;
           }
 

@@ -3,36 +3,62 @@
 
 @mixin group-header {
   text-align: center;
-  padding: 3px;
-  color: $white;
-  border-radius: $border-radius;
-  background: $red;
+  padding: var(--abf-space-1) var(--abf-space-2);
+  color: var(--abf-on-accent);
+  background: var(--abf-accent);
+  border-radius: var(--abf-radius) var(--abf-radius) 0 0;
   font-weight: 600;
 }
 
 @mixin group-body {
-  background: $dark-cream;
-  border-radius: $border-radius;
+  background: var(--abf-surface);
+  border: 1px solid var(--abf-border);
+  border-top: none;
+  border-radius: 0 0 var(--abf-radius) var(--abf-radius);
 }
 
 @mixin input {
-  border-radius: $border-radius;
-  background: $light-cream;
+  border-radius: var(--abf-radius-sm);
+  background: var(--abf-surface);
+  border: 1px solid var(--abf-border);
+  box-sizing: border-box;
+  max-width: 100%;
   font-weight: bold;
   padding: 0.25rem 0.5rem;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+
+  &:hover {
+    border-color: var(--abf-border-strong);
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: var(--abf-accent-border);
+    box-shadow: var(--abf-focus-ring);
+  }
 }
 
 @mixin button {
-  border-radius: $border-radius;
-  background: $light-cream;
+  border-radius: var(--abf-radius-sm);
+  background: var(--abf-surface);
+  border: 1px solid var(--abf-border);
+  box-sizing: border-box;
+  max-width: 100%;
   font-weight: bold;
   padding: 0.25rem 0.5rem;
+  transition: background 0.15s ease, border-color 0.15s ease;
 
   &:hover {
-    background: color.adjust($light-cream, $lightness: -10%);
+    background: var(--abf-surface-2);
+    border-color: var(--abf-border-strong);
   }
 
   &:active {
-    background: color.adjust($light-cream, $lightness: -20%);
+    background: var(--abf-accent-soft);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--abf-focus-ring);
   }
 }

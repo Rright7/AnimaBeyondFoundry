@@ -47,9 +47,9 @@
   }
 
   .group-body {
-    overflow-y: scroll;
+    overflow-y: auto;
     height: 100%;
-    margin-top: -2rem;
+    margin-top: 0;
 
     .attack-sent,
     .mystic-attack-sent,

@@ -13,7 +13,7 @@ export default class ABFItemSheet extends ItemSheetV1 {
 
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ['sheet', 'item'],
+      classes: ['animabf', 'sheet', 'item'],
       resizable: true
     });
   }

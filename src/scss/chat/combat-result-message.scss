@@ -6,7 +6,7 @@
     @include group-header;
 
     .group-header-title {
-      color: $white;
+      color: var(--abf-on-accent);
       font-weight: normal;
     }
   }
@@ -51,7 +51,7 @@
           img {
             height: 5rem;
             width: 5rem;
-            background-color: #6e2917;
+            background-color: $red;
             border-radius: 50%;
           }
         }
