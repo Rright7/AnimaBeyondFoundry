@@ -1006,6 +1006,8 @@
   "anima.ui.combat.tabs.main": "Combate",
   "anima.ui.combat.tabs.maneuvers": "Maniobras",
   "anima.ui.combat.combatManeuvers.dragHint": "Arrastra otra maniobra desde el compendio",
+  "anima.ui.combat.combatManeuvers.searchPlaceholder": "Buscar maniobra…",
+  "anima.ui.combat.combatManeuvers.noResults": "No hay maniobras que coincidan.",
   "anima.ui.combat.combatManeuvers.opposedCheck.title": "Control enfrentado",
   "anima.ui.combat.combatManeuvers.opposedCheck.vs": "vs",
   "anima.ui.combat.combatManeuvers.opposedCheck.damage": "Daño",

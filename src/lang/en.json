@@ -1004,6 +1004,8 @@
   "anima.ui.combat.tabs.main": "Combat",
   "anima.ui.combat.tabs.maneuvers": "Maneuvers",
   "anima.ui.combat.combatManeuvers.dragHint": "Drag another maneuver from the compendium",
+  "anima.ui.combat.combatManeuvers.searchPlaceholder": "Search maneuver…",
+  "anima.ui.combat.combatManeuvers.noResults": "No maneuvers match.",
   "anima.ui.combat.combatManeuvers.opposedCheck.title": "Opposed check",
   "anima.ui.combat.combatManeuvers.opposedCheck.vs": "vs",
   "anima.ui.combat.combatManeuvers.opposedCheck.damage": "Damage",

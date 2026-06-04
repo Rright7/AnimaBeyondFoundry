@@ -197,6 +197,7 @@ export default class ABFActorSheet extends ActorSheetV1 {
     this._activateItemsDragAndContextMenus(html);
     this._activateDataOnClickHandlers(html);
     this._activateEffectControls(html);
+    this._activateCombatManeuverSearch(html);
   }
 
   _activateBaseTypeContextMenu(html) {
@@ -316,6 +317,34 @@ export default class ABFActorSheet extends ActorSheetV1 {
       const handler = clickHandlers[key];
       if (handler) handler(e);
       else console.warn(`No handler for data-on-click="${key}"`);
+    });
+  }
+
+  _activateCombatManeuverSearch(html) {
+    const input = html.find('.combat-maneuver-search-input');
+    if (!input.length) return;
+
+    const normalize = value =>
+      (value ?? '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+
+    input.on('input', event => {
+      const query = normalize(event.currentTarget.value.trim());
+      let visible = 0;
+
+      html.find('.combat-maneuver-card').each((_, card) => {
+        if (card.classList.contains('combat-maneuver-card--placeholder')) {
+          card.style.display = query ? 'none' : '';
+          return;
+        }
+
+        const name = normalize(card.querySelector('.combat-maneuver-card__name')?.textContent);
+        const match = !query || name.includes(query);
+        card.style.display = match ? '' : 'none';
+        if (match) visible += 1;
+      });
+
+      const noResults = html.find('.combat-maneuvers-no-results')[0];
+      if (noResults) noResults.style.display = query && visible === 0 ? 'block' : 'none';
     });
   }
 

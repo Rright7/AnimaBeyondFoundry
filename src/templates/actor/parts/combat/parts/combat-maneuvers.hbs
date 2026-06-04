@@ -10,6 +10,15 @@
   }}
     {{#with (combatManeuverCatalog system.combat.combatManeuvers) as |maneuvers|}}
     {{#if maneuvers.length}}
+      <div class='combat-maneuvers-search'>
+        <i class='fas fa-search'></i>
+        <input
+          type='search'
+          class='combat-maneuver-search-input'
+          placeholder='{{localize "anima.ui.combat.combatManeuvers.searchPlaceholder"}}'
+          autocomplete='off'
+        />
+      </div>
       <div class='combat-maneuvers-grid'>
         {{#each maneuvers as |maneuver|}}
           <div data-item-id='{{maneuver._id}}' class='combat-maneuver-card{{#if maneuver.isCanonical}} combat-maneuver-card--canonical{{/if}}'>
@@ -88,6 +97,9 @@
           {{localize "anima.ui.combat.combatManeuvers.dragHint"}}
         </div>
       </div>
+      <p class='combat-maneuvers-no-results'>
+        {{localize "anima.ui.combat.combatManeuvers.noResults"}}
+      </p>
     {{else}}
       <p class='combat-maneuvers-empty'>
         {{localize "anima.ui.combat.combatManeuvers.empty"}}

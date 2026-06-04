@@ -888,6 +888,8 @@
   "anima.ui.combat.tabs.main": "Combat",
   "anima.ui.combat.tabs.maneuvers": "Manœuvres",
   "anima.ui.combat.combatManeuvers.dragHint": "Glisser une autre manœuvre depuis le compendium",
+  "anima.ui.combat.combatManeuvers.searchPlaceholder": "Rechercher une manœuvre…",
+  "anima.ui.combat.combatManeuvers.noResults": "Aucune manœuvre ne correspond.",
   "anima.ui.combat.combatManeuvers.opposedCheck.title": "Jet opposé",
   "anima.ui.combat.combatManeuvers.opposedCheck.vs": "contre",
   "anima.ui.combat.combatManeuvers.opposedCheck.damage": "Dégâts",
