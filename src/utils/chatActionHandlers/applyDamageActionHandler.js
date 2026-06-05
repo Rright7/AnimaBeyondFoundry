@@ -43,7 +43,7 @@ export default async function applyDamageActionHandler(message, _html, ds) {
 
     // Capture life BEFORE applying damage (needed for critical check)
     const lifePath = 'system.characteristics.secondaries.lifePoints.value';
-    const lifeBefore = Number(getProperty(actor, lifePath) ?? 0);
+    const lifeBefore = Number(foundry.utils.getProperty(actor, lifePath) ?? 0);
 
     // Apply damage
     const applied = await applyDamageToActor(actor, amount);
@@ -111,7 +111,7 @@ export const action = 'animabf-apply-damage';
 export async function applyDamageToActor(actor, amount) {
   try {
     const primaryPath = 'system.characteristics.secondaries.lifePoints.value'; // from template
-    let cur = getProperty(actor, primaryPath);
+    let cur = foundry.utils.getProperty(actor, primaryPath);
     if (typeof cur === 'number' && !Number.isNaN(cur)) {
       // Life points may legitimately go negative (massive damage that kills
       // outright, or "Entre la vida y la muerte" rules). No floor here.
@@ -129,7 +129,7 @@ export async function applyDamageToActor(actor, amount) {
       'system.attributes.hp.value'
     ];
     for (const path of candidates) {
-      cur = getProperty(actor, path);
+      cur = foundry.utils.getProperty(actor, path);
       if (typeof cur === 'number' && !Number.isNaN(cur)) {
         const next = cur - amount;
         await actor.update({ [path]: next });

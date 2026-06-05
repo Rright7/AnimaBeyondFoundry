@@ -72,7 +72,7 @@ export default async function autoDefendActionHandler(message, _html, ds) {
         : 'Ataque',
       entries,
       hasRemaining: entries.some(e => !e.applied && e.damageFinal > 0),
-      messageId: randomID()
+      messageId: foundry.utils.randomID()
     });
 
     const cm = await ChatMessage.create({

@@ -70,7 +70,7 @@ export default async function autoDefendPendingActionHandler(message, _html, ds)
       attackLabel: game.i18n.localize?.('chat.attackData.title') ?? 'Ataque',
       entries,
       hasRemaining: entries.some(e => !e.applied && e.damageFinal > 0),
-      messageId: randomID()
+      messageId: foundry.utils.randomID()
     });
 
     const cm = await ChatMessage.create({

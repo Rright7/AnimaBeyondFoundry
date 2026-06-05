@@ -710,7 +710,7 @@ export class ABFActor extends Actor {
         }
 
         if (system) {
-          item.system = mergeObject(item.system, system);
+          item.system = foundry.utils.mergeObject(item.system, system);
         }
 
         await this.update({
