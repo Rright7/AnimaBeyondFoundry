@@ -627,13 +627,39 @@
     },
     "technique": {
       "description": { "value": "" },
+      "level": { "value": 1 },
       "strength": { "value": 0 },
       "agility": { "value": 0 },
       "dexterity": { "value": 0 },
       "constitution": { "value": 0 },
       "willPower": { "value": 0 },
       "power": { "value": 0 },
-      "martialKnowledge": { "value": 0 }
+      "martialKnowledge": { "value": 0 },
+      "build": {
+        "level": 1,
+        "combinable": false,
+        "kiReductionLine": 0,
+        "cmReductionLine": 0,
+        "effects": [],
+        "disadvantages": [],
+        "redistribution": {
+          "agility": 0,
+          "constitution": 0,
+          "dexterity": 0,
+          "strength": 0,
+          "power": 0,
+          "willPower": 0
+        }
+      },
+      "computed": {
+        "cmTotal": 0,
+        "cmFloor": 20,
+        "cmCeiling": 50,
+        "kiActiveTotal": 0,
+        "kiMaintTotal": 0,
+        "levelRequired": 0,
+        "isValid": true
+      }
     },
     "weapon": {
       "equipped": { "value": false },

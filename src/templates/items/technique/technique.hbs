@@ -1,0 +1,179 @@
+{{#> "systems/animabf/templates/items/base/base-sheet.hbs"}}
+  {{#> "systems/animabf/templates/common/ui/group.hbs" class="technique-builder"}}
+
+    {{#> "systems/animabf/templates/common/ui/group-header.hbs"}}
+      <div class="technique-builder-header">
+        {{>
+          "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
+          class="name"
+          hideTitle=true
+          inputType="text"
+          inputName="name"
+          inputValue=item.name
+        }}
+        <div class="technique-builder-header-row">
+          <label class="technique-field">
+            <span>Nivel</span>
+            <select name="system.build.level">
+              {{#each technique.levelOptions}}
+                <option value="{{value}}" {{#if selected}}selected{{/if}}>{{value}}</option>
+              {{/each}}
+            </select>
+          </label>
+          <label class="technique-field technique-field--check">
+            <input type="checkbox" name="system.build.combinable"
+              {{#if system.build.combinable}}checked{{/if}}>
+            <span>Combinable</span>
+          </label>
+        </div>
+      </div>
+    {{/"systems/animabf/templates/common/ui/group-header.hbs"}}
+
+    {{#> "systems/animabf/templates/common/ui/group-body.hbs" class="technique-builder-body"}}
+
+      {{!-- Resumen de coste --}}
+      <section class="technique-summary{{#if technique.computed.validations.cmExcesivo}} technique-summary--error{{/if}}">
+        <div class="technique-summary-grid">
+          <div><span class="technique-summary-label">CM total</span>
+            <strong class="{{#if technique.computed.validations.cmExcesivo}}is-error{{/if}}">{{technique.computed.cmTotal}}</strong>
+            <small>/ {{technique.computed.cmCeiling}} (mín {{technique.computed.cmFloor}})</small></div>
+          <div><span class="technique-summary-label">Ki total</span>
+            <strong>{{technique.computed.kiActiveTotal}}</strong></div>
+          <div><span class="technique-summary-label">Ki mant./asalto</span>
+            <strong>{{technique.computed.kiMaintTotal}}</strong></div>
+          <div><span class="technique-summary-label">Nivel mín.</span>
+            <strong class="{{#if technique.computed.validations.nivelMinimo}}is-error{{/if}}">{{technique.computed.levelRequired}}</strong></div>
+        </div>
+        <div class="technique-summary-chars">
+          <span class="technique-summary-label">Coste por característica:</span>
+          {{#each technique.costByCharacteristic}}<span class="technique-char-cost">{{label}} {{active}}{{#if maint}} ({{maint}}){{/if}}</span>{{/each}}
+        </div>
+        {{#if technique.validationBadges.length}}
+          <ul class="technique-warnings">
+            {{#each technique.validationBadges}}<li>⚠ {{label}}</li>{{/each}}
+          </ul>
+        {{/if}}
+      </section>
+
+      {{!-- Efectos --}}
+      <section class="technique-section">
+        <header class="technique-section-header">
+          <h3>Efectos</h3>
+          {{#if technique.canAddEffect}}
+            <button type="button" class="technique-add" data-action="tech-add-effect">+ Añadir efecto</button>
+          {{/if}}
+        </header>
+
+        {{#each technique.effectRows}}
+          <div class="technique-effect-row">
+            <div class="technique-effect-row-top">
+              <span class="technique-role">{{#if isPrimary}}Primario{{else}}Secundario{{/if}}</span>
+              <select class="technique-effect-select" data-tech-effect-field="effectId" data-index="{{index}}">
+                <option value="">— Efecto —</option>
+                {{#each ../technique.effectGroups}}
+                  <optgroup label="{{label}}">
+                    {{#each effects}}
+                      <option value="{{id}}" {{#if (is 'eq' id ../../effectId)}}selected{{/if}}>{{name}}</option>
+                    {{/each}}
+                  </optgroup>
+                {{/each}}
+              </select>
+              <select class="technique-maint-select" data-tech-effect-field="maintMode" data-index="{{index}}">
+                {{#each ../technique.maintModes}}
+                  <option value="{{value}}" {{#if (is 'eq' value ../maintMode)}}selected{{/if}}>{{label}}</option>
+                {{/each}}
+              </select>
+              <button type="button" class="technique-remove" data-action="tech-remove-effect" data-index="{{index}}" title="Quitar efecto">✕</button>
+            </div>
+
+            {{#if options.length}}
+              <div class="technique-options">
+                {{#each options}}
+                  <label class="technique-option">
+                    <input type="checkbox" data-tech-effect-field="tierOption" data-index="{{../index}}" data-option="{{option}}" {{#if selected}}checked{{/if}}>
+                    <span>{{option}}</span>
+                    <small>cm {{cm}} · ki {{#if ../isPrimary}}{{kiPrimary}}{{else}}{{kiSecondary}}{{/if}}{{#if level}} · Nv{{level}}{{/if}}</small>
+                  </label>
+                {{/each}}
+              </div>
+
+              <div class="technique-ki-grid">
+                <span class="technique-ki-grid-title">Ki (activo / mant.)</span>
+                {{#each ki}}
+                  <div class="technique-ki-cell">
+                    <span class="technique-ki-label">{{label}}</span>
+                    <input type="number" data-tech-effect-field="ki.{{key}}" data-index="{{../index}}" value="{{active}}">
+                    <input type="number" data-tech-effect-field="maint.{{key}}" data-index="{{../index}}" value="{{maint}}">
+                  </div>
+                {{/each}}
+              </div>
+
+              {{#if perEffect}}
+                <div class="technique-effect-cost">Ki {{perEffect.kiEffect}} · CM {{perEffect.cmEffect}}{{#if perEffect.kiMaint}} · mant {{perEffect.kiMaint}}{{/if}}</div>
+              {{/if}}
+            {{/if}}
+          </div>
+        {{/each}}
+      </section>
+
+      {{!-- Desventajas --}}
+      <section class="technique-section">
+        <header class="technique-section-header">
+          <h3>Desventajas</h3>
+          {{#if technique.canAddDisadvantage}}
+            <button type="button" class="technique-add" data-action="tech-add-disadvantage">+ Añadir desventaja</button>
+          {{/if}}
+        </header>
+
+        {{#each technique.disadvantageRows}}
+          <div class="technique-disadvantage-row">
+            <select data-tech-disadvantage-field="disadvantageId" data-index="{{index}}">
+              <option value="">— Desventaja —</option>
+              {{#each ../technique.disadvantageOptions}}
+                <option value="{{id}}" {{#if (is 'eq' id ../disadvantageId)}}selected{{/if}}>{{name}}</option>
+              {{/each}}
+            </select>
+            <select data-tech-disadvantage-field="option" data-index="{{index}}">
+              <option value="">—</option>
+              {{#each options}}
+                <option value="{{option}}" {{#if selected}}selected{{/if}}>{{option}} (CM {{cmReduction}})</option>
+              {{/each}}
+            </select>
+            <button type="button" class="technique-remove" data-action="tech-remove-disadvantage" data-index="{{index}}" title="Quitar desventaja">✕</button>
+          </div>
+        {{/each}}
+      </section>
+
+      {{!-- Modificadores de coste --}}
+      <section class="technique-section technique-modifiers">
+        <header class="technique-section-header"><h3>Modificadores de coste (manual)</h3></header>
+        <div class="technique-modifiers-row">
+          <label class="technique-field">
+            <span>Reducción de Ki</span>
+            <input type="number" name="system.build.kiReductionLine" value="{{system.build.kiReductionLine}}">
+          </label>
+          <label class="technique-field">
+            <span>Reducción de CM</span>
+            <input type="number" name="system.build.cmReductionLine" value="{{system.build.cmReductionLine}}">
+          </label>
+        </div>
+        <div class="technique-redistribution">
+          <span class="technique-ki-grid-title">Redistribución de Ki (Δ por característica)</span>
+          {{#each technique.characteristics}}
+            <label class="technique-ki-cell">
+              <span class="technique-ki-label">{{label}}</span>
+              <input type="number" name="system.build.redistribution.{{key}}" value="{{lookup ../system.build.redistribution key}}">
+            </label>
+          {{/each}}
+        </div>
+      </section>
+
+      {{!-- Descripción --}}
+      <section class="technique-section">
+        <header class="technique-section-header"><h3>Descripción</h3></header>
+        <textarea name="system.description.value" rows="3">{{system.description.value}}</textarea>
+      </section>
+
+    {{/"systems/animabf/templates/common/ui/group-body.hbs"}}
+  {{/"systems/animabf/templates/common/ui/group.hbs"}}
+{{/"systems/animabf/templates/items/base/base-sheet.hbs"}}

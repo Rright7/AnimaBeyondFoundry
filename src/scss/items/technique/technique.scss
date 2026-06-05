@@ -1,0 +1,323 @@
+.technique-builder {
+  --tech-border: #d8d2c4;
+  --tech-soft: #f3efe6;
+  --tech-accent: #6b4f9e;
+  --tech-error: #b23b3b;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+
+  select,
+  input[type='number'],
+  input[type='text'],
+  textarea {
+    border: 1px solid var(--tech-border);
+    border-radius: 4px;
+    background: #fff;
+    padding: 2px 4px;
+  }
+
+  .technique-builder-header {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    .technique-builder-header-row {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+  }
+
+  .technique-field {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+
+    span {
+      color: #5b5446;
+      font-weight: 600;
+    }
+
+    select,
+    input[type='number'] {
+      width: 64px;
+    }
+
+    &--check {
+      input {
+        width: auto;
+      }
+    }
+  }
+
+  // -- Resumen de coste ------------------------------------------------------
+  .technique-summary {
+    border: 1px solid var(--tech-border);
+    border-radius: 6px;
+    background: var(--tech-soft);
+    padding: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    &--error {
+      border-color: var(--tech-error);
+    }
+
+    .technique-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+
+      div {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.25;
+      }
+
+      strong {
+        font-size: 18px;
+      }
+
+      .is-error {
+        color: var(--tech-error);
+      }
+    }
+
+    .technique-summary-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: #7a7263;
+    }
+
+    .technique-summary-chars {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: baseline;
+
+      .technique-char-cost {
+        background: #fff;
+        border: 1px solid var(--tech-border);
+        border-radius: 10px;
+        padding: 0 7px;
+        font-variant-numeric: tabular-nums;
+      }
+    }
+
+    .technique-warnings {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+
+      li {
+        color: var(--tech-error);
+        font-weight: 600;
+      }
+    }
+  }
+
+  // -- Secciones -------------------------------------------------------------
+  .technique-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    .technique-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--tech-border);
+      padding-bottom: 2px;
+
+      h3 {
+        margin: 0;
+        font-size: 13px;
+        color: var(--tech-accent);
+      }
+    }
+  }
+
+  .technique-add {
+    width: auto;
+    flex: 0 0 auto;
+    border: 1px solid var(--tech-accent);
+    border-radius: 4px;
+    background: #fff;
+    color: var(--tech-accent);
+    font-weight: 600;
+    padding: 1px 8px;
+    cursor: pointer;
+  }
+
+  .technique-remove {
+    width: 22px;
+    flex: 0 0 auto;
+    border: 1px solid var(--tech-border);
+    border-radius: 4px;
+    background: #fff;
+    color: var(--tech-error);
+    cursor: pointer;
+  }
+
+  // -- Fila de efecto --------------------------------------------------------
+  .technique-effect-row {
+    border: 1px solid var(--tech-border);
+    border-radius: 6px;
+    padding: 7px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    .technique-effect-row-top {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+
+      .technique-role {
+        flex: 0 0 auto;
+        font-size: 10px;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--tech-accent);
+        width: 64px;
+      }
+
+      .technique-effect-select {
+        flex: 1 1 auto;
+      }
+
+      .technique-maint-select {
+        flex: 0 0 auto;
+        width: 110px;
+      }
+    }
+
+    .technique-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 10px;
+
+      .technique-option {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+
+        input {
+          width: auto;
+        }
+
+        small {
+          color: #8a8275;
+        }
+      }
+    }
+
+    .technique-ki-grid {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 6px;
+
+      .technique-ki-grid-title {
+        flex: 1 0 100%;
+        font-size: 10px;
+        text-transform: uppercase;
+        color: #7a7263;
+      }
+
+      .technique-ki-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+
+        .technique-ki-label {
+          font-size: 10px;
+          font-weight: 700;
+          color: #5b5446;
+        }
+
+        input {
+          width: 42px;
+          text-align: center;
+        }
+      }
+    }
+
+    .technique-effect-cost {
+      font-size: 11px;
+      color: #5b5446;
+      font-variant-numeric: tabular-nums;
+    }
+  }
+
+  // -- Desventajas -----------------------------------------------------------
+  .technique-disadvantage-row {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+
+    select:first-of-type {
+      flex: 1 1 auto;
+    }
+
+    select:last-of-type {
+      flex: 1 1 auto;
+    }
+  }
+
+  // -- Modificadores ---------------------------------------------------------
+  .technique-modifiers {
+    .technique-modifiers-row {
+      display: flex;
+      gap: 14px;
+    }
+
+    .technique-redistribution {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: flex-end;
+      margin-top: 4px;
+
+      .technique-ki-grid-title {
+        flex: 1 0 100%;
+        font-size: 10px;
+        text-transform: uppercase;
+        color: #7a7263;
+      }
+
+      .technique-ki-cell {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+
+        .technique-ki-label {
+          font-size: 10px;
+          font-weight: 700;
+          color: #5b5446;
+        }
+
+        input {
+          width: 42px;
+          text-align: center;
+        }
+      }
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    width: 100%;
+  }
+}
