@@ -1,0 +1,41 @@
+{
+  "name": "Sin Defensa",
+  "type": "techniqueEffect",
+  "img": "icons/magic/unholy/silhouette-robe-evil-power.webp",
+  "system": {
+    "kind": {
+      "value": "disadvantage"
+    },
+    "category": {
+      "value": "disadvantage"
+    },
+    "effectType": {
+      "value": ""
+    },
+    "effectClass": {
+      "value": "attack"
+    },
+    "primaryCharacteristic": {
+      "value": ""
+    },
+    "optionalCharacteristics": {},
+    "elements": [],
+    "tiers": [
+      {
+        "option": "Sin Defensa",
+        "cmReduction": -15,
+        "level": 1
+      }
+    ],
+    "description": {
+      "value": "<p><strong>Desventaja</strong> · <strong>Clase:</strong> Ataque</p><p>Reduce el coste en CM de la Técnica (no puede bajar del límite del nivel).</p><table border='1' style='border-collapse:collapse;width:100%;text-align:center'><thead><tr><th>Opción</th><th>Reducción CM</th><th>Nv</th></tr></thead><tbody><tr><td>Sin Defensa</td><td>-15</td><td>1</td></tr></tbody></table>"
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "2558acd6391b64fb",
+  "_key": "!items!2558acd6391b64fb"
+}

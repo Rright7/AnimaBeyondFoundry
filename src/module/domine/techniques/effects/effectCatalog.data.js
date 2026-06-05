@@ -393,3 +393,102 @@ export const EFFECT_CATALOG = [
     tiers: [{ option: "Elección de Blanco", kiPrimary: 2, kiSecondary: 2, cm: 10, maint: 2, sMe: 4, sMa: 7, level: 1 }, { option: "Reflectar Habilidades Esotéricas", kiPrimary: 4, kiSecondary: 4, cm: 20, maint: 1, sMe: 2, sMa: 4, level: 1 }]
   },
 ];
+
+export const DISADVANTAGE_CATALOG = [
+  {
+    id: "agotamiento", name: "Agotamiento", class: "any",
+    options: [{ option: "-2 Cansancio", cmReduction: -5, level: 1 }, { option: "-4 Cansancio", cmReduction: -10, level: 1 }, { option: "-6 Cansancio", cmReduction: -15, level: 2 }]
+  },
+  {
+    id: "atadura-elemental", name: "Atadura Elemental", class: "any",
+    options: [{ option: "A Un Elemento", cmReduction: -15, level: 1 }, { option: "A Dos Elementos", cmReduction: -10, level: 1 }]
+  },
+  {
+    id: "ataque-especializado", name: "Ataque Especializado", class: "attack",
+    options: [{ option: "Parada", cmReduction: -10, level: 1 }, { option: "Esquiva", cmReduction: -10, level: 1 }, { option: "Acumulación", cmReduction: -10, level: 1 }]
+  },
+  {
+    id: "atada-a-un-arma", name: "Atada A Un Arma", class: "any",
+    options: [{ option: "Genérica", cmReduction: -5, level: 1 }, { option: "Única", cmReduction: -10, level: 1 }]
+  },
+  {
+    id: "circunstancia-limite", name: "Circunstancia Límite", class: "any",
+    options: [{ option: "Mitad de PV", cmReduction: -10, level: 1 }, { option: "Una 1/4 de PV", cmReduction: -15, level: 1 }, { option: "PV Negativos", cmReduction: -25, level: 2 }, { option: "Recibir Daño", cmReduction: -10, level: 1 }]
+  },
+  {
+    id: "circunstancia-de-combate", name: "Circunstancia De Combate", class: "attack",
+    options: [{ option: "Circunstancia De Combate", cmReduction: -5, level: 1 }]
+  },
+  {
+    id: "compleja", name: "Compleja", class: "any",
+    options: [{ option: "Compleja", cmReduction: -5, level: 2 }]
+  },
+  {
+    id: "condicion", name: "Condición", class: "any",
+    options: [{ option: "Desenvainar", cmReduction: -5, level: 1 }, { option: "En Vuelo", cmReduction: -5, level: 1 }, { option: "En Carga", cmReduction: -5, level: 1 }, { option: "Montado", cmReduction: -5, level: 1 }, { option: "Diurno", cmReduction: -10, level: 1 }, { option: "Nocturno", cmReduction: -10, level: 1 }, { option: "Terreno Determinado", cmReduction: -10, level: 1 }, { option: "Un Momento Concreto", cmReduction: -20, level: 2 }]
+  },
+  {
+    id: "dano-reducido", name: "Daño Reducido", class: "attack",
+    options: [{ option: "Ningún Daño", cmReduction: -20, level: 1 }, { option: "Mitad de Daño", cmReduction: -10, level: 1 }]
+  },
+  {
+    id: "defensa-especializada", name: "Defensa Especializada", class: "defense",
+    options: [{ option: "Físicos", cmReduction: -5, level: 1 }, { option: "Proyectiles", cmReduction: -10, level: 1 }, { option: "Técnicas Ki", cmReduction: -10, level: 1 }, { option: "Conjuros", cmReduction: -15, level: 1 }, { option: "Psíquica", cmReduction: -15, level: 1 }]
+  },
+  {
+    id: "exterminador", name: "Exterminador", class: "attack",
+    options: [{ option: "Seres Humanoides", cmReduction: -5, level: 1 }, { option: "Una Clase de Ser", cmReduction: -10, level: 1 }, { option: "Un Ser Determinado", cmReduction: -30, level: 2 }]
+  },
+  {
+    id: "exceso-de-energia", name: "Exceso De Energía", class: "any",
+    options: [{ option: "Exceso De Energía", cmReduction: -15, level: 1 }]
+  },
+  {
+    id: "perdida-del-arma", name: "Pérdida Del Arma", class: "any",
+    options: [{ option: "Pérdida Del Arma", cmReduction: -10, level: 1 }]
+  },
+  {
+    id: "penalizador-a-toda-accion", name: "Penalizador A Toda Acción", class: "any",
+    options: [{ option: "-50", cmReduction: -10, level: 1 }, { option: "-75", cmReduction: -15, level: 1 }, { option: "-100", cmReduction: -20, level: 2 }, { option: "-125", cmReduction: -25, level: 2 }, { option: "-150", cmReduction: -30, level: 3 }]
+  },
+  {
+    id: "predeterminacion", name: "Predeterminación", class: "any",
+    options: [{ option: "Predeterminación", cmReduction: -20, level: 2 }]
+  },
+  {
+    id: "preparacion-previa", name: "Preparación Previa", class: "any",
+    options: [{ option: "1 minuto", cmReduction: -10, level: 1 }, { option: "1 hora", cmReduction: -15, level: 1 }, { option: "1 día", cmReduction: -25, level: 2 }]
+  },
+  {
+    id: "requerimientos-elementales", name: "Requerimientos Elementales", class: "any",
+    options: [{ option: "Intensidad Menor", cmReduction: -5, level: 1 }, { option: "Intensidad Mayor", cmReduction: -10, level: 1 }]
+  },
+  {
+    id: "sacrificio", name: "Sacrificio", class: "any",
+    options: [{ option: "-25 PV", cmReduction: -5, level: 1 }, { option: "-50 PV", cmReduction: -10, level: 1 }, { option: "-75 PV", cmReduction: -15, level: 2 }, { option: "-100 PV", cmReduction: -20, level: 2 }, { option: "Completo", cmReduction: -25, level: 3 }]
+  },
+  {
+    id: "sacrificio-de-caracteristicas", name: "Sacrificio De Características", class: "any",
+    options: [{ option: "AGI", cmReduction: -30, level: 1 }, { option: "CON", cmReduction: -30, level: 1 }, { option: "DES", cmReduction: -30, level: 1 }, { option: "FUE", cmReduction: -30, level: 1 }, { option: "INT", cmReduction: -30, level: 1 }, { option: "PER", cmReduction: -30, level: 1 }, { option: "POD", cmReduction: -30, level: 1 }, { option: "VOL", cmReduction: -30, level: 1 }]
+  },
+  {
+    id: "sin-defensa", name: "Sin Defensa", class: "attack",
+    options: [{ option: "Sin Defensa", cmReduction: -15, level: 1 }]
+  },
+  {
+    id: "sobrecarga", name: "Sobrecarga", class: "any",
+    options: [{ option: "Espera de 5 asaltos", cmReduction: -5, level: 1 }, { option: "Espera de 20 asaltos", cmReduction: -10, level: 1 }]
+  },
+  {
+    id: "tecnica-final", name: "Técnica Final", class: "any",
+    options: [{ option: "Técnica Final", cmReduction: -55, level: 2 }]
+  },
+  {
+    id: "tecnica-mantenida", name: "Técnica Mantenida", class: "any",
+    options: [{ option: "Nv 1", cmReduction: -5, level: 1 }, { option: "Nv 2", cmReduction: -10, level: 2 }, { option: "Nv 3", cmReduction: -15, level: 3 }]
+  },
+  {
+    id: "usos-limitados", name: "Usos Limitados", class: "any",
+    options: [{ option: "20 Usos", cmReduction: -10, level: 1 }, { option: "10 Usos", cmReduction: -20, level: 1 }, { option: "5 Usos", cmReduction: -25, level: 2 }, { option: "3 Usos", cmReduction: -30, level: 2 }, { option: "1 Uso", cmReduction: -40, level: 3 }]
+  },
+];

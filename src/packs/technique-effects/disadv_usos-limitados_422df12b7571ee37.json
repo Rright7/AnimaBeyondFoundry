@@ -1,0 +1,61 @@
+{
+  "name": "Usos Limitados",
+  "type": "techniqueEffect",
+  "img": "icons/magic/unholy/silhouette-robe-evil-power.webp",
+  "system": {
+    "kind": {
+      "value": "disadvantage"
+    },
+    "category": {
+      "value": "disadvantage"
+    },
+    "effectType": {
+      "value": ""
+    },
+    "effectClass": {
+      "value": "any"
+    },
+    "primaryCharacteristic": {
+      "value": ""
+    },
+    "optionalCharacteristics": {},
+    "elements": [],
+    "tiers": [
+      {
+        "option": "20 Usos",
+        "cmReduction": -10,
+        "level": 1
+      },
+      {
+        "option": "10 Usos",
+        "cmReduction": -20,
+        "level": 1
+      },
+      {
+        "option": "5 Usos",
+        "cmReduction": -25,
+        "level": 2
+      },
+      {
+        "option": "3 Usos",
+        "cmReduction": -30,
+        "level": 2
+      },
+      {
+        "option": "1 Uso",
+        "cmReduction": -40,
+        "level": 3
+      }
+    ],
+    "description": {
+      "value": "<p><strong>Desventaja</strong> · <strong>Clase:</strong> Cualquiera</p><p>Reduce el coste en CM de la Técnica (no puede bajar del límite del nivel).</p><table border='1' style='border-collapse:collapse;width:100%;text-align:center'><thead><tr><th>Opción</th><th>Reducción CM</th><th>Nv</th></tr></thead><tbody><tr><td>20 Usos</td><td>-10</td><td>1</td></tr><tr><td>10 Usos</td><td>-20</td><td>1</td></tr><tr><td>5 Usos</td><td>-25</td><td>2</td></tr><tr><td>3 Usos</td><td>-30</td><td>2</td></tr><tr><td>1 Uso</td><td>-40</td><td>3</td></tr></tbody></table>"
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "422df12b7571ee37",
+  "_key": "!items!422df12b7571ee37"
+}

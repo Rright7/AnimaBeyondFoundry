@@ -1,0 +1,41 @@
+{
+  "name": "Pérdida Del Arma",
+  "type": "techniqueEffect",
+  "img": "icons/magic/unholy/silhouette-robe-evil-power.webp",
+  "system": {
+    "kind": {
+      "value": "disadvantage"
+    },
+    "category": {
+      "value": "disadvantage"
+    },
+    "effectType": {
+      "value": ""
+    },
+    "effectClass": {
+      "value": "any"
+    },
+    "primaryCharacteristic": {
+      "value": ""
+    },
+    "optionalCharacteristics": {},
+    "elements": [],
+    "tiers": [
+      {
+        "option": "Pérdida Del Arma",
+        "cmReduction": -10,
+        "level": 1
+      }
+    ],
+    "description": {
+      "value": "<p><strong>Desventaja</strong> · <strong>Clase:</strong> Cualquiera</p><p>Reduce el coste en CM de la Técnica (no puede bajar del límite del nivel).</p><table border='1' style='border-collapse:collapse;width:100%;text-align:center'><thead><tr><th>Opción</th><th>Reducción CM</th><th>Nv</th></tr></thead><tbody><tr><td>Pérdida Del Arma</td><td>-10</td><td>1</td></tr></tbody></table>"
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "b7c9eb0327fe47ee",
+  "_key": "!items!b7c9eb0327fe47ee"
+}

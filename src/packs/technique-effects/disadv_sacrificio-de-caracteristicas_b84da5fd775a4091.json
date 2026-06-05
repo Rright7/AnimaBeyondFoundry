@@ -1,0 +1,76 @@
+{
+  "name": "Sacrificio De Características",
+  "type": "techniqueEffect",
+  "img": "icons/magic/unholy/silhouette-robe-evil-power.webp",
+  "system": {
+    "kind": {
+      "value": "disadvantage"
+    },
+    "category": {
+      "value": "disadvantage"
+    },
+    "effectType": {
+      "value": ""
+    },
+    "effectClass": {
+      "value": "any"
+    },
+    "primaryCharacteristic": {
+      "value": ""
+    },
+    "optionalCharacteristics": {},
+    "elements": [],
+    "tiers": [
+      {
+        "option": "AGI",
+        "cmReduction": -30,
+        "level": 1
+      },
+      {
+        "option": "CON",
+        "cmReduction": -30,
+        "level": 1
+      },
+      {
+        "option": "DES",
+        "cmReduction": -30,
+        "level": 1
+      },
+      {
+        "option": "FUE",
+        "cmReduction": -30,
+        "level": 1
+      },
+      {
+        "option": "INT",
+        "cmReduction": -30,
+        "level": 1
+      },
+      {
+        "option": "PER",
+        "cmReduction": -30,
+        "level": 1
+      },
+      {
+        "option": "POD",
+        "cmReduction": -30,
+        "level": 1
+      },
+      {
+        "option": "VOL",
+        "cmReduction": -30,
+        "level": 1
+      }
+    ],
+    "description": {
+      "value": "<p><strong>Desventaja</strong> · <strong>Clase:</strong> Cualquiera</p><p>Reduce el coste en CM de la Técnica (no puede bajar del límite del nivel).</p><table border='1' style='border-collapse:collapse;width:100%;text-align:center'><thead><tr><th>Opción</th><th>Reducción CM</th><th>Nv</th></tr></thead><tbody><tr><td>AGI</td><td>-30</td><td>1</td></tr><tr><td>CON</td><td>-30</td><td>1</td></tr><tr><td>DES</td><td>-30</td><td>1</td></tr><tr><td>FUE</td><td>-30</td><td>1</td></tr><tr><td>INT</td><td>-30</td><td>1</td></tr><tr><td>PER</td><td>-30</td><td>1</td></tr><tr><td>POD</td><td>-30</td><td>1</td></tr><tr><td>VOL</td><td>-30</td><td>1</td></tr></tbody></table>"
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "b84da5fd775a4091",
+  "_key": "!items!b84da5fd775a4091"
+}

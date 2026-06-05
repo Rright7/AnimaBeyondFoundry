@@ -1,0 +1,51 @@
+{
+  "name": "Técnica Mantenida",
+  "type": "techniqueEffect",
+  "img": "icons/magic/unholy/silhouette-robe-evil-power.webp",
+  "system": {
+    "kind": {
+      "value": "disadvantage"
+    },
+    "category": {
+      "value": "disadvantage"
+    },
+    "effectType": {
+      "value": ""
+    },
+    "effectClass": {
+      "value": "any"
+    },
+    "primaryCharacteristic": {
+      "value": ""
+    },
+    "optionalCharacteristics": {},
+    "elements": [],
+    "tiers": [
+      {
+        "option": "Nv 1",
+        "cmReduction": -5,
+        "level": 1
+      },
+      {
+        "option": "Nv 2",
+        "cmReduction": -10,
+        "level": 2
+      },
+      {
+        "option": "Nv 3",
+        "cmReduction": -15,
+        "level": 3
+      }
+    ],
+    "description": {
+      "value": "<p><strong>Desventaja</strong> · <strong>Clase:</strong> Cualquiera</p><p>Reduce el coste en CM de la Técnica (no puede bajar del límite del nivel).</p><table border='1' style='border-collapse:collapse;width:100%;text-align:center'><thead><tr><th>Opción</th><th>Reducción CM</th><th>Nv</th></tr></thead><tbody><tr><td>Nv 1</td><td>-5</td><td>1</td></tr><tr><td>Nv 2</td><td>-10</td><td>2</td></tr><tr><td>Nv 3</td><td>-15</td><td>3</td></tr></tbody></table>"
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "90613bac1cfd755b",
+  "_key": "!items!90613bac1cfd755b"
+}

@@ -1,0 +1,61 @@
+{
+  "name": "Defensa Especializada",
+  "type": "techniqueEffect",
+  "img": "icons/magic/unholy/silhouette-robe-evil-power.webp",
+  "system": {
+    "kind": {
+      "value": "disadvantage"
+    },
+    "category": {
+      "value": "disadvantage"
+    },
+    "effectType": {
+      "value": ""
+    },
+    "effectClass": {
+      "value": "defense"
+    },
+    "primaryCharacteristic": {
+      "value": ""
+    },
+    "optionalCharacteristics": {},
+    "elements": [],
+    "tiers": [
+      {
+        "option": "Físicos",
+        "cmReduction": -5,
+        "level": 1
+      },
+      {
+        "option": "Proyectiles",
+        "cmReduction": -10,
+        "level": 1
+      },
+      {
+        "option": "Técnicas Ki",
+        "cmReduction": -10,
+        "level": 1
+      },
+      {
+        "option": "Conjuros",
+        "cmReduction": -15,
+        "level": 1
+      },
+      {
+        "option": "Psíquica",
+        "cmReduction": -15,
+        "level": 1
+      }
+    ],
+    "description": {
+      "value": "<p><strong>Desventaja</strong> · <strong>Clase:</strong> Defensa</p><p>Reduce el coste en CM de la Técnica (no puede bajar del límite del nivel).</p><table border='1' style='border-collapse:collapse;width:100%;text-align:center'><thead><tr><th>Opción</th><th>Reducción CM</th><th>Nv</th></tr></thead><tbody><tr><td>Físicos</td><td>-5</td><td>1</td></tr><tr><td>Proyectiles</td><td>-10</td><td>1</td></tr><tr><td>Técnicas Ki</td><td>-10</td><td>1</td></tr><tr><td>Conjuros</td><td>-15</td><td>1</td></tr><tr><td>Psíquica</td><td>-15</td><td>1</td></tr></tbody></table>"
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "a16b25380ba2afd7",
+  "_key": "!items!a16b25380ba2afd7"
+}

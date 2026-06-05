@@ -98,7 +98,9 @@ CAT_ES = {'offensive': 'Ofensivo', 'defensive': 'Defensivo', 'destructive': 'Des
           'action': 'De acción', 'reaction': 'De reacción', 'spatial': 'Espacial',
           'integrity': 'De entereza', 'increment': 'De incremento', 'varied': 'Variado'}
 TYPE_ES = {'action': 'Acción', 'round': 'Asalto'}
-CLASS_ES = {'attack': 'Ataque', 'defense': 'Defensa', 'counter': 'Contraataque', 'variable': 'Variable'}
+CLASS_ES = {'attack': 'Ataque', 'defense': 'Defensa', 'counter': 'Contraataque',
+            'variable': 'Variable', 'any': 'Cualquiera'}
+DISADV_CLASS = {'Cualquiera': 'any', 'Ataque': 'attack', 'Defensa': 'defense'}
 CHAR_ES = {'strength': 'Fuerza', 'dexterity': 'Destreza', 'agility': 'Agilidad',
            'constitution': 'Constitución', 'power': 'Poder', 'willPower': 'Voluntad',
            'intelligence': 'Inteligencia', 'perception': 'Percepción'}
@@ -132,7 +134,19 @@ def build_description(e):
         f"<tbody>{rows}</tbody></table>")
 
 
-def write_pack(effects):
+def build_disadvantage_description(d):
+    rows = ''.join(
+        f"<tr><td>{o['option']}</td><td>{o['cmReduction']}</td><td>{o['level']}</td></tr>"
+        for o in d['options'])
+    return (
+        f"<p><strong>Desventaja</strong> · <strong>Clase:</strong> {d['clazz'] or '-'}</p>"
+        f"<p>Reduce el coste en CM de la Técnica (no puede bajar del límite del nivel).</p>"
+        f"<table border='1' style='border-collapse:collapse;width:100%;text-align:center'>"
+        f"<thead><tr><th>Opción</th><th>Reducción CM</th><th>Nv</th></tr></thead>"
+        f"<tbody>{rows}</tbody></table>")
+
+
+def write_pack(effects, disadvantages):
     os.makedirs(PACK_DIR, exist_ok=True)
     for fn in os.listdir(PACK_DIR):
         if fn.endswith('.json'):
@@ -153,6 +167,24 @@ def write_pack(effects):
             '_id': _id, '_key': '!items!' + _id
         }
         with open(os.path.join(PACK_DIR, f"effect_{e['id']}_{_id}.json"), 'w', encoding='utf-8') as f:
+            json.dump(doc, f, ensure_ascii=False, indent=2)
+    for d in disadvantages:
+        _id = effect_doc_id('dis:' + d['id'])
+        doc = {
+            'name': d['name'], 'type': 'techniqueEffect',
+            'img': 'icons/magic/unholy/silhouette-robe-evil-power.webp',
+            'system': {
+                'kind': {'value': 'disadvantage'}, 'category': {'value': 'disadvantage'},
+                'effectType': {'value': ''},
+                'effectClass': {'value': DISADV_CLASS.get(d['clazz'], 'any')},
+                'primaryCharacteristic': {'value': ''}, 'optionalCharacteristics': {},
+                'elements': [], 'tiers': d['options'],
+                'description': {'value': build_disadvantage_description(d)}
+            },
+            'effects': [], 'ownership': {'default': 0}, 'flags': {},
+            '_id': _id, '_key': '!items!' + _id
+        }
+        with open(os.path.join(PACK_DIR, f"disadv_{d['id']}_{_id}.json"), 'w', encoding='utf-8') as f:
             json.dump(doc, f, ensure_ascii=False, indent=2)
 
 
@@ -196,6 +228,23 @@ def main():
                         'class': CLASS.get(g('R', r)), 'primaryCharacteristic': prim,
                         'optionalCharacteristics': opt, 'elements': elems, 'tiers': tiers})
 
+    disadvantages = []
+    for r in range(165, 189):
+        name = g('O', r)
+        if not name or name.startswith('>'):
+            continue
+        mm = re.search(r'\$P\$(\d+):\$P\$(\d+)', g('P', r))
+        if not mm:
+            continue
+        clazz = g('Q', r)
+        options = []
+        for tr in range(int(mm.group(1)), int(mm.group(2)) + 1):
+            if g('O', tr).startswith('>'):
+                continue
+            options.append({'option': g('P', tr) or name,
+                            'cmReduction': num(g('Q', tr)), 'level': num(g('R', tr))})
+        disadvantages.append({'id': slug(name), 'name': name, 'clazz': clazz, 'options': options})
+
     def jv(v):
         return json.dumps(v, ensure_ascii=False)
 
@@ -210,11 +259,21 @@ def main():
                   f"    optionalCharacteristics: {jv(e['optionalCharacteristics'])}, elements: {jv(e['elements'])},",
                   f"    tiers: [{tiers}]", '  },']
     lines.append('];')
+    lines.append('')
+    lines.append('export const DISADVANTAGE_CATALOG = [')
+    for d in disadvantages:
+        opts = ', '.join('{ ' + ', '.join(f'{k}: {jv(v)}' for k, v in o.items()) + ' }'
+                         for o in d['options'])
+        lines += ['  {',
+                  f"    id: {jv(d['id'])}, name: {jv(d['name'])}, class: {jv(DISADV_CLASS.get(d['clazz'], 'any'))},",
+                  f"    options: [{opts}]", '  },']
+    lines.append('];')
     with open(OUT, 'w', encoding='utf-8') as f:
         f.write('\n'.join(lines) + '\n')
-    write_pack(effects)
-    print(f"Efectos: {len(effects)} | escalones: {sum(len(e['tiers']) for e in effects)} "
-          f"-> {OUT} + compendio ({len(effects)} items)")
+    write_pack(effects, disadvantages)
+    print(f"Efectos: {len(effects)} | escalones: {sum(len(e['tiers']) for e in effects)} | "
+          f"desventajas: {len(disadvantages)} ({sum(len(d['options']) for d in disadvantages)} opciones) "
+          f"-> {OUT} + compendio ({len(effects) + len(disadvantages)} items)")
 
 
 if __name__ == '__main__':
