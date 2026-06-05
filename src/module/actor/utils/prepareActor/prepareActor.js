@@ -38,13 +38,27 @@ import {
   mutatePsychicPotential
 } from './calculations/actor/psychic/mutatePsychicData';
 import {
+  mutateKiPointsStrength,
+  mutateKiPointsAgility,
+  mutateKiPointsDexterity,
+  mutateKiPointsConstitution,
+  mutateKiPointsWillPower,
+  mutateKiPointsPower,
+  mutateKiAccumulationBaseStrength,
+  mutateKiAccumulationBaseAgility,
+  mutateKiAccumulationBaseDexterity,
+  mutateKiAccumulationBaseConstitution,
+  mutateKiAccumulationBaseWillPower,
+  mutateKiAccumulationBasePower,
   mutateKiAccumulationStrength,
   mutateKiAccumulationAgility,
   mutateKiAccumulationDexterity,
   mutateKiAccumulationConstitution,
   mutateKiAccumulationWillPower,
-  mutateKiAccumulationPower
+  mutateKiAccumulationPower,
+  mutateKiReserve
 } from './calculations/actor/domine/mutateDomineData';
+import { mutateMartialKnowledgeUsed } from './calculations/actor/domine/mutateMartialKnowledge';
 import { applyKiSkillsModifiers } from './calculations/actor/domine/applyKiSkillsModifiers';
 import { mutateInitiative } from './calculations/actor/mutateInitiative';
 import { mutateRegenerationType } from './calculations/actor/general/mutateRegenerationType';
@@ -125,13 +139,27 @@ const DERIVED_DATA_FUNCTIONS = [
   mutatePsychicProjectionOffensive,
   mutatePsychicProjectionDefensive,
   mutatePsychicPotential,
-  // Domine — ki accumulations
+  // Domine — Ki: puntos (tabla) -> acumulación base -> final/mitad -> reserva; y CM usado
+  mutateKiPointsStrength,
+  mutateKiPointsAgility,
+  mutateKiPointsDexterity,
+  mutateKiPointsConstitution,
+  mutateKiPointsWillPower,
+  mutateKiPointsPower,
+  mutateKiAccumulationBaseStrength,
+  mutateKiAccumulationBaseAgility,
+  mutateKiAccumulationBaseDexterity,
+  mutateKiAccumulationBaseConstitution,
+  mutateKiAccumulationBaseWillPower,
+  mutateKiAccumulationBasePower,
   mutateKiAccumulationStrength,
   mutateKiAccumulationAgility,
   mutateKiAccumulationDexterity,
   mutateKiAccumulationConstitution,
   mutateKiAccumulationWillPower,
-  mutateKiAccumulationPower
+  mutateKiAccumulationPower,
+  mutateKiReserve,
+  mutateMartialKnowledgeUsed
 ];
 
 export const prepareActor = async actor => {

@@ -811,47 +811,8 @@ export const parseExcelToActor = async (excelData, actor, options = {}) => {
       },
       domine: {
         martialKnowledge: {
-          used: {
-            value: excelData.CM_usado
-          },
           max: {
             value: excelData.CM_final
-          }
-        },
-        kiAccumulation: {
-          strength: {
-            base: {
-              value: excelData.KiAccumulationFUE_final
-            }
-          },
-          agility: {
-            base: {
-              value: excelData.KiAccumulationAGI_final
-            }
-          },
-          dexterity: {
-            base: {
-              value: excelData.KiAccumulationDES_final
-            }
-          },
-          constitution: {
-            base: {
-              value: excelData.KiAccumulationCON_final
-            }
-          },
-          willPower: {
-            base: {
-              value: excelData.KiAccumulationVOL_final
-            }
-          },
-          power: {
-            base: {
-              value: excelData.KiAccumulationPOD_final
-            }
-          },
-          generic: {
-            value: excelData.Ki_final,
-            max: excelData.Ki_final
           }
         },
         kiSkills: [],

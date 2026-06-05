@@ -331,39 +331,70 @@
             "wood": { "isActive": false }
           }
         },
-        "martialKnowledge": { "used": { "value": 0 }, "max": { "value": 0 } },
+        "martialKnowledge": {
+          "max": { "value": 0 },
+          "used": { "value": 0 },
+          "available": { "value": 0 },
+          "excess": { "value": false }
+        },
         "kiAccumulation": {
           "strength": {
-            "accumulated": { "value": 0 },
+            "kiPoints": {
+              "byTable": { "value": 0 },
+              "byPd": { "value": 0 },              "final": { "value": 0 }
+            },
             "base": { "value": 0 },
-            "final": { "value": 0 }
+            "half": { "value": 0 },            "final": { "value": 0 },
+            "accumulated": { "value": 0 }
           },
           "agility": {
-            "accumulated": { "value": 0 },
+            "kiPoints": {
+              "byTable": { "value": 0 },
+              "byPd": { "value": 0 },              "final": { "value": 0 }
+            },
             "base": { "value": 0 },
-            "final": { "value": 0 }
+            "half": { "value": 0 },            "final": { "value": 0 },
+            "accumulated": { "value": 0 }
           },
           "dexterity": {
-            "accumulated": { "value": 0 },
+            "kiPoints": {
+              "byTable": { "value": 0 },
+              "byPd": { "value": 0 },              "final": { "value": 0 }
+            },
             "base": { "value": 0 },
-            "final": { "value": 0 }
+            "half": { "value": 0 },            "final": { "value": 0 },
+            "accumulated": { "value": 0 }
           },
           "constitution": {
-            "accumulated": { "value": 0 },
+            "kiPoints": {
+              "byTable": { "value": 0 },
+              "byPd": { "value": 0 },              "final": { "value": 0 }
+            },
             "base": { "value": 0 },
-            "final": { "value": 0 }
+            "half": { "value": 0 },            "final": { "value": 0 },
+            "accumulated": { "value": 0 }
           },
           "willPower": {
-            "accumulated": { "value": 0 },
+            "kiPoints": {
+              "byTable": { "value": 0 },
+              "byPd": { "value": 0 },              "final": { "value": 0 }
+            },
             "base": { "value": 0 },
-            "final": { "value": 0 }
+            "half": { "value": 0 },            "final": { "value": 0 },
+            "accumulated": { "value": 0 }
           },
           "power": {
-            "accumulated": { "value": 0 },
+            "kiPoints": {
+              "byTable": { "value": 0 },
+              "byPd": { "value": 0 },              "final": { "value": 0 }
+            },
             "base": { "value": 0 },
-            "final": { "value": 0 }
+            "half": { "value": 0 },            "final": { "value": 0 },
+            "accumulated": { "value": 0 }
           },
-          "generic": { "value": 0, "max": 0 }
+          "reserve": {
+            "max": { "value": 0 },            "current": { "value": 0 }
+          }
         }
       },
       "psychic": {
