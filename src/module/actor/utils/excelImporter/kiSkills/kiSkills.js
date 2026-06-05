@@ -98,7 +98,7 @@ export const KI_SKILLS = [
     martialKnowledge: 10,
     tree: { parent: 'kiControl', depth: 1 },
     aliases: { es: ['Dominio físico'] },
-    effects: []
+    effects: [{ target: 'resistancePhysical', operation: 'add', value: 10 }]
   },
   {
     id: 'physicalChange',
@@ -554,7 +554,7 @@ export const KI_SKILLS = [
     martialKnowledge: 20,
     tree: { parent: null, depth: 0 },
     aliases: { es: ['Armadura de vacío'] },
-    effects: []
+    effects: [{ target: 'damageReduction', operation: 'set', value: 10 }]
   },
   {
     id: 'noht',
@@ -563,7 +563,7 @@ export const KI_SKILLS = [
     martialKnowledge: 30,
     tree: { parent: 'voidArmor', depth: 1 },
     aliases: { es: ['Noht'] },
-    effects: []
+    effects: [{ target: 'damageReduction', operation: 'set', value: 30 }]
   },
   {
     id: 'kiNullification',
@@ -638,13 +638,22 @@ export const KI_SKILLS = [
     effects: []
   },
   {
+    id: 'voidForm',
+    name: 'Forma de Vacío',
+    type: 'nemesis',
+    martialKnowledge: 30,
+    tree: { parent: 'voidExtrusion', depth: 1 },
+    aliases: { es: ['Forma de Vacío'] },
+    effects: []
+  },
+  {
     id: 'voidBody',
     name: 'Cuerpo de Vacío',
     type: 'nemesis',
     martialKnowledge: 10,
     tree: { parent: null, depth: 0 },
     aliases: { es: ['Cuerpo de Vacío'] },
-    effects: []
+    effects: [{ target: 'resistanceAll', operation: 'add', value: 20 }]
   },
   {
     id: 'withoutNeeds',
@@ -662,15 +671,6 @@ export const KI_SKILLS = [
     martialKnowledge: 20,
     tree: { parent: 'voidBody', depth: 1 },
     aliases: { es: ['Movimiento de Vacío'] },
-    effects: []
-  },
-  {
-    id: 'voidForm',
-    name: 'Forma de Vacío',
-    type: 'nemesis',
-    martialKnowledge: 30,
-    tree: { parent: 'voidBody', depth: 1 },
-    aliases: { es: ['Forma de Vacío'] },
     effects: []
   },
   {

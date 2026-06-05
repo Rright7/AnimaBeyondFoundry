@@ -40,6 +40,31 @@ describe('applyKiSkillsModifiers — passive effects', () => {
   });
 });
 
+describe('applyKiSkillsModifiers — resistances, barrier and dynamic values', () => {
+  test('Dominio físico adds +10 to the physical resistance bucket', () => {
+    const data = makeData({ kiSkills: [inner('physicalDomain')] });
+    applyKiSkillsModifiers(data);
+    expect(data.general.modifiers.kiBonus.resistances.physical.value).toBe(10);
+  });
+
+  test('Cuerpo de Vacío adds +20 to every resistance', () => {
+    const data = makeData({ nemesisSkills: [inner('voidBody')] });
+    applyKiSkillsModifiers(data);
+    const r = data.general.modifiers.kiBonus.resistances;
+    for (const k of ['physical', 'disease', 'poison', 'magic', 'psychic']) {
+      expect(r[k].value).toBe(20);
+    }
+  });
+
+  test('damage reduction uses Math.max — Noht (30) beats Armadura de vacío (10)', () => {
+    const data = makeData({
+      nemesisSkills: [inner('voidArmor'), inner('noht')]
+    });
+    applyKiSkillsModifiers(data);
+    expect(data.general.modifiers.kiBonus.damageReduction.value).toBe(30);
+  });
+});
+
 describe('applyKiSkillsModifiers — lookup and mirroring', () => {
   test('UI-added ability matched by name applies its effect', () => {
     const data = makeData({

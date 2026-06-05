@@ -59,7 +59,10 @@ import {
   mutateKiReserve
 } from './calculations/actor/domine/mutateDomineData';
 import { mutateMartialKnowledgeUsed } from './calculations/actor/domine/mutateMartialKnowledge';
-import { applyKiSkillsModifiers } from './calculations/actor/domine/applyKiSkillsModifiers';
+import {
+  applyKiSkillsModifiers,
+  mutateKiDamageReduction
+} from './calculations/actor/domine/applyKiSkillsModifiers';
 import { mutateInitiative } from './calculations/actor/mutateInitiative';
 import { mutateRegenerationType } from './calculations/actor/general/mutateRegenerationType';
 import { mutatePresence } from './calculations/actor/mutatePresence';
@@ -103,6 +106,7 @@ const DERIVED_DATA_FUNCTIONS = [
   // weapons (damage bonus) and initiative read kiBonus.*
   applyKiSkillsModifiers,
   mutateTotalArmor,
+  mutateKiDamageReduction,
   // Natural penalty — unreduced/reduction before final
   mutateNaturalPenaltyUnreduced,
   mutateNaturalPenaltyReduction,

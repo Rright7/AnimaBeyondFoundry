@@ -4,21 +4,29 @@ import {
   findKiSkillByName
 } from '../../../../excelImporter/kiSkills/kiSkills.js';
 
+const RESISTANCE_KEYS = ['physical', 'disease', 'poison', 'magic', 'psychic'];
+const RESISTANCE_TARGET = {
+  resistancePhysical: 'physical',
+  resistanceDisease: 'disease',
+  resistancePoison: 'poison',
+  resistanceMagic: 'magic',
+  resistancePsychic: 'psychic'
+};
+
 /**
  * Walk every Ki and Nemesis ability present on the actor sheet and accumulate
- * the passive modifiers declared in their canonical effects[] into a read-only
- * bucket at system.general.modifiers.kiBonus.
+ * the passive modifiers declared in their canonical effects[] into read-only
+ * buckets at system.general.modifiers.kiBonus.
  *
- * Side effects on each matched ability item (Ki or Nemesis):
- *   - system.martialKnowledge.value ← canonical CM
- *   - system.tree.{parent, depth}   ← canonical position in the in-book tree
- *   - system.tree.prefix            ← ASCII box-drawing prefix
+ * Effect schema: { target, operation: 'add'|'set', value:number }
+ *   targets: damage | initiative | energyArmor | damageReduction |
+ *            resistancePhysical | resistanceDisease | resistancePoison |
+ *            resistanceMagic | resistancePsychic | resistanceAll
+ *   'add' accumulates; 'set' takes the max (non-stacking, e.g. armours/barriers).
  *
- * Both lists (kiSkills, nemesisSkills) are also reordered in-place into the
- * canonical DFS order so that — after the user deletes and re-adds an
- * ability — it slots back under its parent instead of dangling at the end.
- * The reorder only mutates the derived data passed in (system), never the
- * actor source, so persistence stays whatever the user typed.
+ * Side effects on each matched ability item: system.martialKnowledge.value,
+ * system.tree.{parent,depth,prefix}. Both lists are reordered into canonical
+ * DFS order (derived data only; the actor source is untouched).
  *
  * @param {import('../../../../../../types/Actor').ABFActorDataSourceData} data
  */
@@ -29,21 +37,51 @@ export const applyKiSkillsModifiers = data => {
   sortByCanonicalOrder(kiSkills);
   sortByCanonicalOrder(nemesisSkills);
 
-  const totals = { damage: 0, initiative: 0, energyArmor: 0 };
+  const totals = {
+    damage: 0,
+    initiative: 0,
+    energyArmor: 0,
+    damageReduction: 0,
+    resistances: { physical: 0, disease: 0, poison: 0, magic: 0, psychic: 0 }
+  };
   enrichListFromCanonical(kiSkills, totals);
   enrichListFromCanonical(nemesisSkills, totals);
 
   populateTreePrefixes(kiSkills);
   populateTreePrefixes(nemesisSkills);
 
-  data.general.modifiers.kiBonus = data.general.modifiers.kiBonus ?? {
-    damage: { value: 0 },
-    initiative: { value: 0 },
-    energyArmor: { value: 0 }
+  const m = data.general.modifiers;
+  m.kiBonus = m.kiBonus ?? {};
+  m.kiBonus.damage = { value: totals.damage };
+  m.kiBonus.initiative = { value: totals.initiative };
+  m.kiBonus.energyArmor = { value: totals.energyArmor };
+  m.kiBonus.damageReduction = { value: totals.damageReduction };
+  m.kiBonus.resistances = {
+    physical: { value: totals.resistances.physical },
+    disease: { value: totals.resistances.disease },
+    poison: { value: totals.resistances.poison },
+    magic: { value: totals.resistances.magic },
+    psychic: { value: totals.resistances.psychic }
   };
-  data.general.modifiers.kiBonus.damage = { value: totals.damage };
-  data.general.modifiers.kiBonus.initiative = { value: totals.initiative };
-  data.general.modifiers.kiBonus.energyArmor = { value: totals.energyArmor };
+};
+
+/**
+ * Adds the Ki damage-reduction bucket (Barrera de Daño: Armadura de vacío, Noht,
+ * Escudo físico) onto the combat damage reduction final value. Runs after the
+ * typed node computes the final (toposort: overwrite before this modify).
+ *
+ * @param {import('../../../../../../types/Actor').ABFActorDataSourceData} data
+ */
+export const mutateKiDamageReduction = data => {
+  const ki = data.general?.modifiers?.kiBonus?.damageReduction?.value ?? 0;
+  if (!ki) return;
+  const dr = data.combat?.damageReduction;
+  if (dr?.final) dr.final.value = (dr.final.value ?? 0) + ki;
+};
+
+mutateKiDamageReduction.abfFlow = {
+  deps: ['system.general.modifiers.kiBonus.damageReduction.value'],
+  mods: ['system.combat.damageReduction.final.value']
 };
 
 const CANONICAL_INDEX = (() => {
@@ -96,13 +134,20 @@ function enrichListFromCanonical(list, totals) {
     }
 
     for (const eff of canonical.effects ?? []) {
+      const value = Number(eff.value) || 0;
+      const target = eff.target;
       if (eff.operation === 'add') {
-        if (eff.target === 'damage') totals.damage += eff.value;
-        else if (eff.target === 'initiative') totals.initiative += eff.value;
+        if (target === 'damage') totals.damage += value;
+        else if (target === 'initiative') totals.initiative += value;
+        else if (target === 'resistanceAll')
+          RESISTANCE_KEYS.forEach(k => (totals.resistances[k] += value));
+        else if (RESISTANCE_TARGET[target])
+          totals.resistances[RESISTANCE_TARGET[target]] += value;
       } else if (eff.operation === 'set') {
-        if (eff.target === 'energyArmor') {
-          totals.energyArmor = Math.max(totals.energyArmor, eff.value);
-        }
+        if (target === 'energyArmor')
+          totals.energyArmor = Math.max(totals.energyArmor, value);
+        else if (target === 'damageReduction')
+          totals.damageReduction = Math.max(totals.damageReduction, value);
       }
     }
   }
@@ -158,6 +203,12 @@ applyKiSkillsModifiers.abfFlow = {
     'system.general.modifiers.kiBonus.damage.value',
     'system.general.modifiers.kiBonus.initiative.value',
     'system.general.modifiers.kiBonus.energyArmor.value',
+    'system.general.modifiers.kiBonus.damageReduction.value',
+    'system.general.modifiers.kiBonus.resistances.physical.value',
+    'system.general.modifiers.kiBonus.resistances.disease.value',
+    'system.general.modifiers.kiBonus.resistances.poison.value',
+    'system.general.modifiers.kiBonus.resistances.magic.value',
+    'system.general.modifiers.kiBonus.resistances.psychic.value',
     'system.domine.kiSkills.system.martialKnowledge.value',
     'system.domine.kiSkills.system.tree.depth',
     'system.domine.kiSkills.system.tree.prefix',

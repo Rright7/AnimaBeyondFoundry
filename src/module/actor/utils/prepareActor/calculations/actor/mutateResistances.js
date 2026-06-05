@@ -25,15 +25,18 @@ const makeResistanceMutator = (key, attrKey) => {
 
   const fnFinal = data => {
     const resistance = data.characteristics.secondaries.resistances[key];
+    const kiBonus =
+      data.general?.modifiers?.kiBonus?.resistances?.[key]?.value ?? 0;
     resistance.final.value = Math.max(
       0,
-      resistance.base.value + resistance.special.value
+      resistance.base.value + resistance.special.value + kiBonus
     );
   };
   fnFinal.abfFlow = {
     deps: [
       `system.characteristics.secondaries.resistances.${key}.base.value`,
-      `system.characteristics.secondaries.resistances.${key}.special.value`
+      `system.characteristics.secondaries.resistances.${key}.special.value`,
+      `system.general.modifiers.kiBonus.resistances.${key}.value`
     ],
     mods: [`system.characteristics.secondaries.resistances.${key}.final.value`]
   };
