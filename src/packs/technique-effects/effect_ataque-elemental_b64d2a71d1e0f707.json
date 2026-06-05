@@ -1,0 +1,101 @@
+{
+  "name": "Ataque Elemental",
+  "type": "techniqueEffect",
+  "img": "icons/magic/light/orb-lightning-purple.webp",
+  "system": {
+    "kind": {
+      "value": "effect"
+    },
+    "category": {
+      "value": "varied"
+    },
+    "effectType": {
+      "value": "round"
+    },
+    "effectClass": {
+      "value": "attack"
+    },
+    "primaryCharacteristic": {
+      "value": "power"
+    },
+    "optionalCharacteristics": {
+      "constitution": 2,
+      "dexterity": 3,
+      "strength": 3,
+      "willPower": 1
+    },
+    "elements": [],
+    "tiers": [
+      {
+        "option": "Aire",
+        "kiPrimary": 2,
+        "kiSecondary": 4,
+        "cm": 5,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": 1
+      },
+      {
+        "option": "Agua",
+        "kiPrimary": 2,
+        "kiSecondary": 4,
+        "cm": 5,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": 1
+      },
+      {
+        "option": "Fuego",
+        "kiPrimary": 2,
+        "kiSecondary": 4,
+        "cm": 5,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": 1
+      },
+      {
+        "option": "Tierra",
+        "kiPrimary": 2,
+        "kiSecondary": 4,
+        "cm": 5,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": 1
+      },
+      {
+        "option": "Luz",
+        "kiPrimary": 2,
+        "kiSecondary": 4,
+        "cm": 5,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": 1
+      },
+      {
+        "option": "Oscuridad",
+        "kiPrimary": 2,
+        "kiSecondary": 4,
+        "cm": 5,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": 1
+      }
+    ],
+    "description": {
+      "value": "<p><strong>Categoría:</strong> Variado · <strong>Tipo:</strong> Asalto · <strong>Clase:</strong> Ataque</p><p><strong>Característica:</strong> Poder (opcionales: Constitución+2, Destreza+3, Fuerza+3, Voluntad+1)</p><p><strong>Elementos:</strong> -</p><table border='1' style='border-collapse:collapse;width:100%;text-align:center'><thead><tr><th>Opción</th><th>Ki 1º</th><th>Ki 2º</th><th>CM</th><th>Mant</th><th>SMe</th><th>SMa</th><th>Nv</th></tr></thead><tbody><tr><td>Aire</td><td>2</td><td>4</td><td>5</td><td>1</td><td>2</td><td>4</td><td>1</td></tr><tr><td>Agua</td><td>2</td><td>4</td><td>5</td><td>1</td><td>2</td><td>4</td><td>1</td></tr><tr><td>Fuego</td><td>2</td><td>4</td><td>5</td><td>1</td><td>2</td><td>4</td><td>1</td></tr><tr><td>Tierra</td><td>2</td><td>4</td><td>5</td><td>1</td><td>2</td><td>4</td><td>1</td></tr><tr><td>Luz</td><td>2</td><td>4</td><td>5</td><td>1</td><td>2</td><td>4</td><td>1</td></tr><tr><td>Oscuridad</td><td>2</td><td>4</td><td>5</td><td>1</td><td>2</td><td>4</td><td>1</td></tr></tbody></table>"
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "b64d2a71d1e0f707",
+  "_key": "!items!b64d2a71d1e0f707"
+}

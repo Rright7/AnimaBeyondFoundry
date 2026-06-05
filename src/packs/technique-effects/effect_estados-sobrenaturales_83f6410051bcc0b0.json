@@ -1,0 +1,574 @@
+{
+  "name": "Estados Sobrenaturales",
+  "type": "techniqueEffect",
+  "img": "icons/magic/light/orb-lightning-purple.webp",
+  "system": {
+    "kind": {
+      "value": "effect"
+    },
+    "category": {
+      "value": "varied"
+    },
+    "effectType": {
+      "value": "action"
+    },
+    "effectClass": {
+      "value": "attack"
+    },
+    "primaryCharacteristic": {
+      "value": "power"
+    },
+    "optionalCharacteristics": {
+      "constitution": 4,
+      "dexterity": 4,
+      "strength": 4,
+      "willPower": 1
+    },
+    "elements": [
+      "light",
+      "dark"
+    ],
+    "tiers": [
+      {
+        "option": "RF 40",
+        "kiPrimary": 1,
+        "kiSecondary": 2,
+        "cm": 5,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": 1
+      },
+      {
+        "option": "RF 60",
+        "kiPrimary": 2,
+        "kiSecondary": 4,
+        "cm": 5,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": 1
+      },
+      {
+        "option": "RF 80",
+        "kiPrimary": 3,
+        "kiSecondary": 5,
+        "cm": 10,
+        "maint": 2,
+        "sMe": 4,
+        "sMa": 7,
+        "level": 1
+      },
+      {
+        "option": "RF 100",
+        "kiPrimary": 5,
+        "kiSecondary": 8,
+        "cm": 15,
+        "maint": 3,
+        "sMe": 6,
+        "sMa": 11,
+        "level": 1
+      },
+      {
+        "option": "RF 120",
+        "kiPrimary": 6,
+        "kiSecondary": 9,
+        "cm": 20,
+        "maint": 4,
+        "sMe": 8,
+        "sMa": 14,
+        "level": 1
+      },
+      {
+        "option": "RF 140",
+        "kiPrimary": 8,
+        "kiSecondary": 11,
+        "cm": 20,
+        "maint": 5,
+        "sMe": 10,
+        "sMa": 18,
+        "level": 2
+      },
+      {
+        "option": "RF 160",
+        "kiPrimary": 14,
+        "kiSecondary": 18,
+        "cm": 35,
+        "maint": 6,
+        "sMe": 12,
+        "sMa": 21,
+        "level": 2
+      },
+      {
+        "option": "RF 180",
+        "kiPrimary": 20,
+        "kiSecondary": 24,
+        "cm": 50,
+        "maint": 8,
+        "sMe": 16,
+        "sMa": 28,
+        "level": 3
+      },
+      {
+        "option": "RF 200",
+        "kiPrimary": 28,
+        "kiSecondary": 32,
+        "cm": 80,
+        "maint": 10,
+        "sMe": 20,
+        "sMa": 35,
+        "level": 3
+      },
+      {
+        "option": "Estado añadido: Ceguera",
+        "kiPrimary": 6,
+        "kiSecondary": 6,
+        "cm": 15,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Estado añadido: Coma",
+        "kiPrimary": 14,
+        "kiSecondary": 14,
+        "cm": 40,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 2
+      },
+      {
+        "option": "Estado añadido: Control",
+        "kiPrimary": 14,
+        "kiSecondary": 14,
+        "cm": 40,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 2
+      },
+      {
+        "option": "Estado añadido: Daño",
+        "kiPrimary": 1,
+        "kiSecondary": 1,
+        "cm": 5,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Estado añadido: Doble Daño",
+        "kiPrimary": 5,
+        "kiSecondary": 5,
+        "cm": 10,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Estado añadido: Dolor",
+        "kiPrimary": 3,
+        "kiSecondary": 3,
+        "cm": 10,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Estado añadido: Dolor Extremo",
+        "kiPrimary": 6,
+        "kiSecondary": 6,
+        "cm": 15,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Estado añadido: Drenaje de Vida",
+        "kiPrimary": 8,
+        "kiSecondary": 8,
+        "cm": 15,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 2
+      },
+      {
+        "option": "Estado añadido: Drenaje de Ki",
+        "kiPrimary": 8,
+        "kiSecondary": 8,
+        "cm": 20,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Estado añadido: Fascinación",
+        "kiPrimary": 6,
+        "kiSecondary": 6,
+        "cm": 10,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Estado añadido: Ilusión",
+        "kiPrimary": 7,
+        "kiSecondary": 7,
+        "cm": 10,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Estado añadido: Ilusión Fantasmal",
+        "kiPrimary": 11,
+        "kiSecondary": 11,
+        "cm": 20,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Estado añadido: Ilusión Mayor",
+        "kiPrimary": 9,
+        "kiSecondary": 9,
+        "cm": 15,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Estado añadido: Inconsciencia",
+        "kiPrimary": 12,
+        "kiSecondary": 12,
+        "cm": 35,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 2
+      },
+      {
+        "option": "Estado añadido: Miedo",
+        "kiPrimary": 3,
+        "kiSecondary": 3,
+        "cm": 10,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Estado añadido: Muerte",
+        "kiPrimary": 20,
+        "kiSecondary": 20,
+        "cm": 50,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 3
+      },
+      {
+        "option": "Estado añadido: Paralización Parcial",
+        "kiPrimary": 6,
+        "kiSecondary": 6,
+        "cm": 10,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Estado añadido: Paralización Total",
+        "kiPrimary": 12,
+        "kiSecondary": 12,
+        "cm": 20,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 2
+      },
+      {
+        "option": "Estado añadido: Pen. a la Acción Mayor",
+        "kiPrimary": 4,
+        "kiSecondary": 4,
+        "cm": 5,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Estado añadido: Pen. a la Acción Menor",
+        "kiPrimary": 1,
+        "kiSecondary": 1,
+        "cm": 5,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Estado añadido: Reducción de Car.",
+        "kiPrimary": 5,
+        "kiSecondary": 5,
+        "cm": 15,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Estado añadido: Reducción de una Car.",
+        "kiPrimary": 2,
+        "kiSecondary": 2,
+        "cm": 10,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Estado añadido: Reducción de RF",
+        "kiPrimary": 2,
+        "kiSecondary": 2,
+        "cm": 10,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Estado añadido: Reducción de RP",
+        "kiPrimary": 2,
+        "kiSecondary": 2,
+        "cm": 10,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Estado añadido: Terror",
+        "kiPrimary": 6,
+        "kiSecondary": 6,
+        "cm": 15,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Condición: Conseguir dar un ataque",
+        "kiPrimary": 0,
+        "kiSecondary": 0,
+        "cm": 0,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Condición: Conseguir dar un Beso",
+        "kiPrimary": 1,
+        "kiSecondary": 1,
+        "cm": 10,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Condición: Contacto Físico",
+        "kiPrimary": 2,
+        "kiSecondary": 2,
+        "cm": 5,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Condición: Contacto Visual Mutuo",
+        "kiPrimary": 8,
+        "kiSecondary": 8,
+        "cm": 15,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Condición: Contacto Visual (Un Blanco)",
+        "kiPrimary": 12,
+        "kiSecondary": 12,
+        "cm": 30,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 2
+      },
+      {
+        "option": "Condición: Contacto Visual (Varios)",
+        "kiPrimary": 16,
+        "kiSecondary": 16,
+        "cm": 40,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 3
+      },
+      {
+        "option": "Condición: Por el Aire",
+        "kiPrimary": 20,
+        "kiSecondary": 20,
+        "cm": 50,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 3
+      },
+      {
+        "option": "Condición: Por Sonido (Un Blanco)",
+        "kiPrimary": 13,
+        "kiSecondary": 13,
+        "cm": 35,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 2
+      },
+      {
+        "option": "Condición: Por Sonido (Varios Blancos)",
+        "kiPrimary": 18,
+        "kiSecondary": 18,
+        "cm": 45,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 3
+      },
+      {
+        "option": "Condición: Por Superficie",
+        "kiPrimary": 12,
+        "kiSecondary": 12,
+        "cm": 30,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 2
+      },
+      {
+        "option": "Condición: Por Toda Superficie",
+        "kiPrimary": 18,
+        "kiSecondary": 18,
+        "cm": 45,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 3
+      },
+      {
+        "option": "Distancia: 1 metro",
+        "kiPrimary": 1,
+        "kiSecondary": 1,
+        "cm": 5,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Distancia: 5 metros",
+        "kiPrimary": 3,
+        "kiSecondary": 3,
+        "cm": 5,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Distancia: 10 metros",
+        "kiPrimary": 5,
+        "kiSecondary": 5,
+        "cm": 10,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Distancia: 25 metros",
+        "kiPrimary": 8,
+        "kiSecondary": 8,
+        "cm": 10,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Distancia: 50 metros",
+        "kiPrimary": 12,
+        "kiSecondary": 12,
+        "cm": 15,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 2
+      },
+      {
+        "option": "Distancia: 100 metros",
+        "kiPrimary": 15,
+        "kiSecondary": 15,
+        "cm": 20,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 2
+      },
+      {
+        "option": "Distancia: 150 metros",
+        "kiPrimary": 20,
+        "kiSecondary": 20,
+        "cm": 25,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 3
+      },
+      {
+        "option": "Distancia: 500 metros",
+        "kiPrimary": 25,
+        "kiSecondary": 25,
+        "cm": 30,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 3
+      }
+    ],
+    "description": {
+      "value": "<p><strong>Categoría:</strong> Variado · <strong>Tipo:</strong> Acción · <strong>Clase:</strong> Ataque</p><p><strong>Característica:</strong> Poder (opcionales: Constitución+4, Destreza+4, Fuerza+4, Voluntad+1)</p><p><strong>Elementos:</strong> Luz, Oscuridad</p><table border='1' style='border-collapse:collapse;width:100%;text-align:center'><thead><tr><th>Opción</th><th>Ki 1º</th><th>Ki 2º</th><th>CM</th><th>Mant</th><th>SMe</th><th>SMa</th><th>Nv</th></tr></thead><tbody><tr><td>RF 40</td><td>1</td><td>2</td><td>5</td><td>1</td><td>2</td><td>4</td><td>1</td></tr><tr><td>RF 60</td><td>2</td><td>4</td><td>5</td><td>1</td><td>2</td><td>4</td><td>1</td></tr><tr><td>RF 80</td><td>3</td><td>5</td><td>10</td><td>2</td><td>4</td><td>7</td><td>1</td></tr><tr><td>RF 100</td><td>5</td><td>8</td><td>15</td><td>3</td><td>6</td><td>11</td><td>1</td></tr><tr><td>RF 120</td><td>6</td><td>9</td><td>20</td><td>4</td><td>8</td><td>14</td><td>1</td></tr><tr><td>RF 140</td><td>8</td><td>11</td><td>20</td><td>5</td><td>10</td><td>18</td><td>2</td></tr><tr><td>RF 160</td><td>14</td><td>18</td><td>35</td><td>6</td><td>12</td><td>21</td><td>2</td></tr><tr><td>RF 180</td><td>20</td><td>24</td><td>50</td><td>8</td><td>16</td><td>28</td><td>3</td></tr><tr><td>RF 200</td><td>28</td><td>32</td><td>80</td><td>10</td><td>20</td><td>35</td><td>3</td></tr><tr><td>Estado añadido: Ceguera</td><td>6</td><td>6</td><td>15</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Estado añadido: Coma</td><td>14</td><td>14</td><td>40</td><td>None</td><td>None</td><td>None</td><td>2</td></tr><tr><td>Estado añadido: Control</td><td>14</td><td>14</td><td>40</td><td>None</td><td>None</td><td>None</td><td>2</td></tr><tr><td>Estado añadido: Daño</td><td>1</td><td>1</td><td>5</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Estado añadido: Doble Daño</td><td>5</td><td>5</td><td>10</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Estado añadido: Dolor</td><td>3</td><td>3</td><td>10</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Estado añadido: Dolor Extremo</td><td>6</td><td>6</td><td>15</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Estado añadido: Drenaje de Vida</td><td>8</td><td>8</td><td>15</td><td>None</td><td>None</td><td>None</td><td>2</td></tr><tr><td>Estado añadido: Drenaje de Ki</td><td>8</td><td>8</td><td>20</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Estado añadido: Fascinación</td><td>6</td><td>6</td><td>10</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Estado añadido: Ilusión</td><td>7</td><td>7</td><td>10</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Estado añadido: Ilusión Fantasmal</td><td>11</td><td>11</td><td>20</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Estado añadido: Ilusión Mayor</td><td>9</td><td>9</td><td>15</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Estado añadido: Inconsciencia</td><td>12</td><td>12</td><td>35</td><td>None</td><td>None</td><td>None</td><td>2</td></tr><tr><td>Estado añadido: Miedo</td><td>3</td><td>3</td><td>10</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Estado añadido: Muerte</td><td>20</td><td>20</td><td>50</td><td>None</td><td>None</td><td>None</td><td>3</td></tr><tr><td>Estado añadido: Paralización Parcial</td><td>6</td><td>6</td><td>10</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Estado añadido: Paralización Total</td><td>12</td><td>12</td><td>20</td><td>None</td><td>None</td><td>None</td><td>2</td></tr><tr><td>Estado añadido: Pen. a la Acción Mayor</td><td>4</td><td>4</td><td>5</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Estado añadido: Pen. a la Acción Menor</td><td>1</td><td>1</td><td>5</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Estado añadido: Reducción de Car.</td><td>5</td><td>5</td><td>15</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Estado añadido: Reducción de una Car.</td><td>2</td><td>2</td><td>10</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Estado añadido: Reducción de RF</td><td>2</td><td>2</td><td>10</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Estado añadido: Reducción de RP</td><td>2</td><td>2</td><td>10</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Estado añadido: Terror</td><td>6</td><td>6</td><td>15</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Condición: Conseguir dar un ataque</td><td>0</td><td>0</td><td>0</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Condición: Conseguir dar un Beso</td><td>1</td><td>1</td><td>10</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Condición: Contacto Físico</td><td>2</td><td>2</td><td>5</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Condición: Contacto Visual Mutuo</td><td>8</td><td>8</td><td>15</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Condición: Contacto Visual (Un Blanco)</td><td>12</td><td>12</td><td>30</td><td>None</td><td>None</td><td>None</td><td>2</td></tr><tr><td>Condición: Contacto Visual (Varios)</td><td>16</td><td>16</td><td>40</td><td>None</td><td>None</td><td>None</td><td>3</td></tr><tr><td>Condición: Por el Aire</td><td>20</td><td>20</td><td>50</td><td>None</td><td>None</td><td>None</td><td>3</td></tr><tr><td>Condición: Por Sonido (Un Blanco)</td><td>13</td><td>13</td><td>35</td><td>None</td><td>None</td><td>None</td><td>2</td></tr><tr><td>Condición: Por Sonido (Varios Blancos)</td><td>18</td><td>18</td><td>45</td><td>None</td><td>None</td><td>None</td><td>3</td></tr><tr><td>Condición: Por Superficie</td><td>12</td><td>12</td><td>30</td><td>None</td><td>None</td><td>None</td><td>2</td></tr><tr><td>Condición: Por Toda Superficie</td><td>18</td><td>18</td><td>45</td><td>None</td><td>None</td><td>None</td><td>3</td></tr><tr><td>Distancia: 1 metro</td><td>1</td><td>1</td><td>5</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Distancia: 5 metros</td><td>3</td><td>3</td><td>5</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Distancia: 10 metros</td><td>5</td><td>5</td><td>10</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Distancia: 25 metros</td><td>8</td><td>8</td><td>10</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Distancia: 50 metros</td><td>12</td><td>12</td><td>15</td><td>None</td><td>None</td><td>None</td><td>2</td></tr><tr><td>Distancia: 100 metros</td><td>15</td><td>15</td><td>20</td><td>None</td><td>None</td><td>None</td><td>2</td></tr><tr><td>Distancia: 150 metros</td><td>20</td><td>20</td><td>25</td><td>None</td><td>None</td><td>None</td><td>3</td></tr><tr><td>Distancia: 500 metros</td><td>25</td><td>25</td><td>30</td><td>None</td><td>None</td><td>None</td><td>3</td></tr></tbody></table>"
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "83f6410051bcc0b0",
+  "_key": "!items!83f6410051bcc0b0"
+}

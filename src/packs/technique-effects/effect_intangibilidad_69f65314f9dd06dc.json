@@ -1,0 +1,75 @@
+{
+  "name": "Intangibilidad",
+  "type": "techniqueEffect",
+  "img": "icons/magic/light/orb-lightning-purple.webp",
+  "system": {
+    "kind": {
+      "value": "effect"
+    },
+    "category": {
+      "value": "varied"
+    },
+    "effectType": {
+      "value": "round"
+    },
+    "effectClass": {
+      "value": "variable"
+    },
+    "primaryCharacteristic": {
+      "value": "power"
+    },
+    "optionalCharacteristics": {
+      "constitution": 3,
+      "dexterity": 3,
+      "strength": 3,
+      "willPower": 1
+    },
+    "elements": [
+      "water",
+      "light",
+      "dark"
+    ],
+    "tiers": [
+      {
+        "option": "Presencia Simple",
+        "kiPrimary": 1,
+        "kiSecondary": 1,
+        "cm": 5,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": 1
+      },
+      {
+        "option": "Presencia Extendida",
+        "kiPrimary": 3,
+        "kiSecondary": 3,
+        "cm": 10,
+        "maint": 2,
+        "sMe": 4,
+        "sMa": 7,
+        "level": 1
+      },
+      {
+        "option": "Fusión",
+        "kiPrimary": 2,
+        "kiSecondary": 2,
+        "cm": 10,
+        "maint": 2,
+        "sMe": 4,
+        "sMa": 7,
+        "level": 1
+      }
+    ],
+    "description": {
+      "value": "<p><strong>Categoría:</strong> Variado · <strong>Tipo:</strong> Asalto · <strong>Clase:</strong> Variable</p><p><strong>Característica:</strong> Poder (opcionales: Constitución+3, Destreza+3, Fuerza+3, Voluntad+1)</p><p><strong>Elementos:</strong> Agua, Luz, Oscuridad</p><table border='1' style='border-collapse:collapse;width:100%;text-align:center'><thead><tr><th>Opción</th><th>Ki 1º</th><th>Ki 2º</th><th>CM</th><th>Mant</th><th>SMe</th><th>SMa</th><th>Nv</th></tr></thead><tbody><tr><td>Presencia Simple</td><td>1</td><td>1</td><td>5</td><td>1</td><td>2</td><td>4</td><td>1</td></tr><tr><td>Presencia Extendida</td><td>3</td><td>3</td><td>10</td><td>2</td><td>4</td><td>7</td><td>1</td></tr><tr><td>Fusión</td><td>2</td><td>2</td><td>10</td><td>2</td><td>4</td><td>7</td><td>1</td></tr></tbody></table>"
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "69f65314f9dd06dc",
+  "_key": "!items!69f65314f9dd06dc"
+}

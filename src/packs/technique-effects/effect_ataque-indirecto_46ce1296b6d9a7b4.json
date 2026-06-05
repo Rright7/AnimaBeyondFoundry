@@ -1,0 +1,75 @@
+{
+  "name": "Ataque Indirecto",
+  "type": "techniqueEffect",
+  "img": "icons/magic/light/orb-lightning-purple.webp",
+  "system": {
+    "kind": {
+      "value": "effect"
+    },
+    "category": {
+      "value": "offensive"
+    },
+    "effectType": {
+      "value": "action"
+    },
+    "effectClass": {
+      "value": "attack"
+    },
+    "primaryCharacteristic": {
+      "value": "power"
+    },
+    "optionalCharacteristics": {
+      "agility": 2,
+      "constitution": 2,
+      "dexterity": 2,
+      "willPower": 2
+    },
+    "elements": [
+      "water",
+      "air",
+      "dark"
+    ],
+    "tiers": [
+      {
+        "option": "Nv 1",
+        "kiPrimary": 3,
+        "kiSecondary": 5,
+        "cm": 10,
+        "maint": 2,
+        "sMe": 4,
+        "sMa": 7,
+        "level": 1
+      },
+      {
+        "option": "Nv 2",
+        "kiPrimary": 6,
+        "kiSecondary": 9,
+        "cm": 20,
+        "maint": 4,
+        "sMe": 8,
+        "sMa": 14,
+        "level": 2
+      },
+      {
+        "option": "Nv 3",
+        "kiPrimary": 9,
+        "kiSecondary": 12,
+        "cm": 30,
+        "maint": 6,
+        "sMe": 12,
+        "sMa": 21,
+        "level": 3
+      }
+    ],
+    "description": {
+      "value": "<p><strong>Categoría:</strong> Ofensivo · <strong>Tipo:</strong> Acción · <strong>Clase:</strong> Ataque</p><p><strong>Característica:</strong> Poder (opcionales: Agilidad+2, Constitución+2, Destreza+2, Voluntad+2)</p><p><strong>Elementos:</strong> Agua, Aire, Oscuridad</p><table border='1' style='border-collapse:collapse;width:100%;text-align:center'><thead><tr><th>Opción</th><th>Ki 1º</th><th>Ki 2º</th><th>CM</th><th>Mant</th><th>SMe</th><th>SMa</th><th>Nv</th></tr></thead><tbody><tr><td>Nv 1</td><td>3</td><td>5</td><td>10</td><td>2</td><td>4</td><td>7</td><td>1</td></tr><tr><td>Nv 2</td><td>6</td><td>9</td><td>20</td><td>4</td><td>8</td><td>14</td><td>2</td></tr><tr><td>Nv 3</td><td>9</td><td>12</td><td>30</td><td>6</td><td>12</td><td>21</td><td>3</td></tr></tbody></table>"
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "46ce1296b6d9a7b4",
+  "_key": "!items!46ce1296b6d9a7b4"
+}

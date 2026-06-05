@@ -1,0 +1,65 @@
+{
+  "name": "Reflectar el Ataque",
+  "type": "techniqueEffect",
+  "img": "icons/magic/light/orb-lightning-purple.webp",
+  "system": {
+    "kind": {
+      "value": "effect"
+    },
+    "category": {
+      "value": "varied"
+    },
+    "effectType": {
+      "value": "action"
+    },
+    "effectClass": {
+      "value": "defense"
+    },
+    "primaryCharacteristic": {
+      "value": "power"
+    },
+    "optionalCharacteristics": {
+      "agility": 3,
+      "dexterity": 3,
+      "strength": 3,
+      "willPower": 1
+    },
+    "elements": [
+      "water",
+      "light",
+      "dark"
+    ],
+    "tiers": [
+      {
+        "option": "Elección de Blanco",
+        "kiPrimary": 2,
+        "kiSecondary": 2,
+        "cm": 10,
+        "maint": 2,
+        "sMe": 4,
+        "sMa": 7,
+        "level": 1
+      },
+      {
+        "option": "Reflectar Habilidades Esotéricas",
+        "kiPrimary": 4,
+        "kiSecondary": 4,
+        "cm": 20,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": 1
+      }
+    ],
+    "description": {
+      "value": "<p><strong>Categoría:</strong> Variado · <strong>Tipo:</strong> Acción · <strong>Clase:</strong> Defensa</p><p><strong>Característica:</strong> Poder (opcionales: Agilidad+3, Destreza+3, Fuerza+3, Voluntad+1)</p><p><strong>Elementos:</strong> Agua, Luz, Oscuridad</p><table border='1' style='border-collapse:collapse;width:100%;text-align:center'><thead><tr><th>Opción</th><th>Ki 1º</th><th>Ki 2º</th><th>CM</th><th>Mant</th><th>SMe</th><th>SMa</th><th>Nv</th></tr></thead><tbody><tr><td>Elección de Blanco</td><td>2</td><td>2</td><td>10</td><td>2</td><td>4</td><td>7</td><td>1</td></tr><tr><td>Reflectar Habilidades Esotéricas</td><td>4</td><td>4</td><td>20</td><td>1</td><td>2</td><td>4</td><td>1</td></tr></tbody></table>"
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "66529fc0e7f19bad",
+  "_key": "!items!66529fc0e7f19bad"
+}

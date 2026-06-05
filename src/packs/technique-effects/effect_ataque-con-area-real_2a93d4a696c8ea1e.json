@@ -1,0 +1,115 @@
+{
+  "name": "Ataque con Área Real",
+  "type": "techniqueEffect",
+  "img": "icons/magic/light/orb-lightning-purple.webp",
+  "system": {
+    "kind": {
+      "value": "effect"
+    },
+    "category": {
+      "value": "spatial"
+    },
+    "effectType": {
+      "value": "round"
+    },
+    "effectClass": {
+      "value": "attack"
+    },
+    "primaryCharacteristic": {
+      "value": "power"
+    },
+    "optionalCharacteristics": {
+      "agility": 2,
+      "constitution": 3,
+      "dexterity": 2,
+      "willPower": 1
+    },
+    "elements": [
+      "fire",
+      "light",
+      "dark"
+    ],
+    "tiers": [
+      {
+        "option": "1 metro de radio",
+        "kiPrimary": 2,
+        "kiSecondary": 4,
+        "cm": 10,
+        "maint": 2,
+        "sMe": 4,
+        "sMa": 4,
+        "level": 1
+      },
+      {
+        "option": "5 metros de radio",
+        "kiPrimary": 4,
+        "kiSecondary": 6,
+        "cm": 15,
+        "maint": 3,
+        "sMe": 6,
+        "sMa": 6,
+        "level": 1
+      },
+      {
+        "option": "10 metros de radio",
+        "kiPrimary": 6,
+        "kiSecondary": 9,
+        "cm": 20,
+        "maint": 4,
+        "sMe": 8,
+        "sMa": 8,
+        "level": 1
+      },
+      {
+        "option": "25 metros de radio",
+        "kiPrimary": 8,
+        "kiSecondary": 11,
+        "cm": 30,
+        "maint": 5,
+        "sMe": 10,
+        "sMa": 10,
+        "level": 2
+      },
+      {
+        "option": "50 metros de radio",
+        "kiPrimary": 12,
+        "kiSecondary": 15,
+        "cm": 45,
+        "maint": 6,
+        "sMe": 12,
+        "sMa": 12,
+        "level": 2
+      },
+      {
+        "option": "100 metros de radio",
+        "kiPrimary": 16,
+        "kiSecondary": 20,
+        "cm": 65,
+        "maint": 8,
+        "sMe": 16,
+        "sMa": 16,
+        "level": 3
+      },
+      {
+        "option": "Elección de Blanco",
+        "kiPrimary": 2,
+        "kiSecondary": 2,
+        "cm": 10,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": null
+      }
+    ],
+    "description": {
+      "value": "<p><strong>Categoría:</strong> Espacial · <strong>Tipo:</strong> Asalto · <strong>Clase:</strong> Ataque</p><p><strong>Característica:</strong> Poder (opcionales: Agilidad+2, Constitución+3, Destreza+2, Voluntad+1)</p><p><strong>Elementos:</strong> Fuego, Luz, Oscuridad</p><table border='1' style='border-collapse:collapse;width:100%;text-align:center'><thead><tr><th>Opción</th><th>Ki 1º</th><th>Ki 2º</th><th>CM</th><th>Mant</th><th>SMe</th><th>SMa</th><th>Nv</th></tr></thead><tbody><tr><td>1 metro de radio</td><td>2</td><td>4</td><td>10</td><td>2</td><td>4</td><td>4</td><td>1</td></tr><tr><td>5 metros de radio</td><td>4</td><td>6</td><td>15</td><td>3</td><td>6</td><td>6</td><td>1</td></tr><tr><td>10 metros de radio</td><td>6</td><td>9</td><td>20</td><td>4</td><td>8</td><td>8</td><td>1</td></tr><tr><td>25 metros de radio</td><td>8</td><td>11</td><td>30</td><td>5</td><td>10</td><td>10</td><td>2</td></tr><tr><td>50 metros de radio</td><td>12</td><td>15</td><td>45</td><td>6</td><td>12</td><td>12</td><td>2</td></tr><tr><td>100 metros de radio</td><td>16</td><td>20</td><td>65</td><td>8</td><td>16</td><td>16</td><td>3</td></tr><tr><td>Elección de Blanco</td><td>2</td><td>2</td><td>10</td><td>1</td><td>2</td><td>4</td><td>None</td></tr></tbody></table>"
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "2a93d4a696c8ea1e",
+  "_key": "!items!2a93d4a696c8ea1e"
+}

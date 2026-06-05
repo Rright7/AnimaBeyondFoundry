@@ -1,0 +1,114 @@
+{
+  "name": "Sustitución de Daño",
+  "type": "techniqueEffect",
+  "img": "icons/magic/light/orb-lightning-purple.webp",
+  "system": {
+    "kind": {
+      "value": "effect"
+    },
+    "category": {
+      "value": "destructive"
+    },
+    "effectType": {
+      "value": "action"
+    },
+    "effectClass": {
+      "value": "attack"
+    },
+    "primaryCharacteristic": {
+      "value": "strength"
+    },
+    "optionalCharacteristics": {
+      "constitution": 1,
+      "dexterity": 3,
+      "power": 2,
+      "willPower": 2
+    },
+    "elements": [
+      "fire",
+      "earth"
+    ],
+    "tiers": [
+      {
+        "option": "50",
+        "kiPrimary": 1,
+        "kiSecondary": 2,
+        "cm": 5,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": 1
+      },
+      {
+        "option": "100",
+        "kiPrimary": 3,
+        "kiSecondary": 5,
+        "cm": 10,
+        "maint": 2,
+        "sMe": 4,
+        "sMa": 7,
+        "level": 1
+      },
+      {
+        "option": "120",
+        "kiPrimary": 5,
+        "kiSecondary": 8,
+        "cm": 15,
+        "maint": 3,
+        "sMe": 6,
+        "sMa": 11,
+        "level": 1
+      },
+      {
+        "option": "150",
+        "kiPrimary": 7,
+        "kiSecondary": 10,
+        "cm": 20,
+        "maint": 5,
+        "sMe": 10,
+        "sMa": 18,
+        "level": 2
+      },
+      {
+        "option": "180",
+        "kiPrimary": 9,
+        "kiSecondary": 12,
+        "cm": 25,
+        "maint": 7,
+        "sMe": 14,
+        "sMa": 25,
+        "level": 2
+      },
+      {
+        "option": "200",
+        "kiPrimary": 12,
+        "kiSecondary": 15,
+        "cm": 30,
+        "maint": 9,
+        "sMe": 18,
+        "sMa": 32,
+        "level": 3
+      },
+      {
+        "option": "250",
+        "kiPrimary": 15,
+        "kiSecondary": 19,
+        "cm": 35,
+        "maint": 12,
+        "sMe": 24,
+        "sMa": 42,
+        "level": 3
+      }
+    ],
+    "description": {
+      "value": "<p><strong>Categoría:</strong> Destructivo · <strong>Tipo:</strong> Acción · <strong>Clase:</strong> Ataque</p><p><strong>Característica:</strong> Fuerza (opcionales: Constitución+1, Destreza+3, Poder+2, Voluntad+2)</p><p><strong>Elementos:</strong> Fuego, Tierra</p><table border='1' style='border-collapse:collapse;width:100%;text-align:center'><thead><tr><th>Opción</th><th>Ki 1º</th><th>Ki 2º</th><th>CM</th><th>Mant</th><th>SMe</th><th>SMa</th><th>Nv</th></tr></thead><tbody><tr><td>50</td><td>1</td><td>2</td><td>5</td><td>1</td><td>2</td><td>4</td><td>1</td></tr><tr><td>100</td><td>3</td><td>5</td><td>10</td><td>2</td><td>4</td><td>7</td><td>1</td></tr><tr><td>120</td><td>5</td><td>8</td><td>15</td><td>3</td><td>6</td><td>11</td><td>1</td></tr><tr><td>150</td><td>7</td><td>10</td><td>20</td><td>5</td><td>10</td><td>18</td><td>2</td></tr><tr><td>180</td><td>9</td><td>12</td><td>25</td><td>7</td><td>14</td><td>25</td><td>2</td></tr><tr><td>200</td><td>12</td><td>15</td><td>30</td><td>9</td><td>18</td><td>32</td><td>3</td></tr><tr><td>250</td><td>15</td><td>19</td><td>35</td><td>12</td><td>24</td><td>42</td><td>3</td></tr></tbody></table>"
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "a749e4a2f6df2a7f",
+  "_key": "!items!a749e4a2f6df2a7f"
+}

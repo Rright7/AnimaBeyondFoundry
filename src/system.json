@@ -112,6 +112,15 @@
       "flags": {}
     },
     {
+      "name": "technique-effects",
+      "label": "(ES) Efectos de Técnica de Ki",
+      "system": "animabf",
+      "path": "./packs/technique-effects",
+      "type": "Item",
+      "private": false,
+      "flags": {}
+    },
+    {
       "name": "equipment-qualities",
       "label": "(ES) Cualidades de equipo",
       "system": "animabf",

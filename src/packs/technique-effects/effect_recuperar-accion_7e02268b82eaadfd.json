@@ -1,0 +1,44 @@
+{
+  "name": "Recuperar Acción",
+  "type": "techniqueEffect",
+  "img": "icons/magic/light/orb-lightning-purple.webp",
+  "system": {
+    "kind": {
+      "value": "effect"
+    },
+    "category": {
+      "value": "reaction"
+    },
+    "effectType": {
+      "value": "action"
+    },
+    "effectClass": {
+      "value": "variable"
+    },
+    "primaryCharacteristic": {
+      "value": "willPower"
+    },
+    "optionalCharacteristics": {
+      "agility": 2,
+      "constitution": 2,
+      "dexterity": 3,
+      "power": 2
+    },
+    "elements": [
+      "air",
+      "light",
+      "water"
+    ],
+    "tiers": [],
+    "description": {
+      "value": "<p><strong>Categoría:</strong> De reacción · <strong>Tipo:</strong> Acción · <strong>Clase:</strong> Variable</p><p><strong>Característica:</strong> Voluntad (opcionales: Agilidad+2, Constitución+2, Destreza+3, Poder+2)</p><p><strong>Elementos:</strong> Aire, Luz, Agua</p><table border='1' style='border-collapse:collapse;width:100%;text-align:center'><thead><tr><th>Opción</th><th>Ki 1º</th><th>Ki 2º</th><th>CM</th><th>Mant</th><th>SMe</th><th>SMa</th><th>Nv</th></tr></thead><tbody></tbody></table>"
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "7e02268b82eaadfd",
+  "_key": "!items!7e02268b82eaadfd"
+}

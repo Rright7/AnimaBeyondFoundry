@@ -1,0 +1,25 @@
+{{#> "systems/animabf/templates/items/base/base-sheet.hbs"}}
+  {{#> "systems/animabf/templates/common/ui/group.hbs"
+    class="technique-effect-item"
+  }}
+    {{#> "systems/animabf/templates/common/ui/group-header.hbs"}}
+      <div class='technique-effect-header'>
+        {{>
+        "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
+          class="name"
+          hideTitle=true
+          inputType="text"
+          inputName="name"
+          inputValue=item.name
+        }}
+      </div>
+    {{/"systems/animabf/templates/common/ui/group-header.hbs"}}
+    {{#> "systems/animabf/templates/common/ui/group-body.hbs"
+      class="technique-effect-item"
+    }}
+      <div class="technique-effect-info" style="font-size:.9em;line-height:1.4;">
+        {{{system.description.value}}}
+      </div>
+    {{/"systems/animabf/templates/common/ui/group-body.hbs"}}
+  {{/"systems/animabf/templates/common/ui/group.hbs"}}
+{{/"systems/animabf/templates/items/base/base-sheet.hbs"}}

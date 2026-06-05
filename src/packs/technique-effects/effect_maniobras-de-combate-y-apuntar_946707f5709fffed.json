@@ -1,0 +1,103 @@
+{
+  "name": "Maniobras de Combate y Apuntar",
+  "type": "techniqueEffect",
+  "img": "icons/magic/light/orb-lightning-purple.webp",
+  "system": {
+    "kind": {
+      "value": "effect"
+    },
+    "category": {
+      "value": "offensive"
+    },
+    "effectType": {
+      "value": "action"
+    },
+    "effectClass": {
+      "value": "attack"
+    },
+    "primaryCharacteristic": {
+      "value": "dexterity"
+    },
+    "optionalCharacteristics": {
+      "agility": 1,
+      "constitution": 2,
+      "power": 2,
+      "willPower": 2
+    },
+    "elements": [
+      "air"
+    ],
+    "tiers": [
+      {
+        "option": "-10",
+        "kiPrimary": 1,
+        "kiSecondary": 2,
+        "cm": 5,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": 1
+      },
+      {
+        "option": "-25",
+        "kiPrimary": 2,
+        "kiSecondary": 4,
+        "cm": 5,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": 1
+      },
+      {
+        "option": "-50",
+        "kiPrimary": 3,
+        "kiSecondary": 5,
+        "cm": 10,
+        "maint": 2,
+        "sMe": 4,
+        "sMa": 7,
+        "level": 1
+      },
+      {
+        "option": "-75",
+        "kiPrimary": 4,
+        "kiSecondary": 6,
+        "cm": 10,
+        "maint": 2,
+        "sMe": 4,
+        "sMa": 7,
+        "level": 2
+      },
+      {
+        "option": "-100",
+        "kiPrimary": 6,
+        "kiSecondary": 9,
+        "cm": 15,
+        "maint": 3,
+        "sMe": 6,
+        "sMa": 11,
+        "level": 2
+      },
+      {
+        "option": "-120",
+        "kiPrimary": 8,
+        "kiSecondary": 11,
+        "cm": 20,
+        "maint": 3,
+        "sMe": 6,
+        "sMa": 11,
+        "level": 3
+      }
+    ],
+    "description": {
+      "value": "<p><strong>Categoría:</strong> Ofensivo · <strong>Tipo:</strong> Acción · <strong>Clase:</strong> Ataque</p><p><strong>Característica:</strong> Destreza (opcionales: Agilidad+1, Constitución+2, Poder+2, Voluntad+2)</p><p><strong>Elementos:</strong> Aire</p><table border='1' style='border-collapse:collapse;width:100%;text-align:center'><thead><tr><th>Opción</th><th>Ki 1º</th><th>Ki 2º</th><th>CM</th><th>Mant</th><th>SMe</th><th>SMa</th><th>Nv</th></tr></thead><tbody><tr><td>-10</td><td>1</td><td>2</td><td>5</td><td>1</td><td>2</td><td>4</td><td>1</td></tr><tr><td>-25</td><td>2</td><td>4</td><td>5</td><td>1</td><td>2</td><td>4</td><td>1</td></tr><tr><td>-50</td><td>3</td><td>5</td><td>10</td><td>2</td><td>4</td><td>7</td><td>1</td></tr><tr><td>-75</td><td>4</td><td>6</td><td>10</td><td>2</td><td>4</td><td>7</td><td>2</td></tr><tr><td>-100</td><td>6</td><td>9</td><td>15</td><td>3</td><td>6</td><td>11</td><td>2</td></tr><tr><td>-120</td><td>8</td><td>11</td><td>20</td><td>3</td><td>6</td><td>11</td><td>3</td></tr></tbody></table>"
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "946707f5709fffed",
+  "_key": "!items!946707f5709fffed"
+}

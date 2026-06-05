@@ -315,6 +315,7 @@
         "creatures": [],
         "specialSkills": [],
         "techniques": [],
+        "techniqueEffects": [],
         "seals": {
           "minor": {
             "fire": { "isActive": false },
@@ -433,7 +434,8 @@
       "weapon",
       "effect",
       "combatManeuver",
-      "weaponQuality"
+      "weaponQuality",
+      "techniqueEffect"
     ],
     "ammo": {
       "amount": { "value": 0 },
@@ -726,6 +728,17 @@
       "description": { "value": "" },
       "appliesTo": { "value": ["weapon"] },
       "visible": false
+    },
+    "techniqueEffect": {
+      "kind": { "value": "effect" },
+      "category": { "value": "" },
+      "effectType": { "value": "" },
+      "effectClass": { "value": "" },
+      "primaryCharacteristic": { "value": "" },
+      "optionalCharacteristics": {},
+      "elements": [],
+      "tiers": [],
+      "description": { "value": "" }
     }
 
   }

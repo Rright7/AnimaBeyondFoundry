@@ -1,0 +1,145 @@
+{
+  "name": "Interrupción",
+  "type": "techniqueEffect",
+  "img": "icons/magic/light/orb-lightning-purple.webp",
+  "system": {
+    "kind": {
+      "value": "effect"
+    },
+    "category": {
+      "value": "varied"
+    },
+    "effectType": {
+      "value": "action"
+    },
+    "effectClass": {
+      "value": "attack"
+    },
+    "primaryCharacteristic": {
+      "value": "willPower"
+    },
+    "optionalCharacteristics": {
+      "constitution": 3,
+      "dexterity": 3,
+      "strength": 2,
+      "power": 1
+    },
+    "elements": [
+      "water",
+      "air",
+      "light"
+    ],
+    "tiers": [
+      {
+        "option": "RF = Daño",
+        "kiPrimary": 1,
+        "kiSecondary": 2,
+        "cm": 5,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": 1
+      },
+      {
+        "option": "RF = Daño +20",
+        "kiPrimary": 2,
+        "kiSecondary": 4,
+        "cm": 10,
+        "maint": 2,
+        "sMe": 4,
+        "sMa": 7,
+        "level": 1
+      },
+      {
+        "option": "RF = Daño +40",
+        "kiPrimary": 4,
+        "kiSecondary": 6,
+        "cm": 15,
+        "maint": 3,
+        "sMe": 6,
+        "sMa": 11,
+        "level": 1
+      },
+      {
+        "option": "RF = Daño +60",
+        "kiPrimary": 6,
+        "kiSecondary": 9,
+        "cm": 20,
+        "maint": 4,
+        "sMe": 8,
+        "sMa": 14,
+        "level": 1
+      },
+      {
+        "option": "RF = Daño +80",
+        "kiPrimary": 8,
+        "kiSecondary": 11,
+        "cm": 25,
+        "maint": 6,
+        "sMe": 12,
+        "sMa": 21,
+        "level": 2
+      },
+      {
+        "option": "RF = Daño +100",
+        "kiPrimary": 12,
+        "kiSecondary": 15,
+        "cm": 30,
+        "maint": 8,
+        "sMe": 16,
+        "sMa": 28,
+        "level": 2
+      },
+      {
+        "option": "RF = Daño +120",
+        "kiPrimary": 16,
+        "kiSecondary": 20,
+        "cm": 35,
+        "maint": 10,
+        "sMe": 20,
+        "sMa": 35,
+        "level": 3
+      },
+      {
+        "option": "Interrumpe Ki",
+        "kiPrimary": 2,
+        "kiSecondary": 2,
+        "cm": 5,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": 1
+      },
+      {
+        "option": "Interrumpe Magia",
+        "kiPrimary": 2,
+        "kiSecondary": 2,
+        "cm": 5,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": 1
+      },
+      {
+        "option": "Interrumpe Psíquica",
+        "kiPrimary": 2,
+        "kiSecondary": 2,
+        "cm": 5,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": 1
+      }
+    ],
+    "description": {
+      "value": "<p><strong>Categoría:</strong> Variado · <strong>Tipo:</strong> Acción · <strong>Clase:</strong> Ataque</p><p><strong>Característica:</strong> Voluntad (opcionales: Constitución+3, Destreza+3, Fuerza+2, Poder+1)</p><p><strong>Elementos:</strong> Agua, Aire, Luz</p><table border='1' style='border-collapse:collapse;width:100%;text-align:center'><thead><tr><th>Opción</th><th>Ki 1º</th><th>Ki 2º</th><th>CM</th><th>Mant</th><th>SMe</th><th>SMa</th><th>Nv</th></tr></thead><tbody><tr><td>RF = Daño</td><td>1</td><td>2</td><td>5</td><td>1</td><td>2</td><td>4</td><td>1</td></tr><tr><td>RF = Daño +20</td><td>2</td><td>4</td><td>10</td><td>2</td><td>4</td><td>7</td><td>1</td></tr><tr><td>RF = Daño +40</td><td>4</td><td>6</td><td>15</td><td>3</td><td>6</td><td>11</td><td>1</td></tr><tr><td>RF = Daño +60</td><td>6</td><td>9</td><td>20</td><td>4</td><td>8</td><td>14</td><td>1</td></tr><tr><td>RF = Daño +80</td><td>8</td><td>11</td><td>25</td><td>6</td><td>12</td><td>21</td><td>2</td></tr><tr><td>RF = Daño +100</td><td>12</td><td>15</td><td>30</td><td>8</td><td>16</td><td>28</td><td>2</td></tr><tr><td>RF = Daño +120</td><td>16</td><td>20</td><td>35</td><td>10</td><td>20</td><td>35</td><td>3</td></tr><tr><td>Interrumpe Ki</td><td>2</td><td>2</td><td>5</td><td>1</td><td>2</td><td>4</td><td>1</td></tr><tr><td>Interrumpe Magia</td><td>2</td><td>2</td><td>5</td><td>1</td><td>2</td><td>4</td><td>1</td></tr><tr><td>Interrumpe Psíquica</td><td>2</td><td>2</td><td>5</td><td>1</td><td>2</td><td>4</td><td>1</td></tr></tbody></table>"
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "930c2a5a2a695a6f",
+  "_key": "!items!930c2a5a2a695a6f"
+}

@@ -1,0 +1,135 @@
+{
+  "name": "Ataque Adicional Limitado",
+  "type": "techniqueEffect",
+  "img": "icons/magic/light/orb-lightning-purple.webp",
+  "system": {
+    "kind": {
+      "value": "effect"
+    },
+    "category": {
+      "value": "action"
+    },
+    "effectType": {
+      "value": "action"
+    },
+    "effectClass": {
+      "value": "attack"
+    },
+    "primaryCharacteristic": {
+      "value": "dexterity"
+    },
+    "optionalCharacteristics": {
+      "agility": 2,
+      "constitution": 1,
+      "power": 3,
+      "willPower": 3
+    },
+    "elements": [
+      "water",
+      "air",
+      "dark"
+    ],
+    "tiers": [
+      {
+        "option": "+1",
+        "kiPrimary": 3,
+        "kiSecondary": 5,
+        "cm": 5,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": 1
+      },
+      {
+        "option": "+2",
+        "kiPrimary": 6,
+        "kiSecondary": 9,
+        "cm": 10,
+        "maint": 2,
+        "sMe": 4,
+        "sMa": 7,
+        "level": 1
+      },
+      {
+        "option": "+3",
+        "kiPrimary": 9,
+        "kiSecondary": 12,
+        "cm": 15,
+        "maint": 3,
+        "sMe": 6,
+        "sMa": 11,
+        "level": 1
+      },
+      {
+        "option": "+4",
+        "kiPrimary": 12,
+        "kiSecondary": 15,
+        "cm": 20,
+        "maint": 4,
+        "sMe": 8,
+        "sMa": 14,
+        "level": 1
+      },
+      {
+        "option": "+5",
+        "kiPrimary": 15,
+        "kiSecondary": 19,
+        "cm": 30,
+        "maint": 6,
+        "sMe": 12,
+        "sMa": 21,
+        "level": 1
+      },
+      {
+        "option": "+6",
+        "kiPrimary": 18,
+        "kiSecondary": 22,
+        "cm": 40,
+        "maint": 8,
+        "sMe": 16,
+        "sMa": 28,
+        "level": 2
+      },
+      {
+        "option": "+8",
+        "kiPrimary": 22,
+        "kiSecondary": 26,
+        "cm": 50,
+        "maint": 10,
+        "sMe": 20,
+        "sMa": 35,
+        "level": 2
+      },
+      {
+        "option": "+10",
+        "kiPrimary": 26,
+        "kiSecondary": 32,
+        "cm": 60,
+        "maint": 12,
+        "sMe": 24,
+        "sMa": 42,
+        "level": 3
+      },
+      {
+        "option": "Ataque Contínuo",
+        "kiPrimary": 10,
+        "kiSecondary": 10,
+        "cm": 30,
+        "maint": 5,
+        "sMe": 10,
+        "sMa": 18,
+        "level": null
+      }
+    ],
+    "description": {
+      "value": "<p><strong>Categoría:</strong> De acción · <strong>Tipo:</strong> Acción · <strong>Clase:</strong> Ataque</p><p><strong>Característica:</strong> Destreza (opcionales: Agilidad+2, Constitución+1, Poder+3, Voluntad+3)</p><p><strong>Elementos:</strong> Agua, Aire, Oscuridad</p><table border='1' style='border-collapse:collapse;width:100%;text-align:center'><thead><tr><th>Opción</th><th>Ki 1º</th><th>Ki 2º</th><th>CM</th><th>Mant</th><th>SMe</th><th>SMa</th><th>Nv</th></tr></thead><tbody><tr><td>+1</td><td>3</td><td>5</td><td>5</td><td>1</td><td>2</td><td>4</td><td>1</td></tr><tr><td>+2</td><td>6</td><td>9</td><td>10</td><td>2</td><td>4</td><td>7</td><td>1</td></tr><tr><td>+3</td><td>9</td><td>12</td><td>15</td><td>3</td><td>6</td><td>11</td><td>1</td></tr><tr><td>+4</td><td>12</td><td>15</td><td>20</td><td>4</td><td>8</td><td>14</td><td>1</td></tr><tr><td>+5</td><td>15</td><td>19</td><td>30</td><td>6</td><td>12</td><td>21</td><td>1</td></tr><tr><td>+6</td><td>18</td><td>22</td><td>40</td><td>8</td><td>16</td><td>28</td><td>2</td></tr><tr><td>+8</td><td>22</td><td>26</td><td>50</td><td>10</td><td>20</td><td>35</td><td>2</td></tr><tr><td>+10</td><td>26</td><td>32</td><td>60</td><td>12</td><td>24</td><td>42</td><td>3</td></tr><tr><td>Ataque Contínuo</td><td>10</td><td>10</td><td>30</td><td>5</td><td>10</td><td>18</td><td>None</td></tr></tbody></table>"
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "3b22f9a421a64a2f",
+  "_key": "!items!3b22f9a421a64a2f"
+}

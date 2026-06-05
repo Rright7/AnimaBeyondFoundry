@@ -36,6 +36,7 @@ import { SupernaturalShieldItemConfig } from '../../../types/combat/Supernatural
 import { InventoryItemItemConfig } from '../../../types/general/InventoryItemItemConfig';
 import { EffectItemConfig } from '../../../types/effects/EffectItemConfig';
 import { CombatManeuverItemConfig } from '../../../types/combat/CombatManeuverItemConfig';
+import { TechniqueEffectItemConfig } from '../../../types/domine/TechniqueEffectItemConfig';
 
 export const INTERNAL_ITEM_CONFIGURATIONS = {
   [ArsMagnusItemConfig.type]: ArsMagnusItemConfig,
@@ -78,7 +79,8 @@ export const ITEM_CONFIGURATIONS = {
   [TechniqueItemConfig.type]: TechniqueItemConfig,
   [WeaponItemConfig.type]: WeaponItemConfig,
   [EffectItemConfig.type]: EffectItemConfig,
-  [CombatManeuverItemConfig.type]: CombatManeuverItemConfig
+  [CombatManeuverItemConfig.type]: CombatManeuverItemConfig,
+  [TechniqueEffectItemConfig.type]: TechniqueEffectItemConfig
 };
 
 export const ALL_ITEM_CONFIGURATIONS = {
