@@ -2,10 +2,10 @@ import { ABFActor } from '../ABFActor';
 import { ABFItems } from '../../items/ABFItems';
 import { calculateRegenerationTypeFromConstitution } from './prepareActor/calculations/actor/general/calculations/calculateRegenerationTypeFromConstitution';
 import { calculateAttributeModifier } from './prepareActor/calculations/util/calculateAttributeModifier';
-import { INITIAL_TECHNIQUE_DATA } from '../../types/domine/TechniqueItemConfig';
 import { INITIAL_MENTAL_PATTERN_DATA } from '../../types/psychic/MentalPatternItemConfig';
 import { importCombatEquipment } from './excelImporter/combatEquipment/index.js';
 import { importKiSkills } from './excelImporter/kiSkills/index.js';
+import { importTechniques } from './excelImporter/techniques/index.js';
 
 /**
  * Parses excel data to actor data.
@@ -111,10 +111,6 @@ export const parseExcelToActor = async (excelData, actor, options = {}) => {
     .map(value => value.trim())
     .filter(element => element !== '');
   const tablasDeEstilo = SetEmptyIfUndefined(excelData.TablasDeEstilo)
-    .split(',')
-    .map(value => value.trim())
-    .filter(element => element !== '');
-  const tecnicasKi = SetEmptyIfUndefined(excelData.TécnicasKi)
     .split(',')
     .map(value => value.trim())
     .filter(element => element !== '');
@@ -984,13 +980,6 @@ export const parseExcelToActor = async (excelData, actor, options = {}) => {
     }
   }
 
-  // for (var i = 0; i < tecnicasKi.length; i++) {
-  //     await actor.createItem({
-  //         name: tecnicasKi[i],
-  //         type: ABFItems.TECHNIQUE,
-  //         system: INITIAL_TECHNIQUE_DATA
-  //     });
-  // };
 
   for (var i = 0; i < invocaciones.length; i++) {
     await actor.createInnerItem({
@@ -1087,6 +1076,7 @@ export const parseExcelToActor = async (excelData, actor, options = {}) => {
 
   if (options.workbook) {
     await importCombatEquipment(actor, options.workbook);
+    await importTechniques(actor, options.workbook);
   }
 
   actor.prepareData();
