@@ -225,112 +225,104 @@
 
   // Ki Accumulation
   .ki-accumulation {
-    width: 15.5rem;
+    width: 100%;
 
     .group-header {
-      display: flex;
+      display: grid !important;
+      grid-template-columns: 3rem 1fr 1fr;
+      align-items: center;
+      column-gap: 0.5rem;
+
+      .label {
+        margin: 0;
+        padding: 0;
+        font-size: 0.85rem;
+        text-align: center;
+      }
 
       .accumulation {
-        padding-left: 3.5rem;
+        grid-column: 2;
       }
 
       .title {
-        margin-left: 3.5rem;
-      }
-
-      .label {
-        font-size: 1rem;
+        grid-column: 3;
       }
     }
 
     .group-body {
       position: relative;
-      padding-bottom: 0;
 
       .red-background {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 3rem;
-        height: 100%;
-        background-color: $red;
-        border-top-left-radius: 1rem;
-        border-bottom-left-radius: 1rem;
-
-        z-index: -1;
+        display: none;
       }
 
       .accumulation-row {
-        display: flex;
+        display: grid;
+        grid-template-columns: 3rem 1fr 1fr;
+        align-items: stretch;
+        column-gap: 0.5rem;
+        margin-bottom: 0;
+        min-height: 1.55rem;
 
-        margin-bottom: 0.4rem;
-
-        .input-container {
-          width: 2.5rem;
-
-          &.big {
-            width: 4rem;
-          }
+        &:nth-child(2) .accumulation-row-title {
+          border-radius: var(--abf-radius-sm) 0 0 0;
         }
 
-        &:last-child {
-          margin-bottom: 0;
-        }
-
-        &.generic-accumulation-row {
-          height: 1.5rem;
-
-          .input-container.big {
-            width: 6rem;
-          }
-
-          .accumulation-row-title {
-            width: auto;
-            padding-right: 1.1rem;
-            font-size: 1.1rem;
-            padding-left: 1rem;
-
-            margin-right: 2.5rem;
-
-            background-color: $red;
-            border-radius: 1rem;
-          }
-        }
-
-        .input-container {
-          .input {
-            height: 1rem;
-          }
+        &:nth-child(7) .accumulation-row-title {
+          border-radius: 0 0 0 var(--abf-radius-sm);
         }
 
         .accumulation-row-title {
           display: flex;
           justify-content: center;
           align-items: center;
-
-          color: white;
-          font-weight: bold;
-          font-size: 1rem;
-          width: 2rem;
-
           margin: 0;
+          color: var(--abf-on-accent);
+          background: var(--abf-accent);
+          font-weight: bold;
+          font-size: 0.85rem;
         }
 
-        .accumulation-row-accumulation {
-          margin-left: 1.5rem;
-          margin-right: 3rem;
+        .common-titled-input {
+          margin: 0;
+          min-width: 0;
+
+          .input-container {
+            width: 100%;
+          }
+
+          .input {
+            width: 100%;
+            height: 1.25rem;
+            text-align: center;
+          }
         }
       }
 
       // Reserva: Actual / Mod. / Máx. (todos editables)
       .ki-reserve-row {
-        height: auto;
+        display: flex;
         align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.7rem;
+        min-height: 0;
+
+        .accumulation-row-title {
+          flex: 0 0 auto;
+          margin: 0;
+          padding: 0.15rem 0.7rem;
+          color: var(--abf-on-accent);
+          background: var(--abf-accent);
+          border-radius: 999px;
+          font-weight: bold;
+          font-size: 0.85rem;
+        }
 
         .ki-reserve-fields {
           display: flex;
-          gap: 0.35rem;
-          align-items: flex-end;
+          flex: 1;
+          justify-content: space-around;
+          gap: 0.4rem;
 
           .ki-reserve-field {
             display: flex;
@@ -341,13 +333,13 @@
             span {
               font-size: 0.6rem;
               line-height: 1;
-              color: #7a7263;
+              color: var(--abf-text-muted);
               text-transform: uppercase;
             }
 
             input {
-              width: 2.3rem;
-              height: 1rem;
+              width: 2.6rem;
+              height: 1.25rem;
               text-align: center;
             }
           }
@@ -358,46 +350,52 @@
       .ki-charge-controls {
         display: flex;
         flex-direction: column;
-        gap: 0.35rem;
-        margin-top: 0.6rem;
-        // Alinear con las columnas, despejando la franja roja de la izquierda.
-        padding-left: 3.2rem;
+        gap: 0.5rem;
+        margin-top: 0.8rem;
 
         .ki-charge-row {
           display: flex;
-          align-items: center;
-          gap: 0.6rem;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 0.35rem;
         }
 
         .ki-charge-btn {
           flex: 0 0 auto;
-          border: 1px solid $red;
-          border-radius: 0.8rem;
-          background: #fff;
-          color: $red;
+          border: 1px solid var(--abf-accent);
+          border-radius: 999px;
+          background: var(--abf-surface);
+          color: var(--abf-accent);
           font-weight: bold;
           font-size: 0.85rem;
-          padding: 0.1rem 0.9rem;
+          padding: 0.2rem 1rem;
           cursor: pointer;
+          transition: background 0.15s ease, color 0.15s ease;
+
+          &:hover {
+            background: var(--abf-accent-soft);
+          }
 
           &.is-active {
-            background: $red;
-            color: #fff;
+            background: var(--abf-accent);
+            color: var(--abf-on-accent);
           }
         }
 
         .ki-accumulated-total {
           font-size: 0.8rem;
           font-weight: bold;
-          color: $red;
+          color: var(--abf-accent);
           font-variant-numeric: tabular-nums;
+          text-align: center;
         }
 
         .ki-full-accumulation {
           display: flex;
           align-items: center;
-          gap: 0.3rem;
+          gap: 0.35rem;
           font-size: 0.8rem;
+          color: var(--abf-text);
 
           input {
             width: auto;
@@ -409,19 +407,19 @@
           display: flex;
           flex-wrap: wrap;
           align-items: center;
-          gap: 0.15rem 0.5rem;
-          font-size: 0.7rem;
+          gap: 0.25rem 0.6rem;
+          font-size: 0.72rem;
 
           .ki-accumulate-select-label {
             font-weight: bold;
-            color: #5b5446;
+            color: var(--abf-text);
           }
 
           label {
             display: inline-flex;
             align-items: center;
-            gap: 0.15rem;
-            color: #5b5446;
+            gap: 0.2rem;
+            color: var(--abf-text);
 
             input {
               width: auto;
