@@ -148,10 +148,12 @@ export function computeTechniqueCost(build) {
   // Combinable es un coste plano (+3·Nv Ki) que se cubre solo: no exige reparto
   // por característica ni entrada en la fila de redistribución (Mod.).
   const combinableKi = combinable ? 3 * level : 0;
-  const kiActiveTotal =
+  const kiActiveTotal = Math.max(
+    0,
     Math.max(0, kiEffectsSum + Math.abs(cmReductionLine) * 2 / 5) +
-    (cannotReduceKi ? 0 : kiReductionLine) +
-    combinableKi;
+      (cannotReduceKi ? 0 : kiReductionLine) +
+      combinableKi
+  );
   const kiMaintTotal = anyMaintained
     ? effects.reduce((s, e) => s + e.kiMaintEmbedded, 0)
     : 0;

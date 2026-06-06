@@ -53,9 +53,6 @@ export const ELEMENTS = [
   { key: 'dark', label: 'Oscuridad' }
 ];
 
-const ELEMENT_LABEL = Object.fromEntries(ELEMENTS.map(e => [e.key, e.label]));
-export const getElementLabel = key => ELEMENT_LABEL[key] ?? key;
-
 /** Desventajas que la ID identifica como "de elemento" (su detalle es 1-2 elementos). */
 export const ELEMENT_DISADVANTAGES = new Set([
   'atadura-elemental',

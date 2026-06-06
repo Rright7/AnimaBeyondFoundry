@@ -183,6 +183,18 @@ describe('computeTechniqueCost', () => {
     expect(computeTechniqueCost(build).validations.elementoNoAfin).toBe(false);
   });
 
+  test('kiActiveTotal nunca queda negativo aunque la reducción de Ki supere el coste (clamp final)', () => {
+    // 3 características con Ki -> activeCharCount >= 3 -> se permite reducir
+    // (cannotReduceKi = false), así que kiReductionLine negativo SÍ se aplica.
+    const c = computeTechniqueCost({
+      level: 1,
+      effects: [primary('+10', { kiByCharacteristic: { dexterity: 2, agility: 1, strength: 1 } })],
+      kiReductionLine: -100
+    });
+    expect(c.kiActiveTotal).toBe(0); // antes daba negativo (sin el clamp exterior)
+    expect(c.kiActiveTotal).toBeGreaterThanOrEqual(0);
+  });
+
   test('Combinable + Mantenida: válida sin redistribución manual (caso del usuario)', () => {
     const c = computeTechniqueCost({
       level: 1,

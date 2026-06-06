@@ -6,7 +6,6 @@ import {
   getDisadvantageByName,
   getEffectsByCategory,
   DISADVANTAGE_CATALOG,
-  KI_CHARACTERISTICS,
   ELEMENTS,
   DISADVANTAGE_DETAIL
 } from './effectCatalog';
@@ -398,6 +397,13 @@ export async function techDisadvantageFieldChange(item, el) {
     row.detailElements = [];
   } else if (field === 'option') {
     row.option = el.value;
+    // Al reducir el nº de elementos (Atadura Elemental: 'A Dos Elementos' ->
+    // 'A Un Elemento') recortamos detailElements para no dejar elementos
+    // obsoletos que disparen un aviso de afinidad espurio (elementoNoAfin).
+    if (row.disadvantageId === 'atadura-elemental' && Array.isArray(row.detailElements)) {
+      const count = el.value === 'A Dos Elementos' ? 2 : 1;
+      row.detailElements = row.detailElements.slice(0, count);
+    }
   } else if (field === 'detail') {
     row.detail = el.value;
   } else if (field === 'detailElement') {

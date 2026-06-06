@@ -710,7 +710,8 @@ export const INITIAL_ACTOR_DATA = {
         },
         base: { value: 0 },
         half: { value: 0 },        final: { value: 0 },
-        accumulated: { value: 0 }
+        accumulated: { value: 0 },
+        accumulating: { value: true }
       },
       agility: {
         kiPoints: {
@@ -719,7 +720,8 @@ export const INITIAL_ACTOR_DATA = {
         },
         base: { value: 0 },
         half: { value: 0 },        final: { value: 0 },
-        accumulated: { value: 0 }
+        accumulated: { value: 0 },
+        accumulating: { value: true }
       },
       dexterity: {
         kiPoints: {
@@ -728,7 +730,8 @@ export const INITIAL_ACTOR_DATA = {
         },
         base: { value: 0 },
         half: { value: 0 },        final: { value: 0 },
-        accumulated: { value: 0 }
+        accumulated: { value: 0 },
+        accumulating: { value: true }
       },
       constitution: {
         kiPoints: {
@@ -737,7 +740,8 @@ export const INITIAL_ACTOR_DATA = {
         },
         base: { value: 0 },
         half: { value: 0 },        final: { value: 0 },
-        accumulated: { value: 0 }
+        accumulated: { value: 0 },
+        accumulating: { value: true }
       },
       willPower: {
         kiPoints: {
@@ -746,7 +750,8 @@ export const INITIAL_ACTOR_DATA = {
         },
         base: { value: 0 },
         half: { value: 0 },        final: { value: 0 },
-        accumulated: { value: 0 }
+        accumulated: { value: 0 },
+        accumulating: { value: true }
       },
       power: {
         kiPoints: {
@@ -755,7 +760,8 @@ export const INITIAL_ACTOR_DATA = {
         },
         base: { value: 0 },
         half: { value: 0 },        final: { value: 0 },
-        accumulated: { value: 0 }
+        accumulated: { value: 0 },
+        accumulating: { value: true }
       },
       reserve: {
         base: { value: 0 },
