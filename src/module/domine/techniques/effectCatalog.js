@@ -98,6 +98,30 @@ export const PERSISTENT_EFFECT_MAP = {
 };
 
 /**
+ * Efectos de combate cuyo resultado es un bono numérico PLANO (+N) a una tirada
+ * o al daño, para inyectarlos en los diálogos de ataque/defensa (F6.3).
+ * `target` ∈ 'attack' | 'block' | 'dodge' | 'damage'. (Contraataque se trata como
+ * ataque.) El valor sale de parseOptionNumber sobre las opciones elegidas.
+ *
+ * Quedan fuera a propósito: maniobras/penalizadores (-N), predeterminados
+ * (dificultad), potenciar-crítico (tirada de crítico), multiplicadores, ataques/
+ * defensas adicionales, área/distancia y estados (narrativos/diferidos).
+ */
+export const COMBAT_BONUS_MAP = {
+  'habilidad-de-ataque': 'attack',
+  'habilidad-de-ataque-completa': 'attack',
+  'habilidad-de-contraataque': 'attack',
+  'habilidad-de-parada': 'block',
+  'habilidad-de-parada-completa': 'block',
+  'habilidad-de-parada-limitada': 'block',
+  'habilidad-de-esquiva': 'dodge',
+  'habilidad-de-esquiva-completa': 'dodge',
+  'habilidad-de-esquiva-limitada': 'dodge',
+  'aumento-de-dano': 'damage',
+  'aumento-de-dano-real': 'damage'
+};
+
+/**
  * Extrae el primer entero de una opción del catálogo ("+50 RF" -> 50, "+3" -> 3).
  * Devuelve 0 si la opción no contiene número (p.ej. "Incremento también a RE").
  * @param {string} option
