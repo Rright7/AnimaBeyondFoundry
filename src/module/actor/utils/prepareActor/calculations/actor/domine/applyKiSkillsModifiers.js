@@ -71,8 +71,8 @@ export const applyKiSkillsModifiers = (data, actor) => {
     damageReduction: 0,
     resistances: { physical: 0, disease: 0, poison: 0, magic: 0, psychic: 0 }
   };
-  enrichListFromCanonical(kiSkills, totals);
-  enrichListFromCanonical(nemesisSkills, totals);
+  enrichListFromCanonical(kiSkills, totals, actor);
+  enrichListFromCanonical(nemesisSkills, totals, actor);
 
   // Técnicas de Ki activas (F6): sus efectos persistentes de resistencias se
   // suman a los mismos buckets. (Las características van por su propio mutador.)
@@ -154,7 +154,7 @@ function canonicalIndexOf(skill) {
   return Number.POSITIVE_INFINITY;
 }
 
-function enrichListFromCanonical(list, totals) {
+function enrichListFromCanonical(list, totals, actor) {
   for (const skill of list) {
     const canonicalId = skill?.system?.canonicalId;
     const name = skill?.name;
@@ -179,7 +179,39 @@ function enrichListFromCanonical(list, totals) {
       };
     }
 
-    for (const eff of canonical.effects ?? []) accumulateEffect(totals, eff);
+    for (const eff of canonical.effects ?? []) {
+      accumulateEffect(totals, eff);
+      depositKiSkillResistance(actor, skill, canonical, eff);
+    }
+  }
+}
+
+/**
+ * Deposita en synthetics la provenance de un efecto de RESISTENCIA de una
+ * habilidad de Ki/Nemesis, para que la linea 'Mod:' del chat cuadre con el total
+ * (igual que hacen las tecnicas). Solo resistencias con operation:'add'.
+ * depositModifier ignora un actor falsy, asi que los tests que llaman
+ * applyKiSkillsModifiers(data) sin actor siguen funcionando.
+ */
+function depositKiSkillResistance(actor, skill, canonical, eff) {
+  if (!actor || eff?.operation !== 'add') return;
+  const value = Number(eff.value) || 0;
+  if (!value) return;
+  const keys =
+    eff.target === 'resistanceAll'
+      ? RESISTANCE_KEYS
+      : RESISTANCE_TARGET[eff.target]
+      ? [RESISTANCE_TARGET[eff.target]]
+      : [];
+  if (!keys.length) return;
+  const id = skill?.system?.canonicalId ?? canonical.id;
+  for (const key of keys) {
+    depositModifier(actor, {
+      path: `system.characteristics.secondaries.resistances.${key}.final.value`,
+      value,
+      source: skill?.name ?? canonical.name,
+      slug: `kiSkill:${id}:${key}`
+    });
   }
 }
 

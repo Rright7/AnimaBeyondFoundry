@@ -130,6 +130,65 @@ describe('applyKiSkillsModifiers — active Ki techniques', () => {
   });
 });
 
+describe('applyKiSkillsModifiers — traza (provenance) de habilidades de Ki', () => {
+  const PHYS = 'system.characteristics.secondaries.resistances.physical.final.value';
+
+  test('una habilidad de Ki con resistencia deposita provenance en el path final', () => {
+    const data = makeData({
+      kiSkills: [{ name: 'Mi Dominio', system: { canonicalId: 'physicalDomain' } }]
+    });
+    const actor = {};
+    applyKiSkillsModifiers(data, actor);
+    const recs = actor.synthetics.modifiers[PHYS];
+    expect(recs).toHaveLength(1);
+    expect(recs[0]).toMatchObject({ value: 10, source: 'Mi Dominio' });
+  });
+
+  test('habilidad de Ki + técnica en la MISMA resistencia: dos contribuciones distintas', () => {
+    const data = makeData({
+      kiSkills: [{ name: 'Mi Dominio', system: { canonicalId: 'physicalDomain' } }]
+    });
+    data.domine.techniques = [
+      {
+        name: 'Coraza de Ki',
+        id: 'tA',
+        flags: { animabf: { active: true } },
+        system: {
+          build: {
+            effects: [{ effectId: 'incremento-de-resistencia-fisica', tierOptions: ['+50 RF'] }]
+          }
+        }
+      }
+    ];
+    const actor = {};
+    applyKiSkillsModifiers(data, actor);
+    // El bucket suma ambas; la traza NO oculta ninguna (slugs distintos).
+    expect(data.general.modifiers.kiBonus.resistances.physical.value).toBe(60);
+    const recs = actor.synthetics.modifiers[PHYS];
+    expect(recs).toHaveLength(2);
+    expect(recs.map(r => r.source).sort()).toEqual(['Coraza de Ki', 'Mi Dominio']);
+  });
+
+  test('resistanceAll (Cuerpo de Vacío) deposita en las 5 resistencias', () => {
+    const data = makeData({ nemesisSkills: [inner('voidBody')] });
+    const actor = {};
+    applyKiSkillsModifiers(data, actor);
+    for (const k of ['physical', 'disease', 'poison', 'magic', 'psychic']) {
+      const recs =
+        actor.synthetics.modifiers[
+          `system.characteristics.secondaries.resistances.${k}.final.value`
+        ];
+      expect(recs).toHaveLength(1);
+      expect(recs[0]).toMatchObject({ value: 20 });
+    }
+  });
+
+  test('sin actor no deposita y no rompe', () => {
+    const data = makeData({ kiSkills: [inner('physicalDomain')] });
+    expect(() => applyKiSkillsModifiers(data)).not.toThrow();
+  });
+});
+
 describe('applyKiSkillsModifiers — lookup and mirroring', () => {
   test('UI-added ability matched by name applies its effect', () => {
     const data = makeData({
