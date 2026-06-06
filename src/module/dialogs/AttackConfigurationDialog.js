@@ -294,24 +294,17 @@ export class AttackConfigurationDialog extends FormApplication {
       let kiDamageBonus = Number(kiAuto.damage) || 0;
       const kiAppliedBy = [];
       if (kiAuto.attack || kiAuto.damage) kiAppliedBy.push('activa');
-      console.warn('[KI-COMBAT] ataque: bono auto de tecnicas activas', kiAuto);
 
       const kiInstantSel = combat.kiInstant ?? {};
       const kiInstantList = usableInstantCombatTechniques(actor, 'attack');
       for (const tech of kiInstantList) {
         if (kiInstantSel[tech.id] !== true) continue;
-        console.warn(`[KI-COMBAT] ataque: usando tecnica instantanea "${tech.name}" (${tech.id}) coste=${tech.kiCost}`);
         const ok = await actor.useTechnique(tech.id);
-        if (!ok) {
-          console.warn(`[KI-COMBAT] ataque: tecnica "${tech.name}" NO aplicada (Ki insuficiente)`);
-          continue;
-        }
+        if (!ok) continue;
         kiAttackBonus += Number(tech.attack) || 0;
         kiDamageBonus += Number(tech.damage) || 0;
         kiAppliedBy.push(tech.name);
       }
-      console.warn('[KI-COMBAT] ataque: bono total', { kiAttackBonus, kiDamageBonus, kiAppliedBy });
-
       const mod =
         Number(combat.modifier ?? 0)
         + maneuverPenalty
@@ -360,11 +353,17 @@ export class AttackConfigurationDialog extends FormApplication {
       if (secondaryCritPenalty !== 0) {
         dialogContribs.push(`Crit. secundario (${secondaryCritPenalty})`);
       }
-      if (kiAttackBonus !== 0) {
-        const sign = kiAttackBonus > 0 ? '+' : '';
+      if (kiAttackBonus !== 0 || kiDamageBonus !== 0) {
         const label = game.i18n.localize('macros.combat.dialog.combatMod.kiTechnique.title');
         const tag = kiAppliedBy.length ? ` [${kiAppliedBy.join(', ')}]` : '';
-        dialogContribs.push(`${label} (${sign}${kiAttackBonus})${tag}`);
+        if (kiAttackBonus !== 0) {
+          const sign = kiAttackBonus > 0 ? '+' : '';
+          dialogContribs.push(`${label} (${sign}${kiAttackBonus})${tag}`);
+        }
+        if (kiDamageBonus !== 0) {
+          const sign = kiDamageBonus > 0 ? '+' : '';
+          dialogContribs.push(`${label} daño (${sign}${kiDamageBonus})${tag}`);
+        }
       }
       const flavorParts = ['Rolling attack'];
       if (dialogContribs.length) {

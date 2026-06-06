@@ -393,7 +393,6 @@ export class DefenseConfigurationDialog extends FormApplication {
           kiDefenseBonus += autoStat;
           kiAppliedBy.push('activa');
         }
-        console.warn('[KI-COMBAT] defensa: bono auto de tecnicas activas', { type, kiAuto });
 
         const kiInstantSel = combat?.kiInstant ?? {};
         const kiInstantList = usableInstantCombatTechniques(actor, 'defense');
@@ -401,16 +400,11 @@ export class DefenseConfigurationDialog extends FormApplication {
           if (kiInstantSel[tech.id] !== true) continue;
           const stat = type === 'block' ? Number(tech.block) || 0 : Number(tech.dodge) || 0;
           if (!stat) continue;
-          console.warn(`[KI-COMBAT] defensa: usando tecnica instantanea "${tech.name}" (${tech.id}) +${stat}`);
           const ok = await actor.useTechnique(tech.id);
-          if (!ok) {
-            console.warn(`[KI-COMBAT] defensa: tecnica "${tech.name}" NO aplicada (Ki insuficiente)`);
-            continue;
-          }
+          if (!ok) continue;
           kiDefenseBonus += stat;
           kiAppliedBy.push(tech.name);
         }
-        console.warn('[KI-COMBAT] defensa: bono total', { type, kiDefenseBonus, kiAppliedBy });
       }
 
       // Split each contribution into its own term so the Foundry roll tooltip

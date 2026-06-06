@@ -6,7 +6,6 @@ import { ABFSettingsKeys } from '../../../utils/registerSettings';
 import { ABFConfig } from '../../ABFConfig';
 import {
   activeTechniqueCombatBonuses,
-  techniqueCombatBonus,
   usableInstantCombatTechniques
 } from '../../domine/techniques/techniqueCombatBonuses';
 
@@ -364,42 +363,20 @@ export class CombatAttackDialog extends FormApplication {
         // Bonos de combate de Técnicas de Ki: activas (auto) + instantáneas
         // seleccionadas (que gastan su Ki concentrado al usarse).
         const kiBonus = activeTechniqueCombatBonuses(this.attackerActor);
-        console.warn(
-          '[KI-COMBAT] ataque: actor=',
-          this.attackerActor?.name,
-          'kiBonus=',
-          kiBonus,
-          'tecnicas=',
-          (this.attackerActor?.items?.filter?.(i => i.type === 'technique') ?? []).map(t => ({
-            name: t.name,
-            active: t?.flags?.animabf?.active,
-            effects: (t?.system?.build?.effects ?? []).map(
-              e => `${e.effectId}=[${(e.tierOptions || []).join(',')}]`
-            )
-          }))
-        );
         let kiAttack = kiBonus.attack;
         let kiDamage = kiBonus.damage;
+        // Iteramos la lista OFRECIDA (excluye activas y no-instantaneas) y solo
+        // gastamos Ki de las marcadas, igual que el flujo estandar.
         const kiInstantSel = this.modalData.attacker.combat.kiInstant ?? {};
-        for (const [techId, on] of Object.entries(kiInstantSel)) {
-          if (!on) continue;
-          const technique = this.attackerActor.items.get(techId);
-          if (!technique) continue;
-          const tb = techniqueCombatBonus(technique);
+        const kiInstantList = usableInstantCombatTechniques(this.attackerActor, 'attack');
+        for (const tech of kiInstantList) {
+          if (kiInstantSel[tech.id] !== true) continue;
           // useTechnique gasta el Ki concentrado; si no llega, avisa y se omite.
-          if (!(await this.attackerActor.useTechnique(techId))) continue;
-          kiAttack += tb.attack;
-          kiDamage += tb.damage;
+          if (!(await this.attackerActor.useTechnique(tech.id))) continue;
+          kiAttack += Number(tech.attack) || 0;
+          kiDamage += Number(tech.damage) || 0;
         }
         if (kiAttack) attackerCombatMod.kiTechnique = { value: kiAttack, apply: true };
-        console.warn(
-          '[KI-COMBAT] ataque: kiAttack=',
-          kiAttack,
-          'kiDamage=',
-          kiDamage,
-          'kiTechnique=',
-          attackerCombatMod.kiTechnique
-        );
 
         const attack = weapon
           ? weapon.system.attack.final.value

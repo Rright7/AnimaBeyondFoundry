@@ -5,7 +5,6 @@ import { ABFSettingsKeys } from '../../../utils/registerSettings';
 import { shieldValueCheck } from '../../combat/utils/shieldValueCheck.js';
 import {
   activeTechniqueCombatBonuses,
-  techniqueCombatBonus,
   usableInstantCombatTechniques
 } from '../../domine/techniques/techniqueCombatBonuses';
 
@@ -393,23 +392,17 @@ export class CombatDefenseDialog extends FormApplication {
       // Bonos de combate de Técnicas de Ki: activas (auto; block/dodge según la
       // defensa) + instantáneas seleccionadas (gastan su Ki concentrado).
       const kiBonus = activeTechniqueCombatBonuses(this.defenderActor);
-      console.warn(
-        '[KI-COMBAT] defensa: actor=',
-        this.defenderActor?.name,
-        'type=',
-        type,
-        'kiBonus=',
-        kiBonus
-      );
       let kiDefense = type === 'dodge' ? kiBonus.dodge : kiBonus.block;
+      // Iteramos la lista OFRECIDA (excluye activas y no-instantaneas) y solo
+      // gastamos Ki si la tecnica aporta al tipo de defensa elegido (parada/esquiva).
       const kiInstantSel = this.modalData.defender.combat.kiInstant ?? {};
-      for (const [techId, on] of Object.entries(kiInstantSel)) {
-        if (!on) continue;
-        const technique = this.defenderActor.items.get(techId);
-        if (!technique) continue;
-        const tb = techniqueCombatBonus(technique);
-        if (!(await this.defenderActor.useTechnique(techId))) continue;
-        kiDefense += type === 'dodge' ? tb.dodge : tb.block;
+      const kiInstantList = usableInstantCombatTechniques(this.defenderActor, 'defense');
+      for (const tech of kiInstantList) {
+        if (kiInstantSel[tech.id] !== true) continue;
+        const stat = type === 'dodge' ? (Number(tech.dodge) || 0) : (Number(tech.block) || 0);
+        if (!stat) continue; // no aporta a esta defensa: no gastar Ki
+        if (!(await this.defenderActor.useTechnique(tech.id))) continue;
+        kiDefense += stat;
       }
       if (kiDefense) defenderCombatMod.kiTechnique = { value: kiDefense, apply: true };
 
