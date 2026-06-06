@@ -57,7 +57,15 @@ export const newTechniqueEffectRow = (role = 'secondary') => ({
   maintKiByCharacteristic: ZERO_KI_BY_CHARACTERISTIC()
 });
 
-export const newTechniqueDisadvantageRow = () => ({ disadvantageId: '', option: '' });
+// `detail`: parámetro libre de la desventaja que NO altera el coste pero hay que
+// anotar para el juego (elemento de Atadura Elemental, arma de Atada a un arma,
+// ser de Exterminador, etc.).
+export const newTechniqueDisadvantageRow = () => ({
+  disadvantageId: '',
+  option: '',
+  detail: '', // texto libre (arma, ser…)
+  detailElements: [] // elementos elegidos (Atadura/Requerimientos Elementales)
+});
 
 /** @type {import("../Items").TechniqueItemConfig} */
 export const TechniqueItemConfig = ABFItemConfigFactory({
@@ -78,6 +86,8 @@ export const TechniqueItemConfig = ABFItemConfigFactory({
       content: i18n.localize('dialogs.items.technique.content')
     });
 
+    // El bloque del constructor aparece en la pestaña "Creación de Técnicas de
+    // Ki"; no abrimos la hoja del item.
     await actor.createItem({
       name,
       type: ABFItems.TECHNIQUE,

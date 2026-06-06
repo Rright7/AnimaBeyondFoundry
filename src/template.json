@@ -10,7 +10,8 @@
           "mystic": { "value": false },
           "domine": { "value": false },
           "psychic": { "value": false },
-          "effects": { "value": false }
+          "effects": { "value": false },
+          "kiTechniques": { "value": false }
         }
       },
       "automationOptions": {

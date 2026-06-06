@@ -14,6 +14,9 @@ export const INITIAL_ACTOR_DATA = {
       },
       effects: {
         value: false
+      },
+      kiTechniques: {
+        value: false
       }
     }
   },

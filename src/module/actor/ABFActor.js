@@ -557,6 +557,99 @@ export class ABFActor extends Actor {
     });
   }
 
+  // ============================
+  // Técnicas de Ki (F6) — uso/activación en juego
+  // ============================
+
+  /**
+   * Gasta `cost` Ki de la reserva unificada (permisivo: descuenta y avisa si no
+   * llega, sin bloquear). `cost` negativo reembolsa.
+   * @param {number} cost
+   * @param {string} label
+   */
+  async _spendKiReserve(cost, label) {
+    const reserve = this.system?.domine?.kiAccumulation?.reserve;
+    const current = Number(reserve?.current?.value) || 0;
+    if (cost > 0 && cost > current) {
+      ui.notifications?.warn(
+        `Ki insuficiente para «${label}»: cuesta ${cost} y la reserva es ${current}.`
+      );
+    }
+    await this.update({
+      system: {
+        domine: { kiAccumulation: { reserve: { current: { value: Math.max(0, current - cost) } } } }
+      }
+    });
+  }
+
+  /** Uso instantáneo: gasta el coste de Ki una vez (sin estado persistente). */
+  async useTechnique(techniqueId) {
+    const technique = this.items.get(techniqueId);
+    if (technique?.type !== 'technique') return false;
+    await this._spendKiReserve(Number(technique.system?.computed?.kiActiveTotal) || 0, technique.name);
+    return true;
+  }
+
+  /** Activa una técnica mantenida/sostenida: gasta el coste y marca el estado. */
+  async activateTechnique(techniqueId) {
+    const technique = this.items.get(techniqueId);
+    if (technique?.type !== 'technique') return false;
+    const computed = technique.system?.computed ?? {};
+    const flags = computed.flags ?? {};
+    await this._spendKiReserve(Number(computed.kiActiveTotal) || 0, technique.name);
+    const sostenidaMayor = !!flags.anySostMayor;
+    const sostenida = sostenidaMayor || !!flags.anySostMenor;
+    // Sostenida Menor = 5 asaltos; Mayor ≈ 1 minuto (~20 asaltos). Mantenida no expira por duración.
+    const remaining = sostenida ? (sostenidaMayor ? 20 : 5) : 0;
+    await technique.update({
+      'flags.animabf.active': true,
+      'flags.animabf.remaining': remaining
+    });
+    return true;
+  }
+
+  /** Desactiva una técnica (sin reembolso de Ki). */
+  async deactivateTechnique(techniqueId) {
+    const technique = this.items.get(techniqueId);
+    if (technique?.type !== 'technique') return false;
+    await technique.update({ 'flags.animabf.active': false, 'flags.animabf.remaining': 0 });
+    return true;
+  }
+
+  /**
+   * Bucle por asalto (llamado desde ABFCombat): las técnicas mantenidas activas
+   * gastan su Ki de mantenimiento; las sostenidas descuentan duración y se
+   * desactivan al expirar. `revert` deshace el paso (asalto anterior).
+   * @param {boolean} [revert]
+   */
+  async consumeActiveTechniquesKi(revert = false) {
+    const techniques = this.items.filter(
+      i => i.type === 'technique' && i.flags?.animabf?.active
+    );
+    for (const technique of techniques) {
+      const computed = technique.system?.computed ?? {};
+      const flags = computed.flags ?? {};
+      const maint = Number(computed.kiMaintTotal) || 0;
+
+      if (flags.anyMaintained && maint > 0) {
+        await this._spendKiReserve(revert ? -maint : maint, technique.name);
+      }
+
+      if (flags.anySostMenor || flags.anySostMayor) {
+        const remaining = Number(technique.flags?.animabf?.remaining) || 0;
+        const next = revert ? remaining + 1 : remaining - 1;
+        if (!revert && next <= 0) {
+          await technique.update({
+            'flags.animabf.active': false,
+            'flags.animabf.remaining': 0
+          });
+        } else {
+          await technique.update({ 'flags.animabf.remaining': Math.max(0, next) });
+        }
+      }
+    }
+  }
+
   /**
    * Deletes a prepared spell from the `mystic.preparedSpells` array of the `ABFActor` class.
    *

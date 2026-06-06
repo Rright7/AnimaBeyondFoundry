@@ -172,13 +172,6 @@ export const prepareActor = async actor => {
   }
 
   actor.__abfPreparePromise = (async () => {
-    // DEBUG PATHS
-    // const watchPaths = [
-    //   'system.characteristics.secondaries.resistances.magic.special.value'
-    // ];
-
-    // dbgDump(actor, `RUN ${runId} BEFORE reset`, watchPaths);
-
     // 1) reset baseline
     const baselineSystem = foundry.utils.duplicate(actor._source.system);
     foundry.utils.mergeObject(actor.system, baselineSystem, {
@@ -194,11 +187,10 @@ export const prepareActor = async actor => {
     // 3) flow (AE + derivedFns)
     await runEffectFlow(actor, { derivedFns: DERIVED_DATA_FUNCTIONS });
 
-    // 4) UI-only derived (AQUÍ VA “LO NUEVO”)
-    actor.system.general.description.enriched = await (foundry.applications?.ux?.TextEditor?.implementation ?? TextEditor).enrichHTML(
-      actor.system.general.description.value,
-      { async: true }
-    );
+    // 4) UI-only derived
+    actor.system.general.description.enriched = await (
+      foundry.applications?.ux?.TextEditor?.implementation ?? TextEditor
+    ).enrichHTML(actor.system.general.description.value, { async: true });
 
     for (const key of Object.keys(actor.system.ui.contractibleItems ?? {})) {
       if (typeof actor.system.ui.contractibleItems[key] === 'string') {

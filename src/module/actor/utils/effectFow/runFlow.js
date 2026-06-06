@@ -30,7 +30,13 @@ export async function runEffectFlow(actor, options = {}) {
       console.log('[effectFlow] apply', op.id, { deps: op.deps, mods: op.mods });
     }
 
-    await op.apply(actor);
+    // Un op que falle se aísla y se loguea: nunca debe abortar TODA la
+    // preparación (lo que rompía el re-render entero de la ficha).
+    try {
+      await op.apply(actor);
+    } catch (err) {
+      console.error(`animabf | derived op "${op?.id}" failed`, err);
+    }
   }
 
   return ordered;

@@ -38,10 +38,11 @@ describe('computeTechniqueCost', () => {
       combinable: true,
       effects: [primary('+50', { kiByCharacteristic: { dexterity: 5 } })]
     });
-    expect(c.cmTotal).toBe(25); // 15 + 10
-    expect(c.kiActiveTotal).toBe(8); // 5 + 3
-    // El sobrecoste de Combinable debe absorberse en la redistribución (AM41).
-    expect(c.validations.modificacionDeCostes).toBe(true);
+    expect(c.cmTotal).toBe(25); // 15 + 10·Nv
+    expect(c.kiActiveTotal).toBe(8); // 5 + 3·Nv
+    // Combinable se cubre solo: no exige redistribución manual ni descuadra el reparto.
+    expect(c.validations.modificacionDeCostes).toBe(false);
+    expect(c.validations.costeActivo).toBe(false);
   });
 
   test('sobrecoste de Ki por característica OPCIONAL', () => {
@@ -133,5 +134,71 @@ describe('computeTechniqueCost', () => {
     expect(c.cmTotal).toBe(20); // floor nivel 1
     expect(c.kiActiveTotal).toBe(0);
     expect(c.validations.unSoloPrimario).toBe(true); // 0 primarios
+  });
+
+  test('Mantenido: costeActivo cuadra pero falta repartir el de mantenimiento', () => {
+    const c = computeTechniqueCost({
+      level: 1,
+      effects: [
+        primary('+10', {
+          maintMode: 'maintained',
+          kiByCharacteristic: { dexterity: 3 }, // 2 base + 1 mant embebido
+          maintKiByCharacteristic: {}
+        })
+      ]
+    });
+    expect(c.kiActiveTotal).toBe(3);
+    expect(c.kiMaintTotal).toBe(1);
+    expect(c.validations.costeActivo).toBe(false); // 3 repartido = 3
+    expect(c.validations.costeMantenimiento).toBe(true); // 1 requerido, 0 repartido
+  });
+
+  test('Mantenido: ambos cuadran al repartir activo y mantenimiento', () => {
+    const c = computeTechniqueCost({
+      level: 1,
+      effects: [
+        primary('+10', {
+          maintMode: 'maintained',
+          kiByCharacteristic: { dexterity: 3 },
+          maintKiByCharacteristic: { dexterity: 1 }
+        })
+      ]
+    });
+    expect(c.validations.costeActivo).toBe(false);
+    expect(c.validations.costeMantenimiento).toBe(false);
+    expect(c.isValid).toBe(true);
+  });
+
+  test('Atadura Elemental: avisa si el elemento elegido no es afín a los efectos', () => {
+    // Habilidad de Ataque es afín a air/fire/dark.
+    const build = {
+      level: 1,
+      effects: [primary('+50', { kiByCharacteristic: { dexterity: 5 } })],
+      disadvantages: [
+        { disadvantageId: 'atadura-elemental', option: 'A Un Elemento', detailElements: ['water'] }
+      ]
+    };
+    expect(computeTechniqueCost(build).validations.elementoNoAfin).toBe(true);
+    build.disadvantages[0].detailElements = ['fire'];
+    expect(computeTechniqueCost(build).validations.elementoNoAfin).toBe(false);
+  });
+
+  test('Combinable + Mantenida: válida sin redistribución manual (caso del usuario)', () => {
+    const c = computeTechniqueCost({
+      level: 1,
+      combinable: true,
+      effects: [
+        primary('+40', {
+          maintMode: 'maintained',
+          kiByCharacteristic: { dexterity: 7 }, // 4 base + 3 mant embebido
+          maintKiByCharacteristic: { dexterity: 3 }
+        })
+      ]
+    });
+    expect(c.kiActiveTotal).toBe(10); // 7 (efecto+mant) + 3 (combinable)
+    expect(c.kiMaintTotal).toBe(3);
+    expect(c.validations.costeActivo).toBe(false);
+    expect(c.validations.costeMantenimiento).toBe(false);
+    expect(c.validations.modificacionDeCostes).toBe(false);
   });
 });

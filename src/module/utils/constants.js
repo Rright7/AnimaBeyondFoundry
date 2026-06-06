@@ -208,7 +208,9 @@ export const Templates = {
       KiAccumulation: T('actor/parts/domine/parts/ki-accumulation.hbs'),
       MartialKnowledge: T('actor/parts/domine/parts/martial-knowledge.hbs'),
       Seals: T('actor/parts/domine/parts/seals.hbs'),
-      Techniques: T('actor/parts/domine/parts/techniques.hbs')
+      Techniques: T('actor/parts/domine/parts/techniques.hbs'),
+      KiTechniques: T('actor/parts/ki-techniques/ki-techniques.hbs'),
+      KiTechniqueBuilder: T('actor/parts/ki-techniques/parts/technique-builder.hbs')
     },
 
     Psychic: {

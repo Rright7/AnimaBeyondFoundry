@@ -2,56 +2,15 @@ import { ABFItems } from './ABFItems';
 import { ITEM_CONFIGURATIONS } from '../actor/utils/prepareItems/constants';
 import { ensureLinkedEffectForItem } from '../actor/utils/ensureLinkedEffectForItem.js';
 import {
-  getEffect,
-  getDisadvantage,
-  getEffectsByCategory,
-  DISADVANTAGE_CATALOG
-} from '../domine/techniques/effectCatalog';
-import {
-  newTechniqueEffectRow,
-  newTechniqueDisadvantageRow
-} from '../types/domine/TechniqueItemConfig';
-
-const TECHNIQUE_CATEGORY_LABELS = {
-  offensive: 'Ofensivos',
-  defensive: 'Defensivos',
-  destructive: 'De destrucción',
-  increment: 'De aumento',
-  integrity: 'De integridad',
-  action: 'De acción',
-  reaction: 'De reacción',
-  spatial: 'Espaciales',
-  varied: 'Variados'
-};
-
-const TECHNIQUE_CHARACTERISTICS = [
-  { key: 'agility', label: 'AGI' },
-  { key: 'constitution', label: 'CON' },
-  { key: 'dexterity', label: 'DES' },
-  { key: 'strength', label: 'FUE' },
-  { key: 'power', label: 'POD' },
-  { key: 'willPower', label: 'VOL' }
-];
-
-const TECHNIQUE_MAINT_MODES = [
-  { value: 'none', label: '—' },
-  { value: 'maintained', label: 'Mantenido' },
-  { value: 'sustainMinor', label: 'Sost. Menor' },
-  { value: 'sustainMajor', label: 'Sost. Mayor' }
-];
-
-const TECHNIQUE_VALIDATION_LABELS = {
-  cmExcesivo: 'CM excede el tope del nivel',
-  nivelMinimo: 'Nivel insuficiente para los efectos/desventajas',
-  mantenidoYSostenido: 'No se puede mezclar Mantenido y Sostenido',
-  errorEnSostenidos: 'Sostenimiento no permitido (Nv1 o efecto Nv3)',
-  unSoloPrimario: 'Debe haber exactamente 1 efecto primario',
-  desventajasLimite: 'Las desventajas reducen más del 50% del CM',
-  noPuedeReducirKi: 'Sólo puedes reducir Ki dependiendo de 3+ características',
-  maxReduccionKi: 'No puedes reducir una característica más de la mitad',
-  modificacionDeCostes: 'La redistribución no cuadra con las reducciones',
-  costeTotal: 'El Ki repartido no cuadra con el coste total'
-};
+  buildTechniqueViewModel,
+  techAddEffect,
+  techRemoveEffect,
+  techAddDisadvantage,
+  techRemoveDisadvantage,
+  techEffectFieldChange,
+  techDisadvantageFieldChange,
+  onDropTechniqueEffect
+} from '../domine/techniques/techniqueBuilder';
 
 const ItemSheetV1 = foundry.appv1?.sheets?.ItemSheet ?? ItemSheet;
 export default class ABFItemSheet extends ItemSheetV1 {
@@ -145,90 +104,7 @@ export default class ABFItemSheet extends ItemSheetV1 {
    * @returns {object}
    */
   _buildTechniqueSheetData(item) {
-    const build = item.system?.build ?? {};
-    const computed = item.system?.computed ?? {};
-    const effects = Array.isArray(build.effects) ? build.effects : [];
-    const disadvantages = Array.isArray(build.disadvantages) ? build.disadvantages : [];
-
-    const groups = getEffectsByCategory();
-    const effectGroups = Object.keys(groups).map(key => ({
-      key,
-      label: TECHNIQUE_CATEGORY_LABELS[key] ?? key,
-      effects: groups[key].map(e => ({ id: e.id, name: e.name }))
-    }));
-
-    const effectRows = effects.map((row, index) => {
-      const def = getEffect(row.effectId);
-      const selected = new Set(Array.isArray(row.tierOptions) ? row.tierOptions : []);
-      return {
-        index,
-        isPrimary: index === 0,
-        effectId: row.effectId ?? '',
-        effectName: def?.name ?? '',
-        maintMode: row.maintMode ?? 'none',
-        options: def
-          ? def.tiers.map(t => ({
-              option: t.option,
-              selected: selected.has(t.option),
-              cm: t.cm,
-              kiPrimary: t.kiPrimary,
-              kiSecondary: t.kiSecondary,
-              level: t.level
-            }))
-          : [],
-        ki: TECHNIQUE_CHARACTERISTICS.map(c => ({
-          key: c.key,
-          label: c.label,
-          active: row.kiByCharacteristic?.[c.key] ?? 0,
-          maint: row.maintKiByCharacteristic?.[c.key] ?? 0
-        })),
-        perEffect: computed.perEffect?.[index] ?? null
-      };
-    });
-
-    const disadvantageRows = disadvantages.map((row, index) => {
-      const def = getDisadvantage(row.disadvantageId);
-      return {
-        index,
-        disadvantageId: row.disadvantageId ?? '',
-        option: row.option ?? '',
-        name: def?.name ?? '',
-        options: def
-          ? def.options.map(o => ({
-              option: o.option,
-              cmReduction: o.cmReduction,
-              selected: o.option === row.option
-            }))
-          : []
-      };
-    });
-
-    const validations = computed.validations ?? {};
-    const validationBadges = Object.keys(TECHNIQUE_VALIDATION_LABELS)
-      .filter(key => validations[key])
-      .map(key => ({ key, label: TECHNIQUE_VALIDATION_LABELS[key] }));
-
-    const costByCharacteristic = TECHNIQUE_CHARACTERISTICS.map(c => ({
-      label: c.label,
-      active: computed.costByCharacteristic?.[c.key]?.active ?? 0,
-      maint: computed.costByCharacteristic?.[c.key]?.maint ?? 0
-    }));
-
-    return {
-      levelOptions: [1, 2, 3].map(v => ({ value: v, selected: Number(build.level) === v })),
-      build,
-      computed,
-      characteristics: TECHNIQUE_CHARACTERISTICS,
-      maintModes: TECHNIQUE_MAINT_MODES,
-      effectGroups,
-      disadvantageOptions: DISADVANTAGE_CATALOG.map(d => ({ id: d.id, name: d.name })),
-      effectRows,
-      disadvantageRows,
-      canAddEffect: effects.length < 5,
-      canAddDisadvantage: disadvantages.length < 3,
-      validationBadges,
-      costByCharacteristic
-    };
+    return buildTechniqueViewModel(item);
   }
 
   /**
@@ -305,119 +181,46 @@ export default class ABFItemSheet extends ItemSheetV1 {
   // Technique constructor (Ki)
   // ============================
   _activateTechniqueListeners(root) {
+    const { item } = this;
     const on = (selector, type, handler) =>
       root.querySelectorAll(selector).forEach(el => el.addEventListener(type, handler));
 
     on('[data-action="tech-add-effect"]', 'click', e => {
       e.preventDefault();
-      this._techAddEffect();
+      techAddEffect(item);
     });
     on('[data-action="tech-remove-effect"]', 'click', e => {
       e.preventDefault();
-      this._techRemoveEffect(Number(e.currentTarget.dataset.index));
+      techRemoveEffect(item, Number(e.currentTarget.dataset.index));
     });
     on('[data-action="tech-add-disadvantage"]', 'click', e => {
       e.preventDefault();
-      this._techAddDisadvantage();
+      techAddDisadvantage(item);
     });
     on('[data-action="tech-remove-disadvantage"]', 'click', e => {
       e.preventDefault();
-      this._techRemoveDisadvantage(Number(e.currentTarget.dataset.index));
+      techRemoveDisadvantage(item, Number(e.currentTarget.dataset.index));
     });
-    on('[data-tech-effect-field]', 'change', e => this._techEffectFieldChange(e));
-    on('[data-tech-disadvantage-field]', 'change', e => this._techDisadvantageFieldChange(e));
-  }
+    on('[data-tech-effect-field]', 'change', e => techEffectFieldChange(item, e.currentTarget));
+    on('[data-tech-disadvantage-field]', 'change', e =>
+      techDisadvantageFieldChange(item, e.currentTarget)
+    );
 
-  _techEffects() {
-    return foundry.utils.duplicate(this.item.system?.build?.effects ?? []);
-  }
-
-  _techDisadvantages() {
-    return foundry.utils.duplicate(this.item.system?.build?.disadvantages ?? []);
-  }
-
-  _techFixRoles(effects) {
-    effects.forEach((row, i) => {
-      row.role = i === 0 ? 'primary' : 'secondary';
-    });
-    return effects;
-  }
-
-  async _techAddEffect() {
-    const effects = this._techEffects();
-    if (effects.length >= 5) return;
-    effects.push(newTechniqueEffectRow(effects.length === 0 ? 'primary' : 'secondary'));
-    await this.item.update({ 'system.build.effects': this._techFixRoles(effects) });
-  }
-
-  async _techRemoveEffect(index) {
-    const effects = this._techEffects();
-    if (!effects[index]) return;
-    effects.splice(index, 1);
-    await this.item.update({ 'system.build.effects': this._techFixRoles(effects) });
-  }
-
-  async _techAddDisadvantage() {
-    const disadvantages = this._techDisadvantages();
-    if (disadvantages.length >= 3) return;
-    disadvantages.push(newTechniqueDisadvantageRow());
-    await this.item.update({ 'system.build.disadvantages': disadvantages });
-  }
-
-  async _techRemoveDisadvantage(index) {
-    const disadvantages = this._techDisadvantages();
-    if (!disadvantages[index]) return;
-    disadvantages.splice(index, 1);
-    await this.item.update({ 'system.build.disadvantages': disadvantages });
-  }
-
-  async _techEffectFieldChange(event) {
-    const el = event.currentTarget;
-    const index = Number(el.dataset.index);
-    const field = el.dataset.techEffectField;
-    const effects = this._techEffects();
-    const row = effects[index];
-    if (!row) return;
-
-    row.kiByCharacteristic ??= {};
-    row.maintKiByCharacteristic ??= {};
-
-    if (field === 'effectId') {
-      row.effectId = el.value;
-      row.tierOptions = []; // las opciones del efecto anterior dejan de ser válidas
-    } else if (field === 'maintMode') {
-      row.maintMode = el.value;
-    } else if (field === 'tierOption') {
-      const option = el.dataset.option;
-      const set = new Set(Array.isArray(row.tierOptions) ? row.tierOptions : []);
-      if (el.checked) set.add(option);
-      else set.delete(option);
-      row.tierOptions = [...set];
-    } else if (field.startsWith('ki.')) {
-      row.kiByCharacteristic[field.slice(3)] = Number(el.value) || 0;
-    } else if (field.startsWith('maint.')) {
-      row.maintKiByCharacteristic[field.slice(6)] = Number(el.value) || 0;
+    const dropZone = root.querySelector('[data-drop-target="techniqueEffect"]');
+    if (dropZone) {
+      dropZone.addEventListener('dragover', e => {
+        e.preventDefault();
+        dropZone.classList.add('technique-drop-zone--drag-over');
+      });
+      dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('technique-drop-zone--drag-over');
+      });
+      dropZone.addEventListener('drop', async e => {
+        e.preventDefault();
+        dropZone.classList.remove('technique-drop-zone--drag-over');
+        await onDropTechniqueEffect(item, e);
+      });
     }
-
-    await this.item.update({ 'system.build.effects': effects });
-  }
-
-  async _techDisadvantageFieldChange(event) {
-    const el = event.currentTarget;
-    const index = Number(el.dataset.index);
-    const field = el.dataset.techDisadvantageField;
-    const disadvantages = this._techDisadvantages();
-    const row = disadvantages[index];
-    if (!row) return;
-
-    if (field === 'disadvantageId') {
-      row.disadvantageId = el.value;
-      row.option = '';
-    } else if (field === 'option') {
-      row.option = el.value;
-    }
-
-    await this.item.update({ 'system.build.disadvantages': disadvantages });
   }
 
   async _onDropWeaponQuality(event) {

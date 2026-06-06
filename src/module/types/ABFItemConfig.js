@@ -45,9 +45,17 @@ export function ABFItemConfigFactory(minimal) {
       const items = actor.getItemsOf(this.type);
 
       for (const item of items) {
-        await this.onAttach?.(actor, item);
+        try {
+          await this.onAttach?.(actor, item);
+        } catch (err) {
+          console.error(`animabf | onAttach failed for "${item?.name}" (${this.type})`, err);
+        }
         this.addToFieldPath(actor, item);
-        this.prepareItem?.(item);
+        try {
+          await this.prepareItem?.(item);
+        } catch (err) {
+          console.error(`animabf | prepareItem failed for "${item?.name}" (${this.type})`, err);
+        }
       }
     },
     async onUpdate(actor, changes) {

@@ -10,6 +10,17 @@ import { ABFItems } from '../items/ABFItems';
 import { ABFDialogs } from '../dialogs/ABFDialogs';
 import { Logger } from '../../utils';
 import { ABFSettingsKeys } from '../../utils/registerSettings';
+import {
+  buildTechniqueViewModel,
+  techAddEffect,
+  techRemoveEffect,
+  techAddDisadvantage,
+  techRemoveDisadvantage,
+  techEffectFieldChange,
+  techDisadvantageFieldChange,
+  onDropTechniqueEffect,
+  TECHNIQUE_CHARACTERISTICS
+} from '../domine/techniques/techniqueBuilder';
 import { createClickHandlers } from './utils/createClickHandlers';
 import { TypeEditorRegistry } from './types/TypeEditorRegistry.js';
 import {
@@ -162,7 +173,11 @@ export default class ABFActorSheet extends ActorSheetV1 {
     const { actor } = this; // use the real Document, not sheet.actor
 
     if (actor?.type === 'character') {
-      await actor.prepareDerivedData();
+      try {
+        await actor.prepareDerivedData();
+      } catch (err) {
+        console.error(`animabf | prepareDerivedData failed for "${actor?.name}"`, err);
+      }
       sheet.system = actor.system;
     }
 
@@ -178,7 +193,15 @@ export default class ABFActorSheet extends ActorSheetV1 {
     const effectItems = actor.items.filter(i => i && i.type === ABFItems.EFFECT);
     sheet.effects = effectItems;
 
-    console.log('EFFECT ITEMS EN SHEET', sheet.effects);
+    // Técnicas de Ki: un view-model por técnica para el constructor (pestaña) y
+    // las tarjetas de Domine; acumulaciones por característica para la cabecera.
+    sheet.kiTechniques = actor.items
+      .filter(i => i && i.type === ABFItems.TECHNIQUE)
+      .map(buildTechniqueViewModel);
+    sheet.kiAccumulations = TECHNIQUE_CHARACTERISTICS.map(c => ({
+      label: c.label,
+      value: actor.system?.domine?.kiAccumulation?.[c.key]?.final?.value ?? 0
+    }));
 
     return sheet;
   }
@@ -198,6 +221,95 @@ export default class ABFActorSheet extends ActorSheetV1 {
     this._activateDataOnClickHandlers(html);
     this._activateEffectControls(html);
     this._activateCombatManeuverSearch(html);
+    this._activateKiTechniquesListeners(html);
+  }
+
+  // Constructor de Técnicas de Ki dentro de la pestaña: cada control lleva (o
+  // está dentro de) un [data-technique-id]; resolvemos el item y delegamos en
+  // los helpers compartidos de techniqueBuilder.
+  _activateKiTechniquesListeners(html) {
+    const root = html[0] ?? html;
+    if (!root) return;
+
+    const techniqueOf = el => {
+      const id = el.closest('[data-technique-id]')?.dataset?.techniqueId;
+      return id ? this.actor.items.get(id) : null;
+    };
+    const on = (selector, type, handler) =>
+      root.querySelectorAll(selector).forEach(el => el.addEventListener(type, handler));
+
+    on('[data-action="tech-add-technique"]', 'click', e => {
+      e.preventDefault();
+      ALL_ITEM_CONFIGURATIONS[ABFItems.TECHNIQUE]?.onCreate?.(this.actor);
+    });
+    on('[data-action="tech-delete-technique"]', 'click', async e => {
+      e.preventDefault();
+      const item = techniqueOf(e.currentTarget);
+      if (item) await item.delete();
+    });
+    on('[data-action="tech-add-effect"]', 'click', e => {
+      e.preventDefault();
+      const item = techniqueOf(e.currentTarget);
+      if (item) techAddEffect(item);
+    });
+    on('[data-action="tech-remove-effect"]', 'click', e => {
+      e.preventDefault();
+      const item = techniqueOf(e.currentTarget);
+      if (item) techRemoveEffect(item, Number(e.currentTarget.dataset.index));
+    });
+    on('[data-action="tech-add-disadvantage"]', 'click', e => {
+      e.preventDefault();
+      const item = techniqueOf(e.currentTarget);
+      if (item) techAddDisadvantage(item);
+    });
+    on('[data-action="tech-remove-disadvantage"]', 'click', e => {
+      e.preventDefault();
+      const item = techniqueOf(e.currentTarget);
+      if (item) techRemoveDisadvantage(item, Number(e.currentTarget.dataset.index));
+    });
+    on('[data-tech-effect-field]', 'change', e => {
+      const item = techniqueOf(e.currentTarget);
+      if (item) techEffectFieldChange(item, e.currentTarget);
+    });
+    on('[data-tech-disadvantage-field]', 'change', e => {
+      const item = techniqueOf(e.currentTarget);
+      if (item) techDisadvantageFieldChange(item, e.currentTarget);
+    });
+
+    // Uso en juego (tarjetas de Domine): usar / activar / desactivar.
+    on('[data-action="tech-use"]', 'click', e => {
+      e.preventDefault();
+      const item = techniqueOf(e.currentTarget);
+      if (item) this.actor.useTechnique(item.id);
+    });
+    on('[data-action="tech-activate"]', 'click', e => {
+      e.preventDefault();
+      const item = techniqueOf(e.currentTarget);
+      if (item) this.actor.activateTechnique(item.id);
+    });
+    on('[data-action="tech-deactivate"]', 'click', e => {
+      e.preventDefault();
+      const item = techniqueOf(e.currentTarget);
+      if (item) this.actor.deactivateTechnique(item.id);
+    });
+
+    root.querySelectorAll('.tech-builder[data-drop-target="techniqueEffect"]').forEach(zone => {
+      zone.addEventListener('dragover', e => {
+        e.preventDefault();
+        zone.classList.add('technique-drop-zone--drag-over');
+      });
+      zone.addEventListener('dragleave', () => {
+        zone.classList.remove('technique-drop-zone--drag-over');
+      });
+      zone.addEventListener('drop', async e => {
+        e.preventDefault();
+        e.stopPropagation(); // evita el _onDropItem global del actor
+        zone.classList.remove('technique-drop-zone--drag-over');
+        const id = zone.dataset.techniqueId;
+        const item = id ? this.actor.items.get(id) : null;
+        if (item) await onDropTechniqueEffect(item, e);
+      });
+    });
   }
 
   _activateBaseTypeContextMenu(html) {
@@ -296,16 +408,22 @@ export default class ABFActorSheet extends ActorSheetV1 {
     const handler = ev => this._onDragStart(ev);
 
     for (const item of Object.values(ALL_ITEM_CONFIGURATIONS)) {
-      this.buildCommonContextualMenu(item);
+      // Aísla cada tipo: un fallo (menú/selectores) de uno no debe abortar
+      // activateListeners y, con ello, todo el render de la ficha.
+      try {
+        this.buildCommonContextualMenu(item);
 
-      html.find(item.selectors.rowSelector).each((_, row) => {
-        row.setAttribute('draggable', 'true');
-        row.addEventListener('dragstart', handler, false);
-      });
+        html.find(item.selectors.rowSelector).each((_, row) => {
+          row.setAttribute('draggable', 'true');
+          row.addEventListener('dragstart', handler, false);
+        });
 
-      html.find(`[data-on-click="${item.selectors.addItemButtonSelector}"]`).click(() => {
-        item.onCreate(this.actor);
-      });
+        html.find(`[data-on-click="${item.selectors.addItemButtonSelector}"]`).click(() => {
+          item.onCreate(this.actor);
+        });
+      } catch (err) {
+        console.error(`animabf | drag/context-menu setup failed for "${item?.type}"`, err);
+      }
     }
   }
 
@@ -661,12 +779,21 @@ export default class ABFActorSheet extends ActorSheetV1 {
       });
     }
 
+    const container =
+      this.element instanceof HTMLElement
+        ? this.element.querySelector(containerSelector)
+        : this.element?.find?.(containerSelector)?.[0];
+
+    // Foundry V14: el constructor de ContextMenu lanza si el contenedor no existe
+    // en el DOM. Algunos tipos de item (p.ej. techniqueEffect, sólo de compendio)
+    // no tienen su sección en la ficha del actor: no hay a qué enganchar el menú,
+    // así que salimos sin construirlo (antes esto reventaba todo el render).
+    if (!container) return null;
+
     const ContextMenuImpl = foundry.applications?.ux?.ContextMenu?.implementation ?? ContextMenu;
     const isV14 = !!foundry.applications?.ux?.ContextMenu?.implementation;
     return new ContextMenuImpl(
-      this.element instanceof HTMLElement
-        ? this.element.querySelector(containerSelector)
-        : this.element.find(containerSelector)[0],
+      container,
       rowSelector,
       [...otherItems],
       ...(isV14 ? [{ jQuery: false }] : [])
@@ -687,6 +814,20 @@ export default class ABFActorSheet extends ActorSheetV1 {
   }
 
   async _onDropItem(event, data) {
+    // Los efectos de técnica sólo tienen sentido dentro del constructor de una
+    // Técnica; evitar crear una copia suelta en el actor al soltarlos aquí.
+    try {
+      const dropped = data?.uuid ? await fromUuid(data.uuid) : null;
+      if (dropped?.type === ABFItems.TECHNIQUE_EFFECT) {
+        ui.notifications?.info(
+          'Arrastra el efecto sobre el constructor de una Técnica de Ki, no sobre la ficha.'
+        );
+        return;
+      }
+    } catch {
+      // Si no se puede resolver, continuar con el flujo normal.
+    }
+
     const created = await super._onDropItem(event, data);
 
     const items = Array.isArray(created) ? created : created ? [created] : [];

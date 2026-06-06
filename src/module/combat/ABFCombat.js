@@ -36,6 +36,7 @@ export default class ABFCombat extends Combat {
     for (let token of combatants) {
       token?.actor?.resetDefensesCounter();
       token?.actor?.consumeMaintainedZeon();
+      token?.actor?.consumeActiveTechniquesKi();
       token?.actor?.psychicShieldsMaintenance();
       // Desangramiento: 1 PV cada 20 asaltos mientras dure el sangrado.
       // (Guarded internamente; no bloquea el avance de ronda.)
@@ -55,6 +56,7 @@ export default class ABFCombat extends Combat {
     const combatants = this.combatants.map(c => c.token);
     for (let token of combatants) {
       token?.actor?.consumeMaintainedZeon(true);
+      token?.actor?.consumeActiveTechniquesKi(true);
       token?.actor?.psychicShieldsMaintenance(true);
     }
 

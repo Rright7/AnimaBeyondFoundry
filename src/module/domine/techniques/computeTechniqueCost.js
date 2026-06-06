@@ -1,4 +1,9 @@
-import { getEffect, getDisadvantage, KI_CHARACTERISTICS } from './effectCatalog';
+import {
+  getEffect,
+  getDisadvantage,
+  KI_CHARACTERISTICS,
+  ELEMENT_DISADVANTAGES
+} from './effectCatalog';
 
 /**
  * Motor de coste del constructor de Técnicas de Ki.
@@ -39,7 +44,8 @@ export function computeTechniqueCost(build) {
   const redistribution = build?.redistribution ?? {}; // fila 23 (V23:AG23)
 
   // --- Por efecto (filas 16-20) ---------------------------------------------
-  const effects = (build?.effects ?? []).map((row, idx) => {
+  const buildEffects = Array.isArray(build?.effects) ? build.effects : [];
+  const effects = buildEffects.map((row, idx) => {
     const def = getEffect(row?.effectId);
     const role = row?.role || (idx === 0 ? 'primary' : 'secondary');
     const tierOptions = row?.tierOptions ?? [];
@@ -94,7 +100,8 @@ export function computeTechniqueCost(build) {
   });
 
   // --- Por desventaja (filas 21-23) -----------------------------------------
-  const disadvantages = (build?.disadvantages ?? []).map(row => {
+  const buildDisadvantages = Array.isArray(build?.disadvantages) ? build.disadvantages : [];
+  const disadvantages = buildDisadvantages.map(row => {
     const def = getDisadvantage(row?.disadvantageId);
     const opt = def?.options?.find(o => o.option === row?.option);
     return {
@@ -138,10 +145,13 @@ export function computeTechniqueCost(build) {
     KI_CHARACTERISTICS.some(c => num(redistribution[c]) < 0) || kiReductionLine < 0;
   const cannotReduceKi = activeCharCount < 3 && anyNegativeRedist;
 
+  // Combinable es un coste plano (+3·Nv Ki) que se cubre solo: no exige reparto
+  // por característica ni entrada en la fila de redistribución (Mod.).
+  const combinableKi = combinable ? 3 * level : 0;
   const kiActiveTotal =
     Math.max(0, kiEffectsSum + Math.abs(cmReductionLine) * 2 / 5) +
     (cannotReduceKi ? 0 : kiReductionLine) +
-    (combinable ? 3 * level : 0);
+    combinableKi;
   const kiMaintTotal = anyMaintained
     ? effects.reduce((s, e) => s + e.kiMaintEmbedded, 0)
     : 0;
@@ -167,6 +177,20 @@ export function computeTechniqueCost(build) {
     effects.reduce((s, e) => s + sumChars(e.kiBy), 0) + redistSum;
   const kiMantInvertido = effects.reduce((s, e) => s + sumChars(e.maintKiBy), 0);
 
+  // Afinidad elemental: el/los elemento(s) de una desventaja de elemento
+  // (Atadura/Requerimientos Elementales) deben ser afines a los efectos.
+  const effectAffine = effects
+    .map(e => getEffect(e.effectId)?.elements ?? [])
+    .filter(a => a.length);
+  const affineUnion = new Set(effectAffine.flat());
+  const elementoNoAfin = buildDisadvantages.some(d => {
+    if (!ELEMENT_DISADVANTAGES.has(d?.disadvantageId)) return false;
+    const chosen = (Array.isArray(d.detailElements) ? d.detailElements : []).filter(Boolean);
+    if (!chosen.length) return false;
+    if (chosen.some(e => !affineUnion.has(e))) return true;
+    return effectAffine.some(els => !els.some(e => chosen.includes(e)));
+  });
+
   const validations = {
     cmExcesivo: cmTotal > cmCeiling,
     nivelMinimo: levelRequired > level,
@@ -185,12 +209,10 @@ export function computeTechniqueCost(build) {
         Math.trunc(effects.reduce((s, e) => s + num(e.kiBy[c]), 0) / 2)
     ),
     modificacionDeCostes:
-      Math.abs(
-        redistSum -
-          (kiReductionLine + Math.abs(cmReductionLine) * 2 / 5 + (combinable ? 3 * level : 0))
-      ) > APPROX,
-    costeTotal:
-      Math.abs(kiActiveTotal - kiInvertido + (kiMaintTotal - kiMantInvertido)) > APPROX
+      Math.abs(redistSum - (kiReductionLine + Math.abs(cmReductionLine) * 2 / 5)) > APPROX,
+    costeActivo: Math.abs(kiActiveTotal - combinableKi - kiInvertido) > APPROX,
+    costeMantenimiento: Math.abs(kiMaintTotal - kiMantInvertido) > APPROX,
+    elementoNoAfin
   };
   const isValid = !Object.values(validations).some(Boolean);
 

@@ -13,5 +13,12 @@ export const prepareItem = async item => {
     item = await normalizeItem(item, configuration.defaultValue);
   }
 
-  ALL_ITEM_CONFIGURATIONS[item.type]?.prepareItem?.(item);
+  try {
+    await ALL_ITEM_CONFIGURATIONS[item.type]?.prepareItem?.(item);
+  } catch (err) {
+    console.error(
+      `animabf | prepareItem failed for "${item?.name}" (${item?.type})`,
+      err
+    );
+  }
 };
