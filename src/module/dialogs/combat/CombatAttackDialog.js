@@ -4,6 +4,11 @@ import { damageCheck } from '../../combat/utils/damageCheck.js';
 import ABFFoundryRoll from '../../rolls/ABFFoundryRoll';
 import { ABFSettingsKeys } from '../../../utils/registerSettings';
 import { ABFConfig } from '../../ABFConfig';
+import {
+  activeTechniqueCombatBonuses,
+  techniqueCombatBonus,
+  usableInstantCombatTechniques
+} from '../../domine/techniques/techniqueCombatBonuses';
 
 const getInitialData = (attacker, defender, options = {}) => {
   const combatDistance = !!game.settings.get(
@@ -356,6 +361,46 @@ export class CombatAttackDialog extends FormApplication {
           attackerCombatMod.secondaryCritic = { value: -10, apply: true };
         }
 
+        // Bonos de combate de Técnicas de Ki: activas (auto) + instantáneas
+        // seleccionadas (que gastan su Ki concentrado al usarse).
+        const kiBonus = activeTechniqueCombatBonuses(this.attackerActor);
+        console.warn(
+          '[KI-COMBAT] ataque: actor=',
+          this.attackerActor?.name,
+          'kiBonus=',
+          kiBonus,
+          'tecnicas=',
+          (this.attackerActor?.items?.filter?.(i => i.type === 'technique') ?? []).map(t => ({
+            name: t.name,
+            active: t?.flags?.animabf?.active,
+            effects: (t?.system?.build?.effects ?? []).map(
+              e => `${e.effectId}=[${(e.tierOptions || []).join(',')}]`
+            )
+          }))
+        );
+        let kiAttack = kiBonus.attack;
+        let kiDamage = kiBonus.damage;
+        const kiInstantSel = this.modalData.attacker.combat.kiInstant ?? {};
+        for (const [techId, on] of Object.entries(kiInstantSel)) {
+          if (!on) continue;
+          const technique = this.attackerActor.items.get(techId);
+          if (!technique) continue;
+          const tb = techniqueCombatBonus(technique);
+          // useTechnique gasta el Ki concentrado; si no llega, avisa y se omite.
+          if (!(await this.attackerActor.useTechnique(techId))) continue;
+          kiAttack += tb.attack;
+          kiDamage += tb.damage;
+        }
+        if (kiAttack) attackerCombatMod.kiTechnique = { value: kiAttack, apply: true };
+        console.warn(
+          '[KI-COMBAT] ataque: kiAttack=',
+          kiAttack,
+          'kiDamage=',
+          kiDamage,
+          'kiTechnique=',
+          attackerCombatMod.kiTechnique
+        );
+
         const attack = weapon
           ? weapon.system.attack.final.value
           : this.attackerActor.system.combat.attack.final.value;
@@ -414,7 +459,7 @@ export class CombatAttackDialog extends FormApplication {
           type: 'combat',
           values: {
             unarmed,
-            damage: damage.final,
+            damage: (damage.final ?? 0) + kiDamage,
             attack,
             weaponUsed,
             reducedArmorFinal,
@@ -671,6 +716,12 @@ export class CombatAttackDialog extends FormApplication {
       attacker: { combat, psychic, mystic },
       ui
     } = this.modalData;
+
+    // Técnicas de Ki instantáneas (Tipo Acción) de combate ofensivo, seleccionables.
+    this.modalData.attacker.kiInstant = usableInstantCombatTechniques(
+      this.attackerActor,
+      'attack'
+    );
 
     ui.hasFatiguePoints =
       this.attackerActor.system.characteristics.secondaries.fatigue.value > 0;

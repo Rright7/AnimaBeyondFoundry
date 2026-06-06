@@ -747,6 +747,7 @@
   "macros.combat.dialog.blockValue.title": "Valor de bloqueo",
   "macros.combat.dialog.cancelButton.title": "Cancelar",
   "macros.combat.dialog.combatMod.modifier.title": "Modificador",
+  "macros.combat.dialog.combatMod.kiTechnique.title": "Técnica de Ki",
   "macros.combat.dialog.combatMod.blindness.title": "Ceguera absoluta",
   "macros.combat.dialog.combatMod.dodgeProjectile.title": "Esquivar contra proyectil",
   "macros.combat.dialog.combatMod.parryProjectile.title": "Parar contra proyectil",

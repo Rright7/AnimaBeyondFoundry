@@ -5,6 +5,10 @@ import { composeAimedPenalty } from '../equipment/qualities/composeWeaponEffects
 import { resolveManeuverAttackPenalty } from '../combat/maneuvers/resolveManeuverPenalty.js';
 import { ABFAttackData } from '../combat/ABFAttackData';
 import { getSnapshotTargets } from '../actor/utils/getSnapshotTargets.js';
+import {
+  activeTechniqueCombatBonuses,
+  usableInstantCombatTechniques
+} from '../domine/techniques/techniqueCombatBonuses.js';
 ///dialogs/AttackConfigurationDialog.js
 ///actor/utils/getSnapshotTargets.js
 
@@ -178,6 +182,11 @@ export class AttackConfigurationDialog extends FormApplication {
         (combat.damage.special ?? 0) + (weapon?.system?.damage?.final?.value ?? 0);
     }
 
+    // F6.3: tecnicas de Ki INSTANTANEAS ofrecibles para este ataque (gastan Ki
+    // concentrado al marcarlas). Las ACTIVAS aplican su bono automaticamente en
+    // el handler, no necesitan UI aqui.
+    attacker.kiInstant = usableInstantCombatTechniques(this.attackerActor, 'attack');
+
     this.modalData.config = ABFConfig;
     return this.modalData;
   }
@@ -277,11 +286,38 @@ export class AttackConfigurationDialog extends FormApplication {
         secondaryCritPenalty = -10;
       }
 
+      // ── F6.3: Bonos de combate de Tecnicas de Ki ──────────────────────
+      // Activas (mantenidas/sostenidas): su bono se aplica automaticamente.
+      // Instantaneas marcadas en el dialogo: gastan Ki concentrado al usarse.
+      const kiAuto = activeTechniqueCombatBonuses(actor);
+      let kiAttackBonus = Number(kiAuto.attack) || 0;
+      let kiDamageBonus = Number(kiAuto.damage) || 0;
+      const kiAppliedBy = [];
+      if (kiAuto.attack || kiAuto.damage) kiAppliedBy.push('activa');
+      console.warn('[KI-COMBAT] ataque: bono auto de tecnicas activas', kiAuto);
+
+      const kiInstantSel = combat.kiInstant ?? {};
+      const kiInstantList = usableInstantCombatTechniques(actor, 'attack');
+      for (const tech of kiInstantList) {
+        if (kiInstantSel[tech.id] !== true) continue;
+        console.warn(`[KI-COMBAT] ataque: usando tecnica instantanea "${tech.name}" (${tech.id}) coste=${tech.kiCost}`);
+        const ok = await actor.useTechnique(tech.id);
+        if (!ok) {
+          console.warn(`[KI-COMBAT] ataque: tecnica "${tech.name}" NO aplicada (Ki insuficiente)`);
+          continue;
+        }
+        kiAttackBonus += Number(tech.attack) || 0;
+        kiDamageBonus += Number(tech.damage) || 0;
+        kiAppliedBy.push(tech.name);
+      }
+      console.warn('[KI-COMBAT] ataque: bono total', { kiAttackBonus, kiDamageBonus, kiAppliedBy });
+
       const mod =
         Number(combat.modifier ?? 0)
         + maneuverPenalty
         + aimedPenalty
-        + secondaryCritPenalty;
+        + secondaryCritPenalty
+        + kiAttackBonus;
       const die =
         actor.system.combat.attack.base.value >= 200
           ? actor.system.general.diceSettings.abilityMasteryDie.value
@@ -324,6 +360,12 @@ export class AttackConfigurationDialog extends FormApplication {
       if (secondaryCritPenalty !== 0) {
         dialogContribs.push(`Crit. secundario (${secondaryCritPenalty})`);
       }
+      if (kiAttackBonus !== 0) {
+        const sign = kiAttackBonus > 0 ? '+' : '';
+        const label = game.i18n.localize('macros.combat.dialog.combatMod.kiTechnique.title');
+        const tag = kiAppliedBy.length ? ` [${kiAppliedBy.join(', ')}]` : '';
+        dialogContribs.push(`${label} (${sign}${kiAttackBonus})${tag}`);
+      }
       const flavorParts = ['Rolling attack'];
       if (dialogContribs.length) {
         flavorParts.push(`Mods: ${dialogContribs.join(', ')}`);
@@ -340,7 +382,8 @@ export class AttackConfigurationDialog extends FormApplication {
           Math.max(
             0,
             Number(combat.damage?.final ?? weapon.system.damage?.final?.value ?? 0) +
-              (this.modalData.maneuver?.damageDelta ?? 0)
+              (this.modalData.maneuver?.damageDelta ?? 0) +
+              kiDamageBonus
           ) * (this.modalData.maneuver?.damageMultiplier ?? 1)
         )
         .ignoreArmor(!!weapon.system.ignoreArmor?.value)

@@ -9,6 +9,19 @@
             inputValue=this.attacker.combat.modifier }}
       </div>
 
+      {{#if this.attacker.kiInstant.length}}
+        <div class='columns ki-instant-techniques'>
+          <label class='label'>{{localize 'macros.combat.dialog.combatMod.kiTechnique.title'}} (instantáneas)</label>
+          {{#each this.attacker.kiInstant as |tech|}}
+            <label class='ki-instant-row{{#unless tech.hasEnoughKi}} ki-instant-row--noki{{/unless}}'>
+              <input type="checkbox" name="attacker.combat.kiInstant.{{tech.id}}"
+                {{#if (is 'eq' (lookup @root.attacker.combat.kiInstant tech.id) true)}}checked{{/if}}>
+              <span>{{tech.name}}{{#if tech.attack}} · At +{{tech.attack}}{{/if}}{{#if tech.damage}} · Daño +{{tech.damage}}{{/if}} · Ki {{tech.kiCost}}{{#unless tech.hasEnoughKi}} ⚠{{/unless}}</span>
+            </label>
+          {{/each}}
+        </div>
+      {{/if}}
+
       {{!-- Ataque apuntado: Variante B — checkbox alineado con el resto de
             filas; la zona aparece como sub-fila indentada (border-left)
             cuando se activa. Cada opción muestra "Zona −penalty" leído

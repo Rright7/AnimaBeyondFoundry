@@ -15,6 +15,19 @@
         inputValue=this.defender.combat.modifier
       }}
 
+      {{#if this.defender.kiInstant.length}}
+        <div class='columns ki-instant-techniques'>
+          <label class='label'>{{localize 'macros.combat.dialog.combatMod.kiTechnique.title'}} (instantáneas)</label>
+          {{#each this.defender.kiInstant as |tech|}}
+            <label class='ki-instant-row{{#unless tech.hasEnoughKi}} ki-instant-row--noki{{/unless}}'>
+              <input type="checkbox" name="defender.combat.kiInstant.{{tech.id}}"
+                {{#if (is 'eq' (lookup @root.defender.combat.kiInstant tech.id) true)}}checked{{/if}}>
+              <span>{{tech.name}}{{#if tech.block}} · Parada +{{tech.block}}{{/if}}{{#if tech.dodge}} · Esquiva +{{tech.dodge}}{{/if}} · Ki {{tech.kiCost}}{{#unless tech.hasEnoughKi}} ⚠{{/unless}}</span>
+            </label>
+          {{/each}}
+        </div>
+      {{/if}}
+
       {{#if (is 'eq' this.ui.activeTab 'shield')}}
         <p class="label defense-count">
           {{localize 'macros.combat.dialog.defenseCount.exemption.supernaturalShield'}}

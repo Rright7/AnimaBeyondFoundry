@@ -8,6 +8,10 @@ import { getChatVisibilityOptions } from '../utils/chatVisibility.js';
 import ABFFoundryRoll from '../rolls/ABFFoundryRoll.js';
 import { FormulaEvaluator } from '../../utils/formulaEvaluator.js';
 import { defensesCounterCheck } from '../combat/utils/defensesCounterCheck.js';
+import {
+  activeTechniqueCombatBonuses,
+  usableInstantCombatTechniques
+} from '../domine/techniques/techniqueCombatBonuses.js';
 
 export class DefenseConfigurationDialog extends FormApplication {
   constructor(object = {}, options = {}) {
@@ -212,6 +216,11 @@ export class DefenseConfigurationDialog extends FormApplication {
       ui.shieldValue = 0;
     }
 
+    // F6.3: tecnicas de Ki INSTANTANEAS de defensa (parada/esquiva) ofrecibles
+    // para esta tirada (gastan Ki concentrado al marcarlas). Las ACTIVAS aplican
+    // su bono automaticamente en el handler.
+    defender.kiInstant = usableInstantCombatTechniques(this.defenderActor, 'defense');
+
     return this.modalData;
   }
 
@@ -371,10 +380,43 @@ export class DefenseConfigurationDialog extends FormApplication {
       const resistTheHit = !!combat?.resistTheHit && !isShieldDefense;
       const resistPenalty = resistTheHit ? -80 : 0;
 
+      // ── F6.3: Bonos de combate de Tecnicas de Ki (parada/esquiva) ─────
+      // Las activas aplican su bono automaticamente; las instantaneas marcadas
+      // gastan Ki concentrado. No aplica a escudos sobrenaturales.
+      let kiDefenseBonus = 0;
+      const kiAppliedBy = [];
+      if (!isShieldDefense) {
+        const kiAuto = activeTechniqueCombatBonuses(actor);
+        const autoStat =
+          type === 'block' ? Number(kiAuto.block) || 0 : Number(kiAuto.dodge) || 0;
+        if (autoStat) {
+          kiDefenseBonus += autoStat;
+          kiAppliedBy.push('activa');
+        }
+        console.warn('[KI-COMBAT] defensa: bono auto de tecnicas activas', { type, kiAuto });
+
+        const kiInstantSel = combat?.kiInstant ?? {};
+        const kiInstantList = usableInstantCombatTechniques(actor, 'defense');
+        for (const tech of kiInstantList) {
+          if (kiInstantSel[tech.id] !== true) continue;
+          const stat = type === 'block' ? Number(tech.block) || 0 : Number(tech.dodge) || 0;
+          if (!stat) continue;
+          console.warn(`[KI-COMBAT] defensa: usando tecnica instantanea "${tech.name}" (${tech.id}) +${stat}`);
+          const ok = await actor.useTechnique(tech.id);
+          if (!ok) {
+            console.warn(`[KI-COMBAT] defensa: tecnica "${tech.name}" NO aplicada (Ki insuficiente)`);
+            continue;
+          }
+          kiDefenseBonus += stat;
+          kiAppliedBy.push(tech.name);
+        }
+        console.warn('[KI-COMBAT] defensa: bono total', { type, kiDefenseBonus, kiAppliedBy });
+      }
+
       // Split each contribution into its own term so the Foundry roll tooltip
       // shows the breakdown: defense ability, situational modifier, the
       // multiple-defenses penalty, and the resist-the-hit penalty.
-      const formula = `${die} + ${baseValue} + ${mod} + (${effectiveMultiPenalty}) + (${resistPenalty})`;
+      const formula = `${die} + ${baseValue} + ${mod} + (${effectiveMultiPenalty}) + (${resistPenalty}) + (${kiDefenseBonus})`;
       const roll = new ABFFoundryRoll(formula, actor.system);
       await roll.evaluate({ async: true });
 
@@ -398,6 +440,12 @@ export class DefenseConfigurationDialog extends FormApplication {
       const defenseContribs = [];
       if (resistPenalty !== 0) {
         defenseContribs.push(`Resiste el golpe (${resistPenalty})`);
+      }
+      if (kiDefenseBonus !== 0) {
+        const sign = kiDefenseBonus > 0 ? '+' : '';
+        const label = game.i18n.localize('macros.combat.dialog.combatMod.kiTechnique.title');
+        const tag = kiAppliedBy.length ? ` [${kiAppliedBy.join(', ')}]` : '';
+        defenseContribs.push(`${label} (${sign}${kiDefenseBonus})${tag}`);
       }
       const flavorParts = [defenseLabel];
       if (defenseContribs.length) {
