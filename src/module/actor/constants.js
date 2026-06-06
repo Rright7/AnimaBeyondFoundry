@@ -758,7 +758,9 @@ export const INITIAL_ACTOR_DATA = {
         accumulated: { value: 0 }
       },
       reserve: {
-        max: { value: 0 },        current: { value: 0 }
+        base: { value: 0 },
+        modifier: { value: 0 },
+        max: { value: 0 },        current: { value: null }
       }
     }
   },

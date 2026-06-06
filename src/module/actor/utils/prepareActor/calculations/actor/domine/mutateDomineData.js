@@ -104,18 +104,44 @@ export const mutateKiAccumulationConstitution = makeKiAccumulationMutator('const
 export const mutateKiAccumulationWillPower = makeKiAccumulationMutator('willPower');
 export const mutateKiAccumulationPower = makeKiAccumulationMutator('power');
 
-// Reserva de Ki unificada: suma de los Puntos de Ki finales de las 6 características.
+// Reserva de Ki unificada: base = suma de los Puntos de Ki finales de las 6
+// características; máx = base + modificador (artefactos/extra, +/-).
 export const mutateKiReserve = data => {
   const ka = data.domine.kiAccumulation;
-  ka.reserve.max.value = KI_ACCUMULATIONS.reduce(
+  const base = KI_ACCUMULATIONS.reduce(
     (acc, accum) => acc + (ka[accum].kiPoints.final.value || 0),
     0
   );
+  ka.reserve.base = ka.reserve.base ?? { value: 0 };
+  ka.reserve.base.value = base;
+  ka.reserve.modifier = ka.reserve.modifier ?? { value: 0 };
+  const modifier = Number(ka.reserve.modifier.value) || 0;
+  const max = Math.max(0, base + modifier);
+  ka.reserve.max.value = max;
+
+  // La reserva actual (lo que se gasta al usar/activar técnicas):
+  //  - SIN inicializar (null/undefined/no numérico) -> arranca llena (= máx).
+  //  - ya fijada -> se respeta y sólo se acota a [0, máx].
+  // Importante: un 0 real (reserva agotada) se queda en 0; NO se rellena solo.
+  ka.reserve.current = ka.reserve.current ?? { value: null };
+  const raw = ka.reserve.current.value;
+  const current = Number(raw);
+  ka.reserve.current.value =
+    raw === null || raw === undefined || raw === '' || !Number.isFinite(current)
+      ? max
+      : Math.min(Math.max(0, current), max);
 };
 
 mutateKiReserve.abfFlow = {
-  deps: KI_ACCUMULATIONS.map(
-    accum => `system.domine.kiAccumulation.${accum}.kiPoints.final.value`
-  ),
-  mods: ['system.domine.kiAccumulation.reserve.max.value']
+  deps: [
+    ...KI_ACCUMULATIONS.map(
+      accum => `system.domine.kiAccumulation.${accum}.kiPoints.final.value`
+    ),
+    'system.domine.kiAccumulation.reserve.modifier.value'
+  ],
+  mods: [
+    'system.domine.kiAccumulation.reserve.base.value',
+    'system.domine.kiAccumulation.reserve.max.value',
+    'system.domine.kiAccumulation.reserve.current.value'
+  ]
 };
