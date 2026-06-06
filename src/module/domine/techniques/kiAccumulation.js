@@ -83,3 +83,41 @@ export function concentratedShortfall(cost = {}, accumulated = {}) {
   }
   return short;
 }
+
+/**
+ * Paso por asalto (hacia delante) de UNA técnica activa: lógica pura del bucle de
+ * combate (ABFCombat.nextRound). Las mantenidas gastan su Ki de mantenimiento;
+ * las sostenidas descuentan 1 de duración y se desactivan al llegar a 0.
+ *
+ * Devuelve también `snapshot` (estado PRE-paso) para poder revertir exactamente
+ * el paso en previousRound: restaurar {active, remaining} y reembolsar `maint`.
+ * Solo se aplica a técnicas que están activas, así una sostenida que expira
+ * (snapshot.active=true) se puede reactivar al retroceder, sin tocar las que
+ * nunca estuvieron activas (que no tienen snapshot).
+ *
+ * @param {{flags?:object, remaining?:number, kiMaint?:number}} [input]
+ * @returns {{maintSpent:number, sustained:boolean, nextActive:boolean, nextRemaining:number, snapshot:{active:boolean, remaining:number, maint:number}}}
+ */
+export function techniqueRoundStep({ flags = {}, remaining = 0, kiMaint = 0 } = {}) {
+  const prevRemaining = Number(remaining) || 0;
+  const maintSpent = flags.anyMaintained && kiMaint > 0 ? Number(kiMaint) || 0 : 0;
+  const sustained = !!(flags.anySostMenor || flags.anySostMayor);
+  let nextActive = true;
+  let nextRemaining = prevRemaining;
+  if (sustained) {
+    const next = prevRemaining - 1;
+    if (next <= 0) {
+      nextActive = false;
+      nextRemaining = 0;
+    } else {
+      nextRemaining = next;
+    }
+  }
+  return {
+    maintSpent,
+    sustained,
+    nextActive,
+    nextRemaining,
+    snapshot: { active: true, remaining: prevRemaining, maint: maintSpent }
+  };
+}

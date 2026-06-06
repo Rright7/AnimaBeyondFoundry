@@ -63,6 +63,7 @@ export default class ABFCombat extends Combat {
       if (!actor) continue;
       actor.consumeMaintainedZeon(true);
       await actor.consumeActiveTechniquesKi(true);
+      await actor.revertAccumulateKi();
       actor.psychicShieldsMaintenance(true);
     }
 

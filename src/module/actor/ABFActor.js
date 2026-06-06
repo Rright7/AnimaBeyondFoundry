@@ -10,7 +10,8 @@ import {
   KI_CHAR_KEYS,
   KI_CHAR_LABELS,
   accumulateKiStep,
-  concentratedShortfall
+  concentratedShortfall,
+  techniqueRoundStep
 } from '../domine/techniques/kiAccumulation';
 import ABFActorSheet from './ABFActorSheet';
 import { Logger } from '../../utils';
@@ -576,14 +577,19 @@ export class ABFActor extends Actor {
   async _spendKiReserve(cost, label) {
     const reserve = this.system?.domine?.kiAccumulation?.reserve;
     const current = Number(reserve?.current?.value) || 0;
+    const max = Number(reserve?.max?.value) || 0;
     if (cost > 0 && cost > current) {
       ui.notifications?.warn(
         `Ki insuficiente para «${label}»: cuesta ${cost} y la reserva es ${current}.`
       );
     }
+    // cost < 0 = reembolso (revert de mantenimiento): nunca por encima del maximo,
+    // que es lo que recortaria mutateKiReserve en la siguiente preparacion.
+    const cap = max > 0 ? max : Infinity;
+    const next = Math.min(cap, Math.max(0, current - cost));
     await this.update({
       system: {
-        domine: { kiAccumulation: { reserve: { current: { value: Math.max(0, current - cost) } } } }
+        domine: { kiAccumulation: { reserve: { current: { value: next } } } }
       }
     });
   }
@@ -599,6 +605,7 @@ export class ABFActor extends Actor {
   async activateTechnique(techniqueId) {
     const technique = this.items.get(techniqueId);
     if (technique?.type !== 'technique') return false;
+    if (technique.flags?.animabf?.active) return true; // ya activa: no re-gastar Ki
     const computed = technique.system?.computed ?? {};
     const flags = computed.flags ?? {};
     if (!(await this._consumeConcentratedForTechnique(technique))) return false;
@@ -634,7 +641,15 @@ export class ABFActor extends Actor {
    */
   async _consumeConcentratedForTechnique(technique) {
     const computed = technique.system?.computed ?? {};
-    const cost = computed.costByCharacteristic ?? {};
+    const cost = computed.costByCharacteristic;
+    if (!cost) {
+      // computed sin poblar (item recien creado/importado sin preparar): NO gastar
+      // gratis ni saltarse el gating; avisar para que se reabra y recalcule.
+      ui.notifications?.warn(
+        `No se pudo calcular el coste de «${technique.name}»: reabre la tecnica e intentalo de nuevo.`
+      );
+      return false;
+    }
     const ka = this.system?.domine?.kiAccumulation ?? {};
     const accumulated = {};
     for (const c of KI_CHAR_KEYS) accumulated[c] = Number(ka[c]?.accumulated?.value) || 0;
@@ -706,9 +721,32 @@ export class ABFActor extends Actor {
     await prepareActor(this);
     const next = this._computeAccumulationStep();
     if (!next) return;
+    const ka = this.system?.domine?.kiAccumulation ?? {};
+    // Snapshot del concentrado previo para poder revertir el paso (previousRound).
+    const prev = {};
     const update = {};
     for (const c of KI_CHAR_KEYS) {
+      prev[c] = Number(ka[c]?.accumulated?.value) || 0;
       update[`system.domine.kiAccumulation.${c}.accumulated.value`] = next[c];
+    }
+    update['flags.animabf.kiAccumPrev'] = prev;
+    await this.update(update);
+  }
+
+  /**
+   * Deshace el último paso de acumulación (lo llama ABFCombat.previousRound):
+   * restaura el concentrado al snapshot guardado por accumulateKi. Un solo nivel
+   * de deshacer (el del asalto que se revierte); si no hay snapshot, no hace nada.
+   */
+  async revertAccumulateKi() {
+    const prev = this.flags?.animabf?.kiAccumPrev;
+    if (!prev) return;
+    const update = { 'flags.animabf.-=kiAccumPrev': null };
+    for (const c of KI_CHAR_KEYS) {
+      update[`system.domine.kiAccumulation.${c}.accumulated.value`] = Math.max(
+        0,
+        Number(prev[c]) || 0
+      );
     }
     await this.update(update);
   }
@@ -754,30 +792,48 @@ export class ABFActor extends Actor {
    * @param {boolean} [revert]
    */
   async consumeActiveTechniquesKi(revert = false) {
+    if (revert) {
+      // Revert: restaurar desde el snapshot que guardó el paso hacia delante.
+      // Asi se reactivan las sostenidas que expiraron ESE asalto (active:false,
+      // remaining:0) sin tocar las que nunca estuvieron activas, y se reembolsa
+      // el mantenimiento exactamente igual al que se gastó. Un solo nivel.
+      const snapped = this.items.filter(
+        i => i.type === 'technique' && i.flags?.animabf?.prevRound
+      );
+      for (const technique of snapped) {
+        const snap = technique.flags.animabf.prevRound;
+        const maint = Number(snap?.maint) || 0;
+        if (maint > 0) await this._spendKiReserve(-maint, technique.name);
+        await technique.update({
+          'flags.animabf.active': !!snap.active,
+          'flags.animabf.remaining': Number(snap.remaining) || 0,
+          'flags.animabf.-=prevRound': null
+        });
+      }
+      return;
+    }
+
     const techniques = this.items.filter(
       i => i.type === 'technique' && i.flags?.animabf?.active
     );
     for (const technique of techniques) {
       const computed = technique.system?.computed ?? {};
       const flags = computed.flags ?? {};
-      const maint = Number(computed.kiMaintTotal) || 0;
+      const step = techniqueRoundStep({
+        flags,
+        remaining: Number(technique.flags?.animabf?.remaining) || 0,
+        kiMaint: Number(computed.kiMaintTotal) || 0
+      });
 
-      if (flags.anyMaintained && maint > 0) {
-        await this._spendKiReserve(revert ? -maint : maint, technique.name);
-      }
+      if (step.maintSpent) await this._spendKiReserve(step.maintSpent, technique.name);
 
-      if (flags.anySostMenor || flags.anySostMayor) {
-        const remaining = Number(technique.flags?.animabf?.remaining) || 0;
-        const next = revert ? remaining + 1 : remaining - 1;
-        if (!revert && next <= 0) {
-          await technique.update({
-            'flags.animabf.active': false,
-            'flags.animabf.remaining': 0
-          });
-        } else {
-          await technique.update({ 'flags.animabf.remaining': Math.max(0, next) });
-        }
+      // Snapshot del estado PRE-paso para poder revertir (previousRound).
+      const techUpdate = { 'flags.animabf.prevRound': step.snapshot };
+      if (step.sustained) {
+        techUpdate['flags.animabf.active'] = step.nextActive;
+        techUpdate['flags.animabf.remaining'] = step.nextRemaining;
       }
+      await technique.update(techUpdate);
     }
   }
 
