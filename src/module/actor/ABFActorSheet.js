@@ -202,6 +202,16 @@ export default class ABFActorSheet extends ActorSheetV1 {
       label: c.label,
       value: actor.system?.domine?.kiAccumulation?.[c.key]?.final?.value ?? 0
     }));
+    // Estado de "Cargar Ki" (concentración por asalto).
+    sheet.kiCharging = !!actor.flags?.animabf?.chargingKi;
+    sheet.kiFullAccumulation = !!actor.flags?.animabf?.fullKiAccumulation;
+    // Ki concentrado total (suma de los "Ki acu." por característica).
+    sheet.kiAccumulatedTotal = TECHNIQUE_CHARACTERISTICS.reduce(
+      (sum, c) =>
+        sum +
+        (Number(actor.system?.domine?.kiAccumulation?.[c.key]?.accumulated?.value) || 0),
+      0
+    );
 
     return sheet;
   }
@@ -291,6 +301,24 @@ export default class ABFActorSheet extends ActorSheetV1 {
       e.preventDefault();
       const item = techniqueOf(e.currentTarget);
       if (item) this.actor.deactivateTechnique(item.id);
+    });
+
+    // Cargar Ki (concentración por asalto) y acumulación plena.
+    on('[data-action="ki-charge"]', 'click', e => {
+      e.preventDefault();
+      this.actor.toggleChargeKi();
+    });
+    on('[data-action="ki-full-accumulation"]', 'change', e => {
+      this.actor.toggleFullKiAccumulation();
+    });
+    // Editar el total de la reserva ajusta el modificador (máx = base + Mod).
+    on('[data-action="ki-reserve-max"]', 'change', e => {
+      const newMax = Number(e.currentTarget.value) || 0;
+      const base =
+        Number(this.actor.system?.domine?.kiAccumulation?.reserve?.base?.value) || 0;
+      this.actor.update({
+        'system.domine.kiAccumulation.reserve.modifier.value': newMax - base
+      });
     });
 
     root.querySelectorAll('.tech-builder[data-drop-target="techniqueEffect"]').forEach(zone => {
@@ -620,7 +648,12 @@ export default class ABFActorSheet extends ActorSheetV1 {
 
       roll.toMessage({
         speaker: ChatMessage.getSpeaker({ actor: this.actor }),
-        flavor: label
+        flavor: label,
+        // Carry the exact rolled data path so the chat-trace hook can surface
+        // any modifier (Ki techniques, AEs…) deposited on it — no flavor guessing.
+        ...(dataset.rollPath
+          ? { flags: { animabf: { rollPath: dataset.rollPath } } }
+          : {})
       });
     }
   }

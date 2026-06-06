@@ -321,6 +321,115 @@
           margin-right: 3rem;
         }
       }
+
+      // Reserva: Actual / Mod. / Máx. (todos editables)
+      .ki-reserve-row {
+        height: auto;
+        align-items: center;
+
+        .ki-reserve-fields {
+          display: flex;
+          gap: 0.35rem;
+          align-items: flex-end;
+
+          .ki-reserve-field {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1px;
+
+            span {
+              font-size: 0.6rem;
+              line-height: 1;
+              color: #7a7263;
+              text-transform: uppercase;
+            }
+
+            input {
+              width: 2.3rem;
+              height: 1rem;
+              text-align: center;
+            }
+          }
+        }
+      }
+
+      // Cargar Ki (concentración por asalto)
+      .ki-charge-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 0.35rem;
+        margin-top: 0.6rem;
+        // Alinear con las columnas, despejando la franja roja de la izquierda.
+        padding-left: 3.2rem;
+
+        .ki-charge-row {
+          display: flex;
+          align-items: center;
+          gap: 0.6rem;
+        }
+
+        .ki-charge-btn {
+          flex: 0 0 auto;
+          border: 1px solid $red;
+          border-radius: 0.8rem;
+          background: #fff;
+          color: $red;
+          font-weight: bold;
+          font-size: 0.85rem;
+          padding: 0.1rem 0.9rem;
+          cursor: pointer;
+
+          &.is-active {
+            background: $red;
+            color: #fff;
+          }
+        }
+
+        .ki-accumulated-total {
+          font-size: 0.8rem;
+          font-weight: bold;
+          color: $red;
+          font-variant-numeric: tabular-nums;
+        }
+
+        .ki-full-accumulation {
+          display: flex;
+          align-items: center;
+          gap: 0.3rem;
+          font-size: 0.8rem;
+
+          input {
+            width: auto;
+            margin: 0;
+          }
+        }
+
+        .ki-accumulate-select {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 0.15rem 0.5rem;
+          font-size: 0.7rem;
+
+          .ki-accumulate-select-label {
+            font-weight: bold;
+            color: #5b5446;
+          }
+
+          label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.15rem;
+            color: #5b5446;
+
+            input {
+              width: auto;
+              margin: 0;
+            }
+          }
+        }
+      }
     }
   }
   // Ki Accumulation

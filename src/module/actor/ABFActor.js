@@ -6,6 +6,12 @@ import { getUpdateObjectFromPath } from './utils/prepareItems/util/getUpdateObje
 import { getFieldValueFromPath } from './utils/prepareItems/util/getFieldValueFromPath';
 import { prepareActor } from './utils/prepareActor/prepareActor';
 import { INITIAL_ACTOR_DATA } from './constants';
+import {
+  KI_CHAR_KEYS,
+  KI_CHAR_LABELS,
+  accumulateKiStep,
+  concentratedShortfall
+} from '../domine/techniques/kiAccumulation';
 import ABFActorSheet from './ABFActorSheet';
 import { Logger } from '../../utils';
 import { migrateItem } from '../items/migrations/migrateItem';
@@ -582,12 +588,11 @@ export class ABFActor extends Actor {
     });
   }
 
-  /** Uso instantáneo: gasta el coste de Ki una vez (sin estado persistente). */
+  /** Uso instantáneo: exige Ki concentrado suficiente y lo gasta (con la reserva). */
   async useTechnique(techniqueId) {
     const technique = this.items.get(techniqueId);
     if (technique?.type !== 'technique') return false;
-    await this._spendKiReserve(Number(technique.system?.computed?.kiActiveTotal) || 0, technique.name);
-    return true;
+    return this._consumeConcentratedForTechnique(technique);
   }
 
   /** Activa una técnica mantenida/sostenida: gasta el coste y marca el estado. */
@@ -596,7 +601,7 @@ export class ABFActor extends Actor {
     if (technique?.type !== 'technique') return false;
     const computed = technique.system?.computed ?? {};
     const flags = computed.flags ?? {};
-    await this._spendKiReserve(Number(computed.kiActiveTotal) || 0, technique.name);
+    if (!(await this._consumeConcentratedForTechnique(technique))) return false;
     const sostenidaMayor = !!flags.anySostMayor;
     const sostenida = sostenidaMayor || !!flags.anySostMenor;
     // Sostenida Menor = 5 asaltos; Mayor ≈ 1 minuto (~20 asaltos). Mantenida no expira por duración.
@@ -614,6 +619,132 @@ export class ABFActor extends Actor {
     if (technique?.type !== 'technique') return false;
     await technique.update({ 'flags.animabf.active': false, 'flags.animabf.remaining': 0 });
     return true;
+  }
+
+  // ============================
+  // Concentración de Ki (Cargar Ki) — F6
+  // ============================
+
+  /**
+   * Gasta el coste activo de una técnica del Ki CONCENTRADO (por característica)
+   * y de la reserva total. Si falta concentración, avisa y NO gasta (devuelve false).
+   * El mantenimiento NO pasa por aquí: es innato (directo de la reserva).
+   * @param {ABFActor['items'] extends Map<string, infer I> ? I : any} technique
+   * @returns {Promise<boolean>}
+   */
+  async _consumeConcentratedForTechnique(technique) {
+    const computed = technique.system?.computed ?? {};
+    const cost = computed.costByCharacteristic ?? {};
+    const ka = this.system?.domine?.kiAccumulation ?? {};
+    const accumulated = {};
+    for (const c of KI_CHAR_KEYS) accumulated[c] = Number(ka[c]?.accumulated?.value) || 0;
+
+    const short = concentratedShortfall(cost, accumulated);
+    if (short.length) {
+      const detail = short
+        .map(s => `${KI_CHAR_LABELS[s.char] ?? s.char} ${s.have}/${s.need}`)
+        .join(', ');
+      ui.notifications?.warn(
+        `Ki concentrado insuficiente para «${technique.name}»: ${detail}. Activa «Cargar Ki».`
+      );
+      return false;
+    }
+
+    const update = {};
+    for (const c of KI_CHAR_KEYS) {
+      const need = Number(cost?.[c]?.active) || 0;
+      if (need <= 0) continue;
+      update[`system.domine.kiAccumulation.${c}.accumulated.value`] = Math.max(
+        0,
+        accumulated[c] - need
+      );
+    }
+    const total = Number(computed.kiActiveTotal) || 0;
+    const reserveCurrent = Number(ka.reserve?.current?.value) || 0;
+    update['system.domine.kiAccumulation.reserve.current.value'] = Math.max(
+      0,
+      reserveCurrent - total
+    );
+    await this.update(update);
+    return true;
+  }
+
+  /**
+   * Lee this.system y devuelve el nuevo concentrado por característica tras un
+   * paso de acumulación (reduce a la mitad si no es "plena", luego suma la Acu.).
+   * @returns {Record<string,number>|null}
+   */
+  _computeAccumulationStep(firstStep = false) {
+    const ka = this.system?.domine?.kiAccumulation;
+    if (!ka) return null;
+    const accumulated = {};
+    const rates = {};
+    const selected = {};
+    for (const c of KI_CHAR_KEYS) {
+      accumulated[c] = Number(ka[c]?.accumulated?.value) || 0;
+      rates[c] = Number(ka[c]?.final?.value) || 0;
+      selected[c] = ka[c]?.accumulating?.value !== false; // por defecto, todas
+    }
+    return accumulateKiStep({
+      accumulated,
+      rates,
+      selected,
+      full: !!this.flags?.animabf?.fullKiAccumulation,
+      firstStep
+    });
+  }
+
+  /**
+   * Un paso de acumulación (concentración) de Ki por asalto. Sólo actúa si
+   * "Cargar Ki" está activo (lo llama ABFCombat.nextRound).
+   */
+  async accumulateKi() {
+    if (!this.flags?.animabf?.chargingKi) return;
+    // La preparación de este sistema es asíncrona: la tasa de acumulación es un
+    // dato DERIVADO. Aseguramos que esté calculada antes de leerla (si no, sale
+    // 0 y el incremento es 0).
+    await prepareActor(this);
+    const next = this._computeAccumulationStep();
+    if (!next) return;
+    const update = {};
+    for (const c of KI_CHAR_KEYS) {
+      update[`system.domine.kiAccumulation.${c}.accumulated.value`] = next[c];
+    }
+    await this.update(update);
+  }
+
+  /**
+   * Activa/desactiva "Cargar Ki" en UN SOLO update (flag + concentrado), para
+   * evitar carreras de render. Al activar concentra el primer asalto; al
+   * desactivar, el concentrado vuelve a la reserva (se pone a 0).
+   */
+  async toggleChargeKi() {
+    const charging = !this.flags?.animabf?.chargingKi;
+    const update = { 'flags.animabf.chargingKi': charging };
+    if (charging) {
+      // Asegurar datos derivados (tasa de acumulación) antes de leerlos.
+      await prepareActor(this);
+      // La activación aporta la tasa completa (primer lote del asalto en curso).
+      const next = this._computeAccumulationStep(true);
+      if (next) {
+        for (const c of KI_CHAR_KEYS) {
+          update[`system.domine.kiAccumulation.${c}.accumulated.value`] = next[c];
+        }
+      }
+    } else {
+      for (const c of KI_CHAR_KEYS) {
+        update[`system.domine.kiAccumulation.${c}.accumulated.value`] = 0;
+      }
+    }
+    await this.update(update);
+    return charging;
+  }
+
+  /** Activa/desactiva la "acumulación plena" (no reduce a la mitad al pasar el asalto). */
+  async toggleFullKiAccumulation() {
+    const next = !this.flags?.animabf?.fullKiAccumulation;
+    await this.setFlag('animabf', 'fullKiAccumulation', next);
+    return next;
   }
 
   /**
