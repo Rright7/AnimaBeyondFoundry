@@ -1,6 +1,7 @@
 import { ABFAttackData } from './ABFAttackData.js';
 import { ABFDefenseData } from './ABFDefenseData.js';
 import { ABFCombatResultData } from './ABFCombatResultData.js';
+import { resolveActorForRoll } from '../actor/utils/resolveActorForRoll.js';
 
 /**
  * Computes a base combat result from the given attack and defense data.
@@ -9,20 +10,22 @@ import { ABFCombatResultData } from './ABFCombatResultData.js';
  * @returns {ABFCombatResultData}
  */
 export function computeCombatResult(attackData, defenseData) {
-  const defenderToken =
-    (defenseData.defenderTokenId &&
-      (canvas.tokens?.get?.(defenseData.defenderTokenId) ||
-        canvas.tokens?.placeables?.find(t => t.id === defenseData.defenderTokenId))) ||
-    canvas.tokens?.placeables?.find(t => t.actor?.id === defenseData.defenderId);
+  // Resolve actors via the token-aware helper so unlinked-token AE are honoured.
+  const defenderActor = resolveActorForRoll({
+    tokenId: defenseData.defenderTokenId,
+    actorId: defenseData.defenderId
+  });
+  const attackerActor = resolveActorForRoll({
+    tokenId: attackData.attackerTokenId,
+    actorId: attackData.attackerId
+  });
 
-  const defenderActor =
-    defenderToken?.actor ||
-    (defenseData.defenderId ? game.actors?.get?.(defenseData.defenderId) : null);
-  const attackerActor = attackData.attackerId
-    ? game.actors?.get?.(attackData.attackerId)
-    : null;
-
-  const difference = (attackData.attackAbility ?? 0) - (defenseData.defenseAbility ?? 0);
+  // Anima rule: neither attack nor defense ability totals can go below 0.
+  // Apply the floor before computing the round difference so accumulated
+  // penalties never produce phantom counter-attacks.
+  const attackTotal = Math.max(0, attackData.attackAbility ?? 0);
+  const defenseTotal = Math.max(0, defenseData.defenseAbility ?? 0);
+  const difference = attackTotal - defenseTotal;
 
   const hasCounterAttack =
     difference <= 0 &&
@@ -35,12 +38,75 @@ export function computeCombatResult(attackData, defenseData) {
   const rawBonus = hasCounterAttack ? -difference * counterAttackMultiplier : 0;
   const counterAttackValue = Math.floor(rawBonus / 5) * 5;
 
-  const baseDamage = getFinalBaseDamage(attackData, defenseData);
-  const finalArmor = getFinalArmor(attackData, defenseData);
+  let baseDamage = getFinalBaseDamage(attackData, defenseData);
+  let finalArmor = getFinalArmor(attackData, defenseData);
+
+  // Full (pre-halving) base damage, kept for the critical calculation: aimed
+  // maneuvers (Inutilizar/Inconsciencia) deal half damage to HP but the crit is
+  // computed from the FULL damage (RAW). baseDamage itself may be halved below.
+  const baseDamageFull = baseDamage;
+
+  // Combat maneuver: three RAW interactions with damage and armor:
+  //
+  // 1. Maneuver but no damage opted (causesDamage=false):
+  //    - forceTAZero (Derribo, Presa, Desarme, ...) applies → TA = 0.
+  //    - finalDamage is forced to 0 below (the maneuver passes through
+  //      armor but does no harm).
+  //
+  // 2. Maneuver with damage (causesDamage=true) and
+  //    damageHalvedIfApplied=true (Derribo, Presa, Inutilizar,
+  //    Inconsciencia):
+  //    - baseDamage /= 2 and TA applies NORMALLY (forceTAZero ignored).
+  //    - RAW: "el atacante puede causar daño si lo desea, pero queda
+  //      reducido a la mitad y sí se aplica la armadura del defensor".
+  //    - For maneuvers whose damage is INTRINSIC (def.dealsMandatoryDamage:
+  //      Inutilizar, Inconsciencia) causesDamage is forced true below, so they
+  //      always take this halving path regardless of the "Causar daño" checkbox.
+  //
+  // 3. Maneuver with damage opted but damageHalvedIfApplied=false:
+  //    - Damage and TA computed normally (no special interaction).
+  const maneuverSlug = attackData.maneuverSlug || '';
+  let suppressDamage = false;
+  // When true, the critical uses the FULL (pre-halved) damage even though HP
+  // loss stays halved — set only for maneuvers whose damage is intrinsic and
+  // halved (def.dealsMandatoryDamage: Inutilizar, Inconsciencia).
+  let critUsesFullDamage = false;
+  if (maneuverSlug) {
+    const def = game.animabf?.maneuvers?.get?.(maneuverSlug);
+    // Maneuvers with intrinsic damage (def.dealsMandatoryDamage) always deal
+    // (halved) damage — the attacker does not choose, so treat them as if
+    // "Causar daño" were checked.
+    const causesDamage = !!attackData.causesDamage || !!def?.dealsMandatoryDamage;
+    if (def) {
+      if (def.damageAllowed && !causesDamage) {
+        // Path 1: maneuver without damage — armor bypass + 0 damage.
+        if (def.forceTAZero) finalArmor = 0;
+        suppressDamage = true;
+      } else if (
+        def.damageAllowed &&
+        causesDamage &&
+        def.damageHalvedIfApplied
+      ) {
+        // Path 2: damage with halved base and normal TA.
+        baseDamage = Math.floor(baseDamage / 2);
+        // RAW: aimed maneuvers count the FULL damage for the critical (trigger
+        // + level), while HP loss stays halved.
+        critUsesFullDamage = !!def.dealsMandatoryDamage;
+      } else if (def.forceTAZero && !def.damageAllowed) {
+        // Maneuvers like Engatillar that never deal damage but still
+        // ignore TA when checking thresholds.
+        finalArmor = 0;
+      }
+    }
+  }
 
   const roundedDifference = Math.floor(difference / 10) * 10;
   const damagePercentage = Math.max(0, roundedDifference - finalArmor * 10 - 20);
-  const finalDamage = (baseDamage * damagePercentage) / 100;
+  // Round damage up so half-points (e.g. base 45 halved by Presa = 22.5)
+  // never get silently truncated to the defender's favor. RAW expects
+  // the inflicted damage to be a clean integer at or above the math.
+  let finalDamage = Math.ceil((baseDamage * damagePercentage) / 100);
+  if (suppressDamage) finalDamage = 0;
 
   // Apply supernatural shield wear centrally (works from any combat resolution)
   tryApplySupernaturalShieldWear(defenderActor, attackData, defenseData, difference);
@@ -52,10 +118,26 @@ export function computeCombatResult(attackData, defenseData) {
     lifePercentRemoved = (finalDamage / lifeBeforeAttack) * 100;
   }
 
-  const isCritical = lifePercentRemoved >= 50 || attackData.automaticCrit; //TO-DO: Add crit inmunity
-  const critValue = finalDamage + attackData.critBonus + (attackData.critDamageBonus ?? 0);
+  // Puntos vulnerables (Core Exxet): if the attack is aimed at a vulnerable
+  // body part (head, eye, neck, heart by default), the threshold to force a
+  // critical drops from 50% to 10% of the defender's life. Maneuvers like
+  // Inutilizar mark the targeted limb as vulnerable too so a relatively low
+  // damage still triggers the critical roll.
+  // Critical uses the FULL damage for aimed maneuvers (Inutilizar/Inconsciencia):
+  // both the trigger (% of life vs threshold) and the level are computed from
+  // the un-halved damage, while HP loss (finalDamage) stays halved. In every
+  // other case critDamage === finalDamage, so behaviour is unchanged.
+  const critDamage = critUsesFullDamage
+    ? Math.ceil((baseDamageFull * damagePercentage) / 100)
+    : finalDamage;
+  const critLifePercent =
+    lifeBeforeAttack > 0 ? (critDamage / lifeBeforeAttack) * 100 : 100;
 
-  return ABFCombatResultData.builder()
+  const criticThreshold = isAimedAtVulnerableZone(attackData) ? 10 : 50;
+  const isCritical = critLifePercent >= criticThreshold || attackData.automaticCrit; //TO-DO: Add crit inmunity
+  const critValue = critDamage + attackData.critBonus + (attackData.critDamageBonus ?? 0);
+
+  const result = ABFCombatResultData.builder()
     .difference(difference)
     .hasCounterAttack(hasCounterAttack)
     .counterAttackValue(counterAttackValue)
@@ -69,6 +151,19 @@ export function computeCombatResult(attackData, defenseData) {
     .baseCriticalValue(critValue)
     .attackBreak(attackData.breakage)
     .build();
+
+  // Attach maneuver context (consumed by the chat hook that auto-posts the
+  // maneuver opposed-check card once damage is resolved).
+  if (maneuverSlug) {
+    result.maneuverSlug = maneuverSlug;
+    result.maneuverItemName = attackData.maneuverItemName || maneuverSlug;
+    result.attackerId = attackData.attackerId || '';
+    // Daño retrasado: asaltos declarados, para que la tarjeta de resultado
+    // muestre el botón "Programar daño retrasado (N)".
+    result.delayRounds = Number(attackData.delayRounds ?? 0) || 0;
+  }
+
+  return result;
 }
 
 /**
@@ -155,4 +250,27 @@ function getFinalArmor(attackData, defenseData) {
   }
 
   return Math.max(0, armor);
+}
+
+/** Vulnerable zones for the puntos vulnerables rule (humanoid baseline). */
+const VULNERABLE_ZONES = new Set(['head', 'eye', 'neck', 'heart']);
+
+/**
+ * True if the attack was aimed at a body part considered vulnerable for the
+ * 'puntos vulnerables' rule. Combat maneuvers can also flag their aimed zone
+ * as vulnerable via `treatsAimedZoneAsVulnerable` on the ManeuverDefinition
+ * (used by Inutilizar to treat the targeted limb as vulnerable).
+ *
+ * @param {ABFAttackData} attackData
+ * @returns {boolean}
+ */
+function isAimedAtVulnerableZone(attackData) {
+  if (!attackData?.aimed || !attackData?.aimedWhere) return false;
+  if (VULNERABLE_ZONES.has(attackData.aimedWhere)) return true;
+  const slug = attackData.maneuverSlug || '';
+  if (slug) {
+    const def = game.animabf?.maneuvers?.get?.(slug);
+    if (def?.treatsAimedZoneAsVulnerable) return true;
+  }
+  return false;
 }

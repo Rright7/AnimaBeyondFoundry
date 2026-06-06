@@ -1,0 +1,134 @@
+{
+  "name": "Destruir Armadura",
+  "type": "techniqueEffect",
+  "img": "icons/magic/light/orb-lightning-purple.webp",
+  "system": {
+    "kind": {
+      "value": "effect"
+    },
+    "category": {
+      "value": "integrity"
+    },
+    "effectType": {
+      "value": "action"
+    },
+    "effectClass": {
+      "value": "attack"
+    },
+    "primaryCharacteristic": {
+      "value": "strength"
+    },
+    "optionalCharacteristics": {
+      "constitution": 2,
+      "dexterity": 2,
+      "power": 1,
+      "willPower": 2
+    },
+    "elements": [
+      "fire",
+      "dark"
+    ],
+    "tiers": [
+      {
+        "option": "-1 TA",
+        "kiPrimary": 1,
+        "kiSecondary": 2,
+        "cm": 5,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": 1
+      },
+      {
+        "option": "-2 TA",
+        "kiPrimary": 2,
+        "kiSecondary": 4,
+        "cm": 5,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": 1
+      },
+      {
+        "option": "-3 TA",
+        "kiPrimary": 3,
+        "kiSecondary": 5,
+        "cm": 10,
+        "maint": 2,
+        "sMe": 4,
+        "sMa": 7,
+        "level": 1
+      },
+      {
+        "option": "-4 TA",
+        "kiPrimary": 4,
+        "kiSecondary": 6,
+        "cm": 10,
+        "maint": 2,
+        "sMe": 4,
+        "sMa": 7,
+        "level": 1
+      },
+      {
+        "option": "-5 TA",
+        "kiPrimary": 5,
+        "kiSecondary": 8,
+        "cm": 15,
+        "maint": 3,
+        "sMe": 6,
+        "sMa": 11,
+        "level": 2
+      },
+      {
+        "option": "-6 TA",
+        "kiPrimary": 6,
+        "kiSecondary": 9,
+        "cm": 20,
+        "maint": 3,
+        "sMe": 6,
+        "sMa": 11,
+        "level": 2
+      },
+      {
+        "option": "-7 TA",
+        "kiPrimary": 8,
+        "kiSecondary": 11,
+        "cm": 25,
+        "maint": 4,
+        "sMe": 8,
+        "sMa": 14,
+        "level": 2
+      },
+      {
+        "option": "-8 TA",
+        "kiPrimary": 10,
+        "kiSecondary": 13,
+        "cm": 30,
+        "maint": 5,
+        "sMe": 10,
+        "sMa": 18,
+        "level": 3
+      },
+      {
+        "option": "Sin Armadura",
+        "kiPrimary": 12,
+        "kiSecondary": 15,
+        "cm": 40,
+        "maint": 6,
+        "sMe": 12,
+        "sMa": 21,
+        "level": 3
+      }
+    ],
+    "description": {
+      "value": "<p><strong>Categoría:</strong> De entereza · <strong>Tipo:</strong> Acción · <strong>Clase:</strong> Ataque</p><p><strong>Característica:</strong> Fuerza (opcionales: Constitución+2, Destreza+2, Poder+1, Voluntad+2)</p><p><strong>Elementos:</strong> Fuego, Oscuridad</p><table border='1' style='border-collapse:collapse;width:100%;text-align:center'><thead><tr><th>Opción</th><th>Ki 1º</th><th>Ki 2º</th><th>CM</th><th>Mant</th><th>SMe</th><th>SMa</th><th>Nv</th></tr></thead><tbody><tr><td>-1 TA</td><td>1</td><td>2</td><td>5</td><td>1</td><td>2</td><td>4</td><td>1</td></tr><tr><td>-2 TA</td><td>2</td><td>4</td><td>5</td><td>1</td><td>2</td><td>4</td><td>1</td></tr><tr><td>-3 TA</td><td>3</td><td>5</td><td>10</td><td>2</td><td>4</td><td>7</td><td>1</td></tr><tr><td>-4 TA</td><td>4</td><td>6</td><td>10</td><td>2</td><td>4</td><td>7</td><td>1</td></tr><tr><td>-5 TA</td><td>5</td><td>8</td><td>15</td><td>3</td><td>6</td><td>11</td><td>2</td></tr><tr><td>-6 TA</td><td>6</td><td>9</td><td>20</td><td>3</td><td>6</td><td>11</td><td>2</td></tr><tr><td>-7 TA</td><td>8</td><td>11</td><td>25</td><td>4</td><td>8</td><td>14</td><td>2</td></tr><tr><td>-8 TA</td><td>10</td><td>13</td><td>30</td><td>5</td><td>10</td><td>18</td><td>3</td></tr><tr><td>Sin Armadura</td><td>12</td><td>15</td><td>40</td><td>6</td><td>12</td><td>21</td><td>3</td></tr></tbody></table>"
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "5d0539733d8ab61a",
+  "_key": "!items!5d0539733d8ab61a"
+}

@@ -1,0 +1,82 @@
+<div class="maneuver-opposed-check">
+  <div class="maneuver-opposed-check__header">
+    <i class="fas fa-swords"></i>
+    {{localize "anima.ui.combat.combatManeuvers.opposedCheck.title"}} · {{flags.maneuverItemName}}
+  </div>
+  <div class="maneuver-opposed-check__body">
+    <div class="maneuver-opposed-check__participants">
+      <strong>{{flags.attackerName}}</strong>
+      {{localize "anima.ui.combat.combatManeuvers.opposedCheck.vs"}}
+      <strong>{{flags.defenderName}}</strong>
+      · {{localize "anima.ui.combat.combatManeuvers.opposedCheck.damage"}}: {{flags.damagePercent}}%
+    </div>
+
+    {{#unless flags.attackerRoll}}
+      {{#unless flags.defenderRoll}}
+        <div class="maneuver-opposed-check__rules">
+          {{combatManeuverRulesSummary flags.maneuverSlug}}
+        </div>
+      {{/unless}}
+    {{/unless}}
+
+    <div class="maneuver-opposed-check__participants-grid">
+
+      <div class="maneuver-opposed-check__side">
+        <div class="maneuver-opposed-check__side-title">
+          {{localize "anima.ui.combat.combatManeuvers.opposedCheck.attacker"}} ({{flags.attackerName}})
+        </div>
+        {{#if flags.attackerRoll}}
+          <div class="maneuver-opposed-check__breakdown">{{{flags.attackerRoll.breakdown}}}</div>
+          <div class="maneuver-opposed-check__total {{flags.attackerRoll.outcomeClass}}">
+            {{flags.attackerRoll.total}}
+          </div>
+        {{else}}
+          <button
+            type="button"
+            data-action="animabf-roll-maneuver-attacker"
+            data-message-id="{{messageId}}"
+            class="maneuver-opposed-check__roll-button chat-action-button"
+          >
+            <i class="fas fa-dice-d10"></i>
+            {{localize "anima.ui.combat.combatManeuvers.opposedCheck.rollD10"}}
+          </button>
+        {{/if}}
+      </div>
+
+      <div class="maneuver-opposed-check__side">
+        <div class="maneuver-opposed-check__side-title">
+          {{localize "anima.ui.combat.combatManeuvers.opposedCheck.defender"}} ({{flags.defenderName}})
+        </div>
+        {{#if flags.defenderRoll}}
+          <div class="maneuver-opposed-check__breakdown">{{{flags.defenderRoll.breakdown}}}</div>
+          <div class="maneuver-opposed-check__total {{flags.defenderRoll.outcomeClass}}">
+            {{flags.defenderRoll.total}}
+          </div>
+        {{else}}
+          <button
+            type="button"
+            data-action="animabf-roll-maneuver-defender"
+            data-message-id="{{messageId}}"
+            class="maneuver-opposed-check__roll-button chat-action-button"
+          >
+            <i class="fas fa-dice-d10"></i>
+            {{localize "anima.ui.combat.combatManeuvers.opposedCheck.rollD10"}}
+          </button>
+          {{#if flags.attackerRoll}}
+            <div class="maneuver-opposed-check__waiting">
+              {{localize "anima.ui.combat.combatManeuvers.opposedCheck.waitingDefender"}}
+            </div>
+          {{/if}}
+        {{/if}}
+      </div>
+
+    </div>
+
+    {{#if flags.resolution}}
+      <div class="maneuver-opposed-check__resolution">
+        <i class="fas fa-check"></i>
+        {{{flags.resolution.text}}}
+      </div>
+    {{/if}}
+  </div>
+</div>

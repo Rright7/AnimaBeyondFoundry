@@ -80,7 +80,9 @@ export async function autoRollDefenseAgainstAttack({
   attackData,
   defenseMod = 0
 }) {
-  const actor = defenderActor ?? defenderToken?.actor ?? null;
+  // Prefer the token's actor instance whenever a token is provided so AE on
+  // unlinked tokens are honoured. Fall back to the explicitly passed actor.
+  const actor = defenderToken?.actor ?? defenderActor ?? null;
   if (!actor) throw new Error('autoRollDefenseAgainstAttack: defender actor missing');
 
   const defenseMode = actor.system?.general?.settings?.defenseType?.value;
@@ -136,7 +138,18 @@ export async function autoRollDefenseAgainstAttack({
     ? { ...ChatMessage.getSpeaker({ token: defenderToken }), alias: tokenName }
     : ChatMessage.getSpeaker({ actor });
 
-  await roll.toMessage({ speaker, flavor, rollMode });
+  // candidate.type is one of 'block' | 'dodge' | 'supernaturalShield'.
+  // Normalize to the same vocabulary used by the manual DefenseConfigurationDialog
+  // so the AE trace hook can match without special-casing.
+  const rollAttribute =
+    candidate.type === 'supernaturalShield' ? 'shield' : candidate.type;
+
+  await roll.toMessage({
+    speaker,
+    flavor,
+    rollMode,
+    flags: { animabf: { rollAttribute } }
+  });
 
   if (typeof actor.accumulateDefenses === 'function') {
     actor.accumulateDefenses(!!candidate.stackDefense);
@@ -151,7 +164,7 @@ export async function autoRollDefenseAgainstAttack({
     candidate.type === 'supernaturalShield' ? 'shield' : candidate.type;
 
   const defenseData = ABFDefenseData.builder()
-    .defenseAbility(roll.total)
+    .defenseAbility(Math.max(0, roll.total))
     .armor(taFinal)
     .inmodifiableArmor(false)
     .defenseType(defenseTypeNormalized)

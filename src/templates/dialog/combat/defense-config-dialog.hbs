@@ -15,6 +15,57 @@
         inputValue=this.defender.combat.modifier
       }}
 
+      {{#if this.defender.kiInstant.length}}
+        <div class='columns ki-instant-techniques'>
+          <label class='label'>{{localize 'macros.combat.dialog.combatMod.kiTechnique.title'}} (instantáneas)</label>
+          {{#each this.defender.kiInstant as |tech|}}
+            <label class='ki-instant-row{{#unless tech.hasEnoughKi}} ki-instant-row--noki{{/unless}}'>
+              <input type="checkbox" name="defender.combat.kiInstant.{{tech.id}}"
+                {{#if (is 'eq' (lookup @root.defender.combat.kiInstant tech.id) true)}}checked{{/if}}>
+              <span>{{tech.name}}{{#if tech.block}} · Parada +{{tech.block}}{{/if}}{{#if tech.dodge}} · Esquiva +{{tech.dodge}}{{/if}} · Ki {{tech.kiCost}}{{#unless tech.hasEnoughKi}} ⚠{{/unless}}</span>
+            </label>
+          {{/each}}
+        </div>
+      {{/if}}
+
+      {{#if (is 'eq' this.ui.activeTab 'shield')}}
+        <p class="label defense-count">
+          {{localize 'macros.combat.dialog.defenseCount.exemption.supernaturalShield'}}
+        </p>
+      {{else}}
+        <p class="label defense-count">
+          {{localize 'macros.combat.dialog.defenseCount.title'}}: {{this.defender.combat.multipleDefensesPenalty}}
+        </p>
+      {{/if}}
+
+      {{!-- Acumular defensa: checkbox oculto a propósito. La lógica
+            sigue activa (defender.combat.accumulateDefenses defaultea
+            a true en _buildInitialData, así que el contador acumula
+            como hasta ahora). Si en el futuro se quiere reexponer,
+            descomentar el horizontal-titled-input siguiente. --}}
+      {{!--
+      {{>
+        "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
+        title=(localize 'macros.combat.dialog.combat.accumulateDefenses.title')
+        inputType="checkbox"
+        inputName="defender.combat.accumulateDefenses"
+        inputValue=(is 'eq' this.defender.combat.accumulateDefenses true)
+      }}
+      --}}
+
+      {{!-- Resistir el golpe: -80 a la defensa, suelo 0, NO acumula
+            defensa múltiple (RAW). Solo tiene sentido con parar/esquivar
+            así que ocultamos en la pestaña shield. --}}
+      {{#unless (is 'eq' this.ui.activeTab 'shield')}}
+        {{>
+          "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
+          title=(localize 'macros.combat.dialog.resistTheHit.title')
+          inputType="checkbox"
+          inputName="defender.combat.resistTheHit"
+          inputValue=(is 'eq' this.defender.combat.resistTheHit true)
+        }}
+      {{/unless}}
+
       <nav class="animabf-tabs sheet-tabs tabs" data-group="primary">
         <a class="item" data-tab="dodge">{{localize "macros.combat.dialog.dodgeButton.title"}}</a>
         <a class="item" data-tab="block">{{localize "macros.combat.dialog.blockButton.title"}}</a>

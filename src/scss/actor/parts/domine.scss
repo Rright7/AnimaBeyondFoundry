@@ -38,6 +38,50 @@
     }
   }
 
+  // Tree prefix shown before the ability name (Ki / Nemesis). Pinned to the
+  // top of the child's row so the horizontal arm of ├── / └── sits near the
+  // base of the parent name in the previous row, instead of in the child's
+  // vertical center.
+  .tree-prefix {
+    font-family: ui-monospace, "Cascadia Code", "Consolas", monospace;
+    color: var(--abf-text-muted);
+    white-space: pre;
+    font-size: 0.85rem;
+    line-height: 1;
+    align-self: start;
+    margin: 0;
+    padding: 0;
+    // Pull the prefix up so the elbow ─── touches the bottom of the parent.
+    transform: translateY(-0.25rem);
+
+    &.with-title-offset {
+      // First row has a column title above the input; compensate for that
+      // extra height so the prefix still hugs the top of the input.
+      transform: translateY(1rem);
+    }
+  }
+
+  // Section lock button (Ki / Nemesis headers)
+  .section-lock {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0 0.25rem;
+    margin-left: 0.5rem;
+    color: var(--abf-text-muted);
+    font-size: 0.95rem;
+    line-height: 1;
+
+    &:hover {
+      color: var(--abf-text);
+    }
+
+    &.unlocked {
+      color: var(--abf-accent);
+    }
+  }
+  // Section lock button
+
   // Ki Skills
   .ki-skills {
     .ki-skill-row:first-child {
@@ -46,6 +90,26 @@
 
     .ki-skill-row {
       margin-top: 0.75rem;
+
+      display: grid;
+      grid-template-columns: auto 3fr 1fr;
+      grid-column-gap: 0;
+      align-items: center;
+
+      .martial-knowledge {
+        margin-left: 1rem;
+      }
+
+      .name {
+        .input-container {
+          width: 100%;
+        }
+      }
+      .martial-knowledge {
+        .input-container {
+          width: 100%;
+        }
+      }
     }
   }
   // Ki Skills
@@ -58,6 +122,26 @@
 
     .nemesis-skill-row {
       margin-top: 0.75rem;
+
+      display: grid;
+      grid-template-columns: auto 3fr 1fr;
+      grid-column-gap: 0;
+      align-items: center;
+
+      .martial-knowledge {
+        margin-left: 1rem;
+      }
+
+      .name {
+        .input-container {
+          width: 100%;
+        }
+      }
+      .martial-knowledge {
+        .input-container {
+          width: 100%;
+        }
+      }
     }
   }
   // Nemesis Skill
@@ -141,100 +225,207 @@
 
   // Ki Accumulation
   .ki-accumulation {
-    width: 15.5rem;
+    width: 100%;
 
     .group-header {
-      display: flex;
+      display: grid !important;
+      grid-template-columns: 3rem 1fr 1fr;
+      align-items: center;
+      column-gap: 0.5rem;
+
+      .label {
+        margin: 0;
+        padding: 0;
+        font-size: 0.85rem;
+        text-align: center;
+      }
 
       .accumulation {
-        padding-left: 3.5rem;
+        grid-column: 2;
       }
 
       .title {
-        margin-left: 3.5rem;
-      }
-
-      .label {
-        font-size: 1rem;
+        grid-column: 3;
       }
     }
 
     .group-body {
       position: relative;
-      padding-bottom: 0;
 
       .red-background {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 3rem;
-        height: 100%;
-        background-color: $red;
-        border-top-left-radius: 1rem;
-        border-bottom-left-radius: 1rem;
-
-        z-index: -1;
+        display: none;
       }
 
       .accumulation-row {
-        display: flex;
+        display: grid;
+        grid-template-columns: 3rem 1fr 1fr;
+        align-items: stretch;
+        column-gap: 0.5rem;
+        margin-bottom: 0;
+        min-height: 1.55rem;
 
-        margin-bottom: 0.4rem;
-
-        .input-container {
-          width: 2.5rem;
-
-          &.big {
-            width: 4rem;
-          }
+        &:nth-child(2) .accumulation-row-title {
+          border-radius: var(--abf-radius-sm) 0 0 0;
         }
 
-        &:last-child {
-          margin-bottom: 0;
-        }
-
-        &.generic-accumulation-row {
-          height: 1.5rem;
-
-          .input-container.big {
-            width: 6rem;
-          }
-
-          .accumulation-row-title {
-            width: auto;
-            padding-right: 1.1rem;
-            font-size: 1.1rem;
-            padding-left: 1rem;
-
-            margin-right: 2.5rem;
-
-            background-color: $red;
-            border-radius: 1rem;
-          }
-        }
-
-        .input-container {
-          .input {
-            height: 1rem;
-          }
+        &:nth-child(7) .accumulation-row-title {
+          border-radius: 0 0 0 var(--abf-radius-sm);
         }
 
         .accumulation-row-title {
           display: flex;
           justify-content: center;
           align-items: center;
-
-          color: white;
-          font-weight: bold;
-          font-size: 1rem;
-          width: 2rem;
-
           margin: 0;
+          color: var(--abf-on-accent);
+          background: var(--abf-accent);
+          font-weight: bold;
+          font-size: 0.85rem;
         }
 
-        .accumulation-row-accumulation {
-          margin-left: 1.5rem;
-          margin-right: 3rem;
+        .common-titled-input {
+          margin: 0;
+          min-width: 0;
+
+          .input-container {
+            width: 100%;
+          }
+
+          .input {
+            width: 100%;
+            height: 1.25rem;
+            text-align: center;
+          }
+        }
+      }
+
+      // Reserva: Actual / Mod. / Máx. (todos editables)
+      .ki-reserve-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.7rem;
+        min-height: 0;
+
+        .accumulation-row-title {
+          flex: 0 0 auto;
+          margin: 0;
+          padding: 0.15rem 0.7rem;
+          color: var(--abf-on-accent);
+          background: var(--abf-accent);
+          border-radius: 999px;
+          font-weight: bold;
+          font-size: 0.85rem;
+        }
+
+        .ki-reserve-fields {
+          display: flex;
+          flex: 1;
+          justify-content: space-around;
+          gap: 0.4rem;
+
+          .ki-reserve-field {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1px;
+
+            span {
+              font-size: 0.6rem;
+              line-height: 1;
+              color: var(--abf-text-muted);
+              text-transform: uppercase;
+            }
+
+            input {
+              width: 2.6rem;
+              height: 1.25rem;
+              text-align: center;
+            }
+          }
+        }
+      }
+
+      // Cargar Ki (concentración por asalto)
+      .ki-charge-controls {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 0.8rem;
+
+        .ki-charge-row {
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 0.35rem;
+        }
+
+        .ki-charge-btn {
+          flex: 0 0 auto;
+          border: 1px solid var(--abf-accent);
+          border-radius: 999px;
+          background: var(--abf-surface);
+          color: var(--abf-accent);
+          font-weight: bold;
+          font-size: 0.85rem;
+          padding: 0.2rem 1rem;
+          cursor: pointer;
+          transition: background 0.15s ease, color 0.15s ease;
+
+          &:hover {
+            background: var(--abf-accent-soft);
+          }
+
+          &.is-active {
+            background: var(--abf-accent);
+            color: var(--abf-on-accent);
+          }
+        }
+
+        .ki-accumulated-total {
+          font-size: 0.8rem;
+          font-weight: bold;
+          color: var(--abf-accent);
+          font-variant-numeric: tabular-nums;
+          text-align: center;
+        }
+
+        .ki-full-accumulation {
+          display: flex;
+          align-items: center;
+          gap: 0.35rem;
+          font-size: 0.8rem;
+          color: var(--abf-text);
+
+          input {
+            width: auto;
+            margin: 0;
+          }
+        }
+
+        .ki-accumulate-select {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          gap: 0.25rem 0.6rem;
+          font-size: 0.72rem;
+
+          .ki-accumulate-select-label {
+            font-weight: bold;
+            color: var(--abf-text);
+          }
+
+          label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+            color: var(--abf-text);
+
+            input {
+              width: auto;
+              margin: 0;
+            }
+          }
         }
       }
     }

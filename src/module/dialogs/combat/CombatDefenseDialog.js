@@ -3,6 +3,10 @@ import ABFFoundryRoll from '../../rolls/ABFFoundryRoll';
 import { defensesCounterCheck } from '../../combat/utils/defensesCounterCheck.js';
 import { ABFSettingsKeys } from '../../../utils/registerSettings';
 import { shieldValueCheck } from '../../combat/utils/shieldValueCheck.js';
+import {
+  activeTechniqueCombatBonuses,
+  usableInstantCombatTechniques
+} from '../../domine/techniques/techniqueCombatBonuses';
 
 const getInitialData = (attacker, defender) => {
   const showRollByDefault = !!game.settings.get(
@@ -385,6 +389,23 @@ export class CombatDefenseDialog extends FormApplication {
         }
       }
 
+      // Bonos de combate de Técnicas de Ki: activas (auto; block/dodge según la
+      // defensa) + instantáneas seleccionadas (gastan su Ki concentrado).
+      const kiBonus = activeTechniqueCombatBonuses(this.defenderActor);
+      let kiDefense = type === 'dodge' ? kiBonus.dodge : kiBonus.block;
+      // Iteramos la lista OFRECIDA (excluye activas y no-instantaneas) y solo
+      // gastamos Ki si la tecnica aporta al tipo de defensa elegido (parada/esquiva).
+      const kiInstantSel = this.modalData.defender.combat.kiInstant ?? {};
+      const kiInstantList = usableInstantCombatTechniques(this.defenderActor, 'defense');
+      for (const tech of kiInstantList) {
+        if (kiInstantSel[tech.id] !== true) continue;
+        const stat = type === 'dodge' ? (Number(tech.dodge) || 0) : (Number(tech.block) || 0);
+        if (!stat) continue; // no aporta a esta defensa: no gastar Ki
+        if (!(await this.defenderActor.useTechnique(tech.id))) continue;
+        kiDefense += stat;
+      }
+      if (kiDefense) defenderCombatMod.kiTechnique = { value: kiDefense, apply: true };
+
       let combatModifier = 0;
       for (const key in defenderCombatMod) {
         combatModifier += defenderCombatMod[key]?.value ?? 0;
@@ -700,6 +721,12 @@ export class CombatDefenseDialog extends FormApplication {
       defender: { combat, psychic, mystic },
       ui
     } = this.modalData;
+
+    // Técnicas de Ki instantáneas (Tipo Acción) de defensa, seleccionables.
+    this.modalData.defender.kiInstant = usableInstantCombatTechniques(
+      this.defenderActor,
+      'defense'
+    );
 
     ui.hasFatiguePoints =
       this.defenderActor.system.characteristics.secondaries.fatigue.value > 0;

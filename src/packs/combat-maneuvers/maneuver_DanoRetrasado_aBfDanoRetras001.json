@@ -1,0 +1,25 @@
+{
+    "name": "Daño retrasado",
+    "type": "combatManeuver",
+    "img": "icons/svg/clockwork.svg",
+    "system": {
+        "slug": {
+            "value": "dano-retrasado"
+        },
+        "description": {
+            "value": "Maniobra maestra (requiere Maestría en Ataque: valor base de Ataque ≥ 200).\n\nRetrasa el daño de un golpe: declaras de 1 a 5 asaltos ANTES de tirar, y el daño no se aplica al impactar, sino ese número de asaltos después. Al manifestarse, SIEMPRE causa desangramiento.\n\nPENALIZADOR: -10 al ataque.\nSolo con armas de crítico FIL, PEN o CON (no de energía).\n\nTERMINOLOGÍA:\n• FIL / PEN / CON: tipos de daño físico del arma — Filo (corte), Penetración (perforación) y Contundente (impacto). La maniobra no funciona con daños de energía (Calor, Frío, Electricidad, Energía).\n• Asalto: turno de combate (3 segundos). El retraso se mide en asaltos.\n• Desangramiento: al manifestarse el daño, la víctima empieza a sangrar (ver la regla de Desangrarse).\n\nEN FOUNDRY: elige los asaltos de retraso en la tarjeta de la maniobra y ataca; al impactar se programa el daño, que se aplica (con su sangrado) al avanzar esos asaltos en el control de combate."
+        },
+        "actionType": {
+            "value": "active"
+        },
+        "traits": ["melee"],
+        "visible": false
+    },
+    "effects": [],
+    "ownership": {
+        "default": 0
+    },
+    "flags": {},
+    "_id": "aBfDanoRetras001",
+    "_key": "!items!aBfDanoRetras001"
+}

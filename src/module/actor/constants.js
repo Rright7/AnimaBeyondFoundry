@@ -14,6 +14,9 @@ export const INITIAL_ACTOR_DATA = {
       },
       effects: {
         value: false
+      },
+      kiTechniques: {
+        value: false
       }
     }
   },
@@ -443,14 +446,21 @@ export const INITIAL_ACTOR_DATA = {
   },
 
   combat: {
+    // Anima RAW: physicalActions does NOT chain to attack/block/dodge.
+    // allActions DOES penalize attack/block/dodge per Tabla 43.
+    // The Ability typed node now performs the full computation; the legacy
+    // mutateCombatData.js was deleted to avoid double-counting.
     attack: {
-      __type: '{"type":"Ability", "attribute":"dexterity"}'
+      __type:
+        '{"type":"Ability", "attribute":"dexterity", "applyAllActionMod":true, "applyPhysicalActionMod":false}'
     },
     block: {
-      __type: '{"type":"Ability", "attribute":"dexterity"}'
+      __type:
+        '{"type":"Ability", "attribute":"dexterity", "applyAllActionMod":true, "applyPhysicalActionMod":false}'
     },
     dodge: {
-      __type: '{"type":"Ability", "attribute":"agility"}'
+      __type:
+        '{"type":"Ability", "attribute":"agility", "applyAllActionMod":true, "applyPhysicalActionMod":false}'
     },
     wearArmor: {
       __type: '{"type":"AffectedByCharacteristicValue", "attribute":"strength"}'
@@ -687,83 +697,76 @@ export const INITIAL_ACTOR_DATA = {
       }
     },
     martialKnowledge: {
-      used: {
-        value: 0
-      },
-      max: {
-        value: 0
-      }
+      max: { value: 0 },
+      used: { value: 0 },
+      available: { value: 0 },
+      excess: { value: false }
     },
     kiAccumulation: {
       strength: {
-        accumulated: {
-          value: 0
+        kiPoints: {
+          byTable: { value: 0 },
+          byPd: { value: 0 },          final: { value: 0 }
         },
-        base: {
-          value: 0
-        },
-        final: {
-          value: 0
-        }
+        base: { value: 0 },
+        half: { value: 0 },        final: { value: 0 },
+        accumulated: { value: 0 },
+        accumulating: { value: true }
       },
       agility: {
-        accumulated: {
-          value: 0
+        kiPoints: {
+          byTable: { value: 0 },
+          byPd: { value: 0 },          final: { value: 0 }
         },
-        base: {
-          value: 0
-        },
-        final: {
-          value: 0
-        }
+        base: { value: 0 },
+        half: { value: 0 },        final: { value: 0 },
+        accumulated: { value: 0 },
+        accumulating: { value: true }
       },
       dexterity: {
-        accumulated: {
-          value: 0
+        kiPoints: {
+          byTable: { value: 0 },
+          byPd: { value: 0 },          final: { value: 0 }
         },
-        base: {
-          value: 0
-        },
-        final: {
-          value: 0
-        }
+        base: { value: 0 },
+        half: { value: 0 },        final: { value: 0 },
+        accumulated: { value: 0 },
+        accumulating: { value: true }
       },
       constitution: {
-        accumulated: {
-          value: 0
+        kiPoints: {
+          byTable: { value: 0 },
+          byPd: { value: 0 },          final: { value: 0 }
         },
-        base: {
-          value: 0
-        },
-        final: {
-          value: 0
-        }
+        base: { value: 0 },
+        half: { value: 0 },        final: { value: 0 },
+        accumulated: { value: 0 },
+        accumulating: { value: true }
       },
       willPower: {
-        accumulated: {
-          value: 0
+        kiPoints: {
+          byTable: { value: 0 },
+          byPd: { value: 0 },          final: { value: 0 }
         },
-        base: {
-          value: 0
-        },
-        final: {
-          value: 0
-        }
+        base: { value: 0 },
+        half: { value: 0 },        final: { value: 0 },
+        accumulated: { value: 0 },
+        accumulating: { value: true }
       },
       power: {
-        accumulated: {
-          value: 0
+        kiPoints: {
+          byTable: { value: 0 },
+          byPd: { value: 0 },          final: { value: 0 }
         },
-        base: {
-          value: 0
-        },
-        final: {
-          value: 0
-        }
+        base: { value: 0 },
+        half: { value: 0 },        final: { value: 0 },
+        accumulated: { value: 0 },
+        accumulating: { value: true }
       },
-      generic: {
-        value: 0,
-        max: 0
+      reserve: {
+        base: { value: 0 },
+        modifier: { value: 0 },
+        max: { value: 0 },        current: { value: null }
       }
     }
   },

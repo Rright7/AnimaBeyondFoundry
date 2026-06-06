@@ -106,7 +106,7 @@ function canApply(actor) {
 async function applyDamageToActor(actor, amount) {
   try {
     const primary = 'system.characteristics.secondaries.lifePoints.value';
-    let cur = getProperty(actor, primary);
+    let cur = foundry.utils.getProperty(actor, primary);
     if (typeof cur === 'number' && !Number.isNaN(cur)) {
       // const next = Math.max(0, cur - amount);
       const next = cur - amount;
@@ -121,9 +121,10 @@ async function applyDamageToActor(actor, amount) {
       'system.attributes.hp.value'
     ];
     for (const path of fallbacks) {
-      cur = getProperty(actor, path);
+      cur = foundry.utils.getProperty(actor, path);
       if (typeof cur === 'number' && !Number.isNaN(cur)) {
-        const next = Math.max(0, cur - amount);
+        // Life points may legitimately go negative — no floor.
+        const next = cur - amount;
         await actor.update({ [path]: next });
         ui.notifications?.info(`${actor.name}: -${amount} LP`);
         return true;

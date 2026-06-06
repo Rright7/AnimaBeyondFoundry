@@ -1,9 +1,14 @@
 @use '../variable' as *;
 
-.combat-attack-dialog {
+.attack-config-dialog {
+  // NOTE: This file lived for a long time under the wrong root selector
+  // (.combat-attack-dialog), so *none* of its rules applied. We now have
+  // the correct selector. Force height to auto (Foundry's default chops
+  // the bottom button) and set a min-width that fits long weapon names
+  // like "Hacha a dos manos con ataque de 160". No !important on width
+  // so the player can still resize the dialog by dragging.
   height: auto !important;
-
-  width: 550px;
+  min-width: 340px;
 
   .window-content {
     display: flex;
@@ -48,9 +53,10 @@
   }
 
   .group-body {
-    overflow-y: scroll;
-
-    height: 100%;
+    // Let the body grow with its content (no forced 100% height and
+    // no permanent vertical scrollbar). If the dialog ever overflows,
+    // the browser will show the scrollbar automatically.
+    overflow-y: auto;
 
     .attack-sent,
     .mystic-attack-sent,
@@ -96,6 +102,59 @@
 
     .hr {
       border-bottom: 1px solid $red;
+    }
+
+    // ─── Ataque apuntado (Variante B) ──────────────────────────────
+    // The "Ataque apuntado" checkbox uses the same label/control rhythm as
+    // the other rows; when checked, the zone select appears below as an
+    // indented sub-row marked with a left border to communicate hierarchy.
+    .aim-row {
+      // Inherits .columns rhythm (label left, control right). Nothing
+      // extra needed — kept as a hook for future styling tweaks.
+    }
+
+    .aim-zone-row {
+      // Sub-row indented to make it visually depend on the "Ataque
+      // apuntado" checkbox above. The left border is the visual hook.
+      padding-left: 0.75rem;
+      margin-left: 0.5rem;
+      border-left: 3px solid $red !important;
+      position: relative;
+
+      .aim-zone-row__label {
+        color: var(--abf-text-muted);
+        font-style: italic;
+        font-size: 0.9rem;
+        margin-right: 0.5rem;
+      }
+
+      .aim-zone-row__select {
+        flex: 0 1 auto;
+      }
+    }
+
+    // ─── Técnicas de Ki instantáneas (seleccionables) ──────────────
+    .ki-instant-techniques {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.2rem;
+
+      .ki-instant-row {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.9rem;
+        cursor: pointer;
+
+        input {
+          width: auto;
+          margin: 0;
+        }
+
+        &--noki {
+          opacity: 0.6;
+        }
+      }
     }
   }
 }

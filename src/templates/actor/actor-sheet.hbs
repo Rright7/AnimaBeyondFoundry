@@ -14,11 +14,14 @@
     {{#if system.ui.tabVisibility.domine.value}}
       <a class="item" data-tab="domine">{{localize "anima.ui.tabs.domine"}}</a>
     {{/if}}
+    {{#if system.ui.tabVisibility.kiTechniques.value}}
+      <a class="item" data-tab="kiTechniques">{{localize "anima.ui.tabs.kiTechniques"}}</a>
+    {{/if}}
     {{#if system.ui.tabVisibility.psychic.value}}
       <a class="item" data-tab="psychic">{{localize "anima.ui.tabs.psychic"}}</a>
     {{/if}}
     {{#if system.ui.tabVisibility.effects.value}}
-      <a class="item" data-tab="effects">{{localize "anima.ui.tabs.effects"}}</a> 
+      <a class="item" data-tab="effects">{{localize "anima.ui.tabs.effects"}}</a>
     {{/if}}
     <a class="item" data-tab="settings">
       <img src='{{sysAsset "assets/icons/game-icons.net/ffffff/lorc/cog.svg"}}'>
@@ -52,6 +55,10 @@
 
     <div class="tab effects" data-group="primary" data-tab="effects">
       {{> "systems/animabf/templates/actor/parts/effects/effects.hbs"}}
+    </div>
+
+    <div class="tab kiTechniques" data-group="primary" data-tab="kiTechniques">
+      {{> (sysTpl "templates/actor/parts/ki-techniques/ki-techniques.hbs") }}
     </div>
 
     <div class="tab settings" data-group="primary" data-tab="settings">

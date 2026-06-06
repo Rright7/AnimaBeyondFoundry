@@ -1,5 +1,5 @@
 import { ABFItems } from '../../items/ABFItems';
-import { openSimpleInputDialog } from '../../utils/dialogs/openSimpleInputDialog';
+import { openCanonicalSkillSelectDialog } from '../../utils/dialogs/openCanonicalSkillSelectDialog';
 import { ABFItemConfigFactory } from '../ABFItemConfig';
 
 /** @type {import("../Items").KiSkillItemConfig} */
@@ -13,15 +13,17 @@ export const KiSkillItemConfig = ABFItemConfigFactory({
     rowSelector: '.ki-skill-row'
   },
   onCreate: async actor => {
-    const { i18n } = game;
+    const selection = await openCanonicalSkillSelectDialog('ki');
+    if (!selection) return;
 
-    const name = await openSimpleInputDialog({
-      content: i18n.localize('dialogs.items.kiSkill.content')
-    });
+    const system = selection.canonicalId
+      ? { canonicalId: selection.canonicalId }
+      : {};
 
     await actor.createInnerItem({
-      name,
-      type: ABFItems.KI_SKILL
+      name: selection.name,
+      type: ABFItems.KI_SKILL,
+      system
     });
   }
 });

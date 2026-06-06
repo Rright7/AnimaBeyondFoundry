@@ -14,49 +14,43 @@
       "disabled": true,
       "changes": [
         {
+          "key": "system.combat.attack.final.value",
+          "type": "add",
+          "value": "-20",
+          "priority": null
+        },
+        {
+          "key": "system.combat.block.final.value",
+          "type": "add",
+          "value": "-120",
+          "priority": null
+        },
+        {
+          "key": "system.combat.dodge.final.value",
+          "type": "add",
+          "value": "-120",
+          "priority": null
+        },
+        {
+          "key": "system.characteristics.secondaries.initiative.final.value",
+          "type": "add",
+          "value": "-50",
+          "priority": null
+        },
+        {
           "key": "system.general.modifiers.physicalActions.final.value",
           "type": "add",
           "value": "-100",
           "priority": null
         },
         {
-          "key": "system.combat.attack.final.value",
-          "type": "add",
-          "value": "80",
-          "priority": null
-        },
-        {
-          "key": "system.combat.block.final.value",
-          "type": "add",
-          "value": "-20",
-          "priority": null
-        },
-        {
-          "key": "system.combat.dodge.final.value",
-          "type": "add",
-          "value": "-20",
-          "priority": null
-        },
-        {
-          "key": "system.psychic.psychicProjection.imbalance.offensive.final.value",
-          "type": "add",
-          "value": "-20",
-          "priority": null
-        },
-        {
-          "key": "system.psychic.psychicProjection.imbalance.defensive.final.value",
+          "key": "system.mystic.magicProjection.imbalance.defensive.final.value",
           "type": "add",
           "value": "-120",
           "priority": null
         },
         {
-          "key": "system.mystic.magicProjection.imbalance.offensive.final.value",
-          "type": "add",
-          "value": "-20",
-          "priority": null
-        },
-        {
-          "key": "system.mystic.magicProjection.imbalance.defensive.final.value",
+          "key": "system.psychic.psychicProjection.imbalance.defensive.final.value",
           "type": "add",
           "value": "-120",
           "priority": null

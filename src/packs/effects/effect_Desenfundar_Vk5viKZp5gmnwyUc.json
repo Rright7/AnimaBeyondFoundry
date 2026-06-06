@@ -14,9 +14,15 @@
       "disabled": true,
       "changes": [
         {
-          "key": "system.combat.dodge.final.value",
+          "key": "system.combat.attack.final.value",
           "type": "add",
-          "value": "25",
+          "value": "-25",
+          "priority": null
+        },
+        {
+          "key": "system.combat.block.final.value",
+          "type": "add",
+          "value": "-25",
           "priority": null
         },
         {
@@ -28,7 +34,7 @@
         {
           "key": "system.characteristics.secondaries.initiative.final.value",
           "type": "add",
-          "value": "12",
+          "value": "-25",
           "priority": null
         }
       ],

@@ -13,7 +13,7 @@
   },
   "system": {
     "special": {
-      "value": "A 2 manos, Presa (FUE 7), Ver"
+      "value": "Ver"
     },
     "integrity": {
       "base": {
@@ -191,6 +191,25 @@
     },
     "isShield": {
       "value": false
+    },
+    "qualities": {
+      "value": [
+        "twoHanded",
+        "grappling"
+      ]
+    },
+    "notes": {
+      "value": ""
+    },
+    "qualityParams": {
+      "value": {
+        "grappling": {
+          "grappleStrength": 7
+        }
+      }
+    },
+    "allowsPresa": {
+      "value": true
     }
   },
   "_stats": {

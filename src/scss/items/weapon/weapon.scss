@@ -41,6 +41,79 @@
       .special {
         .input-container {
           width: 10rem;
+
+          // The Especial field is readonly and just shows the localized
+          // qualities label. When the list of qualities is longer than
+          // the container, let the user scroll horizontally inside the
+          // input by focusing it (text-overflow stays clipped, but the
+          // native input scroll exposes the rest with arrow keys / drag).
+          input[readonly] {
+            cursor: text;
+            overflow-x: auto;
+            text-overflow: clip;
+            white-space: nowrap;
+          }
+        }
+      }
+
+      // Cualidades: chip list + drop zone. Sits below the Especial /
+      // Notas inputs as the GM-facing input mechanism for the canonical
+      // qualities array.
+      .weapon-qualities-section {
+        margin-top: 0.6rem;
+        padding: 0.4rem 0.6rem;
+        border: 1px dashed $red;
+        border-radius: $border-radius;
+        background: rgba($red, 0.04);
+
+        &.weapon-qualities-section--drag-over {
+          background: rgba($red, 0.15);
+        }
+
+        .weapon-qualities-section__title {
+          display: block;
+          font-weight: 600;
+          font-size: 0.85rem;
+          color: $red;
+          margin-bottom: 0.3rem;
+          text-align: center;
+        }
+
+        .weapon-qualities-list {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.35rem;
+          justify-content: center;
+
+          .weapon-qualities-list__empty {
+            font-style: italic;
+            color: var(--abf-text-muted);
+            font-size: 0.8rem;
+          }
+
+          .weapon-quality-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: $red;
+            color: $white;
+            padding: 0.15rem 0.5rem;
+            border-radius: $border-radius;
+            font-size: 0.8rem;
+
+            .weapon-quality-chip__remove {
+              cursor: pointer;
+              opacity: 0.8;
+
+              &:hover {
+                opacity: 1;
+              }
+
+              i {
+                font-size: 0.7rem;
+              }
+            }
+          }
         }
       }
     }

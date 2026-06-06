@@ -1,0 +1,24 @@
+{
+    "name": "Presa",
+    "type": "weaponQuality",
+    "img": "icons/skills/melee/strike-fists-grappling-orange.webp",
+    "system": {
+        "slug": {
+            "value": "grappling"
+        },
+        "description": {
+            "value": "Son aquellas que permiten, a quienes las empleen, utilizar maniobras específicas de Presa para atrapar al oponente. Al contrario de lo que ocurre con las manos desnudas, al presar con ellas, un personaje no puede elegir usar sus propias características, sino que deberá utilizar la Fuerza natural del arma. Dicha característica representa su capacidad innata para trabar a sus adversarios. Naturalmente, se siguen utilizando los bonificadores a los controles enfrentados que se apliquen por la diferencia entre las habilidades de los contendientes. En el caso de las armas de calidad, cada bono natural de +5 añade un +1 a su Fuerza para presar."
+        },
+        "appliesTo": {
+            "value": ["weapon"]
+        },
+        "visible": false
+    },
+    "effects": [],
+    "ownership": {
+        "default": 0
+    },
+    "flags": {},
+    "_id": "aBfPresaQ0000001",
+    "_key": "!items!aBfPresaQ0000001"
+}

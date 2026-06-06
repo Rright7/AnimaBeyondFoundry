@@ -1,0 +1,24 @@
+{
+    "name": "Lanzable",
+    "type": "weaponQuality",
+    "img": "icons/weapons/thrown/dagger-thrown-glow.webp",
+    "system": {
+        "slug": {
+            "value": "throwable"
+        },
+        "description": {
+            "value": "Todas las armas con esta regla especial están equilibradas o pensadas para ser usadas a distancia. Los personajes que tengan habilidad con ellas podrán emplearlas tanto físicamente como arrojándolas, sin la necesidad de adquirir la Tabla de armas de lanzamiento."
+        },
+        "appliesTo": {
+            "value": ["weapon"]
+        },
+        "visible": false
+    },
+    "effects": [],
+    "ownership": {
+        "default": 0
+    },
+    "flags": {},
+    "_id": "aBfLanzable00001",
+    "_key": "!items!aBfLanzable00001"
+}

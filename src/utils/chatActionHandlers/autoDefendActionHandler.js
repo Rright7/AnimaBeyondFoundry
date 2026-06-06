@@ -72,7 +72,7 @@ export default async function autoDefendActionHandler(message, _html, ds) {
         : 'Ataque',
       entries,
       hasRemaining: entries.some(e => !e.applied && e.damageFinal > 0),
-      messageId: randomID()
+      messageId: foundry.utils.randomID()
     });
 
     const cm = await ChatMessage.create({
@@ -82,6 +82,11 @@ export default async function autoDefendActionHandler(message, _html, ds) {
         animabf: {
           kind: 'multiDefenseResult',
           sourceAttackMessageId: msg?.id ?? null,
+          maneuverSlug: attackData?.maneuverSlug ?? '',
+          maneuverItemName: attackData?.maneuverItemName ?? '',
+          maneuverWasUnarmed: !!attackData?.maneuverWasUnarmed,
+          delayRounds: Number(attackData?.delayRounds ?? 0) || 0,
+          attackerId: attackData?.attackerId ?? '',
           batch: { createdAt: Date.now() },
           entries: entries.map(e => ({ ...e, applied: false }))
         }
@@ -135,6 +140,7 @@ function entryFromAuto(r, tok) {
         r.combatResult?.damage ??
         0
     ),
+    damagePercentage: Number(r.combatResult?.damagePercentage ?? 0),
     hasCounter: !!r.combatResult?.hasCounterAttack,
     counterAttackValue: Number(r.combatResult?.counterAttackValue ?? 0),
     applied: false

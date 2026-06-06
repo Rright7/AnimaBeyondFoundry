@@ -1,0 +1,51 @@
+{
+  "name": "Preparación Previa",
+  "type": "techniqueEffect",
+  "img": "icons/magic/unholy/silhouette-robe-evil-power.webp",
+  "system": {
+    "kind": {
+      "value": "disadvantage"
+    },
+    "category": {
+      "value": "disadvantage"
+    },
+    "effectType": {
+      "value": ""
+    },
+    "effectClass": {
+      "value": "any"
+    },
+    "primaryCharacteristic": {
+      "value": ""
+    },
+    "optionalCharacteristics": {},
+    "elements": [],
+    "tiers": [
+      {
+        "option": "1 minuto",
+        "cmReduction": -10,
+        "level": 1
+      },
+      {
+        "option": "1 hora",
+        "cmReduction": -15,
+        "level": 1
+      },
+      {
+        "option": "1 día",
+        "cmReduction": -25,
+        "level": 2
+      }
+    ],
+    "description": {
+      "value": "<p><strong>Desventaja</strong> · <strong>Clase:</strong> Cualquiera</p><p>Reduce el coste en CM de la Técnica (no puede bajar del límite del nivel).</p><table border='1' style='border-collapse:collapse;width:100%;text-align:center'><thead><tr><th>Opción</th><th>Reducción CM</th><th>Nv</th></tr></thead><tbody><tr><td>1 minuto</td><td>-10</td><td>1</td></tr><tr><td>1 hora</td><td>-15</td><td>1</td></tr><tr><td>1 día</td><td>-25</td><td>2</td></tr></tbody></table>"
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "d1584475ea8262b9",
+  "_key": "!items!d1584475ea8262b9"
+}

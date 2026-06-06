@@ -1,0 +1,85 @@
+{
+  "name": "Marca",
+  "type": "techniqueEffect",
+  "img": "icons/magic/light/orb-lightning-purple.webp",
+  "system": {
+    "kind": {
+      "value": "effect"
+    },
+    "category": {
+      "value": "varied"
+    },
+    "effectType": {
+      "value": "action"
+    },
+    "effectClass": {
+      "value": "attack"
+    },
+    "primaryCharacteristic": {
+      "value": "power"
+    },
+    "optionalCharacteristics": {
+      "constitution": 2,
+      "dexterity": 3,
+      "strength": 3,
+      "willPower": 1
+    },
+    "elements": [
+      "air",
+      "light",
+      "dark"
+    ],
+    "tiers": [
+      {
+        "option": "Menor",
+        "kiPrimary": 4,
+        "kiSecondary": 6,
+        "cm": 10,
+        "maint": 2,
+        "sMe": 4,
+        "sMa": 7,
+        "level": 1
+      },
+      {
+        "option": "Mayor",
+        "kiPrimary": 10,
+        "kiSecondary": 13,
+        "cm": 25,
+        "maint": 4,
+        "sMe": 8,
+        "sMa": 14,
+        "level": 2
+      },
+      {
+        "option": "Permanencia Prolongada",
+        "kiPrimary": 4,
+        "kiSecondary": 4,
+        "cm": 10,
+        "maint": null,
+        "sMe": null,
+        "sMa": null,
+        "level": 1
+      },
+      {
+        "option": "Permanencia Eterna",
+        "kiPrimary": 10,
+        "kiSecondary": 10,
+        "cm": 30,
+        "maint": 2,
+        "sMe": 4,
+        "sMa": 7,
+        "level": 1
+      }
+    ],
+    "description": {
+      "value": "<p><strong>Categoría:</strong> Variado · <strong>Tipo:</strong> Acción · <strong>Clase:</strong> Ataque</p><p><strong>Característica:</strong> Poder (opcionales: Constitución+2, Destreza+3, Fuerza+3, Voluntad+1)</p><p><strong>Elementos:</strong> Aire, Luz, Oscuridad</p><table border='1' style='border-collapse:collapse;width:100%;text-align:center'><thead><tr><th>Opción</th><th>Ki 1º</th><th>Ki 2º</th><th>CM</th><th>Mant</th><th>SMe</th><th>SMa</th><th>Nv</th></tr></thead><tbody><tr><td>Menor</td><td>4</td><td>6</td><td>10</td><td>2</td><td>4</td><td>7</td><td>1</td></tr><tr><td>Mayor</td><td>10</td><td>13</td><td>25</td><td>4</td><td>8</td><td>14</td><td>2</td></tr><tr><td>Permanencia Prolongada</td><td>4</td><td>4</td><td>10</td><td>None</td><td>None</td><td>None</td><td>1</td></tr><tr><td>Permanencia Eterna</td><td>10</td><td>10</td><td>30</td><td>2</td><td>4</td><td>7</td><td>1</td></tr></tbody></table>"
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "a95c3371502b2ed9",
+  "_key": "!items!a95c3371502b2ed9"
+}

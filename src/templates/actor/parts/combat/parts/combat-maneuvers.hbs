@@ -1,0 +1,53 @@
+{{#> "systems/animabf/templates/common/ui/group.hbs"
+  class="combat-maneuvers"
+}}
+  {{>
+  "systems/animabf/templates/common/ui/group-header.hbs"
+    title=(localize "anima.ui.combat.combatManeuvers.title")
+  }}
+  {{#> "systems/animabf/templates/common/ui/group-body.hbs"
+    class="combat-maneuvers"
+  }}
+    {{#with (combatManeuverCatalog system.combat.combatManeuvers) as |maneuvers|}}
+    {{#if maneuvers.length}}
+      <div class='combat-maneuvers-search'>
+        <i class='fas fa-search'></i>
+        <input
+          type='search'
+          class='combat-maneuver-search-input'
+          placeholder='{{localize "anima.ui.combat.combatManeuvers.searchPlaceholder"}}'
+          autocomplete='off'
+        />
+      </div>
+      <div class='combat-maneuvers-grid'>
+        {{#each maneuvers as |maneuver|}}
+          {{#unless maneuver.isMaster}}
+            {{> "systems/animabf/templates/actor/parts/combat/parts/combat-maneuver-card.hbs" maneuver=maneuver}}
+          {{/unless}}
+        {{/each}}
+        <div class='combat-maneuver-card combat-maneuver-card--placeholder'>
+          {{localize "anima.ui.combat.combatManeuvers.dragHint"}}
+        </div>
+      </div>
+      <h4 class='combat-maneuvers-subtitle'>
+        <i class='fas fa-crown'></i>
+        {{localize "anima.ui.combat.combatManeuvers.masterTitle"}}
+      </h4>
+      <div class='combat-maneuvers-grid combat-maneuvers-grid--master'>
+        {{#each maneuvers as |maneuver|}}
+          {{#if maneuver.isMaster}}
+            {{> "systems/animabf/templates/actor/parts/combat/parts/combat-maneuver-card.hbs" maneuver=maneuver}}
+          {{/if}}
+        {{/each}}
+      </div>
+      <p class='combat-maneuvers-no-results'>
+        {{localize "anima.ui.combat.combatManeuvers.noResults"}}
+      </p>
+    {{else}}
+      <p class='combat-maneuvers-empty'>
+        {{localize "anima.ui.combat.combatManeuvers.empty"}}
+      </p>
+    {{/if}}
+    {{/with}}
+  {{/"systems/animabf/templates/common/ui/group-body.hbs"}}
+{{/"systems/animabf/templates/common/ui/group.hbs"}}

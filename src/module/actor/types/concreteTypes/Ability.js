@@ -22,11 +22,14 @@ export class Ability extends AffectedByCharacteristicValue {
   }
 
   static defaults() {
-    return {
-      ...super.defaults(),
-      applyAllActionMod: true,
-      applyPhysicalActionMod: true
-    };
+    // Do NOT seed `applyAllActionMod`/`applyPhysicalActionMod` here. The
+    // getters above already provide sensible fallbacks (allActions defaults
+    // to true; physicalActions defaults based on the attribute being a
+    // physical one). Seeding `true` in defaults() crushes any explicit
+    // `false` coming from the `__type` JSON marker because defaults are
+    // applied AFTER the merge, persisting `true` into actor.system and
+    // making _get(...) find a truthy value before the fallback logic runs.
+    return super.defaults();
   }
 
   static normalizeInflateInput(node) {

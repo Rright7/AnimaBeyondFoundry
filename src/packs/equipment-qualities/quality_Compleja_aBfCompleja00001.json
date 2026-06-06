@@ -1,0 +1,24 @@
+{
+    "name": "Compleja",
+    "type": "weaponQuality",
+    "img": "icons/skills/melee/weapons-crossed-swords-purple.webp",
+    "system": {
+        "slug": {
+            "value": "complex"
+        },
+        "description": {
+            "value": "Esta clase de armas es excepcionalmente difícil de utilizar. Por ello, un personaje aumenta dos puntos su índice de Pifia, fracasando con un resultado de 5 en un D100. Si alcanza la maestría con ella, desaparece completamente este penalizador."
+        },
+        "appliesTo": {
+            "value": ["weapon"]
+        },
+        "visible": false
+    },
+    "effects": [],
+    "ownership": {
+        "default": 0
+    },
+    "flags": {},
+    "_id": "aBfCompleja00001",
+    "_key": "!items!aBfCompleja00001"
+}

@@ -25,12 +25,14 @@ export function ABFItemConfigFactory(minimal) {
       const lastKey = path.pop();
       if (!lastKey) return;
       const parentField = path.reduce((field, nextKey) => field[nextKey], actor);
+      if (!Array.isArray(parentField[lastKey])) parentField[lastKey] = [];
       parentField[lastKey] = parentField[lastKey].filter(i => currentItems.includes(i));
     },
     addToFieldPath(actor, item) {
       const path = ['system', ...this.fieldPath];
       const lastKey = path.pop();
       const parentField = path.reduce((field, nextKey) => field[nextKey], actor);
+      if (!Array.isArray(parentField[lastKey])) parentField[lastKey] = [];
       const index = parentField[lastKey].findIndex(i => i._id === item._id);
       if (index === -1) {
         parentField[lastKey].push(item);
@@ -43,9 +45,17 @@ export function ABFItemConfigFactory(minimal) {
       const items = actor.getItemsOf(this.type);
 
       for (const item of items) {
-        await this.onAttach?.(actor, item);
+        try {
+          await this.onAttach?.(actor, item);
+        } catch (err) {
+          console.error(`animabf | onAttach failed for "${item?.name}" (${this.type})`, err);
+        }
         this.addToFieldPath(actor, item);
-        this.prepareItem?.(item);
+        try {
+          await this.prepareItem?.(item);
+        } catch (err) {
+          console.error(`animabf | prepareItem failed for "${item?.name}" (${this.type})`, err);
+        }
       }
     },
     async onUpdate(actor, changes) {

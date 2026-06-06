@@ -1,0 +1,25 @@
+{
+    "name": "Disparo apuntado: Rebote",
+    "type": "combatManeuver",
+    "img": "icons/svg/target.svg",
+    "system": {
+        "slug": {
+            "value": "disparo-rebote"
+        },
+        "description": {
+            "value": "Maniobra maestra (requiere Maestría en Ataque: valor base de Ataque ≥ 200).\n\nHace rebotar proyectiles en el entorno (paredes, rocas) para alcanzar blancos fuera de tu trayectoria de tiro. Evita coberturas que solo tapen frontalmente al blanco.\n\nPENALIZADOR (a elegir en la tarjeta):\n• −20: un solo rebote.\n• −40: más de un rebote.\n\nDAÑO: el Daño Base se reduce 10 puntos (el ataque pierde potencia). El sistema lo descuenta solo.\n\nMANUAL (a discreción del DJ): para atacar a un enemigo completamente cubierto del que tienes una idea aproximada de su posición, añade el penalizador de Ceguera parcial (−40) o completa (−80) con el campo «Modificador» del diálogo de ataque.\n\nTERMINOLOGÍA:\n• Rebote: el proyectil cambia de trayectoria al chocar con el entorno.\n• Ceguera parcial/completa: penalizador por no ver al objetivo (−40 / −80).\n\nEN FOUNDRY: declara la maniobra, elige −20/−40 en la tarjeta y ataca; el Daño Base ya sale reducido en 10. Añade a mano el penalizador de ceguera si procede."
+        },
+        "actionType": {
+            "value": "active"
+        },
+        "traits": ["ranged"],
+        "visible": false
+    },
+    "effects": [],
+    "ownership": {
+        "default": 0
+    },
+    "flags": {},
+    "_id": "aBfDisparoReb001",
+    "_key": "!items!aBfDisparoReb001"
+}

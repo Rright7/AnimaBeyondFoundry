@@ -1,0 +1,65 @@
+{
+  "name": "Previsión",
+  "type": "techniqueEffect",
+  "img": "icons/magic/light/orb-lightning-purple.webp",
+  "system": {
+    "kind": {
+      "value": "effect"
+    },
+    "category": {
+      "value": "reaction"
+    },
+    "effectType": {
+      "value": "round"
+    },
+    "effectClass": {
+      "value": "variable"
+    },
+    "primaryCharacteristic": {
+      "value": "power"
+    },
+    "optionalCharacteristics": {
+      "constitution": 2,
+      "dexterity": 3,
+      "strength": 1,
+      "willPower": 1
+    },
+    "elements": [
+      "air",
+      "fire",
+      "light"
+    ],
+    "tiers": [
+      {
+        "option": "A Mitad",
+        "kiPrimary": 3,
+        "kiSecondary": 5,
+        "cm": 10,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": 1
+      },
+      {
+        "option": "Completo",
+        "kiPrimary": 6,
+        "kiSecondary": 9,
+        "cm": 25,
+        "maint": 3,
+        "sMe": 6,
+        "sMa": 11,
+        "level": 1
+      }
+    ],
+    "description": {
+      "value": "<p><strong>Categoría:</strong> De reacción · <strong>Tipo:</strong> Asalto · <strong>Clase:</strong> Variable</p><p><strong>Característica:</strong> Poder (opcionales: Constitución+2, Destreza+3, Fuerza+1, Voluntad+1)</p><p><strong>Elementos:</strong> Aire, Fuego, Luz</p><table border='1' style='border-collapse:collapse;width:100%;text-align:center'><thead><tr><th>Opción</th><th>Ki 1º</th><th>Ki 2º</th><th>CM</th><th>Mant</th><th>SMe</th><th>SMa</th><th>Nv</th></tr></thead><tbody><tr><td>A Mitad</td><td>3</td><td>5</td><td>10</td><td>1</td><td>2</td><td>4</td><td>1</td></tr><tr><td>Completo</td><td>6</td><td>9</td><td>25</td><td>3</td><td>6</td><td>11</td><td>1</td></tr></tbody></table>"
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "7bec271831e2e7fd",
+  "_key": "!items!7bec271831e2e7fd"
+}

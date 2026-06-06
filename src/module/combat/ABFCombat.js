@@ -1,4 +1,6 @@
 import { openModDialog } from '../utils/dialogs/openSimpleInputDialog';
+import { tickBleeding } from './bleedingEffect.js';
+import { processDueDelayedDamage } from './delayedDamageEffect.js';
 
 export default class ABFCombat extends Combat {
   /**
@@ -30,11 +32,23 @@ export default class ABFCombat extends Combat {
     await this.resetAll();
     this.setFlag('world', 'newRound', true);
 
-    const combatants = this.combatants.map(c => c.token);
-    for (let token of combatants) {
-      token?.actor?.resetDefensesCounter();
-      token?.actor?.consumeMaintainedZeon();
-      token?.actor?.psychicShieldsMaintenance();
+    // Usar combatant.actor (accesor robusto): c.token puede ser null si el token
+    // no se resuelve en la escena, lo que saltaría TODAS las operaciones por asalto.
+    for (const combatant of this.combatants) {
+      const actor = combatant?.actor;
+      if (!actor) continue;
+      actor.resetDefensesCounter();
+      actor.consumeMaintainedZeon();
+      // Ki: serializado con await sobre el mismo actor para evitar carreras de
+      // update (mantenimiento de técnicas y acumulación por asalto persisten bien).
+      await actor.consumeActiveTechniquesKi();
+      await actor.accumulateKi();
+      actor.psychicShieldsMaintenance();
+      // Desangramiento: 1 PV cada 20 asaltos mientras dure el sangrado.
+      await tickBleeding(actor, 1);
+      // Daño retrasado: aplica los daños que vencen en la ronda que se entra
+      // (this.round aún es la anterior; super.nextRound la incrementa).
+      await processDueDelayedDamage(actor, (this.round ?? 0) + 1);
     }
 
     return super.nextRound();
@@ -44,10 +58,13 @@ export default class ABFCombat extends Combat {
     // Reset initiative for everyone when going to the next round
     await this.resetAll();
 
-    const combatants = this.combatants.map(c => c.token);
-    for (let token of combatants) {
-      token?.actor?.consumeMaintainedZeon(true);
-      token?.actor?.psychicShieldsMaintenance(true);
+    for (const combatant of this.combatants) {
+      const actor = combatant?.actor;
+      if (!actor) continue;
+      actor.consumeMaintainedZeon(true);
+      await actor.consumeActiveTechniquesKi(true);
+      await actor.revertAccumulateKi();
+      actor.psychicShieldsMaintenance(true);
     }
 
     return super.previousRound();

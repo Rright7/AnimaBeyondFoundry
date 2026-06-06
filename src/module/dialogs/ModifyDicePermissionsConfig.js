@@ -3,7 +3,7 @@ import { Templates } from '../utils/constants';
 
 export default class ModifyDicePermissionsConfig extends FormApplication {
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       id: 'modify-dice-formulas-permission',
       title: 'anima.permissions.modifyDiceFormulasPermission.title',
       template: Templates.Dialog.Config.ModifyDiceFormulas,

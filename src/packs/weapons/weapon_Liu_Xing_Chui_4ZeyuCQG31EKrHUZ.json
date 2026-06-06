@@ -13,7 +13,7 @@
   },
   "system": {
     "special": {
-      "value": "A dos manos, Presa (FUE 8), Compleja"
+      "value": ""
     },
     "integrity": {
       "base": {
@@ -191,6 +191,26 @@
     },
     "isShield": {
       "value": false
+    },
+    "qualities": {
+      "value": [
+        "twoHanded",
+        "grappling",
+        "complex"
+      ]
+    },
+    "notes": {
+      "value": ""
+    },
+    "qualityParams": {
+      "value": {
+        "grappling": {
+          "grappleStrength": 8
+        }
+      }
+    },
+    "allowsPresa": {
+      "value": true
     }
   },
   "_stats": {

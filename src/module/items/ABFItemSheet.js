@@ -1,5 +1,16 @@
 import { ABFItems } from './ABFItems';
 import { ITEM_CONFIGURATIONS } from '../actor/utils/prepareItems/constants';
+import { ensureLinkedEffectForItem } from '../actor/utils/ensureLinkedEffectForItem.js';
+import {
+  buildTechniqueViewModel,
+  techAddEffect,
+  techRemoveEffect,
+  techAddDisadvantage,
+  techRemoveDisadvantage,
+  techEffectFieldChange,
+  techDisadvantageFieldChange,
+  onDropTechniqueEffect
+} from '../domine/techniques/techniqueBuilder';
 
 const ItemSheetV1 = foundry.appv1?.sheets?.ItemSheet ?? ItemSheet;
 export default class ABFItemSheet extends ItemSheetV1 {
@@ -12,7 +23,7 @@ export default class ABFItemSheet extends ItemSheetV1 {
 
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ['sheet', 'item'],
+      classes: ['animabf', 'sheet', 'item'],
       resizable: true
     });
   }
@@ -34,6 +45,10 @@ export default class ABFItemSheet extends ItemSheetV1 {
         return 1000;
       case ABFItems.WEAPON:
         return 815;
+      case ABFItems.COMBAT_MANEUVER:
+        return 560;
+      case ABFItems.TECHNIQUE:
+        return 780;
       default:
         return 900;
     }
@@ -51,6 +66,10 @@ export default class ABFItemSheet extends ItemSheetV1 {
         return 144;
       case ABFItems.PSYCHIC_POWER:
         return 540;
+      case ABFItems.COMBAT_MANEUVER:
+        return 560;
+      case ABFItems.TECHNIQUE:
+        return 620;
       default:
         return 450;
     }
@@ -64,7 +83,187 @@ export default class ABFItemSheet extends ItemSheetV1 {
     sheet.system = sheet.item.system;
     sheet.config = CONFIG.config;
 
+    // Combat maneuver: enrich with definition preview from registry
+    if (sheet.item.type === ABFItems.COMBAT_MANEUVER) {
+      sheet.maneuverPreview = this._buildManeuverPreview(sheet.item);
+    }
+
+    // Technique: build the constructor view-model (catalog + per-row options + cost)
+    if (sheet.item.type === ABFItems.TECHNIQUE) {
+      sheet.technique = this._buildTechniqueSheetData(sheet.item);
+    }
+
     return sheet;
+  }
+
+  /**
+   * View-model para la hoja-constructor de Técnicas de Ki: catálogo de efectos
+   * agrupado, opciones disponibles por fila (según el efecto elegido), coste
+   * computado y avisos de validación. La aritmética vive en computeTechniqueCost.
+   * @param {Item} item
+   * @returns {object}
+   */
+  _buildTechniqueSheetData(item) {
+    return buildTechniqueViewModel(item);
+  }
+
+  /**
+   * Build a read-only preview block from the ManeuverDefinition registry,
+   * looked up by the Item's slug. Returns null if no slug is set or the
+   * registry has no entry for that slug.
+   * @param {Item} item
+   * @returns {object|null}
+   */
+  _buildManeuverPreview(item) {
+    const slug = item.system?.slug?.value;
+    if (!slug) return null;
+    const def = game.animabf?.maneuvers?.get?.(slug);
+    if (!def) return null;
+    return {
+      attackPenalty: def.attackPenalty ?? 0,
+      forceTAZero: def.forceTAZero === true,
+      attackerStats: (def.attackerStats ?? []).join(' / ').toUpperCase(),
+      defenderStats: (def.defenderStats ?? []).join(' / ').toUpperCase(),
+      grantsQuadrupedBonus: def.grantsQuadrupedBonus === true
+    };
+  }
+
+  // ============================
+  // Weapon qualities drag & drop
+  // ============================
+  // The weapon sheet shows a [data-drop-target="weaponQuality"] zone and
+  // chips that map to entries of system.qualities.value. Dropping a
+  // weaponQuality compendium item adds its slug; clicking the × on a chip
+  // removes it.
+  activateListeners(html) {
+    super.activateListeners(html);
+
+    const root = html[0] ?? html;
+    if (!root) return;
+
+    if (this.item?.type === ABFItems.WEAPON) {
+      this._activateWeaponListeners(root);
+    } else if (this.item?.type === ABFItems.TECHNIQUE) {
+      this._activateTechniqueListeners(root);
+    }
+  }
+
+  _activateWeaponListeners(root) {
+    const dropZone = root.querySelector('[data-drop-target="weaponQuality"]');
+    if (dropZone) {
+      dropZone.addEventListener('dragover', e => {
+        e.preventDefault();
+        dropZone.classList.add('weapon-qualities-section--drag-over');
+      });
+      dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('weapon-qualities-section--drag-over');
+      });
+      dropZone.addEventListener('drop', async e => {
+        e.preventDefault();
+        dropZone.classList.remove('weapon-qualities-section--drag-over');
+        await this._onDropWeaponQuality(e);
+      });
+    }
+
+    root
+      .querySelectorAll('[data-action="removeQuality"]')
+      .forEach(btn => {
+        btn.addEventListener('click', async e => {
+          e.preventDefault();
+          const slug = e.currentTarget?.dataset?.qualitySlug;
+          if (!slug) return;
+          await this._removeWeaponQuality(slug);
+        });
+      });
+  }
+
+  // ============================
+  // Technique constructor (Ki)
+  // ============================
+  _activateTechniqueListeners(root) {
+    const { item } = this;
+    const on = (selector, type, handler) =>
+      root.querySelectorAll(selector).forEach(el => el.addEventListener(type, handler));
+
+    on('[data-action="tech-add-effect"]', 'click', e => {
+      e.preventDefault();
+      techAddEffect(item);
+    });
+    on('[data-action="tech-remove-effect"]', 'click', e => {
+      e.preventDefault();
+      techRemoveEffect(item, Number(e.currentTarget.dataset.index));
+    });
+    on('[data-action="tech-add-disadvantage"]', 'click', e => {
+      e.preventDefault();
+      techAddDisadvantage(item);
+    });
+    on('[data-action="tech-remove-disadvantage"]', 'click', e => {
+      e.preventDefault();
+      techRemoveDisadvantage(item, Number(e.currentTarget.dataset.index));
+    });
+    on('[data-tech-effect-field]', 'change', e => techEffectFieldChange(item, e.currentTarget));
+    on('[data-tech-disadvantage-field]', 'change', e =>
+      techDisadvantageFieldChange(item, e.currentTarget)
+    );
+
+    const dropZone = root.querySelector('[data-drop-target="techniqueEffect"]');
+    if (dropZone) {
+      dropZone.addEventListener('dragover', e => {
+        e.preventDefault();
+        dropZone.classList.add('technique-drop-zone--drag-over');
+      });
+      dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('technique-drop-zone--drag-over');
+      });
+      dropZone.addEventListener('drop', async e => {
+        e.preventDefault();
+        dropZone.classList.remove('technique-drop-zone--drag-over');
+        await onDropTechniqueEffect(item, e);
+      });
+    }
+  }
+
+  async _onDropWeaponQuality(event) {
+    let payload;
+    try {
+      payload = JSON.parse(event.dataTransfer?.getData('text/plain') ?? '{}');
+    } catch {
+      return;
+    }
+    if (!payload || payload.type !== 'Item') return;
+
+    const doc = await fromUuid(payload.uuid);
+    if (!doc || doc.type !== ABFItems.WEAPON_QUALITY) {
+      return ui.notifications?.warn(
+        'Solo se pueden arrastrar items de tipo Cualidad de arma aquí.'
+      );
+    }
+
+    const slug = String(doc.system?.slug?.value ?? '').trim();
+    if (!slug) {
+      return ui.notifications?.warn(
+        'La cualidad arrastrada no tiene slug definido.'
+      );
+    }
+
+    const current = Array.isArray(this.item.system?.qualities?.value)
+      ? this.item.system.qualities.value.slice()
+      : [];
+    if (current.includes(slug)) {
+      return ui.notifications?.info(`${doc.name} ya está en este arma.`);
+    }
+
+    current.push(slug);
+    await this.item.update({ 'system.qualities.value': current });
+  }
+
+  async _removeWeaponQuality(slug) {
+    const current = Array.isArray(this.item.system?.qualities?.value)
+      ? this.item.system.qualities.value.slice()
+      : [];
+    const next = current.filter(s => s !== slug);
+    if (next.length === current.length) return;
+    await this.item.update({ 'system.qualities.value': next });
   }
 
   // ABFItemSheet.js
@@ -128,18 +327,10 @@ export default class ABFItemSheet extends ItemSheetV1 {
     // ============================
     // Owned Item (inside an Actor)
     // ============================
+    // Delegate to the central helper (single source of truth, in-flight guard
+    // against the race condition where two render passes both create an AE).
     const actor = parent;
-
-    // Find the linked AE by origin
-    let effect = actor.effects.find(e => e.origin === this.item.uuid) ?? null;
-
-    // If missing, create it once
-    if (!effect) {
-      const [created] = await actor.createEmbeddedDocuments('ActiveEffect', [
-        { ...aeData, origin: this.item.uuid }
-      ]);
-      effect = created ?? null;
-    }
+    const effect = await ensureLinkedEffectForItem(actor, this.item);
 
     if (!effect) return super._render(force, options);
 

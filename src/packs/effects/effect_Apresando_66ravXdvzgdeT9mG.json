@@ -1,0 +1,79 @@
+{
+  "folder": "Xnc7DkNi5GnpMsWV",
+  "name": "Apresando",
+  "type": "effect",
+  "img": "icons/svg/item-bag.svg",
+  "system": {
+    "active": false,
+    "category": {
+      "value": "generic"
+    },
+    "modifiers": [],
+    "effectData": {
+      "icon": "icons/svg/net.svg",
+      "disabled": true,
+      "changes": [
+        {
+          "key": "system.combat.attack.final.value",
+          "type": "add",
+          "value": "-20",
+          "priority": null
+        },
+        {
+          "key": "system.combat.block.final.value",
+          "type": "add",
+          "value": "-20",
+          "priority": null
+        },
+        {
+          "key": "system.combat.dodge.final.value",
+          "type": "add",
+          "value": "-40",
+          "priority": null
+        },
+        {
+          "key": "system.characteristics.secondaries.initiative.final.value",
+          "type": "add",
+          "value": "-20",
+          "priority": null
+        },
+        {
+          "key": "system.general.modifiers.physicalActions.final.value",
+          "type": "add",
+          "value": "-40",
+          "priority": null
+        }
+      ],
+      "duration": {
+        "startTime": null,
+        "combat": null,
+        "seconds": null,
+        "rounds": null,
+        "turns": null,
+        "startRound": null,
+        "startTurn": null
+      },
+      "transfer": false,
+      "flags": {}
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_stats": {
+    "compendiumSource": null,
+    "duplicateSource": null,
+    "exportSource": null,
+    "coreVersion": "13.345",
+    "systemId": "animabf",
+    "systemVersion": "2.2.1",
+    "createdTime": 1769000000000,
+    "modifiedTime": 1769000000000,
+    "lastModifiedBy": null
+  },
+  "_id": "66ravXdvzgdeT9mG",
+  "sort": 1200000,
+  "_key": "!items!66ravXdvzgdeT9mG"
+}

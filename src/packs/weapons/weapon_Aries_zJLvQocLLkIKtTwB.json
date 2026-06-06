@@ -22,7 +22,7 @@
       "value": false
     },
     "special": {
-      "value": "Compleja, Presa (FUE 10), Alcance (8m), Arma Grande, A 2 manos"
+      "value": "Alcance (8m), Arma Grande"
     },
     "integrity": {
       "base": {
@@ -220,6 +220,26 @@
     },
     "fueRequired": {
       "value": ""
+    },
+    "qualities": {
+      "value": [
+        "complex",
+        "grappling",
+        "twoHanded"
+      ]
+    },
+    "notes": {
+      "value": ""
+    },
+    "qualityParams": {
+      "value": {
+        "grappling": {
+          "grappleStrength": 10
+        }
+      }
+    },
+    "allowsPresa": {
+      "value": true
     }
   },
   "_stats": {

@@ -1,0 +1,163 @@
+{
+  "name": "Acumulación",
+  "type": "techniqueEffect",
+  "img": "icons/magic/light/orb-lightning-purple.webp",
+  "system": {
+    "kind": {
+      "value": "effect"
+    },
+    "category": {
+      "value": "varied"
+    },
+    "effectType": {
+      "value": "round"
+    },
+    "effectClass": {
+      "value": "defense"
+    },
+    "primaryCharacteristic": {
+      "value": "constitution"
+    },
+    "optionalCharacteristics": {
+      "dexterity": 3,
+      "strength": 3,
+      "power": 3,
+      "willPower": 1
+    },
+    "elements": [
+      "earth"
+    ],
+    "tiers": [
+      {
+        "option": "100 PV",
+        "kiPrimary": 2,
+        "kiSecondary": 4,
+        "cm": 5,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": 1
+      },
+      {
+        "option": "200 PV",
+        "kiPrimary": 3,
+        "kiSecondary": 5,
+        "cm": 5,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": 1
+      },
+      {
+        "option": "300 PV",
+        "kiPrimary": 4,
+        "kiSecondary": 6,
+        "cm": 10,
+        "maint": 2,
+        "sMe": 4,
+        "sMa": 7,
+        "level": 1
+      },
+      {
+        "option": "400 PV",
+        "kiPrimary": 5,
+        "kiSecondary": 8,
+        "cm": 15,
+        "maint": 3,
+        "sMe": 6,
+        "sMa": 11,
+        "level": 1
+      },
+      {
+        "option": "600 PV",
+        "kiPrimary": 8,
+        "kiSecondary": 11,
+        "cm": 20,
+        "maint": 4,
+        "sMe": 8,
+        "sMa": 14,
+        "level": 1
+      },
+      {
+        "option": "800 PV",
+        "kiPrimary": 12,
+        "kiSecondary": 15,
+        "cm": 25,
+        "maint": 5,
+        "sMe": 10,
+        "sMa": 18,
+        "level": 1
+      },
+      {
+        "option": "1.000 PV",
+        "kiPrimary": 14,
+        "kiSecondary": 18,
+        "cm": 30,
+        "maint": 8,
+        "sMe": 16,
+        "sMa": 28,
+        "level": 2
+      },
+      {
+        "option": "1.200 PV",
+        "kiPrimary": 18,
+        "kiSecondary": 22,
+        "cm": 35,
+        "maint": 10,
+        "sMe": 20,
+        "sMa": 35,
+        "level": 2
+      },
+      {
+        "option": "1.500 PV",
+        "kiPrimary": 22,
+        "kiSecondary": 26,
+        "cm": 40,
+        "maint": 12,
+        "sMe": 24,
+        "sMa": 42,
+        "level": 3
+      },
+      {
+        "option": "Regeneración 100",
+        "kiPrimary": 1,
+        "kiSecondary": 1,
+        "cm": 5,
+        "maint": 1,
+        "sMe": 2,
+        "sMa": 4,
+        "level": null
+      },
+      {
+        "option": "Regeneración 250",
+        "kiPrimary": 2,
+        "kiSecondary": 2,
+        "cm": 10,
+        "maint": 2,
+        "sMe": 4,
+        "sMa": 7,
+        "level": null
+      },
+      {
+        "option": "Regeneración 500",
+        "kiPrimary": 4,
+        "kiSecondary": 4,
+        "cm": 15,
+        "maint": 3,
+        "sMe": 6,
+        "sMa": 11,
+        "level": null
+      }
+    ],
+    "description": {
+      "value": "<p><strong>Categoría:</strong> Variado · <strong>Tipo:</strong> Asalto · <strong>Clase:</strong> Defensa</p><p><strong>Característica:</strong> Constitución (opcionales: Destreza+3, Fuerza+3, Poder+3, Voluntad+1)</p><p><strong>Elementos:</strong> Tierra</p><table border='1' style='border-collapse:collapse;width:100%;text-align:center'><thead><tr><th>Opción</th><th>Ki 1º</th><th>Ki 2º</th><th>CM</th><th>Mant</th><th>SMe</th><th>SMa</th><th>Nv</th></tr></thead><tbody><tr><td>100 PV</td><td>2</td><td>4</td><td>5</td><td>1</td><td>2</td><td>4</td><td>1</td></tr><tr><td>200 PV</td><td>3</td><td>5</td><td>5</td><td>1</td><td>2</td><td>4</td><td>1</td></tr><tr><td>300 PV</td><td>4</td><td>6</td><td>10</td><td>2</td><td>4</td><td>7</td><td>1</td></tr><tr><td>400 PV</td><td>5</td><td>8</td><td>15</td><td>3</td><td>6</td><td>11</td><td>1</td></tr><tr><td>600 PV</td><td>8</td><td>11</td><td>20</td><td>4</td><td>8</td><td>14</td><td>1</td></tr><tr><td>800 PV</td><td>12</td><td>15</td><td>25</td><td>5</td><td>10</td><td>18</td><td>1</td></tr><tr><td>1.000 PV</td><td>14</td><td>18</td><td>30</td><td>8</td><td>16</td><td>28</td><td>2</td></tr><tr><td>1.200 PV</td><td>18</td><td>22</td><td>35</td><td>10</td><td>20</td><td>35</td><td>2</td></tr><tr><td>1.500 PV</td><td>22</td><td>26</td><td>40</td><td>12</td><td>24</td><td>42</td><td>3</td></tr><tr><td>Regeneración 100</td><td>1</td><td>1</td><td>5</td><td>1</td><td>2</td><td>4</td><td>None</td></tr><tr><td>Regeneración 250</td><td>2</td><td>2</td><td>10</td><td>2</td><td>4</td><td>7</td><td>None</td></tr><tr><td>Regeneración 500</td><td>4</td><td>4</td><td>15</td><td>3</td><td>6</td><td>11</td><td>None</td></tr></tbody></table>"
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "203af2de9c407cc5",
+  "_key": "!items!203af2de9c407cc5"
+}

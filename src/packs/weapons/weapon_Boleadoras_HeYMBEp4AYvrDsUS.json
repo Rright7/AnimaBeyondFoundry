@@ -13,7 +13,7 @@
   },
   "system": {
     "special": {
-      "value": "Presa (FUE 10), Compleja, Ver, Lanzable"
+      "value": "Ver"
     },
     "integrity": {
       "base": {
@@ -191,6 +191,26 @@
     },
     "isShield": {
       "value": false
+    },
+    "qualities": {
+      "value": [
+        "grappling",
+        "complex",
+        "throwable"
+      ]
+    },
+    "notes": {
+      "value": ""
+    },
+    "qualityParams": {
+      "value": {
+        "grappling": {
+          "grappleStrength": 10
+        }
+      }
+    },
+    "allowsPresa": {
+      "value": true
     }
   },
   "_stats": {

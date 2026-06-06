@@ -1,0 +1,25 @@
+{
+    "name": "Desarme",
+    "type": "combatManeuver",
+    "img": "icons/skills/melee/strike-weapon-knife-yellow.webp",
+    "system": {
+        "slug": {
+            "value": "desarme"
+        },
+        "description": {
+            "value": "Penalizador -40 al ataque, vs TA 0. Si el daño es ≥ 10%, se resuelve un control enfrentado FUE/DES vs FUE/DES. No produce daño."
+        },
+        "actionType": {
+            "value": "active"
+        },
+        "traits": ["melee"],
+        "visible": false
+    },
+    "effects": [],
+    "ownership": {
+        "default": 0
+    },
+    "flags": {},
+    "_id": "aBfDesarme000001",
+    "_key": "!items!aBfDesarme000001"
+}

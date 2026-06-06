@@ -12,6 +12,7 @@ import {
   PsychicPowerCombatTypes
 } from './types/psychic/PsychicPowerItemConfig.js';
 import { SpellGrades } from './types/mystic/SpellItemConfig';
+import { CombatManeuverActionType } from './types/combat/CombatManeuverItemConfig';
 
 /** @type {Record<string, object>} */
 export const ABFConfig = {};
@@ -59,6 +60,14 @@ ABFConfig.iterables = {
       shotTypes: {
         [WeaponShotType.SHOT]: 'anima.ui.combat.weapon.shotType.shot.title',
         [WeaponShotType.THROW]: 'anima.ui.combat.weapon.shotType.throw.title'
+      }
+    },
+    combatManeuver: {
+      actionTypes: {
+        [CombatManeuverActionType.ACTIVE]:
+          'anima.ui.combat.combatManeuver.actionType.active.title',
+        [CombatManeuverActionType.PASSIVE]:
+          'anima.ui.combat.combatManeuver.actionType.passive.title'
       }
     }
   },

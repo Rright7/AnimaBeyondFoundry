@@ -1,0 +1,24 @@
+{
+    "name": "Arma a una o dos manos",
+    "type": "weaponQuality",
+    "img": "icons/weapons/swords/sword-broad.webp",
+    "system": {
+        "slug": {
+            "value": "oneOrTwoHanded"
+        },
+        "description": {
+            "value": "Pueden utilizarse indistintamente con una o ambas manos. Si se usan con las dos, también permiten doblar el bono de Fuerza para calcular su daño final. En ellas aparecen indicados dos números en la fuerza requerida; el primero es el necesario para usarla con dos manos, y el segundo con sólo una."
+        },
+        "appliesTo": {
+            "value": ["weapon"]
+        },
+        "visible": false
+    },
+    "effects": [],
+    "ownership": {
+        "default": 0
+    },
+    "flags": {},
+    "_id": "aBfOneOrTwo01001",
+    "_key": "!items!aBfOneOrTwo01001"
+}

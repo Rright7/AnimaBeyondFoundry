@@ -20,6 +20,30 @@ img {
 }
 
 
+:root {
+  --abf-accent: #{$red};
+  --abf-accent-soft: #{rgba($red, 0.1)};
+  --abf-accent-border: #{rgba($red, 0.28)};
+  --abf-surface: #{$light-cream};
+  --abf-surface-2: #{$dark-cream};
+  --abf-text: #{$black};
+  --abf-text-muted: #3b3b3b;
+  --abf-on-accent: #{$white};
+  --abf-gold: #b8860b;
+  --abf-gold-soft: rgba(184, 134, 11, 0.1);
+  --abf-gold-border: rgba(184, 134, 11, 0.55);
+  --abf-border: #{rgba($black, 0.18)};
+  --abf-border-strong: #{rgba($black, 0.3)};
+  --abf-radius: #{$border-radius};
+  --abf-radius-sm: 6px;
+  --abf-shadow: 0 2px 8px rgb(0 0 0 / 12%);
+  --abf-focus-ring: 0 0 0 2px #{rgba($red, 0.45)};
+  --abf-space-1: 0.25rem;
+  --abf-space-2: 0.5rem;
+  --abf-space-3: 0.75rem;
+  --abf-space-4: 1rem;
+}
+
 .animabf.sheet.actor {
   .rollable {
     cursor: pointer;
@@ -35,13 +59,21 @@ img {
     }
 
     font-family: inherit;
-    border: none;
+    border: 1px solid var(--abf-border);
+    border-radius: var(--abf-radius-sm);
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
     ::-webkit-input-placeholder {
       text-align: center;
     }
 
     &:hover {
-      box-shadow: 0 0 5px $red;
+      border-color: var(--abf-border-strong);
+    }
+
+    &:focus-visible {
+      outline: none;
+      border-color: var(--abf-accent-border);
+      box-shadow: var(--abf-focus-ring);
     }
   }
 
@@ -98,7 +130,7 @@ img {
           border: none;
           margin-bottom: 3px;
 
-          transition: background-color 0.3ms ease-in-out;
+          transition: background-color 0.3s ease-in-out;
 
           &:hover {
             background-color: $light-gray;
@@ -117,7 +149,7 @@ img {
         border-radius: 50%;
         border: none;
 
-        transition: background-color 0.3ms ease-in-out;
+        transition: background-color 0.3s ease-in-out;
 
         transform: translate(-0.625rem, 0.625rem);
 
@@ -137,7 +169,8 @@ img {
     flex-direction: column;
     align-items: flex-end;
 
-    border-radius: $border-radius;
+    border-radius: var(--abf-radius);
+    box-shadow: var(--abf-shadow);
 
     .group-header {
       @include group-header;
@@ -145,8 +178,6 @@ img {
       position: relative;
       z-index: 2;
       
-      background: $red !important;
-
       display: flex;
       align-items: center;
       justify-content: center;
@@ -178,8 +209,8 @@ img {
       position: relative;
       z-index: 1;
 
-      margin-top: -1.5rem;
-      padding: 2rem 0.5rem 0.5rem;
+      margin-top: 0;
+      padding: var(--abf-space-3) var(--abf-space-2) var(--abf-space-2);
 
       min-height: 3.5rem;
       width: 100%;
@@ -187,10 +218,10 @@ img {
 
     .group-footer {
       text-align: center;
-      padding: 3px;
-      color: $white;
-      border-radius: $border-radius;
-      background: $red;
+      padding: var(--abf-space-1) var(--abf-space-2);
+      color: var(--abf-on-accent);
+      background: var(--abf-accent);
+      border-radius: 0 0 var(--abf-radius) var(--abf-radius);
       font-weight: 600;
 
       display: flex;
@@ -199,7 +230,7 @@ img {
 
       width: 100%;
       min-height: 3.3rem;
-      margin-top: -1rem;
+      margin-top: 0;
 
       .input {
         height: 1.25rem;
@@ -385,3 +416,24 @@ img {
 }
 
 .common-titled-input select.input option { color: inherit; }
+
+.animabf.sheet,
+.animabf-dialog,
+.animabf-chat-message {
+  &,
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  input[type='checkbox'] {
+    accent-color: var(--abf-accent);
+  }
+
+  a:focus-visible,
+  button:focus-visible {
+    outline: none;
+    box-shadow: var(--abf-focus-ring);
+  }
+}

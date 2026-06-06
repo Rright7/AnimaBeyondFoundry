@@ -13,7 +13,7 @@
   },
   "system": {
     "special": {
-      "value": "Presa (Fuerza 7), Ver"
+      "value": "Ver"
     },
     "integrity": {
       "base": {
@@ -191,6 +191,24 @@
     },
     "isShield": {
       "value": false
+    },
+    "qualities": {
+      "value": [
+        "grappling"
+      ]
+    },
+    "notes": {
+      "value": ""
+    },
+    "qualityParams": {
+      "value": {
+        "grappling": {
+          "grappleStrength": 7
+        }
+      }
+    },
+    "allowsPresa": {
+      "value": true
     }
   },
   "_stats": {

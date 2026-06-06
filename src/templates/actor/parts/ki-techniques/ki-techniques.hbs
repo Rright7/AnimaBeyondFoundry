@@ -1,0 +1,15 @@
+<div class="ki-techniques-tab">
+  <div class="ki-techniques-bar">
+    <div class="ki-acumulaciones">
+      <span class="ki-acumulaciones-label">Acumulaciones de Ki:</span>
+      {{#each kiAccumulations}}<span class="ki-acc">{{label}} {{value}}</span>{{/each}}
+    </div>
+    <button type="button" class="tech-add tech-add--technique" data-action="tech-add-technique">+ Añadir técnica</button>
+  </div>
+
+  {{#each kiTechniques}}
+    {{> "systems/animabf/templates/actor/parts/ki-techniques/parts/technique-builder.hbs"}}
+  {{else}}
+    <p class="ki-techniques-empty">No hay técnicas todavía. Pulsa «Añadir técnica» para crear una.</p>
+  {{/each}}
+</div>

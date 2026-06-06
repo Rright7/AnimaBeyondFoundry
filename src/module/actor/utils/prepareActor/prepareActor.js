@@ -14,6 +14,7 @@ import { mutatePerceptionPenalty } from './calculations/actor/modifiers/mutatePe
 import { mutateAllActionsModifier } from './calculations/actor/modifiers/mutateAllActionsModifier';
 import { mutateSecondariesData } from './calculations/actor/secondaries/mutateSecondariesData';
 import { mutateCombatData } from './calculations/actor/combat/mutateCombatData';
+import { mutateMounted } from './calculations/actor/combat/mutateMounted';
 import { mutateMovementType, mutateMovementDistances } from './calculations/actor/general/mutateMovementType';
 import {
   mutateActMain,
@@ -37,13 +38,32 @@ import {
   mutatePsychicPotential
 } from './calculations/actor/psychic/mutatePsychicData';
 import {
+  mutateKiPointsStrength,
+  mutateKiPointsAgility,
+  mutateKiPointsDexterity,
+  mutateKiPointsConstitution,
+  mutateKiPointsWillPower,
+  mutateKiPointsPower,
+  mutateKiAccumulationBaseStrength,
+  mutateKiAccumulationBaseAgility,
+  mutateKiAccumulationBaseDexterity,
+  mutateKiAccumulationBaseConstitution,
+  mutateKiAccumulationBaseWillPower,
+  mutateKiAccumulationBasePower,
   mutateKiAccumulationStrength,
   mutateKiAccumulationAgility,
   mutateKiAccumulationDexterity,
   mutateKiAccumulationConstitution,
   mutateKiAccumulationWillPower,
-  mutateKiAccumulationPower
+  mutateKiAccumulationPower,
+  mutateKiReserve
 } from './calculations/actor/domine/mutateDomineData';
+import { mutateMartialKnowledgeUsed } from './calculations/actor/domine/mutateMartialKnowledge';
+import {
+  applyKiSkillsModifiers,
+  mutateKiDamageReduction
+} from './calculations/actor/domine/applyKiSkillsModifiers';
+import { mutateActiveTechniqueCharacteristics } from './calculations/actor/domine/mutateActiveTechniqueCharacteristics';
 import { mutateInitiative } from './calculations/actor/mutateInitiative';
 import { mutateRegenerationType } from './calculations/actor/general/mutateRegenerationType';
 import { mutatePresence } from './calculations/actor/mutatePresence';
@@ -66,6 +86,10 @@ import { inflateSystemFromTypeMarkers } from '../../types/inflateSystemFromTypeM
 
 // Be careful with order of this functions, some derived data functions could be dependent of another
 const DERIVED_DATA_FUNCTIONS = [
+  // Técnicas de Ki activas: aumento de característica (special.value) antes de
+  // que el typed op del tipo Characteristic recalcule final/mod (toposort lo
+  // ordena por deps; aquí va primero para que la cascada arranque correcta).
+  mutateActiveTechniqueCharacteristics,
   mutateTotalLevel,
   mutatePresence,
   // Resistances — base must run before final (final depends on base)
@@ -83,7 +107,11 @@ const DERIVED_DATA_FUNCTIONS = [
   mutateRegenerationType,
   mutateAllActionsModifier,
   mutateArmorsData,
+  // Ki passive modifiers must run before total armor (energyArmor),
+  // weapons (damage bonus) and initiative read kiBonus.*
+  applyKiSkillsModifiers,
   mutateTotalArmor,
+  mutateKiDamageReduction,
   // Natural penalty — unreduced/reduction before final
   mutateNaturalPenaltyUnreduced,
   mutateNaturalPenaltyReduction,
@@ -96,6 +124,10 @@ const DERIVED_DATA_FUNCTIONS = [
   //mutateSecondariesData,
   mutateAmmoData,
   mutateWeaponsData,
+  // Mounted: corrects attack/block/dodge finals based on the ride skill
+  // when the actor is flagged as Montado. Declares deps on attack/block/
+  // dodge/ride finals so the flow orders it after those are computed.
+  mutateMounted,
   mutateInitiative,
   // Mystic — ACT before InnateMagic (InnateMagic depends on ACT final)
   mutateActMain,
@@ -116,13 +148,27 @@ const DERIVED_DATA_FUNCTIONS = [
   mutatePsychicProjectionOffensive,
   mutatePsychicProjectionDefensive,
   mutatePsychicPotential,
-  // Domine — ki accumulations
+  // Domine — Ki: puntos (tabla) -> acumulación base -> final/mitad -> reserva; y CM usado
+  mutateKiPointsStrength,
+  mutateKiPointsAgility,
+  mutateKiPointsDexterity,
+  mutateKiPointsConstitution,
+  mutateKiPointsWillPower,
+  mutateKiPointsPower,
+  mutateKiAccumulationBaseStrength,
+  mutateKiAccumulationBaseAgility,
+  mutateKiAccumulationBaseDexterity,
+  mutateKiAccumulationBaseConstitution,
+  mutateKiAccumulationBaseWillPower,
+  mutateKiAccumulationBasePower,
   mutateKiAccumulationStrength,
   mutateKiAccumulationAgility,
   mutateKiAccumulationDexterity,
   mutateKiAccumulationConstitution,
   mutateKiAccumulationWillPower,
-  mutateKiAccumulationPower
+  mutateKiAccumulationPower,
+  mutateKiReserve,
+  mutateMartialKnowledgeUsed
 ];
 
 export const prepareActor = async actor => {
@@ -131,13 +177,6 @@ export const prepareActor = async actor => {
   }
 
   actor.__abfPreparePromise = (async () => {
-    // DEBUG PATHS
-    // const watchPaths = [
-    //   'system.characteristics.secondaries.resistances.magic.special.value'
-    // ];
-
-    // dbgDump(actor, `RUN ${runId} BEFORE reset`, watchPaths);
-
     // 1) reset baseline
     const baselineSystem = foundry.utils.duplicate(actor._source.system);
     foundry.utils.mergeObject(actor.system, baselineSystem, {
@@ -153,11 +192,10 @@ export const prepareActor = async actor => {
     // 3) flow (AE + derivedFns)
     await runEffectFlow(actor, { derivedFns: DERIVED_DATA_FUNCTIONS });
 
-    // 4) UI-only derived (AQUÍ VA “LO NUEVO”)
-    actor.system.general.description.enriched = await (foundry.applications?.ux?.TextEditor?.implementation ?? TextEditor).enrichHTML(
-      actor.system.general.description.value,
-      { async: true }
-    );
+    // 4) UI-only derived
+    actor.system.general.description.enriched = await (
+      foundry.applications?.ux?.TextEditor?.implementation ?? TextEditor
+    ).enrichHTML(actor.system.general.description.value, { async: true });
 
     for (const key of Object.keys(actor.system.ui.contractibleItems ?? {})) {
       if (typeof actor.system.ui.contractibleItems[key] === 'string') {

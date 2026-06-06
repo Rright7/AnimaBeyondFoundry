@@ -47,6 +47,24 @@ export class ABFAttackData {
     this.attackerId = p.attackerId ?? '';
     this.weaponId = p.weaponId ?? '';
 
+    // Combat maneuver context (set by AttackConfigurationDialog when the
+    // attack was launched as a maneuver from the actor sheet).
+    this.maneuverSlug = String(p.maneuverSlug ?? '');
+    this.maneuverItemName = String(p.maneuverItemName ?? '');
+    // When the maneuver is one that allows the attacker to opt for
+    // damage (Derribo, Presa, Inutilizar, Inconsciencia), this flag
+    // mirrors the player's "Causar daño" checkbox. False by default RAW.
+    this.causesDamage = !!p.causesDamage;
+    // Set true when the maneuver was launched without an equipped
+    // weapon (or with an unarmed weapon). Persisted so post-combat
+    // resolvers can decide e.g. whether the resulting Presa allows
+    // Aplastar (RAW: solo si la Presa fue sin armas).
+    this.maneuverWasUnarmed = !!p.maneuverWasUnarmed;
+
+    // Daño retrasado: asaltos (1-5) declarados para que el daño se manifieste
+    // más tarde. 0 = sin retraso. Persiste hasta los flags del resultado.
+    this.delayRounds = Number(p.delayRounds ?? 0) || 0;
+
     // Defense tracking targets
     // Each target: {actorUuid, tokenUuid?, state, rolledBy?, defenseResult?, updatedAt?, label?, auto?}
     this.targets = Array.isArray(p.targets)
@@ -314,6 +332,31 @@ export class ABFAttackDataBuilder {
     this._p.attackerId = String(id ?? '');
     return this;
   }
+  maneuverSlug(slug) {
+    this._p.maneuverSlug = String(slug ?? '');
+    return this;
+  }
+
+  maneuverItemName(name) {
+    this._p.maneuverItemName = String(name ?? '');
+    return this;
+  }
+
+  causesDamage(b = true) {
+    this._p.causesDamage = !!b;
+    return this;
+  }
+
+  maneuverWasUnarmed(b = true) {
+    this._p.maneuverWasUnarmed = !!b;
+    return this;
+  }
+
+  delayRounds(n) {
+    this._p.delayRounds = Number(n) || 0;
+    return this;
+  }
+
   weaponId(id) {
     this._p.weaponId = String(id ?? '');
     return this;

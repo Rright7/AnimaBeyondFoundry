@@ -2,16 +2,23 @@ import { ABFActor } from '../ABFActor';
 import { ABFItems } from '../../items/ABFItems';
 import { calculateRegenerationTypeFromConstitution } from './prepareActor/calculations/actor/general/calculations/calculateRegenerationTypeFromConstitution';
 import { calculateAttributeModifier } from './prepareActor/calculations/util/calculateAttributeModifier';
-import { INITIAL_TECHNIQUE_DATA } from '../../types/domine/TechniqueItemConfig';
 import { INITIAL_MENTAL_PATTERN_DATA } from '../../types/psychic/MentalPatternItemConfig';
+import { importCombatEquipment } from './excelImporter/combatEquipment/index.js';
+import { importKiSkills } from './excelImporter/kiSkills/index.js';
+import { importTechniques } from './excelImporter/techniques/index.js';
 
 /**
- * Parses excel data to actor data
+ * Parses excel data to actor data.
  *
- * @param {any} excelData - provided exel data
- * @param {ABFActor} actor - provided Actor to update
+ * @param {any} excelData - Flat object with the NamedRangesList contents.
+ * @param {ABFActor} actor - Actor to update.
+ * @param {object} [options] - Additional context.
+ * @param {object} [options.workbook] - Full xlsx workbook. When provided,
+ *   parsers that need other sheets or 2D named ranges (combat equipment,
+ *   for example) can read directly from it. If omitted, those parsers are
+ *   skipped gracefully.
  */
-export const parseExcelToActor = async (excelData, actor) => {
+export const parseExcelToActor = async (excelData, actor, options = {}) => {
   const requiredExcelVersions = ['8.6.4', '8.7.0'];
   const excelVersionSplitted = SetEmptyIfUndefined(excelData.Version)
     .split(' ')
@@ -33,8 +40,9 @@ export const parseExcelToActor = async (excelData, actor) => {
   const regenerationModifier =
     excelData.Regeneración_final -
     calculateRegenerationTypeFromConstitution(excelData.CON);
-  const extraDamage =
-    (excelData.DañoIncrementado ? 10 : 0) + (excelData.Extensióndelauraalarma ? 10 : 0);
+  // Damage bonus from Ki abilities (Daño incrementado, Extensión del aura al arma, …)
+  // is now applied dynamically via applyKiSkillsModifiers based on the imported
+  // kiSkills, so the Excel checkboxes no longer need to be summed here.
   const conResistance =
     excelData.Presencia_final + calculateAttributeModifier(excelData.CON);
   const podResistance =
@@ -53,15 +61,6 @@ export const parseExcelToActor = async (excelData, actor) => {
   const bonoRM = excelData.RM_final - podResistance;
   const bonoRP = excelData.RP_final - volResistance;
 
-  const habilidades = separarHabilidadesKi(excelData.HabilidadesKiNemesis);
-  const habilidadesKi = SetEmptyIfUndefined(habilidades.habilidadesKi)
-    .split(',')
-    .map(value => value.trim())
-    .filter(element => element !== '');
-  const habilidadesNem = SetEmptyIfUndefined(habilidades.habilidadesNemesis)
-    .split(',')
-    .map(value => value.trim())
-    .filter(element => element !== '');
   const arsMagnus = SetEmptyIfUndefined(excelData.ArsMagnusSeleccionados)
     .split(',')
     .map(value => value.trim())
@@ -112,10 +111,6 @@ export const parseExcelToActor = async (excelData, actor) => {
     .map(value => value.trim())
     .filter(element => element !== '');
   const tablasDeEstilo = SetEmptyIfUndefined(excelData.TablasDeEstilo)
-    .split(',')
-    .map(value => value.trim())
-    .filter(element => element !== '');
-  const tecnicasKi = SetEmptyIfUndefined(excelData.TécnicasKi)
     .split(',')
     .map(value => value.trim())
     .filter(element => element !== '');
@@ -322,13 +317,7 @@ export const parseExcelToActor = async (excelData, actor) => {
             value: bonoPresencia
           }
         },
-        modifiers: {
-          extraDamage: {
-            base: {
-              value: extraDamage
-            }
-          }
-        },
+        modifiers: {},
         settings: {
           inhuman: {
             value: excelData.Inhumanidad
@@ -818,47 +807,8 @@ export const parseExcelToActor = async (excelData, actor) => {
       },
       domine: {
         martialKnowledge: {
-          used: {
-            value: excelData.CM_usado
-          },
           max: {
             value: excelData.CM_final
-          }
-        },
-        kiAccumulation: {
-          strength: {
-            base: {
-              value: excelData.KiAccumulationFUE_final
-            }
-          },
-          agility: {
-            base: {
-              value: excelData.KiAccumulationAGI_final
-            }
-          },
-          dexterity: {
-            base: {
-              value: excelData.KiAccumulationDES_final
-            }
-          },
-          constitution: {
-            base: {
-              value: excelData.KiAccumulationCON_final
-            }
-          },
-          willPower: {
-            base: {
-              value: excelData.KiAccumulationVOL_final
-            }
-          },
-          power: {
-            base: {
-              value: excelData.KiAccumulationPOD_final
-            }
-          },
-          generic: {
-            value: excelData.Ki_final,
-            max: excelData.Ki_final
           }
         },
         kiSkills: [],
@@ -907,29 +857,8 @@ export const parseExcelToActor = async (excelData, actor) => {
     }
   });
 
-  //Settear habilidades del Ki
-  for (var i = 0; i < habilidadesKi.length; i++) {
-    let abilityName = habilidadesKi[i];
-    if (
-      abilityName.indexOf('Detección del Ki') !== -1 ||
-      abilityName.indexOf('Ocultación del Ki') !== -1
-    ) {
-      abilityName = splitAndRemoveLast(habilidadesKi[i]); //quita el valor de la detección y ocultación, deja solo el nombre
-    }
-
-    await actor.createInnerItem({
-      name: abilityName,
-      type: ABFItems.KI_SKILL
-    });
-  }
-
-  //Settear habilidades del némesis
-  for (var i = 0; i < habilidadesNem.length; i++) {
-    await actor.createInnerItem({
-      name: habilidadesNem[i],
-      type: ABFItems.NEMESIS_SKILL
-    });
-  }
+  //Settear habilidades del Ki y Némesis con datos canónicos
+  await importKiSkills(actor, excelData.HabilidadesKiNemesis);
 
   //Settear ars magnus
   for (var i = 0; i < arsMagnus.length; i++) {
@@ -1051,13 +980,6 @@ export const parseExcelToActor = async (excelData, actor) => {
     }
   }
 
-  // for (var i = 0; i < tecnicasKi.length; i++) {
-  //     await actor.createItem({
-  //         name: tecnicasKi[i],
-  //         type: ABFItems.TECHNIQUE,
-  //         system: INITIAL_TECHNIQUE_DATA
-  //     });
-  // };
 
   for (var i = 0; i < invocaciones.length; i++) {
     await actor.createInnerItem({
@@ -1152,69 +1074,14 @@ export const parseExcelToActor = async (excelData, actor) => {
     });
   }
 
+  if (options.workbook) {
+    await importCombatEquipment(actor, options.workbook);
+    await importTechniques(actor, options.workbook);
+  }
+
   actor.prepareData();
   actor.sheet.render(false);
 };
-
-function separarHabilidadesKi(habilidades) {
-  /** Ensure valid string */
-  if (typeof habilidades !== 'string') {
-    return {
-      habilidadesKi: '',
-      habilidadesNemesis: ''
-    };
-  }
-
-  let result = {
-    habilidadesKi: '',
-    habilidadesNemesis: ''
-  };
-
-  // Remove seals section
-  const indexSellos = habilidades.indexOf('Sellos:');
-  const habilidadesSinSellos =
-    indexSellos !== -1 ? habilidades.slice(0, indexSellos).trim() : habilidades.trim();
-
-  // Split Ki / Némesis by marker
-  const indexNemesis = habilidadesSinSellos.indexOf('Uso del Némesis');
-
-  if (indexNemesis === -1) {
-    // Only Ki abilities
-    result.habilidadesKi = expandAtaqueElemental(habilidadesSinSellos);
-    return result;
-  }
-
-  const kiPart = habilidadesSinSellos.slice(0, indexNemesis).trim();
-  const nemesisPart = habilidadesSinSellos.slice(indexNemesis).trim();
-
-  result.habilidadesKi = expandAtaqueElemental(kiPart);
-  result.habilidadesNemesis = nemesisPart;
-
-  return result;
-}
-
-function expandAtaqueElemental(text) {
-  if (!text) return '';
-
-  return text
-    .replace(/Ataque elemental\s*\(([^)]+)\)/gi, (_match, group) => {
-      const elements = group
-        .split(',')
-        .map(e => e.trim())
-        .filter(e => e !== '');
-      if (!elements.length) return '';
-      return elements.map(e => `Ataque elemental: ${e}`).join(', ');
-    })
-    .replace(/,\s*,/g, ', ') // clean double commas if any
-    .replace(/,\s*$/g, '') // remove trailing comma
-    .trim();
-}
-
-function splitAndRemoveLast(cadena) {
-  const partes = cadena.split(' ');
-  partes.pop();
-  return partes.join(' ').trim();
-}
 
 function separarElan(elanesCombinados) {
   let result = [];

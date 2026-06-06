@@ -1,243 +1,252 @@
 {
-  "name": "Mundus",
-  "type": "weapon",
-  "img": "icons/svg/item-bag.svg",
-  "effects": [],
-  "folder": "3IjK7OoUu4uHOuK3",
-  "flags": {
-    "core": {},
-    "cf": {
-      "id": "temp_tz3kaxdm2zq",
-      "color": "#000000"
-    }
-  },
-  "system": {
-    "equipped": {
-      "value": false
+    "name": "Mundus",
+    "type": "weapon",
+    "img": "icons/svg/item-bag.svg",
+    "effects": [],
+    "folder": "3IjK7OoUu4uHOuK3",
+    "flags": {
+        "core": {},
+        "cf": {
+            "id": "temp_tz3kaxdm2zq",
+            "color": "#000000"
+        }
     },
-    "isShield": {
-      "value": false
-    },
-    "ignoreArmor": {
-      "value": false
-    },
-    "special": {
-      "value": "Ver"
-    },
-    "integrity": {
-      "base": {
-        "value": 100
-      },
-      "final": {
-        "value": 0
-      },
-      "special": {
-        "value": 0
-      },
-      "value": null
-    },
-    "breaking": {
-      "base": {
-        "value": 8
-      },
-      "final": {
-        "value": 0
-      },
-      "special": {
-        "value": 0
-      },
-      "value": 8
-    },
-    "reducedArmor": {
-      "base": {
-        "value": 0
-      },
-      "final": {
-        "value": 0
-      },
-      "special": {
-        "value": 0
-      }
-    },
-    "attack": {
-      "base": {
-        "value": 0
-      },
-      "final": {
-        "value": 0
-      },
-      "special": {
-        "value": 0
-      },
-      "value": 0
-    },
-    "block": {
-      "base": {
-        "value": 0
-      },
-      "final": {
-        "value": 0
-      },
-      "special": {
-        "value": 0
-      },
-      "value": 0
-    },
-    "damage": {
-      "base": {
-        "value": 80
-      },
-      "final": {
-        "value": 0
-      },
-      "special": {
-        "value": 0
-      },
-      "formula": {
-        "value": "80+@characteristics.primaries.power.mod"
-      },
-      "applyQualityInFormula": {
-        "value": true
-      },
-      "value": 80
-    },
-    "initiative": {
-      "base": {
-        "value": 20
-      },
-      "final": {
-        "value": 0
-      },
-      "special": {
-        "value": 0
-      },
-      "value": 20
-    },
-    "presence": {
-      "base": {
-        "value": 0
-      },
-      "final": {
-        "value": 0
-      },
-      "special": {
-        "value": 0
-      },
-      "value": 0
-    },
-    "size": {
-      "value": "medium"
-    },
-    "strRequired": {
-      "oneHand": {
-        "base": {
-          "value": 0
+    "system": {
+        "equipped": {
+            "value": false
         },
-        "final": {
-          "value": 0
+        "isShield": {
+            "value": false
         },
-        "value": 0
-      },
-      "twoHands": {
-        "base": {
-          "value": 0
+        "ignoreArmor": {
+            "value": false
         },
-        "final": {
-          "value": 0
+        "special": {
+            "value": "Ver"
         },
-        "value": 0
-      }
+        "integrity": {
+            "base": {
+                "value": 100
+            },
+            "final": {
+                "value": 0
+            },
+            "special": {
+                "value": 0
+            },
+            "value": null
+        },
+        "breaking": {
+            "base": {
+                "value": 8
+            },
+            "final": {
+                "value": 0
+            },
+            "special": {
+                "value": 0
+            },
+            "value": 8
+        },
+        "reducedArmor": {
+            "base": {
+                "value": 0
+            },
+            "final": {
+                "value": 0
+            },
+            "special": {
+                "value": 0
+            }
+        },
+        "attack": {
+            "base": {
+                "value": 0
+            },
+            "final": {
+                "value": 0
+            },
+            "special": {
+                "value": 0
+            },
+            "value": 0
+        },
+        "block": {
+            "base": {
+                "value": 0
+            },
+            "final": {
+                "value": 0
+            },
+            "special": {
+                "value": 0
+            },
+            "value": 0
+        },
+        "damage": {
+            "base": {
+                "value": 80
+            },
+            "final": {
+                "value": 0
+            },
+            "special": {
+                "value": 0
+            },
+            "formula": {
+                "value": "80+@characteristics.primaries.power.mod"
+            },
+            "applyQualityInFormula": {
+                "value": true
+            },
+            "value": 80
+        },
+        "initiative": {
+            "base": {
+                "value": 20
+            },
+            "final": {
+                "value": 0
+            },
+            "special": {
+                "value": 0
+            },
+            "value": 20
+        },
+        "presence": {
+            "base": {
+                "value": 0
+            },
+            "final": {
+                "value": 0
+            },
+            "special": {
+                "value": 0
+            },
+            "value": 0
+        },
+        "size": {
+            "value": "medium"
+        },
+        "strRequired": {
+            "oneHand": {
+                "base": {
+                    "value": 0
+                },
+                "final": {
+                    "value": 0
+                },
+                "value": 0
+            },
+            "twoHands": {
+                "base": {
+                    "value": 0
+                },
+                "final": {
+                    "value": 0
+                },
+                "value": 0
+            }
+        },
+        "quality": {
+            "value": 0
+        },
+        "oneOrTwoHanded": {
+            "value": ""
+        },
+        "knowledgeType": {
+            "value": ""
+        },
+        "manageabilityType": {
+            "value": "one_hand"
+        },
+        "shotType": {
+            "value": "throw"
+        },
+        "isRanged": {
+            "value": false
+        },
+        "range": {
+            "base": {
+                "value": 0
+            },
+            "final": {
+                "value": 0
+            },
+            "value": 0
+        },
+        "cadence": {
+            "value": ""
+        },
+        "reload": {
+            "base": {
+                "value": 0
+            },
+            "final": {
+                "value": 0
+            },
+            "value": 0
+        },
+        "sizeProportion": {
+            "value": "normal"
+        },
+        "hasOwnStr": {
+            "value": false
+        },
+        "weaponStrength": {
+            "base": {
+                "value": 0
+            },
+            "final": {
+                "value": 0
+            }
+        },
+        "critic": {
+            "primary": {
+                "value": "cut"
+            },
+            "secondary": {
+                "value": "-"
+            }
+        },
+        "useCustomFormula": {
+            "value": true
+        },
+        "weaponFue": {
+            "value": 0
+        },
+        "initiativeBase": {
+            "value": 0
+        },
+        "fueRequired": {
+            "value": ""
+        },
+        "qualities": {
+            "value": []
+        },
+        "notes": {
+            "value": ""
+        },
+        "qualityParams": {
+            "value": {}
+        }
     },
-    "quality": {
-      "value": 0
+    "_stats": {
+        "systemId": "animabf",
+        "systemVersion": "2.0.5",
+        "coreVersion": "13.351",
+        "createdTime": 1690991077555,
+        "modifiedTime": 1764250095621,
+        "lastModifiedBy": "s1iIg3oHOkECBfdY",
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null
     },
-    "oneOrTwoHanded": {
-      "value": ""
+    "_id": "DymCkxQxAa4SW10p",
+    "sort": 400000,
+    "ownership": {
+        "default": 0,
+        "jsmBo00pwrK7EnHs": 3
     },
-    "knowledgeType": {
-      "value": ""
-    },
-    "manageabilityType": {
-      "value": "one_hand"
-    },
-    "shotType": {
-      "value": "throw"
-    },
-    "isRanged": {
-      "value": false
-    },
-    "range": {
-      "base": {
-        "value": 0
-      },
-      "final": {
-        "value": 0
-      },
-      "value": 0
-    },
-    "cadence": {
-      "value": ""
-    },
-    "reload": {
-      "base": {
-        "value": 0
-      },
-      "final": {
-        "value": 0
-      },
-      "value": 0
-    },
-    "sizeProportion": {
-      "value": "normal"
-    },
-    "hasOwnStr": {
-      "value": false
-    },
-    "weaponStrength": {
-      "base": {
-        "value": 0
-      },
-      "final": {
-        "value": 0
-      }
-    },
-    "critic": {
-      "primary": {
-        "value": "cut"
-      },
-      "secondary": {
-        "value": "-"
-      }
-    },
-    "useCustomFormula": {
-      "value": true
-    },
-    "weaponFue": {
-      "value": 0
-    },
-    "initiativeBase": {
-      "value": 0
-    },
-    "fueRequired": {
-      "value": ""
-    }
-  },
-  "_stats": {
-    "systemId": "animabf",
-    "systemVersion": "2.0.5",
-    "coreVersion": "13.351",
-    "createdTime": 1690991077555,
-    "modifiedTime": 1764250095621,
-    "lastModifiedBy": "s1iIg3oHOkECBfdY",
-    "compendiumSource": null,
-    "duplicateSource": null,
-    "exportSource": null
-  },
-  "_id": "DymCkxQxAa4SW10p",
-  "sort": 400000,
-  "ownership": {
-    "default": 0,
-    "jsmBo00pwrK7EnHs": 3
-  },
-  "_key": "!items!DymCkxQxAa4SW10p"
+    "_key": "!items!DymCkxQxAa4SW10p"
 }

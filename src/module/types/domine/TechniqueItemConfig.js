@@ -1,6 +1,17 @@
 import { ABFItems } from '../../items/ABFItems';
 import { openSimpleInputDialog } from '../../utils/dialogs/openSimpleInputDialog';
 import { ABFItemConfigFactory } from '../ABFItemConfig';
+import { computeTechniqueCost } from '../../domine/techniques/computeTechniqueCost';
+import { KI_CHARACTERISTICS } from '../../domine/techniques/effectCatalog';
+
+const ZERO_KI_BY_CHARACTERISTIC = () => ({
+  agility: 0,
+  constitution: 0,
+  dexterity: 0,
+  strength: 0,
+  power: 0,
+  willPower: 0
+});
 
 /**
  * Initial data for a new technique. Used to infer the type of the data inside `technique.system`
@@ -8,20 +19,60 @@ import { ABFItemConfigFactory } from '../ABFItemConfig';
  */
 export const INITIAL_TECHNIQUE_DATA = {
   description: { value: '' },
-  level: { value: 0 },
+  level: { value: 1 },
   strength: { value: 0 },
   agility: { value: 0 },
   dexterity: { value: 0 },
   constitution: { value: 0 },
   willPower: { value: 0 },
   power: { value: 0 },
-  martialKnowledge: { value: 0 }
+  martialKnowledge: { value: 0 },
+  build: {
+    level: 1,
+    combinable: false,
+    kiReductionLine: 0,
+    cmReductionLine: 0,
+    effects: [],
+    disadvantages: [],
+    redistribution: ZERO_KI_BY_CHARACTERISTIC()
+  },
+  computed: {
+    cmTotal: 0,
+    cmFloor: 20,
+    cmCeiling: 50,
+    kiActiveTotal: 0,
+    kiMaintTotal: 0,
+    levelRequired: 0,
+    isValid: true
+  }
 };
+
+/** Fila de efecto vacía para el constructor. */
+export const newTechniqueEffectRow = (role = 'secondary') => ({
+  effectId: '',
+  role,
+  tierOptions: [],
+  maintMode: 'none',
+  kiByCharacteristic: ZERO_KI_BY_CHARACTERISTIC(),
+  maintKiByCharacteristic: ZERO_KI_BY_CHARACTERISTIC()
+});
+
+// `detail`: parámetro libre de la desventaja que NO altera el coste pero hay que
+// anotar para el juego (elemento de Atadura Elemental, arma de Atada a un arma,
+// ser de Exterminador, etc.).
+export const newTechniqueDisadvantageRow = () => ({
+  disadvantageId: '',
+  option: '',
+  detail: '', // texto libre (arma, ser…)
+  detailElements: [] // elementos elegidos (Atadura/Requerimientos Elementales)
+});
 
 /** @type {import("../Items").TechniqueItemConfig} */
 export const TechniqueItemConfig = ABFItemConfigFactory({
   type: ABFItems.TECHNIQUE,
   isInternal: false,
+  hasSheet: true,
+  defaultValue: INITIAL_TECHNIQUE_DATA,
   fieldPath: ['domine', 'techniques'],
   selectors: {
     addItemButtonSelector: 'add-technique',
@@ -35,20 +86,36 @@ export const TechniqueItemConfig = ABFItemConfigFactory({
       content: i18n.localize('dialogs.items.technique.content')
     });
 
+    // El bloque del constructor aparece en la pestaña "Creación de Técnicas de
+    // Ki"; no abrimos la hoja del item.
     await actor.createItem({
       name,
       type: ABFItems.TECHNIQUE,
       system: INITIAL_TECHNIQUE_DATA
     });
   },
-  // TODO: This should go inside prepareItem, as in spellItemConfig. Same for other TextEditors
-  // That it's called also when opening the standalone sheet.
-  onAttach: async (actor, technique) => {
-    technique.system.enrichedDescription = await (foundry.applications?.ux?.TextEditor?.implementation ?? TextEditor).enrichHTML(
-      technique.system.description?.value ?? '',
-      {
-        async: true
+  prepareItem: async technique => {
+    const { system } = technique;
+
+    system.enrichedDescription = await (
+      foundry.applications?.ux?.TextEditor?.implementation ?? TextEditor
+    ).enrichHTML(system.description?.value ?? '', { async: true });
+
+    // Coste computado desde el constructor (system.build) — siempre derivado.
+    const computed = computeTechniqueCost(system.build);
+    system.computed = computed;
+
+    // Sólo derivamos los campos legacy (que el actor agrega y la fila inline
+    // muestra) cuando la técnica está CONSTRUIDA con efectos; así las técnicas
+    // antiguas tecleadas a mano conservan sus valores editables.
+    if (Array.isArray(system.build?.effects) && system.build.effects.length > 0) {
+      system.level.value = computed.level;
+      system.martialKnowledge.value = computed.cmTotal;
+      for (const characteristic of KI_CHARACTERISTICS) {
+        if (system[characteristic]) {
+          system[characteristic].value = computed.costByCharacteristic[characteristic].active;
+        }
       }
-    );
+    }
   }
 });

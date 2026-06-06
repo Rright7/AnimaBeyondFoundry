@@ -9,6 +9,44 @@
             inputValue=this.attacker.combat.modifier }}
       </div>
 
+      {{#if this.attacker.kiInstant.length}}
+        <div class='columns ki-instant-techniques'>
+          <label class='label'>{{localize 'macros.combat.dialog.combatMod.kiTechnique.title'}} (instantáneas)</label>
+          {{#each this.attacker.kiInstant as |tech|}}
+            <label class='ki-instant-row{{#unless tech.hasEnoughKi}} ki-instant-row--noki{{/unless}}'>
+              <input type="checkbox" name="attacker.combat.kiInstant.{{tech.id}}"
+                {{#if (is 'eq' (lookup @root.attacker.combat.kiInstant tech.id) true)}}checked{{/if}}>
+              <span>{{tech.name}}{{#if tech.attack}} · At +{{tech.attack}}{{/if}}{{#if tech.damage}} · Daño +{{tech.damage}}{{/if}} · Ki {{tech.kiCost}}{{#unless tech.hasEnoughKi}} ⚠{{/unless}}</span>
+            </label>
+          {{/each}}
+        </div>
+      {{/if}}
+
+      {{!-- Ataque apuntado: Variante B — checkbox alineado con el resto de
+            filas; la zona aparece como sub-fila indentada (border-left)
+            cuando se activa. Cada opción muestra "Zona −penalty" leído
+            del helper. Si la maniobra preselecciona la zona, ambos
+            controles quedan disabled. --}}
+      <div class='columns aim-row'>
+        {{> "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
+            title=(localize 'macros.combat.dialog.aimed.title')
+            inputType="checkbox"
+            inputName="attacker.combat.aimed"
+            inputValue=(is 'eq' this.attacker.combat.aimed true) }}
+      </div>
+      {{#if this.attacker.combat.aimed}}
+        <div class='columns aim-zone-row'>
+          <label class='aim-zone-row__label'>{{localize 'macros.combat.dialog.aimed.zone'}}</label>
+          <select name='attacker.combat.aimedZone' class='input aim-zone-row__select' {{#if this.maneuver}}disabled{{/if}}>
+            {{#each (aimedZonesWithPenalty this.attacker.combat.weapon) as |z|}}
+              <option value='{{z.id}}' {{#if (is 'eq' ../this.attacker.combat.aimedZone z.id)}}selected{{/if}}>
+                {{z.label}} {{z.penaltyLabel}}
+              </option>
+            {{/each}}
+          </select>
+        </div>
+      {{/if}}
+
       {{!-- {{#if this.ui.hasFatiguePoints}}
         {{#> 'systems/animabf/templates/common/ui/custom-select.hbs'
             title=(localize 'macros.combat.dialog.fatigue.title')
@@ -24,17 +62,34 @@
       {{/if}} --}}
 
       {{#if this.attacker.combat.weapon}}
-        {{#> 'systems/animabf/templates/common/ui/custom-select.hbs'
-            title=(localize 'macros.combat.dialog.weapon.title')
-            disabled=true }}
-          <option selected>
-            {{localize 'macros.combat.dialog.weaponRow.attack.title'
-              name=this.attacker.combat.weapon.name
-              value=this.attacker.combat.weapon.system.attack.final.value}}
-          </option>
-        {{/'systems/animabf/templates/common/ui/custom-select.hbs'}}
+        {{#if this.ui.lockedWeapon}}
+          {{!-- Locked weapon (plain attack from a weapon button): show it fixed. --}}
+          {{#> 'systems/animabf/templates/common/ui/custom-select.hbs'
+              title=(localize 'macros.combat.dialog.weapon.title')
+              disabled=true }}
+            <option selected>
+              {{localize 'macros.combat.dialog.weaponRow.attack.title'
+                name=this.attacker.combat.weapon.name
+                value=this.attacker.combat.weapon.system.attack.final.value}}
+            </option>
+          {{/'systems/animabf/templates/common/ui/custom-select.hbs'}}
 
-        <input type="hidden" name="attacker.combat.weaponUsed" value="{{this.attacker.combat.weapon._id}}" />
+          <input type="hidden" name="attacker.combat.weaponUsed" value="{{this.attacker.combat.weapon._id}}" />
+        {{else}}
+          {{!-- Unlocked (maneuver): let the player choose any of the actor's
+                weapons. Default selection is the resolved/equipped one. --}}
+          {{#> 'systems/animabf/templates/common/ui/custom-select.hbs'
+              title=(localize 'macros.combat.dialog.weapon.title')
+              inputName='attacker.combat.weaponUsed' }}
+            {{#each this.ui.weapons as |w|}}
+              <option value='{{w._id}}' {{#if (is 'eq' w._id ../this.attacker.combat.weaponUsed)}}selected{{/if}}>
+                {{localize 'macros.combat.dialog.weaponRow.attack.title'
+                  name=w.name
+                  value=w.system.attack.final.value}}
+              </option>
+            {{/each}}
+          {{/'systems/animabf/templates/common/ui/custom-select.hbs'}}
+        {{/if}}
       {{else}}
         <p class='label'>{{localize 'macros.combat.dialog.weapon.notFound'}}</p>
       {{/if}}
@@ -86,6 +141,24 @@
             inputName="attacker.combat.automaticCrit"
             inputValue=(is 'eq' this.attacker.combat.automaticCrit true) }}
       </div></div>
+
+      {{!-- Causar daño: opt-in checkbox, only for maneuvers where damage is a
+            CHOICE (Derribo, Presa, Desarme). OFF by default per RAW: the
+            attacker explicitly chooses to deal damage; if marked, the base
+            damage is halved and the defender's armor applies normally.
+            Maneuvers with damageMandatory (Inutilizar, Inconsciencia) ALWAYS
+            deal halved damage, so the checkbox is hidden — it is not a choice. --}}
+      {{#if this.maneuver.damageAllowed}}
+        {{#unless this.maneuver.damageMandatory}}
+          <div class='columns'><div>
+            {{> "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
+                title=(localize 'macros.combat.dialog.causesDamage.title')
+                inputType="checkbox"
+                inputName="attacker.combat.causesDamage"
+                inputValue=(is 'eq' this.attacker.combat.causesDamage true) }}
+          </div></div>
+        {{/unless}}
+      {{/if}}
 
       {{!-- {{#if this.attacker.combat.projectile.value}}
 

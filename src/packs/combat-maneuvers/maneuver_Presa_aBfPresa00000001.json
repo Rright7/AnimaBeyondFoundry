@@ -1,0 +1,25 @@
+{
+    "name": "Presa",
+    "type": "combatManeuver",
+    "img": "icons/skills/melee/unarmed-punch-fist.webp",
+    "system": {
+        "slug": {
+            "value": "presa"
+        },
+        "description": {
+            "value": "Penalizador -40 al ataque, vs TA 0. Solo desarmado o con arma que permita Presa. Si daño ≥ 10%, control enfrentado FUE/DES vs FUE/AGI. Diferencia <3: Parálisis menor; ≥3: Parálisis parcial; >10: Parálisis completa. El atacante recibe el efecto 'Apresando'."
+        },
+        "actionType": {
+            "value": "active"
+        },
+        "traits": ["melee", "unarmed"],
+        "visible": false
+    },
+    "effects": [],
+    "ownership": {
+        "default": 0
+    },
+    "flags": {},
+    "_id": "aBfPresa00000001",
+    "_key": "!items!aBfPresa00000001"
+}

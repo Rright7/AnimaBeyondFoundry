@@ -14,27 +14,33 @@
       "disabled": true,
       "changes": [
         {
-          "key": "system.general.modifiers.physicalActions.final.value",
-          "type": "add",
-          "value": "-60",
-          "priority": null
-        },
-        {
           "key": "system.combat.attack.final.value",
           "type": "add",
-          "value": "-20",
+          "value": "-80",
           "priority": null
         },
         {
           "key": "system.combat.block.final.value",
           "type": "add",
-          "value": "-20",
+          "value": "-80",
           "priority": null
         },
         {
           "key": "system.combat.dodge.final.value",
           "type": "add",
-          "value": "-20",
+          "value": "-80",
+          "priority": null
+        },
+        {
+          "key": "system.characteristics.secondaries.initiative.final.value",
+          "type": "add",
+          "value": "-30",
+          "priority": null
+        },
+        {
+          "key": "system.general.modifiers.physicalActions.final.value",
+          "type": "add",
+          "value": "-60",
           "priority": null
         }
       ],

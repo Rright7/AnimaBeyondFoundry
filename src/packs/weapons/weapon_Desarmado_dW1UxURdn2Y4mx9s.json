@@ -13,7 +13,7 @@
   },
   "system": {
     "special": {
-      "value": "Precisa"
+      "value": ""
     },
     "integrity": {
       "base": {
@@ -191,6 +191,23 @@
     },
     "isShield": {
       "value": false
+    },
+    "qualities": {
+      "value": [
+        "precise"
+      ]
+    },
+    "notes": {
+      "value": ""
+    },
+    "qualityParams": {
+      "value": {}
+    },
+    "isUnarmed": {
+      "value": true
+    },
+    "allowsPresa": {
+      "value": true
     }
   },
   "_stats": {

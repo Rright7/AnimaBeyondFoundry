@@ -32,6 +32,8 @@ export const calculateWeaponDamage = (weapon, data) => {
     const formula = weapon.system?.damage?.formula?.value?.trim();
     const useFormula = weapon.system?.useCustomFormula.value;
 
+    const kiDamageBonus = data.general.modifiers.kiBonus?.damage?.value ?? 0;
+
     if (useFormula && formula) {
       const fakeActor = { system: data };
       const value = FormulaEvaluator.evaluate(formula, fakeActor);
@@ -43,13 +45,15 @@ export const calculateWeaponDamage = (weapon, data) => {
         const addQuality = weapon.system.damage.applyQualityInFormula?.value === true;
         const qualityBonus = addQuality ? (weapon.system.quality?.value ?? 0) * 2 : 0;
 
-        return value + specialBonus + extraDamage + qualityBonus;
+        return value + specialBonus + extraDamage + qualityBonus + kiDamageBonus;
       }
     }
 
     const weaponStrengthModifier = calculateWeaponStrengthModifier(weapon, data);
     const extraDamage =
-      data.general.modifiers.extraDamage.final.value + weapon.system.damage.special.value;
+      data.general.modifiers.extraDamage.final.value +
+      weapon.system.damage.special.value +
+      kiDamageBonus;
 
     if (
       weapon.system.isRanged.value &&

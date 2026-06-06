@@ -22,7 +22,7 @@
       "value": false
     },
     "special": {
-      "value": "Presa (FUE 8), Alcance (8m)"
+      "value": "Alcance (8m)"
     },
     "integrity": {
       "base": {
@@ -220,6 +220,24 @@
     },
     "fueRequired": {
       "value": ""
+    },
+    "qualities": {
+      "value": [
+        "grappling"
+      ]
+    },
+    "notes": {
+      "value": ""
+    },
+    "qualityParams": {
+      "value": {
+        "grappling": {
+          "grappleStrength": 8
+        }
+      }
+    },
+    "allowsPresa": {
+      "value": true
     }
   },
   "_stats": {

@@ -5,6 +5,7 @@ import { executeMacro } from '../../utils/functions/executeMacro';
 import ABFFoundryRoll from '../../rolls/ABFFoundryRoll.js';
 import { ABFSupernaturalShieldData } from '../../combat/ABFSupernaturalShieldData';
 import { shieldValueCheck } from '../../combat/utils/shieldValueCheck.js';
+import { resolveCriticalHit } from '../../combat/resolveCriticalHit.js';
 
 const DEFAULT_SUPERNATURAL_SHIELD_STATE = {
   dobleDamage: false,
@@ -160,6 +161,41 @@ export class GMCombatDialog extends FormApplication {
       this.applyValuesIfBeAble(resistanceRoll.total);
       this.close();
     });
+    html.find('.resolve-critical').click(async () => {
+      const calc = this.modalData.calculations;
+      if (!calc?.isCritical) return;
+
+      const defenderActor = this.defenderActor;
+      const attackerResult = this.modalData.attacker?.result?.values ?? {};
+
+      const critResult = await resolveCriticalHit({
+        baseCriticalValue: calc.baseCriticalValue,
+        defenderActor,
+        aimed: !!attackerResult.aimed,
+        aimedWhere: attackerResult.aimedWhere ?? null,
+        isDamageAccumulator: !!defenderActor.system?.characteristics?.damageAccumulator,
+        isMass: !!defenderActor.system?.characteristics?.isMass,
+        critImmune: !!defenderActor.system?.characteristics?.critImmune
+      });
+
+      // Store resolved critical data for template rendering
+      calc.critResolved = critResult.resolved;
+      calc.critImmune = critResult.immune;
+      calc.critImmuneReason = critResult.immuneReason;
+      calc.critLevel = critResult.critLevel;
+      calc.critLevelRoll = critResult.critLevelRoll;
+      calc.phRoll = critResult.phRoll;
+      calc.phBase = critResult.phBase;
+      calc.phTotal = critResult.phTotal;
+      calc.phPassed = critResult.phPassed;
+      calc.failureLevel = critResult.failureLevel;
+      calc.critLocation = critResult.location;
+      calc.critLocationRoll = critResult.locationRoll;
+      calc.critEffects = critResult.effects;
+
+      this.render();
+    });
+
     html.find('.show-results').click(async () => {
       const data = {
         attacker: {

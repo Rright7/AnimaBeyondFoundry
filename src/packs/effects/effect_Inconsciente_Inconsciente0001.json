@@ -1,0 +1,66 @@
+{
+  "name": "Inconsciente",
+  "type": "effect",
+  "img": "icons/svg/sleep.svg",
+  "system": {
+    "active": false,
+    "category": {
+      "value": "generic"
+    },
+    "modifiers": [],
+    "effectData": {
+      "icon": "icons/svg/sleep.svg",
+      "disabled": true,
+      "changes": [
+        {
+          "key": "system.combat.attack.final.value",
+          "type": "add",
+          "value": "-200",
+          "priority": null
+        },
+        {
+          "key": "system.combat.block.final.value",
+          "type": "add",
+          "value": "-200",
+          "priority": null
+        },
+        {
+          "key": "system.combat.dodge.final.value",
+          "type": "add",
+          "value": "-200",
+          "priority": null
+        },
+        {
+          "key": "system.characteristics.secondaries.initiative.final.value",
+          "type": "add",
+          "value": "-200",
+          "priority": null
+        },
+        {
+          "key": "system.general.modifiers.allActions.final.value",
+          "type": "add",
+          "value": "-200",
+          "priority": null
+        }
+      ],
+      "duration": {
+        "startTime": null,
+        "combat": null,
+        "seconds": null,
+        "rounds": null,
+        "turns": null,
+        "startRound": null,
+        "startTurn": null
+      },
+      "transfer": false,
+      "flags": {}
+    }
+  },
+  "effects": [],
+  "ownership": {
+    "default": 0
+  },
+  "flags": {},
+  "_id": "Inconsciente0001",
+  "_key": "!items!Inconsciente0001"
+}

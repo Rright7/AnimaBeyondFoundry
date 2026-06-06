@@ -10,37 +10,31 @@
     },
     "modifiers": [],
     "effectData": {
-      "icon": "icons/svg/item-bag.svg",
+      "icon": "icons/svg/up.svg",
       "disabled": true,
       "changes": [
         {
-          "key": "system.general.modifiers.physicalActions.final.value",
-          "type": "add",
-          "value": "-60",
-          "priority": null
-        },
-        {
-          "key": "system.characteristics.secondaries.initiative.final.value",
-          "type": "add",
-          "value": "30",
-          "priority": null
-        },
-        {
           "key": "system.combat.attack.final.value",
           "type": "add",
-          "value": "40",
+          "value": "-20",
           "priority": null
         },
         {
           "key": "system.combat.block.final.value",
           "type": "add",
-          "value": "40",
+          "value": "-20",
           "priority": null
         },
         {
           "key": "system.combat.dodge.final.value",
           "type": "add",
-          "value": "20",
+          "value": "-40",
+          "priority": null
+        },
+        {
+          "key": "system.general.modifiers.physicalActions.final.value",
+          "type": "add",
+          "value": "-60",
           "priority": null
         }
       ],

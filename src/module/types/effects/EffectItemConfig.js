@@ -2,7 +2,7 @@
 import { ABFItems } from '../../items/ABFItems';
 import { openSimpleInputDialog } from '../../utils/dialogs/openSimpleInputDialog';
 import { ABFItemConfigFactory } from '../ABFItemConfig';
-import { ABFDialogs } from '../../dialogs/ABFDialogs';
+import { findEffectByItemOrigin } from '../../actor/utils/ensureLinkedEffectForItem.js';
 
 export const INITIAL_EFFECT_DATA = {
   active: false,
@@ -56,29 +56,33 @@ export const EffectItemConfig = ABFItemConfigFactory({
   },
 
   onDelete: async (actor, target) => {
-    const id = target[0]?.dataset?.itemId;
+    // Foundry exposes the ContextMenu callback target as either a jQuery
+    // selector (legacy V13 behaviour) or a raw HTMLElement (V14, and V13
+    // when foundry.applications.ux.ContextMenu.implementation is available).
+    // Normalize both shapes; otherwise `target[0]?.dataset` silently returns
+    // undefined under the HTMLElement shape and delete does nothing.
+    const el = target instanceof HTMLElement ? target : target?.[0];
+    const id = el?.dataset?.itemId;
     if (!id) return;
 
     const item = actor.items.get(id);
     if (!item) return;
 
-    ABFDialogs.confirm(
-      game.i18n.localize('dialogs.items.delete.title'),
-      game.i18n.localize('dialogs.items.delete.body'),
-      {
-        onConfirm: async () => {
-          const effect = actor.effects.find(e => e.origin === item.uuid) ?? null;
+    // Effects are transient combat states (Sorpresa, Derribado, Cegueras,
+    // Paralisis...) that the GM toggles on and off many times per fight.
+    // The cost of an accidental delete is low (re-drag from the compendium
+    // takes one drag) and the cost of an extra confirmation dialog per click
+    // is high during play. So this onDelete intentionally skips the
+    // ABFDialogs.confirm step used by other item types.
+    const effect = findEffectByItemOrigin(actor, item);
 
-          const ops = [];
-          if (effect) {
-            ops.push(actor.deleteEmbeddedDocuments('ActiveEffect', [effect.id]));
-          }
-          ops.push(actor.deleteEmbeddedDocuments('Item', [id]));
+    const ops = [];
+    if (effect) {
+      ops.push(actor.deleteEmbeddedDocuments('ActiveEffect', [effect.id]));
+    }
+    ops.push(actor.deleteEmbeddedDocuments('Item', [id]));
 
-          await Promise.all(ops);
-        }
-      }
-    );
+    await Promise.all(ops);
   },
 
   onAttach: async () => {},

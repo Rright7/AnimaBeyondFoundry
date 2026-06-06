@@ -1,7 +1,14 @@
 import { Templates } from '../utils/constants';
 import { ABFConfig } from '../ABFConfig';
+import { getAimedPenalty } from '../combat/criticalTables.js';
+import { composeAimedPenalty } from '../equipment/qualities/composeWeaponEffects.js';
+import { resolveManeuverAttackPenalty } from '../combat/maneuvers/resolveManeuverPenalty.js';
 import { ABFAttackData } from '../combat/ABFAttackData';
 import { getSnapshotTargets } from '../actor/utils/getSnapshotTargets.js';
+import {
+  activeTechniqueCombatBonuses,
+  usableInstantCombatTechniques
+} from '../domine/techniques/techniqueCombatBonuses.js';
 ///dialogs/AttackConfigurationDialog.js
 ///actor/utils/getSnapshotTargets.js
 
@@ -14,7 +21,7 @@ export class AttackConfigurationDialog extends FormApplication {
     this.render(true);
   }
 
-  static _buildInitialData({ attacker, weaponId, weapon, options = {}, targets }) {
+  static _buildInitialData({ attacker, weaponId, weapon, options = {}, targets, maneuverSlug, maneuverItemName, aimed, aimedZone, delayRounds, chooseTargets, chosenPenalty, causesDamage }) {
     if (!attacker || !attacker.actor) {
       ui.notifications?.error('AttackConfigurationDialog: attacker is required');
       return { allowed: false };
@@ -37,13 +44,20 @@ export class AttackConfigurationDialog extends FormApplication {
       CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER
     );
 
+    // A maneuver may be performed with any of the actor's weapons, so when the
+    // dialog is opened from a maneuver we do NOT lock the weapon: the resolved
+    // (equipped) weapon is only the default selection and the player can pick
+    // another from the dropdown. A plain weapon attack keeps the weapon locked
+    // (the player already chose it by clicking that weapon's button).
+    const lockWeapon = !!resolvedWeapon && !maneuverSlug;
+
     return {
       ui: {
         isGM: !!game.user?.isGM,
         hasFatiguePoints:
           (attackerActor.system?.characteristics?.secondaries?.fatigue?.value ?? 0) > 0,
         weaponHasSecondaryCritic: undefined,
-        lockedWeapon: !!resolvedWeapon
+        lockedWeapon: lockWeapon
       },
       attacker: {
         token: attacker,
@@ -59,11 +73,43 @@ export class AttackConfigurationDialog extends FormApplication {
           projectile: { value: false, type: '' },
           damage: { special: 0, final: 0 },
           critDamageBonus: attackerActor.system.general.modifiers.critDamageBonus?.final?.value ?? 0,
-          automaticCrit: !!(attackerActor.system.general.modifiers.automaticCrit?.value)
+          automaticCrit: !!(attackerActor.system.general.modifiers.automaticCrit?.value),
+          // Aimed attack toggle + chosen zone. When a maneuver opens the
+          // dialog pre-aimed, these come pre-filled from the `aim` block and
+          // the UI shows them locked.
+          aimed: !!aimed,
+          aimedZone: String(aimedZone ?? ''),
+          // For maneuvers with damageAllowed=true, the attacker decides
+          // whether to inflict damage. OFF by default per RAW. The
+          // checkbox is only shown in the dialog when the maneuver
+          // supports it. Inmovilizar a distancia lo prefija desde la opción
+          // elegida en la tarjeta (-80 sin daño / -50 con daño).
+          causesDamage: !!causesDamage
         },
         distance: { value: 0, enable: false, check: false }
       },
       targets: Array.isArray(targets) && targets.length ? targets : fallbackSnapshot,
+      maneuver: maneuverSlug
+        ? (() => {
+            const def = game.animabf?.maneuvers?.get?.(maneuverSlug);
+            return {
+              slug: maneuverSlug,
+              itemName: maneuverItemName ?? maneuverSlug,
+              damageAllowed: !!def?.damageAllowed,
+              damageHalvedIfApplied: !!def?.damageHalvedIfApplied,
+              damageMandatory: !!def?.dealsMandatoryDamage,
+              delayRounds: Number(delayRounds ?? 0) || 0,
+              damageMultiplier: Number(def?.damageMultiplier ?? 1) || 1,
+              optionalPenalty: Number(def?.optionalPenalty ?? 0) || 0,
+              chooseTargets: !!chooseTargets,
+              chosenPenalty: Number(chosenPenalty ?? 0) || 0,
+              damageDelta: Number(def?.damageDelta ?? 0) || 0
+            };
+          })()
+        : null,
+      aim: aimed
+        ? { active: true, zone: String(aimedZone ?? '') }
+        : null,
       allowed: options?.allowed ?? isOwner ?? false,
       config: ABFConfig,
       attackSent: false
@@ -97,6 +143,10 @@ export class AttackConfigurationDialog extends FormApplication {
 
     const { weapons } = this.attackerActor.system.combat;
     const combat = attacker.combat;
+
+    // Expose the full weapon list so the template can render a picker when the
+    // weapon is not locked (e.g. a maneuver, where any weapon may be used).
+    ui.weapons = weapons ?? [];
 
     // If locked, keep the resolved weapon; otherwise resolve from current id
     const weapon = ui.lockedWeapon
@@ -132,6 +182,11 @@ export class AttackConfigurationDialog extends FormApplication {
         (combat.damage.special ?? 0) + (weapon?.system?.damage?.final?.value ?? 0);
     }
 
+    // F6.3: tecnicas de Ki INSTANTANEAS ofrecibles para este ataque (gastan Ki
+    // concentrado al marcarlas). Las ACTIVAS aplican su bono automaticamente en
+    // el handler, no necesitan UI aqui.
+    attacker.kiInstant = usableInstantCombatTechniques(this.attackerActor, 'attack');
+
     this.modalData.config = ABFConfig;
     return this.modalData;
   }
@@ -156,7 +211,106 @@ export class AttackConfigurationDialog extends FormApplication {
       setTimeout(() => this.render(), 0);
 
       const baseAttack = Number(weapon.system.attack?.final?.value ?? 0);
-      const mod = Number(combat.modifier ?? 0);
+
+      // Maneuver penalty computed against the SELECTED weapon (not the first
+      // equipped one): base/aimed penalty → weapon qualities (Precisa) →
+      // non-bludgeoning -40. Changing the weapon in the dropdown changes the
+      // penalty correctly. See resolveManeuverAttackPenalty.
+      let maneuverPenalty = 0;
+      let maneuverAppliedBy = [];
+      let maneuverNonImpactExtra = 0;
+      if (this.modalData.maneuver?.slug) {
+        const def = game.animabf?.maneuvers?.get?.(this.modalData.maneuver.slug);
+        const resolved = resolveManeuverAttackPenalty({
+          def,
+          weapon,
+          aimed: !!combat.aimed,
+          aimedZone: combat.aimedZone,
+          actor
+        });
+        maneuverPenalty = resolved.penalty;
+        maneuverAppliedBy = resolved.appliedBy;
+        maneuverNonImpactExtra = resolved.nonImpactExtra;
+      }
+
+      // Penalización opcional de la maniobra (Lluvia de proyectiles: -50 al
+      // elegir blancos dentro del área), activada por el checkbox de la tarjeta.
+      if (this.modalData.maneuver?.chooseTargets && this.modalData.maneuver?.optionalPenalty) {
+        maneuverPenalty += Number(this.modalData.maneuver.optionalPenalty) || 0;
+        maneuverAppliedBy = [...maneuverAppliedBy, 'elegir-blancos'];
+      }
+
+      // Inmovilizar a distancia: penalizador a elegir (-80/-50) declarado en la
+      // tarjeta; se suma al penalizador de la maniobra.
+      if (this.modalData.maneuver?.chosenPenalty) {
+        maneuverPenalty += Number(this.modalData.maneuver.chosenPenalty) || 0;
+        maneuverAppliedBy = [...maneuverAppliedBy, 'inmovilizar'];
+      }
+
+      // Ataque apuntado: when active, apply the Tabla 45 penalty for the
+      // chosen zone. Maneuvers that preload aimed pass the penalty through
+      // `maneuverPenalty`, so for those we skip this branch (otherwise we
+      // would double-count).
+      //
+      // The weapon's qualities can modify the penalty (e.g. Precisa halves
+      // it for melee). The registry composer runs every applicable hook
+      // and reports which qualities took effect so chat can show them.
+      let aimedPenalty = 0;
+      let aimedAppliedBy = [];
+      if (combat.aimed && combat.aimedZone && !this.modalData.maneuver?.slug) {
+        const rawAimed = Number(getAimedPenalty(combat.aimedZone) ?? 0);
+        const composed = composeAimedPenalty(rawAimed, {
+          weapon,
+          actor,
+          aimedZone: combat.aimedZone
+        });
+        aimedPenalty = composed.penalty;
+        aimedAppliedBy = composed.appliedBy;
+      }
+      // Kept as a boolean for the chat-flavor breakdown below; will be
+      // generalized once more qualities feed into appliedBy.
+      const aimedPreciseApplied = aimedAppliedBy.includes('precise');
+
+      // Crítico secundario: -10 when the player picks the weapon's secondary
+      // critic instead of the primary one.
+      let secondaryCritPenalty = 0;
+      const primaryCritic = weapon.system?.critic?.primary?.value;
+      const secondaryCritic = weapon.system?.critic?.secondary?.value;
+      if (
+        combat.criticSelected &&
+        secondaryCritic &&
+        secondaryCritic !== '-' &&
+        combat.criticSelected === secondaryCritic &&
+        combat.criticSelected !== primaryCritic
+      ) {
+        secondaryCritPenalty = -10;
+      }
+
+      // ── F6.3: Bonos de combate de Tecnicas de Ki ──────────────────────
+      // Activas (mantenidas/sostenidas): su bono se aplica automaticamente.
+      // Instantaneas marcadas en el dialogo: gastan Ki concentrado al usarse.
+      const kiAuto = activeTechniqueCombatBonuses(actor);
+      let kiAttackBonus = Number(kiAuto.attack) || 0;
+      let kiDamageBonus = Number(kiAuto.damage) || 0;
+      const kiAppliedBy = [];
+      if (kiAuto.attack || kiAuto.damage) kiAppliedBy.push('activa');
+
+      const kiInstantSel = combat.kiInstant ?? {};
+      const kiInstantList = usableInstantCombatTechniques(actor, 'attack');
+      for (const tech of kiInstantList) {
+        if (kiInstantSel[tech.id] !== true) continue;
+        const ok = await actor.useTechnique(tech.id);
+        if (!ok) continue;
+        kiAttackBonus += Number(tech.attack) || 0;
+        kiDamageBonus += Number(tech.damage) || 0;
+        kiAppliedBy.push(tech.name);
+      }
+      const mod =
+        Number(combat.modifier ?? 0)
+        + maneuverPenalty
+        + aimedPenalty
+        + secondaryCritPenalty
+        + kiAttackBonus;
       const die =
         actor.system.combat.attack.base.value >= 200
           ? actor.system.general.diceSettings.abilityMasteryDie.value
@@ -175,14 +329,62 @@ export class AttackConfigurationDialog extends FormApplication {
         ? { ...ChatMessage.getSpeaker({ token: tokenForSpeaker }), alias: tokenName }
         : ChatMessage.getSpeaker({ actor });
 
+      // Build a short breakdown of the penalties this dialog applied so the
+      // chat message shows where each modifier came from (similar to the AE
+      // breakdown line in the actor flow).
+      const dialogContribs = [];
+      if (maneuverPenalty !== 0 && this.modalData.maneuver?.itemName) {
+        const sign = maneuverPenalty > 0 ? '+' : '';
+        const qualityTag = maneuverAppliedBy.length ? ` [${maneuverAppliedBy.join(', ')}]` : '';
+        const nonImpactTag = maneuverNonImpactExtra !== 0
+          ? ` [no-contundente ${maneuverNonImpactExtra}]`
+          : '';
+        dialogContribs.push(
+          `${this.modalData.maneuver.itemName} (${sign}${maneuverPenalty})${qualityTag}${nonImpactTag}`
+        );
+      }
+      if (aimedPenalty !== 0 && combat.aimedZone) {
+        const sign = aimedPenalty > 0 ? '+' : '';
+        const zoneKey = `anima.combat.aimedZone.${combat.aimedZone}`;
+        const zoneLabel = game.i18n.has(zoneKey) ? game.i18n.localize(zoneKey) : combat.aimedZone;
+        const precisaTag = aimedPreciseApplied ? ' [Precisa]' : '';
+        dialogContribs.push(`Apuntado: ${zoneLabel} (${sign}${aimedPenalty})${precisaTag}`);
+      }
+      if (secondaryCritPenalty !== 0) {
+        dialogContribs.push(`Crit. secundario (${secondaryCritPenalty})`);
+      }
+      if (kiAttackBonus !== 0 || kiDamageBonus !== 0) {
+        const label = game.i18n.localize('macros.combat.dialog.combatMod.kiTechnique.title');
+        const tag = kiAppliedBy.length ? ` [${kiAppliedBy.join(', ')}]` : '';
+        if (kiAttackBonus !== 0) {
+          const sign = kiAttackBonus > 0 ? '+' : '';
+          dialogContribs.push(`${label} (${sign}${kiAttackBonus})${tag}`);
+        }
+        if (kiDamageBonus !== 0) {
+          const sign = kiDamageBonus > 0 ? '+' : '';
+          dialogContribs.push(`${label} daño (${sign}${kiDamageBonus})${tag}`);
+        }
+      }
+      const flavorParts = ['Rolling attack'];
+      if (dialogContribs.length) {
+        flavorParts.push(`Mods: ${dialogContribs.join(', ')}`);
+      }
+
       await roll.toMessage({
         speaker,
-        flavor: 'Rolling attack'
+        flavor: flavorParts.join(' — ')
       });
 
       const attackData = ABFAttackData.builder()
         .attackAbility(roll.total)
-        .damage(Number(combat.damage?.final ?? weapon.system.damage?.final?.value ?? 0))
+        .damage(
+          Math.max(
+            0,
+            Number(combat.damage?.final ?? weapon.system.damage?.final?.value ?? 0) +
+              (this.modalData.maneuver?.damageDelta ?? 0) +
+              kiDamageBonus
+          ) * (this.modalData.maneuver?.damageMultiplier ?? 1)
+        )
         .ignoreArmor(!!weapon.system.ignoreArmor?.value)
         .reducedArmor(Number(weapon.system.reducedArmor?.final?.value ?? 0))
         .armorType(combat.criticSelected ?? weapon.system.critic?.primary?.value)
@@ -194,10 +396,21 @@ export class AttackConfigurationDialog extends FormApplication {
         .critDamageBonus(Number(combat.critDamageBonus ?? 0))
         .attackerId(actor.id)
         .weaponId(weapon.id)
+        .maneuverSlug(this.modalData.maneuver?.slug ?? '')
+        .maneuverItemName(this.modalData.maneuver?.itemName ?? '')
+        .maneuverWasUnarmed(!combat.weapon || !!combat.weapon.system?.isUnarmed?.value)
+        .delayRounds(this.modalData.maneuver?.delayRounds ?? 0)
+        .causesDamage(!!combat.causesDamage)
+        .aimed(!!combat.aimed)
+        .aimedWhere(combat.aimedZone || '')
         .targets(this.modalData.targets ?? [])
         .build();
 
-      await attackData.toChatMessage({ actor, weapon });
+      const attackMsg = await attackData.toChatMessage({ actor, weapon });
+      if (attackMsg && this.modalData.maneuver?.slug) {
+        await attackMsg.setFlag('animabf', 'maneuverSlug', this.modalData.maneuver.slug);
+        await attackMsg.setFlag('animabf', 'maneuverItemName', this.modalData.maneuver.itemName);
+      }
 
       await this.close();
     } catch (err) {

@@ -18,13 +18,9 @@
       "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
         class="strength-accumulation accumulation-row-accumulation"
         hideTitle=true
-        inputName="system.domine.kiAccumulation.strength.base.value"
-        inputValue=system.domine.kiAccumulation.strength.base.value
-        hasSecondaryInput=true
-        addTooltips=true
-        disableSecondaryInput=true
-        secondaryInputName="system.domine.kiAccumulation.strength.final.value"
-        secondaryInputValue=system.domine.kiAccumulation.strength.final.value
+        disabled=true
+        inputName="system.domine.kiAccumulation.strength.final.value"
+        inputValue=system.domine.kiAccumulation.strength.final.value
       }}
 
       {{>
@@ -42,13 +38,9 @@
       "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
         class="agility-accumulation accumulation-row-accumulation"
         hideTitle=true
-        inputName="system.domine.kiAccumulation.agility.base.value"
-        inputValue=system.domine.kiAccumulation.agility.base.value
-        hasSecondaryInput=true
-        addTooltips=true
-        disableSecondaryInput=true
-        secondaryInputName="system.domine.kiAccumulation.agility.final.value"
-        secondaryInputValue=system.domine.kiAccumulation.agility.final.value
+        disabled=true
+        inputName="system.domine.kiAccumulation.agility.final.value"
+        inputValue=system.domine.kiAccumulation.agility.final.value
       }}
 
       {{>
@@ -66,13 +58,9 @@
       "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
         class="dexterity-accumulation accumulation-row-accumulation"
         hideTitle=true
-        inputName="system.domine.kiAccumulation.dexterity.base.value"
-        inputValue=system.domine.kiAccumulation.dexterity.base.value
-        hasSecondaryInput=true
-        addTooltips=true
-        disableSecondaryInput=true
-        secondaryInputName="system.domine.kiAccumulation.dexterity.final.value"
-        secondaryInputValue=system.domine.kiAccumulation.dexterity.final.value
+        disabled=true
+        inputName="system.domine.kiAccumulation.dexterity.final.value"
+        inputValue=system.domine.kiAccumulation.dexterity.final.value
       }}
 
       {{>
@@ -90,13 +78,9 @@
       "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
         class="constitution-accumulation accumulation-row-accumulation"
         hideTitle=true
-        inputName="system.domine.kiAccumulation.constitution.base.value"
-        inputValue=system.domine.kiAccumulation.constitution.base.value
-        hasSecondaryInput=true
-        addTooltips=true
-        disableSecondaryInput=true
-        secondaryInputName="system.domine.kiAccumulation.constitution.final.value"
-        secondaryInputValue=system.domine.kiAccumulation.constitution.final.value
+        disabled=true
+        inputName="system.domine.kiAccumulation.constitution.final.value"
+        inputValue=system.domine.kiAccumulation.constitution.final.value
       }}
 
       {{>
@@ -114,13 +98,9 @@
       "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
         class="willPower-accumulation accumulation-row-accumulation"
         hideTitle=true
-        inputName="system.domine.kiAccumulation.willPower.base.value"
-        inputValue=system.domine.kiAccumulation.willPower.base.value
-        hasSecondaryInput=true
-        addTooltips=true
-        disableSecondaryInput=true
-        secondaryInputName="system.domine.kiAccumulation.willPower.final.value"
-        secondaryInputValue=system.domine.kiAccumulation.willPower.final.value
+        disabled=true
+        inputName="system.domine.kiAccumulation.willPower.final.value"
+        inputValue=system.domine.kiAccumulation.willPower.final.value
       }}
 
       {{>
@@ -138,13 +118,9 @@
       "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
         class="power-accumulation accumulation-row-accumulation"
         hideTitle=true
-        inputName="system.domine.kiAccumulation.power.base.value"
-        inputValue=system.domine.kiAccumulation.power.base.value
-        hasSecondaryInput=true
-        addTooltips=true
-        disableSecondaryInput=true
-        secondaryInputName="system.domine.kiAccumulation.power.final.value"
-        secondaryInputValue=system.domine.kiAccumulation.power.final.value
+        disabled=true
+        inputName="system.domine.kiAccumulation.power.final.value"
+        inputValue=system.domine.kiAccumulation.power.final.value
       }}
 
       {{>
@@ -155,20 +131,50 @@
         inputValue=system.domine.kiAccumulation.power.accumulated.value
       }}
     </div>
-    <div class='accumulation-row generic-accumulation-row'>
+    <div class='accumulation-row generic-accumulation-row ki-reserve-row'>
       <p class='label accumulation-row-title'>{{localize "anima.ui.domine.kiAccumulation.reserve.title"}}</p>
-
-      {{>
-      "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
-        class="current-generic-reserve accumulation-row-reserve"
-        hideTitle=true
-        inputName="system.domine.kiAccumulation.generic.value"
-        inputValue=system.domine.kiAccumulation.generic.value
-        hasSecondaryInput=true
-        addTooltips=true
-        secondaryInputName="system.domine.kiAccumulation.generic.max"
-        secondaryInputValue=system.domine.kiAccumulation.generic.max
-      }}
+      <div class="ki-reserve-fields">
+        <label class="ki-reserve-field" title="Reserva actual (se gasta al usar/mantener técnicas)">
+          <span>Actual</span>
+          <input type="number" data-dtype="Number"
+            name="system.domine.kiAccumulation.reserve.current.value"
+            value="{{system.domine.kiAccumulation.reserve.current.value}}">
+        </label>
+        <label class="ki-reserve-field" title="Modificador de reserva (artefactos/extra: suma o resta al total)">
+          <span>Mod.</span>
+          <input type="number" data-dtype="Number"
+            name="system.domine.kiAccumulation.reserve.modifier.value"
+            value="{{system.domine.kiAccumulation.reserve.modifier.value}}">
+        </label>
+        <label class="ki-reserve-field" title="Reserva total (ΣPuntos de Ki + Mod.). Editable: ajusta el modificador.">
+          <span>Máx.</span>
+          <input type="number" data-action="ki-reserve-max"
+            value="{{system.domine.kiAccumulation.reserve.max.value}}">
+        </label>
+      </div>
+    </div>
+    <div class='ki-charge-controls'>
+      <div class="ki-charge-row">
+        <button type="button" class="ki-charge-btn{{#if @root.kiCharging}} is-active{{/if}}"
+          data-action="ki-charge">
+          {{#if @root.kiCharging}}Cargando Ki…{{else}}Cargar Ki{{/if}}
+        </button>
+        <span class="ki-accumulated-total" title="Ki concentrado total (suma de 'Ki acu.')">Concentrado: {{@root.kiAccumulatedTotal}}</span>
+      </div>
+      <label class="ki-full-accumulation" title="Si está marcado, las acumulaciones no se reducen a la mitad al pasar el asalto.">
+        <input type="checkbox" data-action="ki-full-accumulation"
+          {{#if @root.kiFullAccumulation}}checked{{/if}}>
+        <span>Acumulación plena</span>
+      </label>
+      <div class="ki-accumulate-select" title="Marca qué características se acumulan al cargar Ki">
+        <span class="ki-accumulate-select-label">Acumular:</span>
+        <label title="Fuerza"><input type="checkbox" data-dtype="Boolean" name="system.domine.kiAccumulation.strength.accumulating.value" {{#unless (is 'eq' system.domine.kiAccumulation.strength.accumulating.value false)}}checked{{/unless}}><span>FUE</span></label>
+        <label title="Agilidad"><input type="checkbox" data-dtype="Boolean" name="system.domine.kiAccumulation.agility.accumulating.value" {{#unless (is 'eq' system.domine.kiAccumulation.agility.accumulating.value false)}}checked{{/unless}}><span>AGI</span></label>
+        <label title="Destreza"><input type="checkbox" data-dtype="Boolean" name="system.domine.kiAccumulation.dexterity.accumulating.value" {{#unless (is 'eq' system.domine.kiAccumulation.dexterity.accumulating.value false)}}checked{{/unless}}><span>DES</span></label>
+        <label title="Constitución"><input type="checkbox" data-dtype="Boolean" name="system.domine.kiAccumulation.constitution.accumulating.value" {{#unless (is 'eq' system.domine.kiAccumulation.constitution.accumulating.value false)}}checked{{/unless}}><span>CON</span></label>
+        <label title="Voluntad"><input type="checkbox" data-dtype="Boolean" name="system.domine.kiAccumulation.willPower.accumulating.value" {{#unless (is 'eq' system.domine.kiAccumulation.willPower.accumulating.value false)}}checked{{/unless}}><span>VOL</span></label>
+        <label title="Poder"><input type="checkbox" data-dtype="Boolean" name="system.domine.kiAccumulation.power.accumulating.value" {{#unless (is 'eq' system.domine.kiAccumulation.power.accumulating.value false)}}checked{{/unless}}><span>POD</span></label>
+      </div>
     </div>
   {{/"systems/animabf/templates/common/ui/group-body.hbs"}}
 {{/"systems/animabf/templates/common/ui/group.hbs"}}

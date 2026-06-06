@@ -1,6 +1,6 @@
 {
   "folder": "Xnc7DkNi5GnpMsWV",
-  "name": "Parálisis total",
+  "name": "Parálisis completa",
   "type": "effect",
   "img": "icons/svg/item-bag.svg",
   "system": {
@@ -13,6 +13,30 @@
       "icon": "icons/svg/paralysis.svg",
       "disabled": true,
       "changes": [
+        {
+          "key": "system.combat.attack.final.value",
+          "type": "add",
+          "value": "-200",
+          "priority": null
+        },
+        {
+          "key": "system.combat.block.final.value",
+          "type": "add",
+          "value": "-200",
+          "priority": null
+        },
+        {
+          "key": "system.combat.dodge.final.value",
+          "type": "add",
+          "value": "-200",
+          "priority": null
+        },
+        {
+          "key": "system.characteristics.secondaries.initiative.final.value",
+          "type": "add",
+          "value": "-100",
+          "priority": null
+        },
         {
           "key": "system.general.modifiers.physicalActions.final.value",
           "type": "add",
@@ -149,7 +173,7 @@
       "_key": "!items.effects!2CP4vc8klj56BKEw.YuVy7N6auJhBK7Qq"
     },
     {
-      "name": "Parálisis total",
+      "name": "Parálisis completa",
       "disabled": true,
       "changes": [
         {

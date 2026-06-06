@@ -22,7 +22,7 @@
       "value": false
     },
     "special": {
-      "value": "Escudo contra proyectiles, Presa (FUE 8)"
+      "value": "Escudo contra proyectiles"
     },
     "integrity": {
       "base": {
@@ -220,6 +220,24 @@
     },
     "fueRequired": {
       "value": ""
+    },
+    "qualities": {
+      "value": [
+        "grappling"
+      ]
+    },
+    "notes": {
+      "value": ""
+    },
+    "qualityParams": {
+      "value": {
+        "grappling": {
+          "grappleStrength": 8
+        }
+      }
+    },
+    "allowsPresa": {
+      "value": true
     }
   },
   "_stats": {

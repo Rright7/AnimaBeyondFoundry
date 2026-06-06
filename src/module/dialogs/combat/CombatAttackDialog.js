@@ -4,6 +4,10 @@ import { damageCheck } from '../../combat/utils/damageCheck.js';
 import ABFFoundryRoll from '../../rolls/ABFFoundryRoll';
 import { ABFSettingsKeys } from '../../../utils/registerSettings';
 import { ABFConfig } from '../../ABFConfig';
+import {
+  activeTechniqueCombatBonuses,
+  usableInstantCombatTechniques
+} from '../../domine/techniques/techniqueCombatBonuses';
 
 const getInitialData = (attacker, defender, options = {}) => {
   const combatDistance = !!game.settings.get(
@@ -356,6 +360,24 @@ export class CombatAttackDialog extends FormApplication {
           attackerCombatMod.secondaryCritic = { value: -10, apply: true };
         }
 
+        // Bonos de combate de Técnicas de Ki: activas (auto) + instantáneas
+        // seleccionadas (que gastan su Ki concentrado al usarse).
+        const kiBonus = activeTechniqueCombatBonuses(this.attackerActor);
+        let kiAttack = kiBonus.attack;
+        let kiDamage = kiBonus.damage;
+        // Iteramos la lista OFRECIDA (excluye activas y no-instantaneas) y solo
+        // gastamos Ki de las marcadas, igual que el flujo estandar.
+        const kiInstantSel = this.modalData.attacker.combat.kiInstant ?? {};
+        const kiInstantList = usableInstantCombatTechniques(this.attackerActor, 'attack');
+        for (const tech of kiInstantList) {
+          if (kiInstantSel[tech.id] !== true) continue;
+          // useTechnique gasta el Ki concentrado; si no llega, avisa y se omite.
+          if (!(await this.attackerActor.useTechnique(tech.id))) continue;
+          kiAttack += Number(tech.attack) || 0;
+          kiDamage += Number(tech.damage) || 0;
+        }
+        if (kiAttack) attackerCombatMod.kiTechnique = { value: kiAttack, apply: true };
+
         const attack = weapon
           ? weapon.system.attack.final.value
           : this.attackerActor.system.combat.attack.final.value;
@@ -414,7 +436,7 @@ export class CombatAttackDialog extends FormApplication {
           type: 'combat',
           values: {
             unarmed,
-            damage: damage.final,
+            damage: (damage.final ?? 0) + kiDamage,
             attack,
             weaponUsed,
             reducedArmorFinal,
@@ -671,6 +693,12 @@ export class CombatAttackDialog extends FormApplication {
       attacker: { combat, psychic, mystic },
       ui
     } = this.modalData;
+
+    // Técnicas de Ki instantáneas (Tipo Acción) de combate ofensivo, seleccionables.
+    this.modalData.attacker.kiInstant = usableInstantCombatTechniques(
+      this.attackerActor,
+      'attack'
+    );
 
     ui.hasFatiguePoints =
       this.attackerActor.system.characteristics.secondaries.fatigue.value > 0;

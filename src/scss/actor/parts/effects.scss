@@ -1,70 +1,83 @@
-/* ============================= */
-/*   CONTENEDOR DEL PANEL        */
-/* ============================= */
+@use '../../variable' as *;
 
-/* Este div envuelve todo el bloque de efectos */
-.effects{
-    .first-column {
-        width: 33%;             /* El panel ocupa el ancho total del tab */
-        flex: 0 0 100%;
-        box-sizing: border-box;
-    
-        /* ============================= */
-        /*   LISTA DE EFECTOS            */
-        /* ============================= */
+.effects {
+  .first-column {
+    flex: 0 0 100%;
+    box-sizing: border-box;
+  }
 
-        .item-list.effects-list {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        }
+  .effects-list__toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: var(--abf-space-2);
+  }
 
-        /* ============================= */
-        /*   FILA DE UN EFECTO           */
-        /* ============================= */
+  .effects-list__clear-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: var(--abf-radius-sm);
+    color: var(--abf-accent);
+    font-weight: 600;
+    cursor: pointer;
 
-        .effect-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        padding: 6px 6px;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-
-        background: rgba(255,255,255,0.02);
-
-        width: 100%;
-        box-sizing: border-box;
-
-        h4 {
-            margin: 0;
-            font-size: 14px;
-        }
-
-        .effect-name {
-            flex: 1;     /* ocupa todo el espacio posible */
-            overflow: hidden;
-        }
-
-        .effect-controls {
-            display: flex;
-            align-items: center;
-            margin-left: auto;
-
-            input[type="checkbox"] {
-            cursor: pointer;
-            transform: scale(1.0);
-            margin-left: 5px;
-            }
-        }
-        }
-
-        /* Hover */
-        .effect-row:hover {
-        background: rgba(255,255,255,0.05);
-        }
+    &:hover {
+      background: var(--abf-accent-soft);
     }
+  }
+
+  .item-list.effects-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--abf-space-1);
+  }
+
+  .effect-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--abf-space-2);
+
+    padding: var(--abf-space-2) var(--abf-space-3);
+    background: var(--abf-surface);
+    border: 1px solid var(--abf-border);
+    border-radius: var(--abf-radius-sm);
+
+    h4 {
+      margin: 0;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .effect-name {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .effect-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+
+      input[type='checkbox'] {
+        cursor: pointer;
+      }
+    }
+
+    .effect-row__delete {
+      color: var(--abf-text-muted);
+      cursor: pointer;
+
+      &:hover {
+        color: var(--abf-accent);
+      }
+    }
+
+    &:hover {
+      border-color: var(--abf-border-strong);
+      background: var(--abf-surface-2);
+    }
+  }
 }
-
-

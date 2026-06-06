@@ -1,0 +1,78 @@
+{{#> "systems/animabf/templates/items/base/base-sheet.hbs"}}
+  {{#> "systems/animabf/templates/common/ui/group.hbs"
+    class="combat-maneuver-item-dialog"
+  }}
+    {{#> "systems/animabf/templates/common/ui/group-header.hbs"}}
+      <div class='combat-maneuver-header'>
+        {{>
+        "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
+          class="name"
+          hideTitle=true
+          inputType="text"
+          inputName="name"
+          inputValue=item.name
+        }}
+      </div>
+    {{/"systems/animabf/templates/common/ui/group-header.hbs"}}
+    {{#> "systems/animabf/templates/common/ui/group-body.hbs"
+      class="combat-maneuver-item-dialog"
+    }}
+      {{!-- Slug: vínculo a la ManeuverDefinition del registry --}}
+      {{>
+      "systems/animabf/templates/common/ui/vertical-titled-input.hbs"
+        class="slug"
+        title=(localize "anima.ui.combat.combatManeuver.slug.title")
+        inputType="text"
+        inputName="system.slug.value"
+        inputValue=system.slug.value
+      }}
+
+      {{!-- Action type --}}
+      {{>
+      'systems/animabf/templates/common/ui/custom-select-choices.hbs'
+        class="action-type"
+        isVertical=true
+        choices=config.iterables.combat.combatManeuver.actionTypes
+        title=(localize "anima.ui.combat.combatManeuver.actionType.title")
+        inputName="system.actionType.value"
+        inputValue=system.actionType.value
+      }}
+
+      {{!-- Descripción (textarea) --}}
+      <div class="combat-maneuver-description">
+        <label class="combat-maneuver-description-title">
+          {{localize "anima.ui.combat.combatManeuver.description.title"}}
+        </label>
+        <textarea
+          name="system.description.value"
+          rows="8"
+          style="width:100%;resize:vertical;"
+        >{{system.description.value}}</textarea>
+      </div>
+
+      {{!-- Vista previa de reglas (solo lectura, leída del registry vía slug) --}}
+      {{#if maneuverPreview}}
+        <div class="combat-maneuver-preview">
+          <h3>{{localize "anima.ui.combat.combatManeuver.preview.title"}}</h3>
+          <ul style="list-style:none;padding-left:0;font-size:.9em;opacity:.9;">
+            <li><strong>{{localize "anima.ui.combat.combatManeuver.preview.attackPenalty"}}:</strong> {{maneuverPreview.attackPenalty}}</li>
+            {{#if maneuverPreview.forceTAZero}}
+              <li><strong>{{localize "anima.ui.combat.combatManeuver.preview.forceTAZero"}}</strong></li>
+            {{/if}}
+            <li><strong>{{localize "anima.ui.combat.combatManeuver.preview.attackerStats"}}:</strong> {{maneuverPreview.attackerStats}}</li>
+            <li><strong>{{localize "anima.ui.combat.combatManeuver.preview.defenderStats"}}:</strong> {{maneuverPreview.defenderStats}}</li>
+            {{#if maneuverPreview.grantsQuadrupedBonus}}
+              <li><strong>{{localize "anima.ui.combat.combatManeuver.preview.quadrupedBonus"}}</strong></li>
+            {{/if}}
+          </ul>
+        </div>
+      {{else}}
+        {{#if system.slug.value}}
+          <p style="opacity:.6;font-size:.85em;">
+            {{localize "anima.ui.combat.combatManeuver.preview.notFound"}}: <code>{{system.slug.value}}</code>
+          </p>
+        {{/if}}
+      {{/if}}
+    {{/"systems/animabf/templates/common/ui/group-body.hbs"}}
+  {{/"systems/animabf/templates/common/ui/group.hbs"}}
+{{/"systems/animabf/templates/items/base/base-sheet.hbs"}}

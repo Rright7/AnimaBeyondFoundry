@@ -13,7 +13,7 @@
   },
   "system": {
     "special": {
-      "value": "Compleja, Presa (FUE 9), Ver"
+      "value": "Ver"
     },
     "integrity": {
       "base": {
@@ -191,6 +191,25 @@
     },
     "isShield": {
       "value": false
+    },
+    "qualities": {
+      "value": [
+        "complex",
+        "grappling"
+      ]
+    },
+    "notes": {
+      "value": ""
+    },
+    "qualityParams": {
+      "value": {
+        "grappling": {
+          "grappleStrength": 9
+        }
+      }
+    },
+    "allowsPresa": {
+      "value": true
     }
   },
   "_stats": {

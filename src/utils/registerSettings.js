@@ -21,6 +21,15 @@ export const registerSettings = systemId => {
     type: Boolean
   });
 
+  game.settings.register(systemId, ABFSettingsKeys.USE_BREAKAGE_RULE, {
+    name: 'anima.ui.systemSettings.breakageRule.title',
+    hint: 'anima.ui.systemSettings.breakageRule.hint.title',
+    scope: 'world',
+    config: true,
+    default: false,
+    type: Boolean
+  });
+
   game.settings.register(
     systemId,
     ABFSettingsKeys.SEND_ROLL_MESSAGES_ON_COMBAT_BY_DEFAULT,
@@ -103,6 +112,50 @@ export const registerSettings = systemId => {
     scope: 'world',
     config: true,
     default: false,
+    type: Boolean
+  });
+
+  const critRollerChoices = {
+    gm: 'anima.ui.systemSettings.critRoller.gm',
+    owner: 'anima.ui.systemSettings.critRoller.owner'
+  };
+
+  game.settings.register(systemId, ABFSettingsKeys.CRIT_ROLL_LEVEL_BY, {
+    name: 'anima.ui.systemSettings.critRollLevelBy.title',
+    hint: 'anima.ui.systemSettings.critRollLevelBy.hint',
+    scope: 'world',
+    config: true,
+    type: String,
+    choices: critRollerChoices,
+    default: 'owner'
+  });
+
+  game.settings.register(systemId, ABFSettingsKeys.CRIT_ROLL_PHR_BY, {
+    name: 'anima.ui.systemSettings.critRollPhrBy.title',
+    hint: 'anima.ui.systemSettings.critRollPhrBy.hint',
+    scope: 'world',
+    config: true,
+    type: String,
+    choices: critRollerChoices,
+    default: 'owner'
+  });
+
+  game.settings.register(systemId, ABFSettingsKeys.CRIT_ROLL_LOCATION_BY, {
+    name: 'anima.ui.systemSettings.critRollLocationBy.title',
+    hint: 'anima.ui.systemSettings.critRollLocationBy.hint',
+    scope: 'world',
+    config: true,
+    type: String,
+    choices: critRollerChoices,
+    default: 'owner'
+  });
+
+  game.settings.register(systemId, ABFSettingsKeys.NOTIFY_ON_MISSING_EXCEL_MATCH, {
+    name: 'anima.ui.systemSettings.notifyOnMissingExcelMatch.title',
+    hint: 'anima.ui.systemSettings.notifyOnMissingExcelMatch.hint.title',
+    scope: 'world',
+    config: true,
+    default: true,
     type: Boolean
   });
 

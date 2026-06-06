@@ -20,7 +20,7 @@
       "value": false
     },
     "special": {
-      "value": "Presa 12"
+      "value": ""
     },
     "integrity": {
       "base": {
@@ -206,6 +206,24 @@
       }
     },
     "useCustomFormula": {
+      "value": true
+    },
+    "qualities": {
+      "value": [
+        "grappling"
+      ]
+    },
+    "notes": {
+      "value": ""
+    },
+    "qualityParams": {
+      "value": {
+        "grappling": {
+          "grappleStrength": 12
+        }
+      }
+    },
+    "allowsPresa": {
       "value": true
     }
   },

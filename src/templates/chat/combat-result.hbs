@@ -16,15 +16,135 @@
     {{/if}}
 
     <p data-requires-permission="gm"><strong>{{localize "chat.combatResult.armor"}}:</strong> {{combatResult.finalArmor}}{{#if combatResult.reducedArmor}} (−{{combatResult.reducedArmor}} {{localize "chat.combatResult.reduced"}}){{/if}}</p>
-    <p><strong>{{localize "chat.combatResult.finalDamage"}}:</strong> {{combatResult.damageFinal}}<span data-requires-permission="gm"> ({{combatResult.damagePercentage}}% of {{combatResult.finalBaseDamage}})</span></p>
+    {{#if combatResult.appliedDamage}}
+      <p><strong>{{localize "chat.combatResult.finalDamage"}}:</strong> {{combatResult.appliedDamage}}<span data-requires-permission="gm"> ({{localize "chat.combatResult.baseDamage"}}: {{combatResult.damageFinal}}, {{combatResult.damagePercentage}}% of {{combatResult.finalBaseDamage}})</span></p>
+    {{else}}
+      <p data-requires-permission="gm"><strong>{{localize "chat.combatResult.baseDamage"}}:</strong> {{combatResult.damageFinal}} ({{combatResult.damagePercentage}}% of {{combatResult.finalBaseDamage}})</p>
+    {{/if}}
     <p data-requires-permission="owner"><strong>{{localize "chat.combatResult.lifePercentRemoved"}}:</strong> {{combatResult.lifePercentRemoved}}%</p>
-    <p data-requires-permission="owner"><strong>{{localize "chat.combatResult.isCritical"}}:</strong> {{#if combatResult.isCritical}}{{localize "chat.combatResult.yes"}}{{else}}{{localize "chat.combatResult.no"}}{{/if}}</p>
 
     {{#if combatResult.isCritical}}
+      <hr style="margin:.5rem 0; border-color:#c03050;">
+      <p data-requires-permission="owner" style="color:#c03050;font-weight:bold;">{{localize "chat.combatResult.isCritical"}}: {{localize "chat.combatResult.yes"}}</p>
       <p data-requires-permission="owner"><strong>{{localize "chat.combatResult.baseCriticalValue"}}:</strong> {{combatResult.baseCriticalValue}}</p>
+
+      {{! ── Phase 0: GM starts resolution ── }}
+      {{#unless combatResult.critPhase}}
+        <div data-requires-permission="gm" style="margin-top:.4rem;">
+          <button type="button"
+                  class="chat-action-button"
+                  style="background:#c03050; color:white; width:100%;"
+                  data-action="animabf-resolve-critical">
+            {{localize "macros.combat.dialog.resolveCriticalButton.title"}}
+          </button>
+        </div>
+      {{/unless}}
+
+      {{! ── Phase 1: Roll critical level ── }}
+      {{#if (eq combatResult.critPhase "rollCritLevel")}}
+        <hr style="margin:.4rem 0; border-color:var(--border-color-subtle,#ddd);">
+        <div style="margin-top:.4rem;">
+          <button type="button"
+                  class="chat-action-button"
+                  style="background:#e07020; color:white; width:100%;"
+                  data-action="animabf-crit-roll-level">
+            {{localize "chat.combatResult.rollCritLevel"}}
+          </button>
+        </div>
+      {{/if}}
+
+      {{! ── Phase 2: Roll PhR (show crit level + button for PhR) ── }}
+      {{#if (eq combatResult.critPhase "rollPhR")}}
+        <hr style="margin:.4rem 0; border-color:var(--border-color-subtle,#ddd);">
+        <p data-requires-permission="gm"><strong>{{localize "chat.combatResult.critLevel"}}:</strong> {{combatResult.critLevel}} <span style="opacity:.7">({{localize "chat.combatResult.critRoll"}}: {{combatResult.critLevelRoll}} + {{combatResult.baseCriticalValue}}{{#if combatResult.critMod}} {{#if (gt combatResult.critMod 0)}}+{{/if}}{{combatResult.critMod}}{{/if}})</span></p>
+        <div style="margin-top:.4rem;">
+          <button type="button"
+                  class="chat-action-button"
+                  style="background:#3080d0; color:white; width:100%;"
+                  data-action="animabf-crit-roll-phr">
+            {{localize "chat.combatResult.rollPhR"}}
+          </button>
+        </div>
+      {{/if}}
+
+      {{! ── Phase 3: Roll location (show crit level + PhR + button for location) ── }}
+      {{#if (eq combatResult.critPhase "rollLocation")}}
+        <hr style="margin:.4rem 0; border-color:var(--border-color-subtle,#ddd);">
+        <p data-requires-permission="gm"><strong>{{localize "chat.combatResult.critLevel"}}:</strong> {{combatResult.critLevel}} <span style="opacity:.7">({{localize "chat.combatResult.critRoll"}}: {{combatResult.critLevelRoll}} + {{combatResult.baseCriticalValue}}{{#if combatResult.critMod}} {{#if (gt combatResult.critMod 0)}}+{{/if}}{{combatResult.critMod}}{{/if}})</span></p>
+        <p data-requires-permission="gm"><strong>{{localize "chat.combatResult.phRoll"}}:</strong> {{combatResult.phTotal}} <span style="opacity:.7">({{localize "chat.combatResult.critRoll"}}: {{combatResult.phRoll}} + RF {{combatResult.phBase}}{{#if combatResult.phMod}} {{#if (gt combatResult.phMod 0)}}+{{/if}}{{combatResult.phMod}}{{/if}})</span></p>
+        <p data-requires-permission="owner"><strong>{{localize "chat.combatResult.failureLevel"}}:</strong> {{combatResult.failureLevel}}</p>
+        <div style="margin-top:.4rem;">
+          <button type="button"
+                  class="chat-action-button"
+                  style="background:#8050c0; color:white; width:100%;"
+                  data-action="animabf-crit-roll-location">
+            {{localize "chat.combatResult.rollLocation"}}
+          </button>
+        </div>
+      {{/if}}
+
+      {{! ── Phase done: immune ── }}
+      {{#if combatResult.critImmune}}
+        <p data-requires-permission="owner"><em>{{localize (concat "chat.combatResult.critImmune." combatResult.critImmuneReason)}}</em></p>
+      {{/if}}
+
+      {{! ── Phase done: full results ── }}
+      {{#if combatResult.critResolved}}
+        {{#unless combatResult.critImmune}}
+          <hr style="margin:.4rem 0; border-color:var(--border-color-subtle,#ddd);">
+          <p data-requires-permission="gm"><strong>{{localize "chat.combatResult.critLevel"}}:</strong> {{combatResult.critLevel}} <span style="opacity:.7">({{localize "chat.combatResult.critRoll"}}: {{combatResult.critLevelRoll}} + {{combatResult.baseCriticalValue}}{{#if combatResult.critMod}} {{#if (gt combatResult.critMod 0)}}+{{/if}}{{combatResult.critMod}}{{/if}})</span></p>
+          <p data-requires-permission="gm"><strong>{{localize "chat.combatResult.phRoll"}}:</strong> {{combatResult.phTotal}} <span style="opacity:.7">({{localize "chat.combatResult.critRoll"}}: {{combatResult.phRoll}} + RF {{combatResult.phBase}}{{#if combatResult.phMod}} {{#if (gt combatResult.phMod 0)}}+{{/if}}{{combatResult.phMod}}{{/if}})</span></p>
+
+          {{#if combatResult.phPassed}}
+            <p data-requires-permission="owner" style="color:#20a060;font-weight:bold;">{{localize "chat.combatResult.critNullified"}}</p>
+          {{else}}
+            <p data-requires-permission="owner"><strong>{{localize "chat.combatResult.failureLevel"}}:</strong> {{combatResult.failureLevel}}</p>
+
+            {{#if combatResult.critLocation}}
+              <p data-requires-permission="owner"><strong>{{localize "chat.combatResult.location"}}:</strong> {{localize (concat "chat.combatResult.zone." combatResult.critLocation.zone)}}{{#if combatResult.critLocationRoll}} <span style="opacity:.7">({{combatResult.critLocationRoll}})</span>{{/if}}</p>
+            {{/if}}
+
+            <p data-requires-permission="owner"><strong>{{localize "chat.combatResult.actionPenalty"}}:</strong> -{{combatResult.critEffects.actionPenalty}}</p>
+
+            {{#if combatResult.critEffects.limbDestroyed}}
+              <p data-requires-permission="owner" style="color:#c03050;font-weight:bold;">{{localize "chat.combatResult.limbDestroyed"}} ({{localize (concat "chat.combatResult.zone." combatResult.critLocation.zone)}})</p>
+            {{/if}}
+
+            {{#if combatResult.critEffects.unconscious}}
+              <p data-requires-permission="owner" style="color:#c03050;font-weight:bold;">{{localize "chat.combatResult.unconscious"}}</p>
+            {{/if}}
+
+            {{#if combatResult.critEffects.death}}
+              <p data-requires-permission="owner" style="color:#c03050;font-weight:bold;">{{localize "chat.combatResult.death"}}</p>
+            {{/if}}
+
+            {{#if combatResult.critEffects.deathTimer}}
+              <p data-requires-permission="owner" style="color:#c03050;">{{localize "chat.combatResult.deathTimer"}}</p>
+            {{/if}}
+          {{/if}}
+        {{/unless}}
+      {{/if}}
+    {{else}}
+      {{! No crítico: el DJ puede forzar el control de crítico manualmente tras la tirada. }}
+      {{#if (gt combatResult.damageFinal 0)}}
+        <div data-requires-permission="gm" style="margin-top:.4rem;">
+          <button type="button"
+                  class="chat-action-button"
+                  style="background:#c03050; color:white; width:100%;"
+                  data-action="animabf-force-critical">
+            {{localize "chat.combatResult.forceCriticalButton"}}
+          </button>
+        </div>
+      {{/if}}
     {{/if}}
 
     {{#if (gt combatResult.damageFinal 0)}}
+      {{#if (eq combatResult.maneuverSlug "dano-retrasado")}}
+        {{! Daño retrasado: el daño se programa solo (hook createChatMessage); no hay botón ni aplicación inmediata. }}
+        <p data-requires-permission="owner" style="margin-top:.5rem;color:#7a4ca0;font-weight:bold;">
+          <i class="fas fa-clock"></i> {{localize "chat.combatResult.delayedDamageScheduled"}} ({{combatResult.delayRounds}})
+        </p>
+      {{else}}
       <div class="animabf-result-damage-controls"
            data-requires-permission="owner"
            style="margin-top:.5rem; display:flex; gap:.5rem; flex-wrap:wrap;">
@@ -59,6 +179,18 @@
                 data-def-actor="{{defenderId}}"
                 data-def-token="{{defenderTokenId}}">
           {{localize "chat.result.applyDouble"}}
+        </button>
+      </div>
+      {{/if}}
+    {{/if}}
+
+    {{#if (abfSettingEnabled "USE_BREAKAGE_RULE")}}
+      <div data-requires-permission="gm" style="margin-top:.5rem;">
+        <button type="button"
+                class="chat-action-button"
+                style="background:#6b5b3e; color:white; width:100%;"
+                data-action="animabf-integrity-check">
+          <i class="fas fa-shield-halved"></i> {{localize "chat.combatResult.integrity.button"}}
         </button>
       </div>
     {{/if}}

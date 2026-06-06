@@ -79,6 +79,17 @@ export async function sendAccumulationZeroDefense({
       animabf: {
         kind: 'combatResult',
         result: { ...combatResult, damageFinal },
+        // Persist the aimed flag so the critical resolver can skip the
+        // location roll when the attack was aimed.
+        attackData: {
+          attackerId: attackData?.attackerId ?? '',
+          aimed: !!attackData?.aimed,
+          aimedWhere: attackData?.aimedWhere ?? '',
+          maneuverSlug: attackData?.maneuverSlug ?? '',
+          maneuverWasUnarmed: !!attackData?.maneuverWasUnarmed,
+          delayRounds: Number(attackData?.delayRounds ?? 0) || 0
+        },
+        attacker: { actorId: attackData?.attackerId ?? '' },
         defender: { actorId: actor.id, tokenId: defenderToken?.id ?? '' },
         damageControl: { appliedOnce: false, apps: [] }
       }

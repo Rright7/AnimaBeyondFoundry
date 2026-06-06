@@ -22,7 +22,7 @@
       "value": false
     },
     "special": {
-      "value": "Presa (FUE 10), Alcance (10m), Arma Grande, Torbellino envolvente"
+      "value": "Alcance (10m), Arma Grande, Torbellino envolvente"
     },
     "integrity": {
       "base": {
@@ -220,6 +220,24 @@
     },
     "fueRequired": {
       "value": ""
+    },
+    "qualities": {
+      "value": [
+        "grappling"
+      ]
+    },
+    "notes": {
+      "value": ""
+    },
+    "qualityParams": {
+      "value": {
+        "grappling": {
+          "grappleStrength": 10
+        }
+      }
+    },
+    "allowsPresa": {
+      "value": true
     }
   },
   "_stats": {

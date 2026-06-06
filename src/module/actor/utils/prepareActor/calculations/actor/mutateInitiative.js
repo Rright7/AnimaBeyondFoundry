@@ -8,14 +8,21 @@ export const mutateInitiative = data => {
 
   const allActionMod = general.modifiers.allActions.final.value;
 
+  // Anima RAW: la categoría "Acción Física" de la Tabla 43 (physicalActions)
+  // no afecta a la habilidad de Turno/Iniciativa. Los penalizadores al turno
+  // específicos (Derribado -10, Parálisis -20/-30/-100...) vienen ya como
+  // modificadores directos sobre `initiative.final.value` desde los AE,
+  // no a través de `physicalActions`.
   const penalty =
-    Math.ceil(
-      Math.min(allActionMod + general.modifiers.physicalActions.final.value, 0) / 2
-    ) + general.modifiers.naturalPenalty.final.value;
+    Math.ceil(Math.min(allActionMod, 0) / 2) +
+    general.modifiers.naturalPenalty.final.value;
 
   const { initiative } = data.characteristics.secondaries;
 
-  initiative.final.value = initiative.base.value + initiative.special.value + penalty;
+  const kiInitiativeBonus = data.general.modifiers.kiBonus?.initiative?.value ?? 0;
+
+  initiative.final.value =
+    initiative.base.value + initiative.special.value + penalty + kiInitiativeBonus;
 
   const equippedWeapons = combat.weapons.filter(weapon => weapon.system.equipped.value);
 
@@ -71,8 +78,8 @@ mutateInitiative.abfFlow = {
     'system.characteristics.secondaries.initiative.base.value',
     'system.characteristics.secondaries.initiative.special.value',
     'system.general.modifiers.allActions.final.value',
-    'system.general.modifiers.physicalActions.final.value',
     'system.general.modifiers.naturalPenalty.final.value',
+    'system.general.modifiers.kiBonus.initiative.value',
     'system.combat.weapons' // equipped + isShield + size + initiative.*
   ],
   mods: ['system.characteristics.secondaries.initiative.final.value']

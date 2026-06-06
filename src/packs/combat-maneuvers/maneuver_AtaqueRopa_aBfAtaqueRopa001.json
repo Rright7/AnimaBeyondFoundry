@@ -1,0 +1,25 @@
+{
+    "name": "Ataque apuntado: Ropa",
+    "type": "combatManeuver",
+    "img": "icons/svg/item-bag.svg",
+    "system": {
+        "slug": {
+            "value": "ataque-ropa"
+        },
+        "description": {
+            "value": "Maniobra maestra (requiere Maestría en Ataque: valor base de Ataque ≥ 200).\n\nCorta o desgarra las ropas del adversario sin dañar lo más mínimo su cuerpo. Decides qué prendas cortar (p.ej. solo la camisa, o dejarlo en ropa interior).\n\nPENALIZADOR:\n• −150 con arma convencional.\n• −100 si el arma seleccionada tiene la cualidad Precisa.\n(El sistema aplica −150 o −100 automáticamente según el arma elegida en el diálogo de ataque.)\n\nNo causa daño al cuerpo por defecto. Si quieres dañar, marca «Causar daño» en el diálogo.\n\nMANUAL (no automatizado): si la armadura del objetivo es susceptible de cortarse, haz un control de Rotura contra la Entereza de la armadura a mano (ver la regla de Rotura y entereza). La combinación con otras maniobras (p.ej. Área, para desnudar a varios) también se gestiona a mano.\n\nTERMINOLOGÍA:\n• Precisa: cualidad del arma; aquí reduce el penalizador de −150 a −100.\n\nEN FOUNDRY: targetea al objetivo, declara la maniobra y ataca con el arma elegida; el penalizador (−150/−100) se calcula solo."
+        },
+        "actionType": {
+            "value": "active"
+        },
+        "traits": ["melee"],
+        "visible": false
+    },
+    "effects": [],
+    "ownership": {
+        "default": 0
+    },
+    "flags": {},
+    "_id": "aBfAtaqueRopa001",
+    "_key": "!items!aBfAtaqueRopa001"
+}
