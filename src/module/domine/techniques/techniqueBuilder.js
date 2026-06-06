@@ -14,6 +14,7 @@ import {
   newTechniqueEffectRow,
   newTechniqueDisadvantageRow
 } from '../../types/domine/TechniqueItemConfig';
+import { techniquePersistentBonuses } from './activeTechniqueModifiers';
 
 // Lógica del constructor de Técnicas de Ki, compartida entre la pestaña
 // "Creación de Técnicas de Ki" (ficha de actor) y la hoja del item técnica.
@@ -45,6 +46,13 @@ export const TECHNIQUE_CHARACTERISTICS = [
 const CHAR_ABBR = Object.fromEntries(
   TECHNIQUE_CHARACTERISTICS.map(c => [c.key, c.label])
 );
+
+// Etiquetas cortas de los bonos persistentes que se auto-aplican (F6 entrega 2).
+const PERSISTENT_BUCKET_ABBR = {
+  resistancePhysical: 'RF',
+  resistanceMagic: 'RM',
+  resistancePsychic: 'RP'
+};
 
 export const TECHNIQUE_MAINT_MODES = [
   { value: 'none', label: '—' },
@@ -253,6 +261,18 @@ export function buildTechniqueViewModel(item) {
   if (computed.flags?.anySostMenor) costNotes.push(`Sostenido menor: +${20 * lvl} CM · 5 asaltos`);
   if (computed.flags?.anySostMayor) costNotes.push(`Sostenido mayor: +${30 * lvl} CM · 1 min`);
 
+  // Bonos persistentes mecánico-limpios que la técnica aplica al activarse
+  // (Capacidad Incrementada -> característica; Incremento de Resistencia -> RF/RM/RP).
+  const persistent = techniquePersistentBonuses(effects);
+  const appliedBonuses = [
+    ...Object.entries(persistent.characteristics).map(
+      ([c, v]) => `${CHAR_ABBR[c] ?? c} +${v}`
+    ),
+    ...persistent.kiBonusEffects.map(
+      e => `${PERSISTENT_BUCKET_ABBR[e.target] ?? e.target} +${e.value}`
+    )
+  ];
+
   return {
     id: item?.id ?? item?._id,
     name: item?.name,
@@ -273,6 +293,8 @@ export function buildTechniqueViewModel(item) {
     costString,
     effectsSummary,
     costNotes,
+    appliedBonuses,
+    appliedBonusesString: appliedBonuses.join(' · '),
     // Estado de uso en juego (F6).
     active: !!item?.flags?.animabf?.active,
     remaining: Number(item?.flags?.animabf?.remaining) || 0,

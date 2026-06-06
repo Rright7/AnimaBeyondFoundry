@@ -1,5 +1,6 @@
 import {
   getActiveEffectContributions,
+  getPathContributions,
   formatContributions
 } from './activeEffectsBreakdown.js';
 
@@ -41,5 +42,35 @@ describe('getActiveEffectContributions — de-dupe', () => {
 
   test('unknown attribute returns empty', () => {
     expect(getActiveEffectContributions({}, 'nope')).toEqual([]);
+  });
+});
+
+describe('getPathContributions — sheet rollables (resistances / characteristics)', () => {
+  const RES = 'system.characteristics.secondaries.resistances.physical.final.value';
+
+  test('reads contributions for an explicit path (Ki technique on RF)', () => {
+    const actor = {
+      synthetics: {
+        modifiers: {
+          [RES]: [
+            { path: RES, value: 50, source: 'Coraza de Ki', slug: 'technique:tA:resistancePhysical', mode: 'add' }
+          ]
+        }
+      }
+    };
+    const contribs = getPathContributions(actor, RES);
+    expect(contribs).toEqual([{ name: 'Coraza de Ki', value: 50, mode: 'add' }]);
+    expect(formatContributions(contribs)).toBe('Mod: Coraza de Ki (+50)');
+  });
+
+  test('accepts a single path string or an array', () => {
+    const actor = { synthetics: { modifiers: { [RES]: [{ path: RES, value: 20, source: 'X', mode: 'add' }] } } };
+    expect(getPathContributions(actor, [RES])).toHaveLength(1);
+    expect(getPathContributions(actor, RES)).toHaveLength(1);
+  });
+
+  test('empty / missing paths return empty', () => {
+    expect(getPathContributions({}, [])).toEqual([]);
+    expect(getPathContributions({}, null)).toEqual([]);
   });
 });

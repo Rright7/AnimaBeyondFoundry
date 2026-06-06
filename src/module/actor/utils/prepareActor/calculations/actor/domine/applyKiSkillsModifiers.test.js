@@ -65,6 +65,71 @@ describe('applyKiSkillsModifiers — resistances, barrier and dynamic values', (
   });
 });
 
+describe('applyKiSkillsModifiers — active Ki techniques', () => {
+  const technique = (active, effects) => ({
+    flags: { animabf: { active } },
+    system: { build: { effects } }
+  });
+
+  test('active technique raises the physical resistance bucket', () => {
+    const data = makeData();
+    data.domine.techniques = [
+      technique(true, [
+        { effectId: 'incremento-de-resistencia-fisica', tierOptions: ['+50 RF'] }
+      ])
+    ];
+    applyKiSkillsModifiers(data);
+    expect(data.general.modifiers.kiBonus.resistances.physical.value).toBe(50);
+  });
+
+  test('inactive technique contributes nothing', () => {
+    const data = makeData();
+    data.domine.techniques = [
+      technique(false, [
+        { effectId: 'incremento-de-resistencia-magica', tierOptions: ['+50 RM'] }
+      ])
+    ];
+    applyKiSkillsModifiers(data);
+    expect(data.general.modifiers.kiBonus.resistances.magic.value).toBe(0);
+  });
+
+  test('technique resistance stacks on top of a Ki skill bonus', () => {
+    const data = makeData({ kiSkills: [inner('physicalDomain')] });
+    data.domine.techniques = [
+      technique(true, [
+        { effectId: 'incremento-de-resistencia-fisica', tierOptions: ['+20 RF'] }
+      ])
+    ];
+    applyKiSkillsModifiers(data);
+    // Dominio físico (+10) + técnica (+20)
+    expect(data.general.modifiers.kiBonus.resistances.physical.value).toBe(30);
+  });
+
+  test('deposits resistance provenance on the final path when an actor is given', () => {
+    const data = makeData();
+    data.domine.techniques = [
+      {
+        name: 'Coraza de Ki',
+        id: 'tA',
+        flags: { animabf: { active: true } },
+        system: {
+          build: {
+            effects: [{ effectId: 'incremento-de-resistencia-magica', tierOptions: ['+50 RM'] }]
+          }
+        }
+      }
+    ];
+    const actor = {};
+    applyKiSkillsModifiers(data, actor);
+    const recs =
+      actor.synthetics.modifiers[
+        'system.characteristics.secondaries.resistances.magic.final.value'
+      ];
+    expect(recs).toHaveLength(1);
+    expect(recs[0]).toMatchObject({ value: 50, mode: 'add', source: 'Coraza de Ki' });
+  });
+});
+
 describe('applyKiSkillsModifiers — lookup and mirroring', () => {
   test('UI-added ability matched by name applies its effect', () => {
     const data = makeData({

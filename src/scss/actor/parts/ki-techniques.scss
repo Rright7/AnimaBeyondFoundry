@@ -468,6 +468,17 @@
       font-style: italic;
     }
 
+    .technique-card-applied {
+      font-size: 11px;
+      color: #6b6356;
+      font-variant-numeric: tabular-nums;
+
+      &.is-active {
+        color: var(--abf-accent, #6b4f9e);
+        font-weight: 600;
+      }
+    }
+
     .technique-card-actions {
       display: flex;
       align-items: center;

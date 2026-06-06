@@ -3,6 +3,8 @@ import {
   findKiSkillById,
   findKiSkillByName
 } from '../../../../excelImporter/kiSkills/kiSkills.js';
+import { activeTechniqueModifiers } from '../../../../../../domine/techniques/activeTechniqueModifiers';
+import { depositModifier } from '../../../../effectFow/modifiers/synthetics.js';
 
 const RESISTANCE_KEYS = ['physical', 'disease', 'poison', 'magic', 'psychic'];
 const RESISTANCE_TARGET = {
@@ -12,6 +14,30 @@ const RESISTANCE_TARGET = {
   resistanceMagic: 'magic',
   resistancePsychic: 'psychic'
 };
+
+/**
+ * Acumula un efecto canónico { target, operation:'add'|'set', value } en los
+ * buckets `totals`. 'add' suma; 'set' toma el máximo (armaduras/barreras no apilan).
+ * @param {object} totals
+ * @param {{target:string, operation:string, value:number}} eff
+ */
+function accumulateEffect(totals, eff) {
+  const value = Number(eff.value) || 0;
+  const target = eff.target;
+  if (eff.operation === 'add') {
+    if (target === 'damage') totals.damage += value;
+    else if (target === 'initiative') totals.initiative += value;
+    else if (target === 'resistanceAll')
+      RESISTANCE_KEYS.forEach(k => (totals.resistances[k] += value));
+    else if (RESISTANCE_TARGET[target])
+      totals.resistances[RESISTANCE_TARGET[target]] += value;
+  } else if (eff.operation === 'set') {
+    if (target === 'energyArmor')
+      totals.energyArmor = Math.max(totals.energyArmor, value);
+    else if (target === 'damageReduction')
+      totals.damageReduction = Math.max(totals.damageReduction, value);
+  }
+}
 
 /**
  * Walk every Ki and Nemesis ability present on the actor sheet and accumulate
@@ -29,8 +55,9 @@ const RESISTANCE_TARGET = {
  * DFS order (derived data only; the actor source is untouched).
  *
  * @param {import('../../../../../../types/Actor').ABFActorDataSourceData} data
+ * @param {object} [actor] documento del actor (para depositar provenance en synthetics)
  */
-export const applyKiSkillsModifiers = data => {
+export const applyKiSkillsModifiers = (data, actor) => {
   const kiSkills = data.domine?.kiSkills ?? [];
   const nemesisSkills = data.domine?.nemesisSkills ?? [];
 
@@ -46,6 +73,25 @@ export const applyKiSkillsModifiers = data => {
   };
   enrichListFromCanonical(kiSkills, totals);
   enrichListFromCanonical(nemesisSkills, totals);
+
+  // Técnicas de Ki activas (F6): sus efectos persistentes de resistencias se
+  // suman a los mismos buckets. (Las características van por su propio mutador.)
+  const techMods = activeTechniqueModifiers(data);
+  for (const eff of techMods.kiBonusEffects) {
+    accumulateEffect(totals, eff);
+  }
+  // Provenance para el chat: una entrada por técnica/resistencia, sobre el path
+  // `.final.value` (el que se tira desde la hoja).
+  for (const rec of techMods.records) {
+    const key = rec.scope === 'bucket' ? RESISTANCE_TARGET[rec.target] : null;
+    if (!key) continue;
+    depositModifier(actor, {
+      path: `system.characteristics.secondaries.resistances.${key}.final.value`,
+      value: rec.value,
+      source: rec.source,
+      slug: rec.slug ? `technique:${rec.slug}:${rec.target}` : undefined
+    });
+  }
 
   populateTreePrefixes(kiSkills);
   populateTreePrefixes(nemesisSkills);
@@ -133,23 +179,7 @@ function enrichListFromCanonical(list, totals) {
       };
     }
 
-    for (const eff of canonical.effects ?? []) {
-      const value = Number(eff.value) || 0;
-      const target = eff.target;
-      if (eff.operation === 'add') {
-        if (target === 'damage') totals.damage += value;
-        else if (target === 'initiative') totals.initiative += value;
-        else if (target === 'resistanceAll')
-          RESISTANCE_KEYS.forEach(k => (totals.resistances[k] += value));
-        else if (RESISTANCE_TARGET[target])
-          totals.resistances[RESISTANCE_TARGET[target]] += value;
-      } else if (eff.operation === 'set') {
-        if (target === 'energyArmor')
-          totals.energyArmor = Math.max(totals.energyArmor, value);
-        else if (target === 'damageReduction')
-          totals.damageReduction = Math.max(totals.damageReduction, value);
-      }
-    }
+    for (const eff of canonical.effects ?? []) accumulateEffect(totals, eff);
   }
 }
 
@@ -198,7 +228,7 @@ function hasFollowingSiblingAtLevel(depths, i, level) {
 }
 
 applyKiSkillsModifiers.abfFlow = {
-  deps: ['system.domine.kiSkills', 'system.domine.nemesisSkills'],
+  deps: ['system.domine.kiSkills', 'system.domine.nemesisSkills', 'system.domine.techniques'],
   mods: [
     'system.general.modifiers.kiBonus.damage.value',
     'system.general.modifiers.kiBonus.initiative.value',

@@ -54,10 +54,25 @@ function dedupeContributions(contributions) {
  * @returns {AEContribution[]}
  */
 export function getActiveEffectContributions(actor, attribute, options) {
-  const paths = ATTRIBUTE_PATHS[attribute];
-  if (!Array.isArray(paths)) return [];
+  return getPathContributions(actor, ATTRIBUTE_PATHS[attribute], options);
+}
 
-  const fromMailbox = readModifiers(actor, paths);
+/**
+ * Like {@link getActiveEffectContributions} but takes the concrete data path(s)
+ * directly instead of a logical attribute. Used for sheet rollables (resistances,
+ * characteristics, abilities…) that carry their own `rollPath`, so any deposited
+ * provenance on that path is traced without needing an ATTRIBUTE_PATHS entry.
+ *
+ * @param {Actor} actor
+ * @param {string|string[]} paths
+ * @param {Set<string>|string[]} [options] actor roll options for predicate gating
+ * @returns {AEContribution[]}
+ */
+export function getPathContributions(actor, paths, options) {
+  const pathList = Array.isArray(paths) ? paths : (paths ? [paths] : []);
+  if (pathList.length === 0) return [];
+
+  const fromMailbox = readModifiers(actor, pathList);
   if (fromMailbox.length > 0) {
     const { applied } = applyStackingRules(fromMailbox, options);
     const contributions = applied.map(rec => ({
@@ -70,7 +85,7 @@ export function getActiveEffectContributions(actor, attribute, options) {
 
   if (!actor?.effects) return [];
 
-  const pathSet = new Set(paths);
+  const pathSet = new Set(pathList);
   const out = [];
   // Track seen (effectId|name + value + mode) so an AE that contributes the
   // SAME value to multiple paths (e.g. Flanco -30 to both block and dodge for

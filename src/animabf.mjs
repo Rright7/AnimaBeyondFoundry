@@ -744,9 +744,12 @@ Hooks.on('dropCanvasData', async (_canvas, data) => {
 // message that carries a Roll, so the contribution of active effects to the
 // rolled attribute is visible in chat. Inferred from the flavor text (es/en/fr).
 
-import { inferAttributeFromFlavor } from './module/actor/utils/attributeDerivationMap.js';
 import {
-  getActiveEffectContributions,
+  inferAttributeFromFlavor,
+  ATTRIBUTE_PATHS
+} from './module/actor/utils/attributeDerivationMap.js';
+import {
+  getPathContributions,
   formatContributions
 } from './module/actor/utils/activeEffectsBreakdown.js';
 import { resolveActorForRoll } from './module/actor/utils/resolveActorForRoll.js';
@@ -775,7 +778,18 @@ Hooks.on('preCreateChatMessage', (message, _data, _options, _userId) => {
     } else {
       attribute = inferAttributeFromFlavor(flavor);
     }
-    if (!attribute) return;
+
+    // Resolve the data path(s) whose contributions to trace. A known logical
+    // attribute (combat / projection / initiative) maps via ATTRIBUTE_PATHS;
+    // otherwise, sheet rollables (resistances, characteristics, abilities…)
+    // carry the exact `rollPath` they rolled — trace that path directly, with
+    // no attribute inference and no collision risk.
+    let paths = attribute ? ATTRIBUTE_PATHS[attribute] : null;
+    if (!Array.isArray(paths) || paths.length === 0) {
+      const rollPath = message.flags?.animabf?.rollPath;
+      paths = typeof rollPath === 'string' && rollPath ? [rollPath] : null;
+    }
+    if (!Array.isArray(paths) || paths.length === 0) return;
 
     // Resolve actor — prefer the token actor when possible (unlinked AE).
     const speaker = message.speaker ?? {};
@@ -789,7 +803,7 @@ Hooks.on('preCreateChatMessage', (message, _data, _options, _userId) => {
     // appear when their condition holds (Phase 3 wiring). getRollOptions builds
     // the set if the actor wasn't prepared through the flow yet.
     const rollOptions = getRollOptions(actor);
-    const contributions = getActiveEffectContributions(actor, attribute, rollOptions);
+    const contributions = getPathContributions(actor, paths, rollOptions);
     if (contributions.length === 0) return;
 
     const line = formatContributions(contributions);

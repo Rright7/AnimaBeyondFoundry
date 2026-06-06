@@ -22,8 +22,11 @@
           {{#if effectsSummary}}
             <div class="technique-card-effects">{{effectsSummary}}</div>
           {{/if}}
+          {{#if appliedBonuses.length}}
+            <div class="technique-card-applied{{#if active}} is-active{{/if}}">Aplica: {{appliedBonusesString}}</div>
+          {{/if}}
           <div class="technique-card-actions">
-            <span class="technique-card-ki">Ki {{kiActiveTotal}}{{#if isMantenida}} · mant {{kiMaintTotal}}/asalto{{/if}}</span>
+            <span class="technique-card-ki">Coste total de Ki: {{kiActiveTotal}}{{#if isMantenida}} · mant {{kiMaintTotal}}/asalto{{/if}}</span>
             {{#if isInstant}}
               <button type="button" class="technique-use" data-action="tech-use">Usar</button>
             {{else}}

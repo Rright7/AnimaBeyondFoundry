@@ -63,6 +63,7 @@ import {
   applyKiSkillsModifiers,
   mutateKiDamageReduction
 } from './calculations/actor/domine/applyKiSkillsModifiers';
+import { mutateActiveTechniqueCharacteristics } from './calculations/actor/domine/mutateActiveTechniqueCharacteristics';
 import { mutateInitiative } from './calculations/actor/mutateInitiative';
 import { mutateRegenerationType } from './calculations/actor/general/mutateRegenerationType';
 import { mutatePresence } from './calculations/actor/mutatePresence';
@@ -85,6 +86,10 @@ import { inflateSystemFromTypeMarkers } from '../../types/inflateSystemFromTypeM
 
 // Be careful with order of this functions, some derived data functions could be dependent of another
 const DERIVED_DATA_FUNCTIONS = [
+  // Técnicas de Ki activas: aumento de característica (special.value) antes de
+  // que el typed op del tipo Characteristic recalcule final/mod (toposort lo
+  // ordena por deps; aquí va primero para que la cascada arranque correcta).
+  mutateActiveTechniqueCharacteristics,
   mutateTotalLevel,
   mutatePresence,
   // Resistances — base must run before final (final depends on base)

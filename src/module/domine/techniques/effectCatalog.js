@@ -75,4 +75,37 @@ export const DISADVANTAGE_DETAIL = {
   'sacrificio-de-caracteristicas': { kind: 'text', placeholder: 'característica' }
 };
 
+/**
+ * Efectos cuyo resultado es un bono persistente y mecánico-limpio que se puede
+ * auto-aplicar mientras la técnica está activa (F6 entrega 2).
+ *
+ * - kind 'characteristic': suma a `primaries.<target>.special.value` (los typed
+ *   ops del tipo Characteristic recalculan final/mod y cascada a derivados).
+ * - kind 'bucket': alimenta `kiBonus` vía applyKiSkillsModifiers; `target` es la
+ *   clave que espera RESISTANCE_TARGET (resistancePhysical/Magic/Psychic).
+ *
+ * El resto de efectos (combate por tirada, multiplicadores, estados, escudos de
+ * PV, etc.) NO están aquí a propósito: se aplican de forma narrativa o en
+ * entregas posteriores.
+ */
+export const PERSISTENT_EFFECT_MAP = {
+  'capacidad-incrementada-agi': { target: 'agility', kind: 'characteristic' },
+  'capacidad-incrementada-fue': { target: 'strength', kind: 'characteristic' },
+  'capacidad-incrementada-des': { target: 'dexterity', kind: 'characteristic' },
+  'incremento-de-resistencia-fisica': { target: 'resistancePhysical', kind: 'bucket' },
+  'incremento-de-resistencia-magica': { target: 'resistanceMagic', kind: 'bucket' },
+  'incremento-de-resistencia-psiquica': { target: 'resistancePsychic', kind: 'bucket' }
+};
+
+/**
+ * Extrae el primer entero de una opción del catálogo ("+50 RF" -> 50, "+3" -> 3).
+ * Devuelve 0 si la opción no contiene número (p.ej. "Incremento también a RE").
+ * @param {string} option
+ * @returns {number}
+ */
+export const parseOptionNumber = option => {
+  const m = typeof option === 'string' ? option.match(/\d+/) : null;
+  return m ? Number(m[0]) : 0;
+};
+
 export { EFFECT_CATALOG, DISADVANTAGE_CATALOG };
