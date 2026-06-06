@@ -9,6 +9,19 @@
   gap: 8px;
   font-size: 12px;
 
+  .technique-drop-zone {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-radius: 6px;
+
+    &--drag-over {
+      outline: 2px dashed var(--tech-accent);
+      outline-offset: 4px;
+      background: rgba(107, 79, 158, 0.06);
+    }
+  }
+
   select,
   input[type='number'],
   input[type='text'],
@@ -110,6 +123,17 @@
       }
     }
 
+    .technique-summary-notes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 2px;
+
+      .technique-char-cost {
+        background: var(--tech-soft, #f3efe6);
+      }
+    }
+
     .technique-warnings {
       list-style: none;
       margin: 0;
@@ -204,20 +228,12 @@
     .technique-options {
       display: flex;
       flex-wrap: wrap;
-      gap: 4px 10px;
+      gap: 4px 6px;
 
-      .technique-option {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-
-        input {
-          width: auto;
-        }
-
-        small {
-          color: #8a8275;
-        }
+      select {
+        flex: 1 1 160px;
+        min-width: 140px;
+        max-width: 220px;
       }
     }
 
@@ -272,6 +288,18 @@
 
     select:last-of-type {
       flex: 1 1 auto;
+    }
+
+    .technique-disadvantage-detail {
+      flex: 1 1 140px;
+      min-width: 110px;
+      display: inline-flex;
+      gap: 4px;
+
+      select {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
     }
   }
 

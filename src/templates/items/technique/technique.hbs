@@ -30,6 +30,7 @@
     {{/"systems/animabf/templates/common/ui/group-header.hbs"}}
 
     {{#> "systems/animabf/templates/common/ui/group-body.hbs" class="technique-builder-body"}}
+      <div class="technique-drop-zone" data-drop-target="techniqueEffect">
 
       {{!-- Resumen de coste --}}
       <section class="technique-summary{{#if technique.computed.validations.cmExcesivo}} technique-summary--error{{/if}}">
@@ -48,6 +49,11 @@
           <span class="technique-summary-label">Coste por característica:</span>
           {{#each technique.costByCharacteristic}}<span class="technique-char-cost">{{label}} {{active}}{{#if maint}} ({{maint}}){{/if}}</span>{{/each}}
         </div>
+        {{#if technique.costNotes.length}}
+          <div class="technique-summary-notes">
+            {{#each technique.costNotes}}<span class="technique-char-cost">{{this}}</span>{{/each}}
+          </div>
+        {{/if}}
         {{#if technique.validationBadges.length}}
           <ul class="technique-warnings">
             {{#each technique.validationBadges}}<li>⚠ {{label}}</li>{{/each}}
@@ -67,7 +73,9 @@
         {{#each technique.effectRows}}
           <div class="technique-effect-row">
             <div class="technique-effect-row-top">
-              <span class="technique-role">{{#if isPrimary}}Primario{{else}}Secundario{{/if}}</span>
+              <select class="technique-role-select" data-tech-effect-field="role" data-index="{{index}}">
+                {{#each roleOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+              </select>
               <select class="technique-effect-select" data-tech-effect-field="effectId" data-index="{{index}}">
                 <option value="">— Efecto —</option>
                 {{#each ../technique.effectGroups}}
@@ -86,14 +94,13 @@
               <button type="button" class="technique-remove" data-action="tech-remove-effect" data-index="{{index}}" title="Quitar efecto">✕</button>
             </div>
 
-            {{#if options.length}}
-              <div class="technique-options">
-                {{#each options}}
-                  <label class="technique-option">
-                    <input type="checkbox" data-tech-effect-field="tierOption" data-index="{{../index}}" data-option="{{option}}" {{#if selected}}checked{{/if}}>
-                    <span>{{option}}</span>
-                    <small>cm {{cm}} · ki {{#if ../isPrimary}}{{kiPrimary}}{{else}}{{kiSecondary}}{{/if}}{{#if level}} · Nv{{level}}{{/if}}</small>
-                  </label>
+            {{#if effectId}}
+              <div class="technique-options" data-effect-options="{{index}}">
+                {{#each optionSlots}}
+                  <select data-tech-effect-field="tierOption" data-index="{{../index}}" data-slot="{{slot}}">
+                    <option value="">—</option>
+                    {{#each choices}}<option value="{{option}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+                  </select>
                 {{/each}}
               </div>
 
@@ -139,6 +146,19 @@
                 <option value="{{option}}" {{#if selected}}selected{{/if}}>{{option}} (CM {{cmReduction}})</option>
               {{/each}}
             </select>
+            {{#if (is 'eq' detailKind 'element')}}
+              <span class="technique-disadvantage-detail" data-disadvantage-detail>
+                {{#each elementSlots}}
+                  <select data-tech-disadvantage-field="detailElement" data-index="{{../index}}" data-slot="{{slot}}">
+                    <option value="">— Elemento —</option>
+                    {{#each choices}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+                  </select>
+                {{/each}}
+              </span>
+            {{/if}}
+            {{#if (is 'eq' detailKind 'text')}}
+              <input type="text" class="technique-disadvantage-detail" data-tech-disadvantage-field="detail" data-index="{{index}}" value="{{detail}}" placeholder="{{detailPlaceholder}}">
+            {{/if}}
             <button type="button" class="technique-remove" data-action="tech-remove-disadvantage" data-index="{{index}}" title="Quitar desventaja">✕</button>
           </div>
         {{/each}}
@@ -174,6 +194,7 @@
         <textarea name="system.description.value" rows="3">{{system.description.value}}</textarea>
       </section>
 
+      </div>
     {{/"systems/animabf/templates/common/ui/group-body.hbs"}}
   {{/"systems/animabf/templates/common/ui/group.hbs"}}
 {{/"systems/animabf/templates/items/base/base-sheet.hbs"}}

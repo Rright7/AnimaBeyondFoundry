@@ -1,0 +1,162 @@
+<div class="tech-builder" data-technique-id="{{id}}" data-drop-target="techniqueEffect">
+
+  {{!-- Cabecera --}}
+  <div class="tech-builder-header">
+    <input type="text" class="tech-name" name="system.dynamic.techniques.{{id}}.name" value="{{name}}" placeholder="Nombre de la técnica">
+    <label class="tech-field"><span>Nivel</span>
+      <select data-dtype="Number" name="system.dynamic.techniques.{{id}}.system.build.level">
+        {{#each levelOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/each}}
+      </select>
+    </label>
+    <label class="tech-field tech-field--check"><span>Combinable</span>
+      <input type="checkbox" name="system.dynamic.techniques.{{id}}.system.build.combinable" {{#if build.combinable}}checked{{/if}}>
+    </label>
+    <span class="tech-cm{{#if computed.validations.cmExcesivo}} is-error{{/if}}">CM {{computed.cmTotal}} <small>/ {{computed.cmCeiling}}</small></span>
+    <span class="tech-ki-total">Ki {{computed.kiActiveTotal}}{{#if computed.kiMaintTotal}} <small>(mant {{computed.kiMaintTotal}}/asalto)</small>{{/if}}</span>
+    <span class="tech-coste">Coste: {{costString}}</span>
+    <button type="button" class="tech-delete" data-action="tech-delete-technique" title="Borrar técnica">🗑</button>
+  </div>
+
+  {{#if costNotes.length}}
+    <div class="tech-cost-notes">
+      {{#each costNotes}}<span class="tech-cost-note">{{this}}</span>{{/each}}
+    </div>
+  {{/if}}
+
+  {{#if validationBadges.length}}
+    <ul class="tech-warnings">{{#each validationBadges}}<li>⚠ {{label}}</li>{{/each}}</ul>
+  {{/if}}
+
+  {{!-- Tabla de efectos --}}
+  <div class="tech-section-head">
+    <span>Efectos</span>
+    {{#if canAddEffect}}<button type="button" class="tech-add" data-action="tech-add-effect">+ Añadir efecto</button>{{/if}}
+  </div>
+  <div class="tech-table-scroll">
+    <table class="tech-effects-table">
+      <thead>
+        <tr>
+          <th rowspan="2">Rol</th><th rowspan="2">Efecto</th><th rowspan="2">Mant./Sost.</th>
+          <th rowspan="2">CM</th><th rowspan="2">Ki</th><th rowspan="2">Ki(M)</th><th rowspan="2">Características</th>
+          {{#each characteristics}}<th colspan="2">{{label}}</th>{{/each}}
+          <th rowspan="2"></th>
+        </tr>
+        <tr>
+          {{#each characteristics}}<th>Act</th><th>Mnt</th>{{/each}}
+        </tr>
+      </thead>
+      <tbody>
+        {{#each effectRows}}
+        <tr data-index="{{index}}">
+          <td class="tech-role">
+            <select data-tech-effect-field="role" data-index="{{index}}">
+              {{#each roleOptions}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+            </select>
+          </td>
+          <td>
+            <select data-tech-effect-field="effectId" data-index="{{index}}">
+              <option value="">— Efecto —</option>
+              {{#each ../effectGroups}}<optgroup label="{{label}}">{{#each effects}}<option value="{{id}}" {{#if (is 'eq' id ../../effectId)}}selected{{/if}}>{{name}}</option>{{/each}}</optgroup>{{/each}}
+            </select>
+          </td>
+          <td>
+            <select data-tech-effect-field="maintMode" data-index="{{index}}">
+              {{#each ../maintModes}}<option value="{{value}}" {{#if (is 'eq' value ../maintMode)}}selected{{/if}}>{{label}}</option>{{/each}}
+            </select>
+          </td>
+          <td class="tech-num">{{#if perEffect}}{{perEffect.cmEffect}}{{/if}}</td>
+          <td class="tech-num">{{#if perEffect}}{{perEffect.kiEffect}}{{/if}}</td>
+          <td class="tech-num">{{#if perEffect}}{{perEffect.kiMaint}}{{/if}}</td>
+          <td class="tech-charstr">{{charString}}</td>
+          {{#each ki}}
+            <td><input type="number" class="tech-ki-in" data-tech-effect-field="ki.{{key}}" data-index="{{../index}}" value="{{active}}"></td>
+            <td><input type="number" class="tech-ki-in" data-tech-effect-field="maint.{{key}}" data-index="{{../index}}" value="{{maint}}"></td>
+          {{/each}}
+          <td><button type="button" class="tech-remove" data-action="tech-remove-effect" data-index="{{index}}" title="Quitar efecto">✕</button></td>
+        </tr>
+        {{else}}
+        <tr><td colspan="20" class="tech-empty">Sin efectos. Añade uno o arrastra un Efecto de Técnica del compendio.</td></tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+
+  {{!-- Desventajas --}}
+  <div class="tech-section-head">
+    <span>Desventajas</span>
+    {{#if canAddDisadvantage}}<button type="button" class="tech-add" data-action="tech-add-disadvantage">+ Añadir desventaja</button>{{/if}}
+  </div>
+  {{#each disadvantageRows}}
+    <div class="tech-disadvantage-row" data-index="{{index}}">
+      <select data-tech-disadvantage-field="disadvantageId" data-index="{{index}}">
+        <option value="">— Desventaja —</option>
+        {{#each ../disadvantageOptions}}<option value="{{id}}" {{#if (is 'eq' id ../disadvantageId)}}selected{{/if}}>{{name}}</option>{{/each}}
+      </select>
+      <select data-tech-disadvantage-field="option" data-index="{{index}}">
+        <option value="">—</option>
+        {{#each options}}<option value="{{option}}" {{#if selected}}selected{{/if}}>{{option}} (CM {{cmReduction}})</option>{{/each}}
+      </select>
+      {{#if (is 'eq' detailKind 'element')}}
+        <span class="tech-disadvantage-detail" data-disadvantage-detail>
+          {{#each elementSlots}}
+            <select data-tech-disadvantage-field="detailElement" data-index="{{../index}}" data-slot="{{slot}}">
+              <option value="">— Elemento —</option>
+              {{#each choices}}<option value="{{key}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+            </select>
+          {{/each}}
+        </span>
+      {{/if}}
+      {{#if (is 'eq' detailKind 'text')}}
+        <input type="text" class="tech-disadvantage-detail" data-tech-disadvantage-field="detail" data-index="{{index}}" value="{{detail}}" placeholder="{{detailPlaceholder}}">
+      {{/if}}
+      <button type="button" class="tech-remove" data-action="tech-remove-disadvantage" data-index="{{index}}" title="Quitar desventaja">✕</button>
+    </div>
+  {{/each}}
+
+  {{!-- Modificadores de coste --}}
+  <div class="tech-modifiers">
+    <label class="tech-field"><span>Reducción de Ki</span>
+      <input type="number" name="system.dynamic.techniques.{{id}}.system.build.kiReductionLine" value="{{build.kiReductionLine}}">
+    </label>
+    <label class="tech-field"><span>Reducción de CM</span>
+      <input type="number" name="system.dynamic.techniques.{{id}}.system.build.cmReductionLine" value="{{build.cmReductionLine}}">
+    </label>
+    <div class="tech-redistribution">
+      <span class="tech-redistribution-title">Mod. por característica</span>
+      {{#each characteristics}}
+        <label class="tech-redistribution-cell"><span>{{label}}</span>
+          <input type="number" name="system.dynamic.techniques.{{../id}}.system.build.redistribution.{{key}}" value="{{lookup ../build.redistribution key}}">
+        </label>
+      {{/each}}
+    </div>
+  </div>
+
+  {{!-- Opciones de los efectos --}}
+  <div class="tech-options">
+    <div class="tech-options-title">Opciones de los efectos</div>
+    {{#each effectRows}}
+      {{#if effectId}}
+        <div class="tech-effect-options" data-effect-options="{{index}}">
+          <div class="tech-effect-options-head">
+            <strong>{{effectName}}</strong>
+            <span>Tipo: {{typeLabel}} · Clase: {{classLabel}}{{#if elementsLabel}} · Elementos: {{elementsLabel}}{{/if}}</span>
+          </div>
+          <div class="tech-option-slots">
+            {{#each optionSlots}}
+              <select data-tech-effect-field="tierOption" data-index="{{../index}}" data-slot="{{slot}}">
+                <option value="">—</option>
+                {{#each choices}}<option value="{{option}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+              </select>
+            {{/each}}
+          </div>
+        </div>
+      {{/if}}
+    {{/each}}
+  </div>
+
+  {{!-- Descripción --}}
+  <label class="tech-desc"><span>Descripción</span>
+    <textarea rows="2" name="system.dynamic.techniques.{{id}}.system.description.value">{{description}}</textarea>
+  </label>
+
+</div>
