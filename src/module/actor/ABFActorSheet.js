@@ -205,6 +205,8 @@ export default class ABFActorSheet extends ActorSheetV1 {
     // Estado de "Cargar Ki" (concentración por asalto).
     sheet.kiCharging = !!actor.flags?.animabf?.chargingKi;
     sheet.kiFullAccumulation = !!actor.flags?.animabf?.fullKiAccumulation;
+    // Estado de "Acumular zeón" (concentración mágica por asalto).
+    sheet.zeonAccumulating = !!actor.flags?.animabf?.accumulatingZeon;
     // Ki concentrado total (suma de los "Ki acu." por característica).
     sheet.kiAccumulatedTotal = TECHNIQUE_CHARACTERISTICS.reduce(
       (sum, c) =>
@@ -307,6 +309,11 @@ export default class ABFActorSheet extends ActorSheetV1 {
     on('[data-action="ki-charge"]', 'click', e => {
       e.preventDefault();
       this.actor.toggleChargeKi();
+    });
+    // Acumular zeón (concentración mágica por asalto).
+    on('[data-action="zeon-accumulate"]', 'click', e => {
+      e.preventDefault();
+      this.actor.toggleAccumulateZeon();
     });
     on('[data-action="ki-full-accumulation"]', 'change', e => {
       this.actor.toggleFullKiAccumulation();

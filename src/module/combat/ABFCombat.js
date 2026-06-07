@@ -43,6 +43,7 @@ export default class ABFCombat extends Combat {
       // update (mantenimiento de técnicas y acumulación por asalto persisten bien).
       await actor.consumeActiveTechniquesKi();
       await actor.accumulateKi();
+      await actor.accumulateZeon();
       actor.psychicShieldsMaintenance();
       // Desangramiento: 1 PV cada 20 asaltos mientras dure el sangrado.
       await tickBleeding(actor, 1);
@@ -64,6 +65,7 @@ export default class ABFCombat extends Combat {
       actor.consumeMaintainedZeon(true);
       await actor.consumeActiveTechniquesKi(true);
       await actor.revertAccumulateKi();
+      await actor.revertAccumulateZeon();
       actor.psychicShieldsMaintenance(true);
     }
 

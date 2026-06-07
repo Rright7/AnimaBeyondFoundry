@@ -26,6 +26,9 @@
       inputName="system.mystic.zeon.accumulated"
       inputValue=system.mystic.zeon.accumulated
     }}
+    <button type="button" class="animabf-button zeon-accumulate-btn" data-action="zeon-accumulate" style="margin:.25rem 0;">
+      {{#if @root.zeonAccumulating}}{{localize "anima.ui.mystic.zeon.accumulate.active"}}{{else}}{{localize "anima.ui.mystic.zeon.accumulate.idle"}}{{/if}}
+    </button>
     {{>
     "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
       class="zeonMaintained"
