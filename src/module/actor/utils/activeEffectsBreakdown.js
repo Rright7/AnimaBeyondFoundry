@@ -104,7 +104,8 @@ export function getPathContributions(actor, paths, options) {
     for (const change of changes) {
       if (!change?.key || !pathSet.has(change.key)) continue;
 
-      const mode = resolveChangeMode(change.mode ?? change.type);
+      // V14: preferir el string `type`; `mode` (numérico) está deprecado (fallback legacy).
+      const mode = resolveChangeMode(change.type ?? change.mode);
       let value = null;
 
       if (mode === 'add') {

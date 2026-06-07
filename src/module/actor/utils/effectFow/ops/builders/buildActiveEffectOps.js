@@ -86,7 +86,8 @@ export function buildActiveEffectChangeOps_forChange(effect, index, change) {
   const inferred = flagged.length > 0 ? [] : inferDepsFromChangeValue(change.value);
   const deps = normalizePaths([...flagged, ...inferred]);
 
-  const kind = writeKindFromAEMode(change.mode ?? change.type);
+  // V14: preferir el string `type`; `mode` (numérico) está deprecado (fallback legacy).
+  const kind = writeKindFromAEMode(change.type ?? change.mode);
   const predicate = getChangePredicate(effect, index);
   const paths = resolveSelector(change.key);
   if (paths.length === 0) return [];

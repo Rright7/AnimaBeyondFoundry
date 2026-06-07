@@ -33,7 +33,9 @@ export function resolveChangeMode(raw) {
 
 export function applySingleActiveEffectChange(actor, effect, change) {
   const key = change.key;
-  const mode = resolveChangeMode(change.mode ?? change.type);
+  // V14: preferir el string `type`; `mode` (numérico) está deprecado y solo se
+  // lee como fallback para datos legacy sin `type`.
+  const mode = resolveChangeMode(change.type ?? change.mode);
 
   const rawValue =
     typeof actor._applyDynamicEffectValue === 'function'
