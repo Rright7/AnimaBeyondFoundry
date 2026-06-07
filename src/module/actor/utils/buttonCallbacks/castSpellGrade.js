@@ -6,6 +6,7 @@ import { Templates } from '../../../utils/constants';
 import { openModDialog } from '../../../utils/dialogs/openSimpleInputDialog.js';
 import { SpellAttackConfigurationDialog } from '../../../dialogs/SpellAttackConfigurationDialog.js';
 import { getSnapshotTargets } from '../getSnapshotTargets.js';
+import { resistanceEffectCheck } from '../../../combat/utils/resistanceEffectCheck.js';
 
 function localizeGrade(grade) {
   return game.i18n.localize(`anima.ui.mystic.spell.grade.${grade}.title`);
@@ -112,6 +113,7 @@ export async function castSpellGrade(sheet, event) {
   await ABFAttackData.builder()
     .attackAbility(roll.total)
     .damage(baseDamage)
+    .resistanceEffect(resistanceEffectCheck(spell.system.grades[grade]))
     .ignoreArmor(false)
     .reducedArmor(0)
     .armorType(spell.system.critic?.value ?? game.animabf.weapon.NoneWeaponCritic.NONE)

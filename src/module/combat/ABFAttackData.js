@@ -43,6 +43,15 @@ export class ABFAttackData {
     // Effects on hit
     this.onHitEffects = Array.isArray(p.onHitEffects) ? [...p.onHitEffects] : [];
 
+    // Efecto de Resistencia (conjuros místicos/psíquicos): {value (dificultad),
+    // type, check}. Si check=true, el objetivo debe superar un control de
+    // Resistencia (1d100 + Resistencia ≥ value; sin tirada abierta; 100 = éxito).
+    this.resistanceEffect = {
+      value: Number(p.resistanceEffect?.value) || 0,
+      type: p.resistanceEffect?.type ?? undefined,
+      check: !!p.resistanceEffect?.check
+    };
+
     // Attacker refs (ids, never whole objects)
     this.attackerId = p.attackerId ?? '';
     this.weaponId = p.weaponId ?? '';
@@ -324,6 +333,10 @@ export class ABFAttackDataBuilder {
   // Effects on hit
   onHitEffects(arr) {
     this._p.onHitEffects = Array.isArray(arr) ? arr : [];
+    return this;
+  }
+  resistanceEffect(eff) {
+    this._p.resistanceEffect = eff || { value: 0, type: undefined, check: false };
     return this;
   }
 

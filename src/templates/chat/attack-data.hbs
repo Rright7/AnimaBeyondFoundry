@@ -18,6 +18,9 @@
     {{#if attackData.automaticCrit}}
       <p data-requires-permission="owner"><strong>{{localize "macros.combat.dialog.automaticCrit.title"}}</strong></p>
     {{/if}}
+    {{#if attackData.resistanceEffect.check}}
+      <p><strong>{{localize "chat.attackData.resistanceRequired"}}:</strong> {{localize (concat "chat.attackData.resistanceType." attackData.resistanceEffect.type)}} {{attackData.resistanceEffect.value}}</p>
+    {{/if}}
     {{!-- <p><strong>{{localize "anima.ui.combat.weapons.block.title"}}:</strong> {{weapon.system.block.final.value}}</p> --}}
     {{!-- <p><strong>{{localize "anima.ui.combat.weapons.presence.final.title"}}:</strong> {{weapon.system.presence.final.value}}</p> --}}
   
@@ -50,6 +53,17 @@
         data-attack-data='{{json attackData}}'>
         {{localize "chat.attackData.autoDefendPendingButton"}}
       </button>
+
+      {{#if attackData.resistanceEffect.check}}
+        <button
+          type="button"
+          class="chat-action-button"
+          data-action="resist"
+          data-message-id="{{xRoot.messageId}}"
+          data-attack-data='{{json attackData}}'>
+          {{localize "chat.attackData.resistButton"}}
+        </button>
+      {{/if}}
     </div>
     <div id="animabf-defense-row-{{xRoot.messageId}}"
        class="animabf-defense-row"
