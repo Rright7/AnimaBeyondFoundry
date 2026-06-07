@@ -26,18 +26,20 @@ export default async function applyDamageActionHandler(message, _html, ds) {
     // Confirm only if already applied at least once
     const appliedOnce = !!animabf.damageControl?.appliedOnce;
     if (appliedOnce) {
-      const ok = await Dialog.confirm({
-        title:
-          game.i18n.localize?.('chat.result.confirmTitle') ?? '¿Aplicar daño de nuevo?',
+      const ok = await foundry.applications.api.DialogV2.confirm({
+        window: {
+          title:
+            game.i18n.localize?.('chat.result.confirmTitle') ?? '¿Aplicar daño de nuevo?'
+        },
         content: `<p>${
           game.i18n.localize?.('chat.result.confirmBody') ??
           'Este resultado ya aplicó daño antes. ¿Seguro?'
         }</p><p><b>${amount}</b> ${
           game.i18n.localize?.('chat.result.points') ?? 'puntos'
         }</p>`,
-        yes: () => true,
-        no: () => false
-      });
+        rejectClose: false,
+        modal: true
+      }).catch(() => false);
       if (!ok) return;
     }
 

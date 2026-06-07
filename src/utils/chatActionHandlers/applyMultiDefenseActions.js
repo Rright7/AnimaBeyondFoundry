@@ -30,9 +30,11 @@ export async function applyMultiEntry(message, _html, ds) {
 
     // si ya se aplicó a este actor → confirm
     if (entry.applied) {
-      const ok = await Dialog.confirm({
-        title:
-          game.i18n.localize?.('chat.result.confirmTitle') ?? '¿Aplicar daño de nuevo?',
+      const ok = await foundry.applications.api.DialogV2.confirm({
+        window: {
+          title:
+            game.i18n.localize?.('chat.result.confirmTitle') ?? '¿Aplicar daño de nuevo?'
+        },
         content: `<p>${
           game.i18n.localize?.('chat.result.confirmBody') ??
           'Este objetivo ya recibió daño de este resultado. ¿Seguro?'
@@ -40,9 +42,9 @@ export async function applyMultiEntry(message, _html, ds) {
                   <p><b>${amount}</b> ${
           game.i18n.localize?.('chat.result.points') ?? 'puntos'
         }</p>`,
-        yes: () => true,
-        no: () => false
-      });
+        rejectClose: false,
+        modal: true
+      }).catch(() => false);
       if (!ok) return;
     }
 
