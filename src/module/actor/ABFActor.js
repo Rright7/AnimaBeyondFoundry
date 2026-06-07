@@ -543,6 +543,25 @@ export class ABFActor extends Actor {
   }
 
   /**
+   * Economia de lanzamiento rapido para los botones de la ficha. Aplica la
+   * prioridad RAW: INNATO (gratis) > PREPARADO (consume el conjuro) > ZEON
+   * ACUMULADO (descuenta el coste). Devuelve true si se puede lanzar (ya
+   * descontado); false si no llega (ya avisa). La eleccion explicita
+   * innato/preparado/override va por el dialogo de escudo sobrenatural.
+   * @param {object} spell
+   * @param {string} spellGrade
+   * @returns {boolean}
+   */
+  tryCastSpell(spell, spellGrade) {
+    const spellCasting = this.mysticCanCastEvaluate(spell, spellGrade);
+    if (spellCasting.canCast.innate) spellCasting.casted.innate = true;
+    else if (spellCasting.canCast.prepared) spellCasting.casted.prepared = true;
+    if (this.evaluateCast(spellCasting)) return false;
+    this.mysticCast(spellCasting, spell.name, spellGrade);
+    return true;
+  }
+
+  /**
    * Consumes or restores the amount of maintained Zeon for a Mystic character.
    * Used in every turn change in ABFCombat.
    *

@@ -60,6 +60,9 @@ export async function castSpellGrade(sheet, event) {
       if (res.bonus !== 0) abilityFormula = `${baseFormula} + ${res.bonus}`;
     }
 
+    // Economia de zeon: gasta (innato/preparado/acumulado) o bloquea si no llega.
+    if (!actor.tryCastSpell(spell, grade)) return;
+
     await actor.newSupernaturalShield(
       ABFSupernaturalShieldData.builder()
         .name(`${spell.name} (${localizeGrade(grade)})`)
@@ -89,6 +92,9 @@ export async function castSpellGrade(sheet, event) {
 
   // Quick attack
   const mod = Number(await openModDialog()) || 0;
+
+  // Economia de zeon: gasta (innato/preparado/acumulado) o bloquea si no llega.
+  if (!actor.tryCastSpell(spell, grade)) return;
 
   const baseMP = actor.system.mystic.magicProjection.imbalance.offensive.base.value;
   const die = baseMP >= 200 ? '1d100xamastery' : '1d100xa';

@@ -86,6 +86,9 @@ export class SpellAttackConfigurationDialog extends FormApplication {
     if (!actor) return ui.notifications?.warn('Actor no encontrado.');
     if (!spell) return ui.notifications?.warn('Hechizo no encontrado.');
 
+    // Economia de zeon: gasta (innato/preparado/acumulado) o bloquea si no llega.
+    if (!actor.tryCastSpell(spell, grade)) return;
+
     try {
       this.modalData.attackSent = true;
       setTimeout(() => this.render(), 0);
