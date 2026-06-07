@@ -59,9 +59,8 @@ export class DefenseConfigurationDialog extends FormApplication {
 
     const defenderActor = defender.actor;
 
-    // Read defenses counter flag from defender actor. Same source-of-truth used by
-    // CombatDefenseDialog so both flows stay consistent when the actor accumulates
-    // defenses during a round (reset is handled by ABFCombat hooks on turn change).
+    // Read defenses counter flag from defender actor (reset is handled by ABFCombat
+    // hooks on turn change).
     const defensesCounter = defenderActor.getFlag?.(game.animabf.id, 'defensesCounter') || {
       accumulated: 0,
       keepAccumulating: true
