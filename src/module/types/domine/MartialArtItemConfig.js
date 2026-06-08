@@ -1,5 +1,5 @@
 import { ABFItems } from '../../items/ABFItems';
-import { openSimpleInputDialog } from '../../utils/dialogs/openSimpleInputDialog';
+import { openMartialArtSelectDialog } from '../../utils/dialogs/openMartialArtSelectDialog';
 import { ABFItemConfigFactory } from '../ABFItemConfig';
 
 /** @type {import("../Items").MartialArtItemConfig} */
@@ -13,17 +13,16 @@ export const MartialArtItemConfig = ABFItemConfigFactory({
     rowSelector: '.martial-art-row'
   },
   onCreate: async actor => {
-    const { i18n } = game;
-
-    const name = await openSimpleInputDialog({
-      content: i18n.localize('dialogs.items.martialArt.content')
-    });
+    const selection = await openMartialArtSelectDialog();
+    if (!selection) return;
 
     await actor.createInnerItem({
-      name,
+      name: selection.name,
       type: ABFItems.MARTIAL_ART,
       system: {
-        grade: { value: '' }
+        canonicalId: selection.canonicalId,
+        artType: selection.artType,
+        grade: { value: selection.grade }
       }
     });
   }

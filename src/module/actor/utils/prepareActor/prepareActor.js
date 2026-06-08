@@ -63,6 +63,11 @@ import {
   applyKiSkillsModifiers,
   mutateKiDamageReduction
 } from './calculations/actor/domine/applyKiSkillsModifiers';
+import {
+  applyMartialArtModifiers,
+  mutateMartialArtCombat,
+  mutateMartialArtKnowledgeMax
+} from './calculations/actor/domine/applyMartialArtModifiers';
 import { mutateActiveTechniqueCharacteristics } from './calculations/actor/domine/mutateActiveTechniqueCharacteristics';
 import { mutateInitiative } from './calculations/actor/mutateInitiative';
 import { mutateRegenerationType } from './calculations/actor/general/mutateRegenerationType';
@@ -110,6 +115,7 @@ const DERIVED_DATA_FUNCTIONS = [
   // Ki passive modifiers must run before total armor (energyArmor),
   // weapons (damage bonus) and initiative read kiBonus.*
   applyKiSkillsModifiers,
+  applyMartialArtModifiers,
   mutateTotalArmor,
   mutateKiDamageReduction,
   // Natural penalty — unreduced/reduction before final
@@ -128,6 +134,7 @@ const DERIVED_DATA_FUNCTIONS = [
   // when the actor is flagged as Montado. Declares deps on attack/block/
   // dodge/ride finals so the flow orders it after those are computed.
   mutateMounted,
+  mutateMartialArtCombat,
   mutateInitiative,
   // Mystic — ACT before InnateMagic (InnateMagic depends on ACT final)
   mutateActMain,
@@ -168,6 +175,7 @@ const DERIVED_DATA_FUNCTIONS = [
   mutateKiAccumulationWillPower,
   mutateKiAccumulationPower,
   mutateKiReserve,
+  mutateMartialArtKnowledgeMax,
   mutateMartialKnowledgeUsed
 ];
 
