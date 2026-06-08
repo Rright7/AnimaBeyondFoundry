@@ -17,26 +17,22 @@ async function openShieldConfigDialog({ spell, grade }) {
     formulaBonus: 0
   });
 
-  return new Promise(resolve => {
-    new Dialog({
-      title: `${spell.name} (${localizeGrade(grade)})`,
-      content,
-      buttons: {
-        ok: {
-          label: 'OK',
-          callback: html => {
-            const bonus = Number(html.find('input[name="formulaBonus"]').val() ?? 0) || 0;
-            resolve({ bonus, cancelled: false });
-          }
-        },
-        cancel: {
-          label: 'Cancel',
-          callback: () => resolve({ cancelled: true })
-        }
-      },
-      default: 'ok'
-    }).render(true);
-  });
+  const bonus = await foundry.applications.api.DialogV2.prompt({
+    window: { title: `${spell.name} (${localizeGrade(grade)})` },
+    content,
+    ok: {
+      label: 'OK',
+      callback: (event, button, dialog) => {
+        const form = button?.form ?? dialog?.element?.querySelector?.('form');
+        return Number(form?.elements?.formulaBonus?.value ?? 0) || 0;
+      }
+    },
+    rejectClose: false,
+    modal: true
+  }).catch(() => null);
+
+  if (bonus === null) return { cancelled: true };
+  return { bonus, cancelled: false };
 }
 
 export async function castSpellGrade(sheet, event) {

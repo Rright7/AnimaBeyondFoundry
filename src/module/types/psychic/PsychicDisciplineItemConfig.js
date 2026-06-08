@@ -24,6 +24,7 @@ export const PsychicDisciplineItemConfig = ABFItemConfigFactory({
     const results = await openComplexInputDialog(actor, 'newPsychicDiscipline');
     const name = results['new.psychicDiscipline.name'];
     const imbalance = results['new.psychicDiscipline.imbalance'];
+    if (!name) return;
 
     await actor.createItem({
       name,

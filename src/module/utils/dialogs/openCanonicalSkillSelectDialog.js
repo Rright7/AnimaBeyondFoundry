@@ -49,60 +49,30 @@ export async function openCanonicalSkillSelectDialog(type) {
         <input id="canonical-skill-homebrew-name" name="homebrewName"
                type="text" placeholder="${i18n.localize(
                  'dialogs.items.kiSkill.homebrewPlaceholder'
-               )}" style="display:none;" />
+               )}" style="width:100%;" />
       </div>
     </form>
   `;
 
-  return new Promise(resolve => {
-    new Dialog({
-      title: i18n.localize(titleKey),
-      content,
-      buttons: {
-        submit: {
-          label: i18n.localize('dialogs.continue'),
-          callback: html => {
-            const select = html.find('#canonical-skill-select')[0];
-            const homebrewInput = html.find('#canonical-skill-homebrew-name')[0];
-            const value = select?.value;
-            if (value === '__homebrew__') {
-              const typed = (homebrewInput?.value ?? '').trim();
-              if (!typed) {
-                resolve(null);
-                return;
-              }
-              resolve({ name: typed, canonicalId: null });
-              return;
-            }
-            const entry = candidates.find(s => s.id === value);
-            if (!entry) {
-              resolve(null);
-              return;
-            }
-            resolve({ name: entry.name, canonicalId: entry.id });
-          }
-        },
-        cancel: {
-          label: i18n.localize('dialogs.cancel') || 'Cancel',
-          callback: () => resolve(null)
+  return foundry.applications.api.DialogV2.prompt({
+    window: { title: i18n.localize(titleKey) },
+    content,
+    ok: {
+      label: i18n.localize('dialogs.continue'),
+      callback: (event, button, dialog) => {
+        const form = button?.form ?? dialog?.element?.querySelector?.('form');
+        const value = form?.elements?.canonicalId?.value;
+        if (value === '__homebrew__') {
+          const typed = (form?.elements?.homebrewName?.value ?? '').trim();
+          return typed ? { name: typed, canonicalId: null } : null;
         }
-      },
-      default: 'submit',
-      close: () => resolve(null),
-      render: html => {
-        // Toggle the homebrew text input visibility when the user picks
-        // the "Otra" option.
-        const select = html.find('#canonical-skill-select')[0];
-        const homebrewInput = html.find('#canonical-skill-homebrew-name')[0];
-        if (!select || !homebrewInput) return;
-        select.addEventListener('change', () => {
-          homebrewInput.style.display =
-            select.value === '__homebrew__' ? '' : 'none';
-          if (select.value === '__homebrew__') homebrewInput.focus();
-        });
+        const entry = candidates.find(s => s.id === value);
+        return entry ? { name: entry.name, canonicalId: entry.id } : null;
       }
-    }).render(true);
-  });
+    },
+    rejectClose: false,
+    modal: true
+  }).catch(() => null);
 }
 
 function escapeHtml(s) {

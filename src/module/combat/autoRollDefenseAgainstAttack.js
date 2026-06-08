@@ -2,6 +2,7 @@ import { ABFDefenseData } from './ABFDefenseData.js';
 import ABFFoundryRoll from '../rolls/ABFFoundryRoll.js';
 import { computeCombatResult } from './computeCombatResult.js';
 import { pickBestDefenseCandidate } from './DefenseStrategies.js';
+import { getMessageMode } from '../utils/chatVisibility.js';
 
 function toSafeNumber(v) {
   const n = Number(v);
@@ -120,8 +121,7 @@ export async function autoRollDefenseAgainstAttack({
   const roll = new ABFFoundryRoll(formula, actor.system);
   await roll.evaluate({ async: true });
 
-  const rollMode =
-    game.settings?.get?.('core', 'rollMode') ?? CONST.DICE_ROLL_MODES.PUBLIC;
+  const rollMode = getMessageMode();
 
   const flavorKey =
     candidate.type === 'block'

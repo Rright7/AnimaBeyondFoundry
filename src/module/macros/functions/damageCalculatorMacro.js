@@ -5,35 +5,28 @@ import { calculateCombatResult } from '../../combat/utils/calculateCombatResult'
 
 /** @type {() => Promise<{ [key: string]: unknown }>} */
 const openDialog = async () => {
-  const [dialogHTML, iconHTML] = await renderTemplates(
-    {
-      name: Templates.Dialog.DamageCalculator,
-      context: {}
-    },
-    {
-      name: Templates.Dialog.Icons.Accept
-    }
-  );
-
-  return new Promise(resolve => {
-    new Dialog({
-      title: game.i18n.localize('macros.damageCalculator.dialog.title'),
-      content: dialogHTML,
-      buttons: {
-        submit: {
-          icon: iconHTML,
-          label: game.i18n.localize('dialogs.continue'),
-          callback: html => {
-            /** @type {{ [key: string]: number }} */
-            const results = new FormDataExtended(html.find('form')[0], {}).object;
-
-            resolve(results);
-          }
-        }
-      },
-      default: 'submit'
-    }).render(true);
+  const [dialogHTML] = await renderTemplates({
+    name: Templates.Dialog.DamageCalculator,
+    context: {}
   });
+
+  return foundry.applications.api.DialogV2.prompt({
+    window: { title: game.i18n.localize('macros.damageCalculator.dialog.title') },
+    content: dialogHTML,
+    ok: {
+      icon: 'fas fa-check',
+      label: game.i18n.localize('dialogs.continue'),
+      callback: (event, button, dialog) => {
+        const form = button?.form ?? dialog?.element?.querySelector?.('form');
+        if (!form) return {};
+        /** @type {{ [key: string]: number }} */
+        const results = new (foundry.applications?.ux?.FormDataExtended ?? FormDataExtended)(form, {}).object;
+        return results;
+      }
+    },
+    rejectClose: false,
+    modal: true
+  }).catch(() => ({}));
 };
 
 export const damageCalculatorMacro = async () => {

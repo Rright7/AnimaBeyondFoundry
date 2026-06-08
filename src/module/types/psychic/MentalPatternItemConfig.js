@@ -24,6 +24,7 @@ export const MentalPatternItemConfig = ABFItemConfigFactory({
   onCreate: async (actor) => {
     const results = await openComplexInputDialog(actor, 'newMentalPattern');
     const name = results['new.mentalPattern.name'];
+    if (!name) return;
 
     await actor.createItem({
       name,

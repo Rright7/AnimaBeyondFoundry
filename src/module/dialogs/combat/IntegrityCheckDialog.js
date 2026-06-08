@@ -91,33 +91,37 @@ export function openIntegrityCheckDialog({ attacker, defender }) {
       </form>
     `;
 
-    new Dialog({
-      title: L('chat.combatResult.integrity.title'),
+    foundry.applications.api.DialogV2.wait({
+      window: { title: L('chat.combatResult.integrity.title') },
       content,
-      buttons: {
-        roll: {
-          icon: '<i class="fas fa-dice-d20"></i>',
+      buttons: [
+        {
+          action: 'roll',
+          icon: 'fas fa-dice-d20',
           label: L('chat.combatResult.integrity.rollButton'),
-          callback: html => {
-            const attackerWeaponId = String(html.find('[name=attackerWeapon]').val() ?? '');
-            const target = String(html.find('[name=target]').val() ?? 'body:');
-            const mastery = html.find('[name=mastery]').is(':checked');
-            const attackerMod = num(html.find('[name=attackerMod]').val());
-            const defenderMod = num(html.find('[name=defenderMod]').val());
+          default: true,
+          callback: (event, button, dialog) => {
+            const form = button?.form ?? dialog?.element?.querySelector?.('form');
+            if (!form) return resolve(null);
+            const attackerWeaponId = String(form.elements['attackerWeapon']?.value ?? '');
+            const target = String(form.elements['target']?.value ?? 'body:');
+            const mastery = !!form.elements['mastery']?.checked;
+            const attackerMod = num(form.elements['attackerMod']?.value);
+            const defenderMod = num(form.elements['defenderMod']?.value);
             const sep = target.indexOf(':');
             const targetKind = sep >= 0 ? target.slice(0, sep) : target;
             const targetItemId = sep >= 0 ? target.slice(sep + 1) : '';
-            resolve({ attackerWeaponId, targetKind, targetItemId, mastery, attackerMod, defenderMod });
+            return resolve({ attackerWeaponId, targetKind, targetItemId, mastery, attackerMod, defenderMod });
           }
         },
-        cancel: {
-          icon: '<i class="fas fa-times"></i>',
+        {
+          action: 'cancel',
+          icon: 'fas fa-times',
           label: L('chat.combatResult.integrity.cancel'),
           callback: () => resolve(null)
         }
-      },
-      default: 'roll',
-      close: () => resolve(null)
-    }).render(true);
+      ],
+      rejectClose: false
+    }).catch(() => resolve(null));
   });
 }
