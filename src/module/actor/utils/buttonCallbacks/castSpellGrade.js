@@ -94,8 +94,10 @@ export async function castSpellGrade(sheet, event) {
   if (!actor.tryCastSpell(spell, grade)) return;
 
   const offensive = actor.system.mystic.magicProjection.imbalance.offensive;
-  // El umbral de maestria mira la base (>=200); la tirada usa el FINAL (con
-  // penalizadores de accion, etc.), como el ataque de arma y SpellAttackDialog.
+  // El umbral de maestria mira la base (>=200); la tirada usa el FINAL = base +
+  // allActions (penalizadores situacionales de "toda accion": Tabla 43 + cansancio),
+  // como el ataque de arma y SpellAttackDialog. La Proyeccion NO sufre el -25 por
+  // acciones multiples; ese no forma parte de allActions.
   const die = offensive.base.value >= 200 ? '1d100xamastery' : '1d100xa';
 
   const roll = new ABFFoundryRoll(`${die} + ${offensive.final.value} + ${mod}`, actor.system);

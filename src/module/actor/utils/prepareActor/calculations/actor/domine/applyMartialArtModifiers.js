@@ -1,6 +1,7 @@
 import {
   MARTIAL_ARTS,
-  buildMartialArtView
+  buildMartialArtView,
+  variableBonusAmount
 } from '../../../../../../combat/martialArts/martialArtCatalog.js';
 import { depositModifier } from '../../../../effectFow/modifiers/synthetics.js';
 
@@ -26,12 +27,14 @@ function resolveArt(art) {
  * catalogo ya son ACUMULADOS por grado (Aikido Supremo = Base+Avz+Sup); aqui solo
  * se suman entre artes distintas (RAW: los bonos innatos por Categoria se apilan).
  *
- * Buckets: attack | block | dodge | turn | masterAttack | masterDefense | cm.
- * Consumidores: mutateMartialArtCombat (attack/block/dodge), mutateInitiative
- * (turn), mutateMartialArtKnowledgeMax (cm -> CM maximo). El daño base/desarmado
- * se resuelve en el flujo de ataque (no es un bono pasivo).
+ * Buckets: attack | block | dodge | turn | damage | masterAttack | masterDefense | cm.
+ * Consumidores: el arma-perfil del compendio "Artes Marciales" (attack/block/damage/
+ * turn inyectados en sus `special` por applyMartialArtsWeaponBonuses dentro de
+ * mutateWeaponsData), el dialogo de defensa (dodge, en modo desarmado),
+ * mutateMartialArtKnowledgeMax (cm -> CM maximo). El Turno tambien deposita
+ * provenance.
  *
- * Deposita ademas provenance en synthetics para la linea "Mod:" del chat.
+ * Deposita ademas provenance del Turno en synthetics para la linea "Mod:" del chat.
  *
  * @param {import('../../../../../../types/Actor').ABFActorDataSourceData} data
  * @param {object} [actor] documento del actor (provenance; ignora falsy)
@@ -44,49 +47,84 @@ export const applyMartialArtModifiers = (data, actor) => {
     block: 0,
     dodge: 0,
     turn: 0,
+    damage: 0,
     masterAttack: 0,
     masterDefense: 0,
     cm: 0
   };
 
+  // Bonos EXENTOS del tope +50 (RAW): el bono variable del Kung Fu a HA/Parada/
+  // Esquiva NO cuenta como innato por Categoria, asi que se suma SOBRE el cap.
+  const exempt = { attack: 0, block: 0, dodge: 0 };
+
   for (const art of arts) {
     // Vista de solo-lectura para la ficha (grado + bonos del catalogo).
     if (art?.system) art.system.computed = buildMartialArtView(art);
 
-    // Importado del Excel: el bono de combate y el CM YA estan en la HA/CM_final
-    // que trajo el importador; no re-sumar (evita doble conteo). Se muestra igual.
+    // Compatibilidad: fichas del importador VIEJO traen `bonusInBase` (combate, CM
+    // y Turno YA horneados en la base del Excel) -> no re-sumar nada para evitar
+    // doble conteo (se re-importan para pasar al modelo limpio).
     if (art?.system?.bonusInBase) continue;
 
     const resolved = resolveArt(art);
     if (!resolved) continue;
     const { g } = resolved;
 
+    // Bono VARIABLE configurable (Kung Fu / Asakusen): +X a una sola stat elegida
+    // (system.variableBonus). Cantidad por arte y grado (variableBonusAmount).
+    const vbAmt = variableBonusAmount(art?.system?.canonicalId, resolved.grade);
+    const vbChoice = vbAmt ? art?.system?.variableBonus : '';
+
+    // El COMBATE (HA/Parada/Esquiva + Maestro) lo computa SIEMPRE el motor: en
+    // fichas nuevas la base es limpia y en el importador nuevo la base de combate
+    // es HA_final (sin AM). El tope +50 combinado se aplica abajo.
     totals.attack += g.attack || 0;
     totals.block += g.block || 0;
     totals.dodge += g.dodge || 0;
-    totals.turn += g.turn || 0;
+    totals.damage += g.damageBonus || 0;
     totals.masterAttack += g.masterAttack || 0;
     totals.masterDefense += g.masterDefense || 0;
-    totals.cm += g.cm || 0;
 
-    const source = art.name || resolved.def.name;
-    const id = art?.system?.canonicalId;
-    // Bono Maestro (Avanzadas/Arcano) se suma al mismo canal en el MVP.
-    depositMartialArt(actor, 'system.combat.attack.final.value', (g.attack || 0) + (g.masterAttack || 0), source, id);
-    depositMartialArt(actor, 'system.combat.block.final.value', (g.block || 0) + (g.masterDefense || 0), source, id);
-    depositMartialArt(actor, 'system.combat.dodge.final.value', (g.dodge || 0) + (g.masterDefense || 0), source, id);
-    depositMartialArt(actor, 'system.characteristics.secondaries.initiative.final.value', g.turn || 0, source, id);
+    // Bono variable a HA/Parada/Esquiva: EXENTO del tope +50 (se suma sobre el cap).
+    if (vbAmt && (vbChoice === 'attack' || vbChoice === 'block' || vbChoice === 'dodge')) {
+      exempt[vbChoice] += vbAmt;
+    }
+
+    // CM y Turno: en imports nuevos (`cmTurnInBase`) YA vienen del Excel en la base
+    // (martialKnowledge.max = CM_final, initiative.base = Turno_Nat_final) -> no
+    // re-sumar. En fichas nuevas (sin flag) los otorga el motor.
+    if (!art?.system?.cmTurnInBase) {
+      totals.turn += g.turn || 0;
+      totals.cm += g.cm || 0;
+      // Bono variable a Turno/Dano: bono normal (esas stats no tienen tope +50).
+      if (vbChoice === 'turn') totals.turn += vbAmt;
+      else if (vbChoice === 'damage') totals.damage += vbAmt;
+      const source = art.name || resolved.def.name;
+      const id = art?.system?.canonicalId;
+      depositMartialArt(actor, 'system.characteristics.secondaries.initiative.final.value', g.turn || 0, source, id);
+    }
   }
 
-  // Tope +50 de bonos innatos por Categoria (RAW): la SUMA de bonos de AM a
-  // HA/Parada/Esquiva no supera +50. El Bono Maestro (avanzadas) y el Turno
-  // estan EXENTOS del tope.
+  // Tope +50 COMBINADO (RAW, Dominus Exxet): los bonos de AM a HA/Parada/Esquiva
+  // son innatos por Categoria y COMPARTEN el unico tope +50 con el bono de combate
+  // por Categoria/nivel (categoryBonus, importado de PDs!X25-27). Por eso se capa
+  // (categoria + AM) a 50 y se descuenta la categoria, que ya vive en la base. En
+  // fichas sin categoryBonus (no importadas) -> min(AM,50). Bono Maestro, Turno y
+  // el bono exento del Kung Fu (sumado tras el cap) EXENTOS del tope.
+  const cat = actor?.flags?.animabf?.categoryBonus ?? {};
+  const combinedCap = (total, catVal) => {
+    const c = Number(catVal) || 0;
+    return Math.max(0, Math.min(c + total, INNATE_CAP) - c);
+  };
   const m = data.general.modifiers;
   m.martialArtBonus = m.martialArtBonus ?? {};
-  m.martialArtBonus.attack = { value: Math.min(totals.attack, INNATE_CAP) };
-  m.martialArtBonus.block = { value: Math.min(totals.block, INNATE_CAP) };
-  m.martialArtBonus.dodge = { value: Math.min(totals.dodge, INNATE_CAP) };
+  m.martialArtBonus.attack = { value: combinedCap(totals.attack, cat.attack) + exempt.attack };
+  m.martialArtBonus.block = { value: combinedCap(totals.block, cat.block) + exempt.block };
+  m.martialArtBonus.dodge = { value: combinedCap(totals.dodge, cat.dodge) + exempt.dodge };
   m.martialArtBonus.turn = { value: totals.turn };
+  // Dano: bono de daño desarmado de las artes. NO entra en el tope +50 (ese tope
+  // es solo HA/Parada/Esquiva). Lo consume el perfil de arma "Artes Marciales".
+  m.martialArtBonus.damage = { value: totals.damage };
   m.martialArtBonus.masterAttack = { value: totals.masterAttack };
   m.martialArtBonus.masterDefense = { value: totals.masterDefense };
   m.martialArtBonus.cm = { value: totals.cm };
@@ -109,48 +147,10 @@ applyMartialArtModifiers.abfFlow = {
     'system.general.modifiers.martialArtBonus.block.value',
     'system.general.modifiers.martialArtBonus.dodge.value',
     'system.general.modifiers.martialArtBonus.turn.value',
+    'system.general.modifiers.martialArtBonus.damage.value',
     'system.general.modifiers.martialArtBonus.masterAttack.value',
     'system.general.modifiers.martialArtBonus.masterDefense.value',
     'system.general.modifiers.martialArtBonus.cm.value'
-  ]
-};
-
-/**
- * Suma los bonos de Arte Marcial (incl. Bono Maestro) a las habilidades de
- * combate. Se escribe en `special` (NO en `final`): el typed-node Ability calcula
- * `final = base + special + mods` y su op `final` declara dep en `special.value`,
- * asi que el flujo ORDENA por dependencia (writer->dependiente) y el bono queda
- * dentro del valor que luego clampa Montado. Evita el conflicto de dos overwrite
- * sobre `final` (sin arista -> orden no garantizado).
- * El tope +50 de innatos ya se aplico a los buckets attack/block/dodge en
- * applyMartialArtModifiers; el Bono Maestro va al mismo canal pero EXENTO del tope.
- *
- * @param {import('../../../../../../types/Actor').ABFActorDataSourceData} data
- */
-export const mutateMartialArtCombat = data => {
-  const b = data.general?.modifiers?.martialArtBonus;
-  if (!b) return;
-  const combat = data.combat;
-  const atk = (b.attack?.value || 0) + (b.masterAttack?.value || 0);
-  const blk = (b.block?.value || 0) + (b.masterDefense?.value || 0);
-  const dge = (b.dodge?.value || 0) + (b.masterDefense?.value || 0);
-  if (atk && combat?.attack?.special) combat.attack.special.value = (combat.attack.special.value ?? 0) + atk;
-  if (blk && combat?.block?.special) combat.block.special.value = (combat.block.special.value ?? 0) + blk;
-  if (dge && combat?.dodge?.special) combat.dodge.special.value = (combat.dodge.special.value ?? 0) + dge;
-};
-
-mutateMartialArtCombat.abfFlow = {
-  deps: [
-    'system.general.modifiers.martialArtBonus.attack.value',
-    'system.general.modifiers.martialArtBonus.block.value',
-    'system.general.modifiers.martialArtBonus.dodge.value',
-    'system.general.modifiers.martialArtBonus.masterAttack.value',
-    'system.general.modifiers.martialArtBonus.masterDefense.value'
-  ],
-  mods: [
-    'system.combat.attack.special.value',
-    'system.combat.block.special.value',
-    'system.combat.dodge.special.value'
   ]
 };
 

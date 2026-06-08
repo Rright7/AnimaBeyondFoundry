@@ -9,7 +9,11 @@ import {
   activeTechniqueCombatBonuses,
   usableInstantCombatTechniques
 } from '../domine/techniques/techniqueCombatBonuses.js';
-import { martialArtUnarmedDamage } from '../combat/martialArts/martialArtCatalog.js';
+import {
+  martialArtUnarmedDamage,
+  martialArtsAdditionalAttack
+} from '../combat/martialArts/martialArtCatalog.js';
+import { maxFatiguePerAction } from '../combat/utils/fatigue.js';
 ///dialogs/AttackConfigurationDialog.js
 ///actor/utils/getSnapshotTargets.js
 
@@ -186,6 +190,42 @@ export class AttackConfigurationDialog extends FormApplication {
         (combat.damage.special ?? 0) + (weapon?.system?.damage?.final?.value ?? 0);
     }
 
+    // Ataques adicionales (RAW: 1 por cada 100 de HA final; penalizador por tamano
+    // de arma -P20/-M30/-G40 a TODOS los ataques) y gasto de Cansancio (+15 por
+    // punto, max 2/asalto; Dominio del Esfuerzo +5 no modelado).
+    const ATTACK_SIZE_PENALTY = { small: 20, medium: 30, big: 40 };
+    const atkFinal = Number(weapon?.system?.attack?.final?.value ?? 0);
+    let sizePenalty = ATTACK_SIZE_PENALTY[weapon?.system?.size?.value] ?? 30;
+    let maxAttacks = weapon ? 1 + Math.max(0, Math.floor(atkFinal / 100)) : 1;
+    // Con el perfil "Artes Marciales": Kempo reduce el penalizador por ataque
+    // adicional (-15/-10) y en Supremo concede un ataque extra (como +100 HA).
+    if (weapon?.system?.isMartialArtsProfile?.value) {
+      const ma = martialArtsAdditionalAttack(this.attackerActor);
+      if (ma.penalty != null) sizePenalty = ma.penalty;
+      maxAttacks += ma.extraAttacks;
+    }
+    const curTotal = Math.min(maxAttacks, Math.max(1, Number(combat.totalAttacks) || 1));
+    combat.totalAttacks = curTotal;
+    ui.canMultiAttack = maxAttacks > 1;
+    ui.attackOptions = Array.from({ length: maxAttacks }, (_, i) => ({
+      value: i + 1,
+      label: i ? `${i + 1} (-${i * sizePenalty})` : `${i + 1}`,
+      selected: i + 1 === curTotal
+    }));
+
+    const fatiguePool = Number(
+      this.attackerActor.system?.characteristics?.secondaries?.fatigue?.value ?? 0
+    );
+    const maxFatigue = Math.min(fatiguePool, maxFatiguePerAction(this.attackerActor));
+    const curFatigue = Math.min(maxFatigue, Math.max(0, Number(combat.fatigueUsed) || 0));
+    combat.fatigueUsed = curFatigue;
+    ui.hasFatiguePoints = fatiguePool > 0;
+    ui.fatigueOptions = Array.from({ length: maxFatigue + 1 }, (_, i) => ({
+      value: i,
+      label: i ? `+${i * 15}` : '0',
+      selected: i === curFatigue
+    }));
+
     // F6.3: tecnicas de Ki INSTANTANEAS ofrecibles para este ataque (gastan Ki
     // concentrado al marcarlas). Las ACTIVAS aplican su bono automaticamente en
     // el handler, no necesitan UI aqui.
@@ -309,14 +349,42 @@ export class AttackConfigurationDialog extends FormApplication {
         kiDamageBonus += Number(tech.damage) || 0;
         kiAppliedBy.push(tech.name);
       }
+      // Ataques adicionales (RAW): penalizador (Nº-1) x tamano de arma, igual a
+      // TODOS los ataques. maxAtaques = 1 + floor(HA_final/100).
+      const ATTACK_SIZE_PENALTY = { small: 20, medium: 30, big: 40 };
+      let sizePenalty = ATTACK_SIZE_PENALTY[weapon.system?.size?.value] ?? 30;
+      let maxAttacks = 1 + Math.max(0, Math.floor(Number(weapon.system?.attack?.final?.value ?? 0) / 100));
+      // Kempo (perfil "Artes Marciales"): penalizador reducido + ataque extra en Supremo.
+      if (weapon.system?.isMartialArtsProfile?.value) {
+        const ma = martialArtsAdditionalAttack(actor);
+        if (ma.penalty != null) sizePenalty = ma.penalty;
+        maxAttacks += ma.extraAttacks;
+      }
+      const totalAttacks = Math.min(maxAttacks, Math.max(1, Number(combat.totalAttacks) || 1));
+      const additionalAttacksPenalty = -(totalAttacks - 1) * sizePenalty;
+
+      // Cansancio gastado: +15 por punto (max 2/asalto). Se consume tras la tirada.
+      const fatiguePool = Number(actor.system?.characteristics?.secondaries?.fatigue?.value ?? 0);
+      const fatigueUsed = Math.max(0, Math.min(Number(combat.fatigueUsed) || 0, maxFatiguePerAction(actor), fatiguePool));
+      const fatigueBonus = fatigueUsed * 15;
+
       const mod =
         Number(combat.modifier ?? 0)
         + maneuverPenalty
         + aimedPenalty
         + secondaryCritPenalty
-        + kiAttackBonus;
+        + kiAttackBonus
+        + additionalAttacksPenalty
+        + fatigueBonus;
+      // Umbral de maestria (>=200): para el arma-perfil "Artes Marciales" la
+      // "habilidad" efectiva es la HA del actor MAS el bono de AM inyectado en su
+      // special; para el resto de armas es la HA del actor.
+      const masteryBase = weapon.system?.isMartialArtsProfile?.value
+        ? Number(actor.system.combat.attack.base.value ?? 0) +
+          Number(weapon.system.attack?.special?.value ?? 0)
+        : Number(actor.system.combat.attack.base.value ?? 0);
       const die =
-        actor.system.combat.attack.base.value >= 200
+        masteryBase >= 200
           ? actor.system.general.diceSettings.abilityMasteryDie.value
           : actor.system.general.diceSettings.abilityDie.value;
 
@@ -356,6 +424,12 @@ export class AttackConfigurationDialog extends FormApplication {
       }
       if (secondaryCritPenalty !== 0) {
         dialogContribs.push(`Crit. secundario (${secondaryCritPenalty})`);
+      }
+      if (additionalAttacksPenalty !== 0) {
+        dialogContribs.push(`${totalAttacks} ataques (${additionalAttacksPenalty})`);
+      }
+      if (fatigueBonus !== 0) {
+        dialogContribs.push(`Cansancio (+${fatigueBonus})`);
       }
       if (kiAttackBonus !== 0 || kiDamageBonus !== 0) {
         const label = game.i18n.localize('macros.combat.dialog.combatMod.kiTechnique.title');
@@ -415,6 +489,9 @@ export class AttackConfigurationDialog extends FormApplication {
         await attackMsg.setFlag('animabf', 'maneuverSlug', this.modalData.maneuver.slug);
         await attackMsg.setFlag('animabf', 'maneuverItemName', this.modalData.maneuver.itemName);
       }
+
+      // Consume el Cansancio gastado (reduce el pool; afecta a acciones futuras).
+      if (fatigueUsed > 0) await actor.applyFatigue(fatigueUsed);
 
       await this.close();
     } catch (err) {

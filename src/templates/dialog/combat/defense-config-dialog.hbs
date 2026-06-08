@@ -64,6 +64,15 @@
           inputName="defender.combat.resistTheHit"
           inputValue=(is 'eq' this.defender.combat.resistTheHit true)
         }}
+        {{#if this.ui.hasFatiguePoints}}
+          {{#> 'systems/animabf/templates/common/ui/custom-select.hbs'
+              title=(localize 'macros.combat.dialog.fatigue.title')
+              inputName="defender.combat.fatigueUsed" }}
+            {{#each this.ui.fatigueOptions as |o|}}
+              <option value='{{o.value}}' {{#if o.selected}}selected{{/if}}>{{o.label}}</option>
+            {{/each}}
+          {{/'systems/animabf/templates/common/ui/custom-select.hbs'}}
+        {{/if}}
       {{/unless}}
 
       <nav class="animabf-tabs sheet-tabs tabs" data-group="primary">

@@ -32,6 +32,16 @@
         {{#if martialArt.system.computed.special}}
           <div style='opacity:.6;font-size:.8em;'>{{localize "anima.ui.domine.martialArts.special"}}: {{martialArt.system.computed.special}}</div>
         {{/if}}
+        {{#if martialArt.system.computed.variableBonus.applicable}}
+          <div style='display:flex;gap:.4rem;align-items:center;font-size:.85em;'>
+            <label>Bono variable (+{{martialArt.system.computed.variableBonus.amount}}) a:</label>
+            <select name='system.dynamic.martialArts.{{martialArt._id}}.system.variableBonus' style='max-width:9rem;'>
+              {{#each martialArt.system.computed.variableBonus.options as |opt|}}
+                <option value='{{opt.value}}' {{#if opt.selected}}selected{{/if}}>{{opt.label}}</option>
+              {{/each}}
+            </select>
+          </div>
+        {{/if}}
       </div>
     {{/each}}
   {{/"systems/animabf/templates/common/ui/group-body.hbs"}}

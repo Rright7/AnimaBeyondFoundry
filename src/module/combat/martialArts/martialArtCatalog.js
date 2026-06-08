@@ -105,9 +105,14 @@ export function damageBaseString(damageBase) {
  */
 export function martialArtUnarmedDamage(actor) {
   const arts = actor?.system?.domine?.martialArts ?? [];
+  // OJO: characteristics.primaries.{strength,power}.mod es un objeto {value}, NO un
+  // numero (igual que calculateWeaponStrengthModifier usa .mod.value). Leer .mod a
+  // secas daba NaN->0 y anulaba el multiplicador del Dano Base (p.ej. Moai Thai x2 FUE).
+  const sMod = actor?.system?.characteristics?.primaries?.strength?.mod;
+  const pMod = actor?.system?.characteristics?.primaries?.power?.mod;
   const mods = {
-    strength: Number(actor?.system?.characteristics?.primaries?.strength?.mod) || 0,
-    power: Number(actor?.system?.characteristics?.primaries?.power?.mod) || 0
+    strength: Number(sMod?.value ?? sMod) || 0,
+    power: Number(pMod?.value ?? pMod) || 0
   };
   let base = null;
   let bonus = 0;
@@ -119,6 +124,53 @@ export function martialArtUnarmedDamage(actor) {
     bonus += g.damageBonus || 0;
   }
   return { base, bonus };
+}
+
+/**
+ * Artes con BONO VARIABLE configurable (estilo Kung Fu): +X a UNA de HA/Parada/
+ * Esquiva/Turno/Dano a elegir (system.variableBonus). A HA/Parada/Esquiva es EXENTO
+ * del tope +50. Cantidad por arte y grado. Asakusen funciona igual (Base +10 /
+ * Arcano +40), ademas de su bono general +10 (ese va en columnas numericas).
+ */
+export const MARTIAL_ART_VARIABLE_BONUS = {
+  kungFu: { advanced: 10, supreme: 20 },
+  asakusen: { base: 10, arcane: 40 }
+};
+
+/** Cantidad del bono variable de un arte en un grado (0 si no aplica). */
+export function variableBonusAmount(canonicalId, grade) {
+  return MARTIAL_ART_VARIABLE_BONUS[canonicalId]?.[grade] ?? 0;
+}
+
+/**
+ * Artes que modifican los ATAQUES ADICIONALES cuando se combate con Artes Marciales:
+ *  - `penalty`: penalizador por ataque adicional (SUSTITUYE al de tamano del arma).
+ *  - `extraAttacks`: ataques adicionales extra concedidos (como +100 HA teorica).
+ * Kempo (Dominus Exxet): Base -15, Avanzado -10, Supremo -10 + 1 ataque extra.
+ */
+export const MARTIAL_ART_ADDITIONAL_ATTACK = {
+  kempo: { penalty: { base: 15, advanced: 10, supreme: 10 }, extraAttacks: { supreme: 1 } }
+};
+
+/**
+ * Recorre las Artes Marciales del actor y devuelve el MEJOR penalizador por ataque
+ * adicional (el menor) y la suma de ataques extra, para combate con Artes Marciales.
+ * @param {object} actor documento del actor
+ * @returns {{ penalty: number|null, extraAttacks: number }} penalty null = sin override
+ */
+export function martialArtsAdditionalAttack(actor) {
+  const arts = actor?.system?.domine?.martialArts ?? [];
+  let penalty = null;
+  let extraAttacks = 0;
+  for (const art of arts) {
+    const cfg = MARTIAL_ART_ADDITIONAL_ATTACK[art?.system?.canonicalId];
+    if (!cfg) continue;
+    const grade = art?.system?.grade?.value ?? art?.system?.grade;
+    const p = cfg.penalty?.[grade];
+    if (p != null && (penalty === null || p < penalty)) penalty = p;
+    extraAttacks += cfg.extraAttacks?.[grade] ?? 0;
+  }
+  return { penalty, extraAttacks };
 }
 
 /**
@@ -159,6 +211,26 @@ export function buildMartialArtView(art) {
   if (g.damageBonus) parts.push(`Daño extra +${g.damageBonus}`);
   if (g.cm) parts.push(`CM +${g.cm}`);
 
+  // Bono variable configurable (Kung Fu / Asakusen): +X a una stat a elegir,
+  // exento del +50 si va a HA/Parada/Esquiva. Se configura en system.variableBonus.
+  const vbAmount = variableBonusAmount(id, grade);
+  const vbCurrent = art?.system?.variableBonus ?? '';
+  const variableBonus = vbAmount
+    ? {
+        applicable: true,
+        amount: vbAmount,
+        current: vbCurrent,
+        options: [
+          { value: '', label: '(sin asignar)' },
+          { value: 'attack', label: 'Ataque' },
+          { value: 'block', label: 'Parada' },
+          { value: 'dodge', label: 'Esquiva' },
+          { value: 'turn', label: 'Turno' },
+          { value: 'damage', label: 'Daño' }
+        ].map(o => ({ ...o, selected: o.value === vbCurrent }))
+      }
+    : { applicable: false };
+
   return {
     canonicalId: id,
     name: def.name,
@@ -178,6 +250,7 @@ export function buildMartialArtView(art) {
     special: def.special?.[grade] ?? '',
     requirements: getRequirements(id, grade),
     gradeOptions: gradeOptionsFor(def.type, grade),
-    summary: parts.join(' · ')
+    summary: parts.join(' · '),
+    variableBonus
   };
 }

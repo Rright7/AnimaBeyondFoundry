@@ -47,19 +47,25 @@
         </div>
       {{/if}}
 
-      {{!-- {{#if this.ui.hasFatiguePoints}}
+      {{#if this.ui.canMultiAttack}}
+        {{#> 'systems/animabf/templates/common/ui/custom-select.hbs'
+            title=(localize 'macros.combat.dialog.additionalAttacks.title')
+            inputName="attacker.combat.totalAttacks" }}
+          {{#each this.ui.attackOptions as |o|}}
+            <option value='{{o.value}}' {{#if o.selected}}selected{{/if}}>{{o.label}}</option>
+          {{/each}}
+        {{/'systems/animabf/templates/common/ui/custom-select.hbs'}}
+      {{/if}}
+
+      {{#if this.ui.hasFatiguePoints}}
         {{#> 'systems/animabf/templates/common/ui/custom-select.hbs'
             title=(localize 'macros.combat.dialog.fatigue.title')
-            inputName="attacker.combat.fatigueUsed"
-            inputValue=this.attacker.combat.fatigueUsed }}
-          <option {{#if (is "eq" 0 this.attacker.combat.fatigueUsed)}}selected{{/if}} value='0'>0</option>
-          {{#iterateNumber (minNumber this.attacker.actor.system.characteristics.secondaries.fatigue.value 5)}}
-            <option {{#if (is "eq" (math this "+" 1) ../this.attacker.combat.fatigueUsed)}}selected{{/if}} value='{{math this "+" 1}}'>{{math this "+" 1}}</option>
-          {{/iterateNumber}}
+            inputName="attacker.combat.fatigueUsed" }}
+          {{#each this.ui.fatigueOptions as |o|}}
+            <option value='{{o.value}}' {{#if o.selected}}selected{{/if}}>{{o.label}}</option>
+          {{/each}}
         {{/'systems/animabf/templates/common/ui/custom-select.hbs'}}
-      {{else}}
-        <p class='label no-fatigue'>{{localize 'macros.combat.dialog.notEnoughFatigue.title'}}</p>
-      {{/if}} --}}
+      {{/if}}
 
       {{#if this.attacker.combat.weapon}}
         {{#if this.ui.lockedWeapon}}

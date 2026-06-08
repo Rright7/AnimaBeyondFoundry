@@ -12,6 +12,8 @@ import {
   activeTechniqueCombatBonuses,
   usableInstantCombatTechniques
 } from '../domine/techniques/techniqueCombatBonuses.js';
+import { martialArtsDodgeBonus } from '../combat/martialArts/martialArtsDodge.js';
+import { maxFatiguePerAction } from '../combat/utils/fatigue.js';
 
 export class DefenseConfigurationDialog extends FormApplication {
   constructor(object = {}, options = {}) {
@@ -177,6 +179,9 @@ export class DefenseConfigurationDialog extends FormApplication {
     // Base values
     ui.dodgeValue =
       Number(this.defenderActor.system?.combat?.dodge?.final?.value ?? 0) || 0;
+    // Esquiva de Artes Marciales: en modo desarmado (sin arma real equipada) el
+    // perfil de AM aporta su bono a la esquiva. El helper aplica el gate.
+    ui.dodgeValue += martialArtsDodgeBonus(this.defenderActor);
 
     ui.blockValue = defender.combat.unarmed
       ? Number(this.defenderActor.system?.combat?.block?.final?.value ?? 0) || 0
@@ -214,6 +219,22 @@ export class DefenseConfigurationDialog extends FormApplication {
       defender.combat.supernaturalShieldUsed = '';
       ui.shieldValue = 0;
     }
+
+    // Gasto de Cansancio: +15 por punto (max 2/asalto) a Parada/Esquiva (combate
+    // fisico). NO aplica a Escudos sobrenaturales (se filtra al tirar). Dominio
+    // del Esfuerzo (+5) no modelado.
+    const fatiguePool = Number(
+      this.defenderActor.system?.characteristics?.secondaries?.fatigue?.value ?? 0
+    );
+    const maxFatigue = Math.min(fatiguePool, maxFatiguePerAction(this.defenderActor));
+    const curFatigue = Math.min(maxFatigue, Math.max(0, Number(defender.combat.fatigueUsed) || 0));
+    defender.combat.fatigueUsed = curFatigue;
+    ui.hasFatiguePoints = fatiguePool > 0;
+    ui.fatigueOptions = Array.from({ length: maxFatigue + 1 }, (_, i) => ({
+      value: i,
+      label: i ? `+${i * 15}` : '0',
+      selected: i === curFatigue
+    }));
 
     // F6.3: tecnicas de Ki INSTANTANEAS de defensa (parada/esquiva) ofrecibles
     // para esta tirada (gastan Ki concentrado al marcarlas). Las ACTIVAS aplican
@@ -327,6 +348,11 @@ export class DefenseConfigurationDialog extends FormApplication {
         }
       }
 
+      // Esquiva de Artes Marciales: en modo desarmado (sin arma real equipada) el
+      // bono del perfil de AM se suma a la base/final de la esquiva (el helper
+      // aplica el gate). Asi la maestria (naturalBase>=200) tambien lo recoge.
+      const maDodge = type === 'dodge' ? martialArtsDodgeBonus(actor) : 0;
+
       // Defense ability (for shield, base and final are the evaluated formula)
       const defenseAbility = AbilityData.builder()
         .naturalBase(
@@ -336,7 +362,7 @@ export class DefenseConfigurationDialog extends FormApplication {
               : weapon?.system?.block?.base?.value ?? 0
             : type === 'shield'
             ? shieldValue
-            : actor.system?.combat?.dodge?.base?.value ?? 0
+            : (actor.system?.combat?.dodge?.base?.value ?? 0) + maDodge
         )
         .finalBase(
           type === 'block'
@@ -345,7 +371,7 @@ export class DefenseConfigurationDialog extends FormApplication {
               : weapon?.system?.block?.final?.value ?? 0
             : type === 'shield'
             ? shieldValue
-            : actor.system?.combat?.dodge?.final?.value ?? 0
+            : (actor.system?.combat?.dodge?.final?.value ?? 0) + maDodge
         )
         .build();
 
@@ -406,10 +432,18 @@ export class DefenseConfigurationDialog extends FormApplication {
         }
       }
 
+      // Gasto de Cansancio: +15 por punto (max 2/asalto), solo Parada/Esquiva
+      // (combate fisico); NO en Escudos sobrenaturales. Se consume tras la tirada.
+      const fatiguePool = Number(actor.system?.characteristics?.secondaries?.fatigue?.value ?? 0);
+      const fatigueUsed = isShieldDefense
+        ? 0
+        : Math.max(0, Math.min(Number(combat?.fatigueUsed) || 0, maxFatiguePerAction(actor), fatiguePool));
+      const fatigueBonus = fatigueUsed * 15;
+
       // Split each contribution into its own term so the Foundry roll tooltip
       // shows the breakdown: defense ability, situational modifier, the
-      // multiple-defenses penalty, and the resist-the-hit penalty.
-      const formula = `${die} + ${baseValue} + ${mod} + (${effectiveMultiPenalty}) + (${resistPenalty}) + (${kiDefenseBonus})`;
+      // multiple-defenses penalty, the resist-the-hit penalty and fatigue.
+      const formula = `${die} + ${baseValue} + ${mod} + (${effectiveMultiPenalty}) + (${resistPenalty}) + (${kiDefenseBonus}) + (${fatigueBonus})`;
       const roll = new ABFFoundryRoll(formula, actor.system);
       await roll.evaluate({ async: true });
 
@@ -433,6 +467,12 @@ export class DefenseConfigurationDialog extends FormApplication {
       const defenseContribs = [];
       if (resistPenalty !== 0) {
         defenseContribs.push(`Resiste el golpe (${resistPenalty})`);
+      }
+      if (maDodge > 0) {
+        defenseContribs.push(`Artes Marciales (+${maDodge})`);
+      }
+      if (fatigueBonus > 0) {
+        defenseContribs.push(`Cansancio (+${fatigueBonus})`);
       }
       if (kiDefenseBonus !== 0) {
         const sign = kiDefenseBonus > 0 ? '+' : '';
@@ -554,6 +594,9 @@ export class DefenseConfigurationDialog extends FormApplication {
       if (shouldAccumulate && typeof actor?.accumulateDefenses === 'function') {
         actor.accumulateDefenses(!!combat?.accumulateDefenses);
       }
+
+      // Consume el Cansancio gastado en la defensa (reduce el pool).
+      if (fatigueUsed > 0) await actor.applyFatigue(fatigueUsed);
 
       await this.close();
     } catch (err) {
