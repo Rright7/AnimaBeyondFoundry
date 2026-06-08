@@ -1,6 +1,7 @@
 import {
   MARTIAL_ARTS,
-  buildMartialArtView
+  buildMartialArtView,
+  variableBonusAmount
 } from '../../../../../../combat/martialArts/martialArtCatalog.js';
 import { depositModifier } from '../../../../effectFow/modifiers/synthetics.js';
 
@@ -52,6 +53,10 @@ export const applyMartialArtModifiers = (data, actor) => {
     cm: 0
   };
 
+  // Bonos EXENTOS del tope +50 (RAW): el bono variable del Kung Fu a HA/Parada/
+  // Esquiva NO cuenta como innato por Categoria, asi que se suma SOBRE el cap.
+  const exempt = { attack: 0, block: 0, dodge: 0 };
+
   for (const art of arts) {
     // Vista de solo-lectura para la ficha (grado + bonos del catalogo).
     if (art?.system) art.system.computed = buildMartialArtView(art);
@@ -65,6 +70,11 @@ export const applyMartialArtModifiers = (data, actor) => {
     if (!resolved) continue;
     const { g } = resolved;
 
+    // Bono VARIABLE configurable (Kung Fu / Asakusen): +X a una sola stat elegida
+    // (system.variableBonus). Cantidad por arte y grado (variableBonusAmount).
+    const vbAmt = variableBonusAmount(art?.system?.canonicalId, resolved.grade);
+    const vbChoice = vbAmt ? art?.system?.variableBonus : '';
+
     // El COMBATE (HA/Parada/Esquiva + Maestro) lo computa SIEMPRE el motor: en
     // fichas nuevas la base es limpia y en el importador nuevo la base de combate
     // es HA_final (sin AM). El tope +50 combinado se aplica abajo.
@@ -75,12 +85,20 @@ export const applyMartialArtModifiers = (data, actor) => {
     totals.masterAttack += g.masterAttack || 0;
     totals.masterDefense += g.masterDefense || 0;
 
+    // Bono variable a HA/Parada/Esquiva: EXENTO del tope +50 (se suma sobre el cap).
+    if (vbAmt && (vbChoice === 'attack' || vbChoice === 'block' || vbChoice === 'dodge')) {
+      exempt[vbChoice] += vbAmt;
+    }
+
     // CM y Turno: en imports nuevos (`cmTurnInBase`) YA vienen del Excel en la base
     // (martialKnowledge.max = CM_final, initiative.base = Turno_Nat_final) -> no
     // re-sumar. En fichas nuevas (sin flag) los otorga el motor.
     if (!art?.system?.cmTurnInBase) {
       totals.turn += g.turn || 0;
       totals.cm += g.cm || 0;
+      // Bono variable a Turno/Dano: bono normal (esas stats no tienen tope +50).
+      if (vbChoice === 'turn') totals.turn += vbAmt;
+      else if (vbChoice === 'damage') totals.damage += vbAmt;
       const source = art.name || resolved.def.name;
       const id = art?.system?.canonicalId;
       depositMartialArt(actor, 'system.characteristics.secondaries.initiative.final.value', g.turn || 0, source, id);
@@ -91,8 +109,8 @@ export const applyMartialArtModifiers = (data, actor) => {
   // son innatos por Categoria y COMPARTEN el unico tope +50 con el bono de combate
   // por Categoria/nivel (categoryBonus, importado de PDs!X25-27). Por eso se capa
   // (categoria + AM) a 50 y se descuenta la categoria, que ya vive en la base. En
-  // fichas sin categoryBonus (no importadas) -> min(AM,50). Bono Maestro y Turno
-  // EXENTOS del tope. (Excepciones por-arte tipo Kung Fu avanzado: pendiente.)
+  // fichas sin categoryBonus (no importadas) -> min(AM,50). Bono Maestro, Turno y
+  // el bono exento del Kung Fu (sumado tras el cap) EXENTOS del tope.
   const cat = actor?.flags?.animabf?.categoryBonus ?? {};
   const combinedCap = (total, catVal) => {
     const c = Number(catVal) || 0;
@@ -100,9 +118,9 @@ export const applyMartialArtModifiers = (data, actor) => {
   };
   const m = data.general.modifiers;
   m.martialArtBonus = m.martialArtBonus ?? {};
-  m.martialArtBonus.attack = { value: combinedCap(totals.attack, cat.attack) };
-  m.martialArtBonus.block = { value: combinedCap(totals.block, cat.block) };
-  m.martialArtBonus.dodge = { value: combinedCap(totals.dodge, cat.dodge) };
+  m.martialArtBonus.attack = { value: combinedCap(totals.attack, cat.attack) + exempt.attack };
+  m.martialArtBonus.block = { value: combinedCap(totals.block, cat.block) + exempt.block };
+  m.martialArtBonus.dodge = { value: combinedCap(totals.dodge, cat.dodge) + exempt.dodge };
   m.martialArtBonus.turn = { value: totals.turn };
   // Dano: bono de daño desarmado de las artes. NO entra en el tope +50 (ese tope
   // es solo HA/Parada/Esquiva). Lo consume el perfil de arma "Artes Marciales".

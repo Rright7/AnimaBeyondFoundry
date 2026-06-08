@@ -823,6 +823,7 @@
   "macros.combat.dialog.error.requestRejected.title": "Your attack request have being rejected",
   "macros.combat.dialog.error.withoutActor.title": "The target do not have associated actor",
   "macros.combat.dialog.error.yourSelf.title": "Can't attack yourself!",
+  "macros.combat.dialog.additionalAttacks.title": "Attacks (this round)",
   "macros.combat.dialog.fatigue.title": "Fatigue points",
   "macros.combat.dialog.fatigueUsed.title": "Used fatigue",
   "macros.combat.dialog.gm.psychicPower.title": "Power",

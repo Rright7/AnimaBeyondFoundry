@@ -34,12 +34,14 @@ export function applyMartialArtsWeaponBonuses(weapon, data) {
   if (s?.block?.special) s.block.special.value = num(b.block?.value) + num(b.masterDefense?.value);
   if (s?.initiative?.special) s.initiative.special.value = num(b.turn?.value);
 
-  // Daño desarmado de AM (mayor base de las artes vs brawl 10+FUE) + bono.
+  // Daño desarmado de AM (mayor Daño Base de las artes vs brawl 10+FUE) + el bono de
+  // daño. Para el bono se usa el bucket `damage` (catalogo + bono variable de Kung Fu),
+  // no ma.bonus, para no perder la opcion "Dano" del Kung Fu.
   const ma = martialArtUnarmedDamage({ system: data });
   const sMod = data?.characteristics?.primaries?.strength?.mod;
   const strMod = num(sMod?.value ?? sMod);
   const brawl = 10 + strMod;
-  const maDamage = (ma.base !== null ? Math.max(ma.base, brawl) : brawl) + ma.bonus;
+  const maDamage = (ma.base !== null ? Math.max(ma.base, brawl) : brawl) + num(b.damage?.value);
   if (s?.damage) {
     s.damage.special = { value: 0 };
     s.damage.formula = { value: String(maDamage) };

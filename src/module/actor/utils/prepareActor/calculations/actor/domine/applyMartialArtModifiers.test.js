@@ -159,4 +159,67 @@ describe('applyMartialArtModifiers', () => {
     expect(bw.block.value).toBe(bo.block.value);
     expect(bw.dodge.value).toBe(bo.dodge.value);
   });
+
+  const kungFu = (grade, choice) => ({
+    name: 'Kung Fu',
+    system: { canonicalId: 'kungFu', grade: { value: grade }, variableBonus: choice }
+  });
+  const asakusen = (grade, choice) => ({
+    name: 'Asakusen',
+    system: { canonicalId: 'asakusen', grade: { value: grade }, variableBonus: choice }
+  });
+
+  it('Kung Fu Avanzado: bono variable +10 a la stat elegida (attack)', () => {
+    const data = makeData([kungFu('advanced', 'attack')]);
+    applyMartialArtModifiers(data);
+    expect(data.general.modifiers.martialArtBonus.attack.value).toBe(10);
+  });
+
+  it('Kung Fu: el bono variable es EXENTO del tope +50 (puede superar 50)', () => {
+    const data = makeData([
+      art('shotokan', 'supreme'), // attack 20
+      art('seraphite', 'base'), // 20
+      art('dumah', 'base'), // 20  -> 60, capado a 50
+      kungFu('advanced', 'attack') // +10 exento
+    ]);
+    applyMartialArtModifiers(data);
+    expect(data.general.modifiers.martialArtBonus.attack.value).toBe(60); // 50 + 10
+  });
+
+  it('Kung Fu Supremo a Turno/Dano: bono normal +20 (sin tope)', () => {
+    const t = makeData([kungFu('supreme', 'turn')]);
+    applyMartialArtModifiers(t);
+    expect(t.general.modifiers.martialArtBonus.turn.value).toBe(20);
+    const d = makeData([kungFu('supreme', 'damage')]);
+    applyMartialArtModifiers(d);
+    expect(d.general.modifiers.martialArtBonus.damage.value).toBe(20);
+  });
+
+  it('Kung Fu sin asignar (o grado Base): no aplica bono', () => {
+    const sinElegir = makeData([kungFu('advanced', '')]);
+    applyMartialArtModifiers(sinElegir);
+    expect(sinElegir.general.modifiers.martialArtBonus.attack.value).toBe(0);
+    const base = makeData([kungFu('base', 'attack')]);
+    applyMartialArtModifiers(base);
+    expect(base.general.modifiers.martialArtBonus.attack.value).toBe(0);
+  });
+
+  it('Asakusen Base: bono general +10 (catalogo) + variable +10 exento a la stat elegida', () => {
+    const data = makeData([asakusen('base', 'attack')]);
+    applyMartialArtModifiers(data);
+    const b = data.general.modifiers.martialArtBonus;
+    expect(b.attack.value).toBe(20); // general 10 (capado) + variable 10 (exento)
+    expect(b.block.value).toBe(10); // solo general
+    expect(b.dodge.value).toBe(10);
+    expect(b.turn.value).toBe(10);
+  });
+
+  it('Asakusen Arcano: variable +40 exento (supera el cap) + Bono Maestro', () => {
+    const data = makeData([asakusen('arcane', 'attack')]);
+    applyMartialArtModifiers(data);
+    const b = data.general.modifiers.martialArtBonus;
+    expect(b.attack.value).toBe(50); // general 10 (capado) + variable 40 (exento)
+    expect(b.masterAttack.value).toBe(10);
+    expect(b.masterDefense.value).toBe(10);
+  });
 });

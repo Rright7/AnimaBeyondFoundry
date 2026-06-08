@@ -825,6 +825,7 @@
   "macros.combat.dialog.error.requestRejected.title": "Tu petición de ataque ha sido rechazada.",
   "macros.combat.dialog.error.withoutActor.title": "El objetivo al que intentas atacar no tiene actor asociado",
   "macros.combat.dialog.error.yourSelf.title": "¡No puedes atacarte a ti mismo!",
+  "macros.combat.dialog.additionalAttacks.title": "Ataques (este asalto)",
   "macros.combat.dialog.fatigue.title": "Puntos de cansancio",
   "macros.combat.dialog.fatigueUsed.title": "Fatiga usada",
   "macros.combat.dialog.gm.psychicPower.title": "Poder",

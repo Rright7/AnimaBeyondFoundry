@@ -2,7 +2,8 @@ import {
   martialArtUnarmedDamage,
   buildMartialArtView,
   findMartialArtByName,
-  GRADE_ES_TO_KEY
+  GRADE_ES_TO_KEY,
+  martialArtsAdditionalAttack
 } from './martialArtCatalog.js';
 
 const actorWith = (arts, strMod = 5, powMod = 3) => ({
@@ -81,5 +82,32 @@ describe('buildMartialArtView', () => {
     const v = buildMartialArtView(art('noexiste', 'base'));
     expect(v.known).toBe(false);
     expect(v.summary).toContain('recrear');
+  });
+});
+
+describe('martialArtsAdditionalAttack (Kempo)', () => {
+  it('sin Kempo: sin override', () => {
+    expect(martialArtsAdditionalAttack(actorWith([art('aikido', 'base')]))).toEqual({
+      penalty: null,
+      extraAttacks: 0
+    });
+  });
+  it('Kempo Base: penalizador -15, sin extra', () => {
+    expect(martialArtsAdditionalAttack(actorWith([art('kempo', 'base')]))).toEqual({
+      penalty: 15,
+      extraAttacks: 0
+    });
+  });
+  it('Kempo Avanzado: -10', () => {
+    expect(martialArtsAdditionalAttack(actorWith([art('kempo', 'advanced')]))).toEqual({
+      penalty: 10,
+      extraAttacks: 0
+    });
+  });
+  it('Kempo Supremo: -10 + 1 ataque adicional extra', () => {
+    expect(martialArtsAdditionalAttack(actorWith([art('kempo', 'supreme')]))).toEqual({
+      penalty: 10,
+      extraAttacks: 1
+    });
   });
 });

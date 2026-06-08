@@ -758,6 +758,7 @@
   "macros.combat.dialog.error.requestRejected.title": "Votre demande d'attaque a été refusée",
   "macros.combat.dialog.error.withoutActor.title": "La cible n'a pas d'acteur associé",
   "macros.combat.dialog.error.yourSelf.title": "Vous ne pouvez pas vous attaquer vous-même !",
+  "macros.combat.dialog.additionalAttacks.title": "Attaques (ce round)",
   "macros.combat.dialog.fatigue.title": "Points de Fatigue",
   "macros.combat.dialog.fatigueUsed.title": "Fatigue utilisée",
   "macros.combat.dialog.magicAttack.title": "Lancer le sort {spell} sur {target}",
