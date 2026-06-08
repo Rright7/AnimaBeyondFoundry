@@ -20,6 +20,4 @@ export function createWeaponAttack(sheet, e) {
     { attacker: attackerToken, weaponId, targets: snapshotTargets },
     { allowed: true }
   );
-
-  console.log('Usando arma:', weapon.name);
 }

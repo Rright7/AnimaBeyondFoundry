@@ -180,6 +180,8 @@
   "anima.ui.combat.weapons.strRequired.oneHand.title": "FOR req.",
   "anima.ui.combat.weapons.strRequired.twoHands.title": "2 M FOR req.",
   "anima.ui.combat.weapons.title": "Armes",
+  "anima.ui.combat.weapons.unarmedProfile.unarmed": "Désarmé",
+  "anima.ui.combat.weapons.unarmedProfile.martialArts": "Arts Martiaux",
   "anima.ui.combat.weapons.weaponStrength.title": "FOR Arme",
   "anima.ui.contactSection.contactRow.description": "Description",
   "anima.ui.contactSection.contactRow.name": "Nom",

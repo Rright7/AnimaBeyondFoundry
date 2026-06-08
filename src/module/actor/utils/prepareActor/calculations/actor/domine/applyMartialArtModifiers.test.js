@@ -1,6 +1,5 @@
 import {
   applyMartialArtModifiers,
-  mutateMartialArtCombat,
   mutateMartialArtKnowledgeMax
 } from './applyMartialArtModifiers.js';
 
@@ -31,12 +30,6 @@ describe('applyMartialArtModifiers', () => {
     expect(b.attack.value).toBe(0);
     expect(b.cm.value).toBe(20);
 
-    // Se suma a special (el typed-node Ability hara final = base + special + mods).
-    mutateMartialArtCombat(data);
-    expect(data.combat.block.special.value).toBe(20);
-    expect(data.combat.dodge.special.value).toBe(20);
-    expect(data.combat.attack.special.value).toBe(0);
-
     mutateMartialArtKnowledgeMax(data);
     expect(data.domine.martialKnowledge.max.value).toBe(120);
   });
@@ -45,20 +38,15 @@ describe('applyMartialArtModifiers', () => {
     const data = makeData([art('shotokan', 'supreme', 'Shotokan')]);
     applyMartialArtModifiers(data);
     expect(data.general.modifiers.martialArtBonus.attack.value).toBe(20);
-    mutateMartialArtCombat(data);
-    expect(data.combat.attack.special.value).toBe(20);
   });
 
-  it('Velez Arcano: Bono Maestro de defensa se suma a Parada y Esquiva', () => {
+  it('Velez Arcano: Bono Maestro de defensa en el bucket masterDefense', () => {
     const data = makeData([art('velez', 'arcane', 'Velez')]);
     applyMartialArtModifiers(data);
     const b = data.general.modifiers.martialArtBonus;
     expect(b.block.value).toBe(20);
     expect(b.dodge.value).toBe(20);
     expect(b.masterDefense.value).toBe(15);
-    mutateMartialArtCombat(data);
-    expect(data.combat.block.special.value).toBe(35); // 20 + 15 (Maestro Def)
-    expect(data.combat.dodge.special.value).toBe(35);
   });
 
   it('Boxeo Supremo: Turno +20 (5+5+10) en el bucket', () => {
@@ -100,8 +88,6 @@ describe('applyMartialArtModifiers', () => {
     const b = data.general.modifiers.martialArtBonus;
     expect(b.attack.value).toBe(50); // 20+20+20+10 = 70 -> capado a 50
     expect(b.masterAttack.value).toBe(25); // exento del tope
-    mutateMartialArtCombat(data);
-    expect(data.combat.attack.special.value).toBe(75); // 50 (capado) + 25 (maestro exento)
   });
 
   it('tope +50 en Parada y Esquiva por separado', () => {
@@ -123,5 +109,54 @@ describe('applyMartialArtModifiers', () => {
     expect(b.attack.value).toBe(20); // Shotokan
     expect(b.block.value).toBe(20); // Aikido
     expect(b.cm.value).toBe(40); // 20 + 20
+  });
+
+  it('cap COMBINADO (RAW): Categoria + AM comparten el tope +50 via flag categoryBonus', () => {
+    const data = makeData([
+      art('shotokan', 'supreme'), // attack 20
+      art('seraphite', 'base'), // attack 20
+      art('dumah', 'base') // attack 20  -> total 60
+    ]);
+    const actor = { flags: { animabf: { categoryBonus: { attack: 40 } } } };
+    applyMartialArtModifiers(data, actor);
+    // min(40 + 60, 50) - 40 = 10
+    expect(data.general.modifiers.martialArtBonus.attack.value).toBe(10);
+  });
+
+  it('cap COMBINADO: una Categoria de +50 absorbe todo el bono de AM (queda 0)', () => {
+    const data = makeData([art('shotokan', 'supreme')]); // attack 20
+    const actor = { flags: { animabf: { categoryBonus: { attack: 50 } } } };
+    applyMartialArtModifiers(data, actor);
+    expect(data.general.modifiers.martialArtBonus.attack.value).toBe(0);
+  });
+
+  it('sin categoryBonus (ficha no importada): cae al tope simple min(AM,50)', () => {
+    const data = makeData([art('shotokan', 'supreme'), art('seraphite', 'base'), art('dumah', 'base')]); // 60
+    applyMartialArtModifiers(data); // sin actor
+    expect(data.general.modifiers.martialArtBonus.attack.value).toBe(50);
+  });
+
+  it('cmTurnInBase (import nuevo): suprime CM y Turno pero mantiene el COMBATE', () => {
+    const mk = flag =>
+      makeData([
+        {
+          name: 'Boxeo',
+          system: { canonicalId: 'boxeo', grade: { value: 'supreme' }, ...(flag ? { cmTurnInBase: true } : {}) }
+        }
+      ]);
+    const withFlag = mk(true);
+    applyMartialArtModifiers(withFlag);
+    const without = mk(false);
+    applyMartialArtModifiers(without);
+    const bw = withFlag.general.modifiers.martialArtBonus;
+    const bo = without.general.modifiers.martialArtBonus;
+    // CM y Turno NO se re-suman cuando ya vienen en la base del Excel
+    expect(bw.turn.value).toBe(0);
+    expect(bw.cm.value).toBe(0);
+    expect(bo.turn.value).toBe(20); // Boxeo Supremo: turno 20 sin el flag
+    // el combate se computa igual con o sin el flag
+    expect(bw.attack.value).toBe(bo.attack.value);
+    expect(bw.block.value).toBe(bo.block.value);
+    expect(bw.dodge.value).toBe(bo.dodge.value);
   });
 });

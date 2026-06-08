@@ -170,6 +170,8 @@
   "anima.ui.combat.weapons.strRequired.oneHand.title": "FUE req.",
   "anima.ui.combat.weapons.strRequired.twoHands.title": "2M FUE req.",
   "anima.ui.combat.weapons.title": "Armas",
+  "anima.ui.combat.weapons.unarmedProfile.unarmed": "Desarmado",
+  "anima.ui.combat.weapons.unarmedProfile.martialArts": "Artes Marciales",
   "anima.ui.combat.weapons.weaponStrength.title": "FUE Arma",
   "anima.ui.combat.weapons.attackButton.title": "Atacar",
   "anima.ui.combat.weapons.defaultAttackButton.title": "Mandar Ataque sin configurar",

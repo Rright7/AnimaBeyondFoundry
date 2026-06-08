@@ -105,9 +105,14 @@ export function damageBaseString(damageBase) {
  */
 export function martialArtUnarmedDamage(actor) {
   const arts = actor?.system?.domine?.martialArts ?? [];
+  // OJO: characteristics.primaries.{strength,power}.mod es un objeto {value}, NO un
+  // numero (igual que calculateWeaponStrengthModifier usa .mod.value). Leer .mod a
+  // secas daba NaN->0 y anulaba el multiplicador del Dano Base (p.ej. Moai Thai x2 FUE).
+  const sMod = actor?.system?.characteristics?.primaries?.strength?.mod;
+  const pMod = actor?.system?.characteristics?.primaries?.power?.mod;
   const mods = {
-    strength: Number(actor?.system?.characteristics?.primaries?.strength?.mod) || 0,
-    power: Number(actor?.system?.characteristics?.primaries?.power?.mod) || 0
+    strength: Number(sMod?.value ?? sMod) || 0,
+    power: Number(pMod?.value ?? pMod) || 0
   };
   let base = null;
   let bonus = 0;

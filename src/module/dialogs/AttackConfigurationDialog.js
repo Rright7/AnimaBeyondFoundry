@@ -315,8 +315,15 @@ export class AttackConfigurationDialog extends FormApplication {
         + aimedPenalty
         + secondaryCritPenalty
         + kiAttackBonus;
+      // Umbral de maestria (>=200): para el arma-perfil "Artes Marciales" la
+      // "habilidad" efectiva es la HA del actor MAS el bono de AM inyectado en su
+      // special; para el resto de armas es la HA del actor.
+      const masteryBase = weapon.system?.isMartialArtsProfile?.value
+        ? Number(actor.system.combat.attack.base.value ?? 0) +
+          Number(weapon.system.attack?.special?.value ?? 0)
+        : Number(actor.system.combat.attack.base.value ?? 0);
       const die =
-        actor.system.combat.attack.base.value >= 200
+        masteryBase >= 200
           ? actor.system.general.diceSettings.abilityMasteryDie.value
           : actor.system.general.diceSettings.abilityDie.value;
 

@@ -10,6 +10,7 @@ import { calculateWeaponRange } from './calculations/calculateWeaponRange';
 import { calculateWeaponInitiative } from './calculations/calculateWeaponInitiative';
 import { calculateWeaponArmorReduction } from './calculations/calculateWeaponArmorReduction';
 import { calculateArmorReductionFromQuality } from './util/calculateArmorReductionFromQuality';
+import { applyMartialArtsWeaponBonuses } from '../../../../../../combat/martialArts/martialArtsWeapon.js';
 
 /**
  *
@@ -20,6 +21,10 @@ export const mutateWeaponsData = data => {
   const combat = data.combat;
 
   combat.weapons = combat.weapons.map(weapon => {
+    // Arma-perfil "Artes Marciales": inyecta los bonos de AM en sus `special`
+    // antes de calcular los finales (no-op en el resto de armas).
+    applyMartialArtsWeaponBonuses(weapon, data);
+
     weapon.system.attack = {
       base: weapon.system.attack.base,
       special: weapon.system.attack.special,
@@ -110,6 +115,16 @@ mutateWeaponsData.abfFlow = {
     'system.general.modifiers.naturalPenalty.final.value',
     'system.general.modifiers.extraDamage.final.value',
     'system.general.modifiers.kiBonus.damage.value',
+
+    // Bonos de Arte Marcial: el arma-perfil "Artes Marciales" los inyecta en sus
+    // `special` (applyMartialArtsWeaponBonuses) antes de calcular los finales,
+    // asi que weapons debe computarse DESPUES de applyMartialArtModifiers.
+    'system.general.modifiers.martialArtBonus.attack.value',
+    'system.general.modifiers.martialArtBonus.block.value',
+    'system.general.modifiers.martialArtBonus.damage.value',
+    'system.general.modifiers.martialArtBonus.turn.value',
+    'system.general.modifiers.martialArtBonus.masterAttack.value',
+    'system.general.modifiers.martialArtBonus.masterDefense.value',
 
     // Common primary stats typically used in weapon calcs
     'system.characteristics.primaries.strength.final.value',

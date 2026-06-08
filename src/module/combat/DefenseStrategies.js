@@ -1,4 +1,5 @@
 import { FormulaEvaluator } from '../../utils/formulaEvaluator.js';
+import { martialArtsDodgeBonus } from './martialArts/martialArtsDodge.js';
 
 const toSafeNumber = v => {
   const n = Number(v);
@@ -100,8 +101,11 @@ export const BlockStrategy = {
 export const DodgeStrategy = {
   type: 'dodge',
   compute(actor) {
-    const naturalBase = toSafeNumber(actor.system?.combat?.dodge?.base?.value ?? 0);
-    const finalBase = toSafeNumber(actor.system?.combat?.dodge?.final?.value ?? 0);
+    // Bono de Arte Marcial a la esquiva (solo en modo desarmado; el helper aplica
+    // el gate). La auto-defensa de parada ya coge el AM via el perfil sintetico.
+    const ma = martialArtsDodgeBonus(actor);
+    const naturalBase = toSafeNumber(actor.system?.combat?.dodge?.base?.value ?? 0) + ma;
+    const finalBase = toSafeNumber(actor.system?.combat?.dodge?.final?.value ?? 0) + ma;
 
     return withRules({
       type: 'dodge',

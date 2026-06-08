@@ -12,6 +12,7 @@ import {
   activeTechniqueCombatBonuses,
   usableInstantCombatTechniques
 } from '../domine/techniques/techniqueCombatBonuses.js';
+import { martialArtsDodgeBonus } from '../combat/martialArts/martialArtsDodge.js';
 
 export class DefenseConfigurationDialog extends FormApplication {
   constructor(object = {}, options = {}) {
@@ -177,6 +178,9 @@ export class DefenseConfigurationDialog extends FormApplication {
     // Base values
     ui.dodgeValue =
       Number(this.defenderActor.system?.combat?.dodge?.final?.value ?? 0) || 0;
+    // Esquiva de Artes Marciales: en modo desarmado (sin arma real equipada) el
+    // perfil de AM aporta su bono a la esquiva. El helper aplica el gate.
+    ui.dodgeValue += martialArtsDodgeBonus(this.defenderActor);
 
     ui.blockValue = defender.combat.unarmed
       ? Number(this.defenderActor.system?.combat?.block?.final?.value ?? 0) || 0
@@ -327,6 +331,11 @@ export class DefenseConfigurationDialog extends FormApplication {
         }
       }
 
+      // Esquiva de Artes Marciales: en modo desarmado (sin arma real equipada) el
+      // bono del perfil de AM se suma a la base/final de la esquiva (el helper
+      // aplica el gate). Asi la maestria (naturalBase>=200) tambien lo recoge.
+      const maDodge = type === 'dodge' ? martialArtsDodgeBonus(actor) : 0;
+
       // Defense ability (for shield, base and final are the evaluated formula)
       const defenseAbility = AbilityData.builder()
         .naturalBase(
@@ -336,7 +345,7 @@ export class DefenseConfigurationDialog extends FormApplication {
               : weapon?.system?.block?.base?.value ?? 0
             : type === 'shield'
             ? shieldValue
-            : actor.system?.combat?.dodge?.base?.value ?? 0
+            : (actor.system?.combat?.dodge?.base?.value ?? 0) + maDodge
         )
         .finalBase(
           type === 'block'
@@ -345,7 +354,7 @@ export class DefenseConfigurationDialog extends FormApplication {
               : weapon?.system?.block?.final?.value ?? 0
             : type === 'shield'
             ? shieldValue
-            : actor.system?.combat?.dodge?.final?.value ?? 0
+            : (actor.system?.combat?.dodge?.final?.value ?? 0) + maDodge
         )
         .build();
 
@@ -433,6 +442,9 @@ export class DefenseConfigurationDialog extends FormApplication {
       const defenseContribs = [];
       if (resistPenalty !== 0) {
         defenseContribs.push(`Resiste el golpe (${resistPenalty})`);
+      }
+      if (maDodge > 0) {
+        defenseContribs.push(`Artes Marciales (+${maDodge})`);
       }
       if (kiDefenseBonus !== 0) {
         const sign = kiDefenseBonus > 0 ? '+' : '';

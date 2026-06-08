@@ -155,6 +155,22 @@ export const parseExcelToActor = async (excelData, actor, options = {}) => {
   // existente duplicaba todo (armas, conjuros, Ki, artes marciales, etc.).
   await actor.clearForReimport();
 
+  // Bono de combate por Categoria/nivel (PDs!X25/X26/X27, capado a 50 en el Excel)
+  // leido del workbook completo. Alimenta el tope +50 COMBINADO (Categoria + AM)
+  // del motor: RAW (Dominus Exxet) los bonos de AM son innatos por Categoria y
+  // comparten ese tope. Sin workbook o celda vacia -> 0 (el motor cae al tope
+  // separado). El motor lo lee en applyMartialArtModifiers via actor.flags.
+  const readWbCell = (sheet, addr) => {
+    const c = options?.workbook?.Sheets?.[sheet]?.[addr];
+    return Number(c?.v ?? c?.w) || 0;
+  };
+  const categoryBonus = {
+    attack: readWbCell('PDs', 'X25'),
+    block: readWbCell('PDs', 'X26'),
+    dodge: readWbCell('PDs', 'X27')
+  };
+  await actor.setFlag('animabf', 'categoryBonus', categoryBonus);
+
   await actor.update({
     name: excelData.Nombre,
     prototypeToken: {
@@ -258,19 +274,24 @@ export const parseExcelToActor = async (excelData, actor, options = {}) => {
         }
       },
       combat: {
+        // Base de combate LIMPIA (sin Artes Marciales): HA_final/HP_final/HE_final
+        // (hoja PDs) son la habilidad por PDs SIN el bono de AM. El bono de AM lo
+        // anade el motor en el perfil sintetico "Artes Marciales", con el tope +50
+        // COMBINADO (categoryBonus). Antes se metia max(.._final, .._SinArmas_final),
+        // que horneaba el AM en la base y se filtraba a las armas reales (leak).
         attack: {
           base: {
-            value: Math.max(excelData.HA_final, excelData.HA_SinArmas_final)
+            value: excelData.HA_final
           }
         },
         block: {
           base: {
-            value: Math.max(excelData.HP_final, excelData.HP_SinArmas_final)
+            value: excelData.HP_final
           }
         },
         dodge: {
           base: {
-            value: Math.max(excelData.HE_final, excelData.HE_SinArmas_final)
+            value: excelData.HE_final
           }
         },
         wearArmor: {
@@ -928,6 +949,7 @@ export const parseExcelToActor = async (excelData, actor, options = {}) => {
     });
   }
 
+  let hasMartialArt = false;
   for (var i = 0; i < artesMarciales.length; i++) {
     if (artesMarciales[i].includes('Tabla de Armas:')) {
       await actor.createInnerItem({
@@ -935,6 +957,7 @@ export const parseExcelToActor = async (excelData, actor, options = {}) => {
         type: ABFItems.COMBAT_TABLE
       });
     } else {
+      hasMartialArt = true;
       const arteMarcialSeparada = artesMarciales[i]
         .split('(')
         .map(value => value.trim())
@@ -943,17 +966,18 @@ export const parseExcelToActor = async (excelData, actor, options = {}) => {
       const gradeRaw = (arteMarcialSeparada[1] ?? '').replace(/[ \)]+/g, '');
       const canonicalId = findMartialArtByName(name);
       const gradeKey = GRADE_ES_TO_KEY[gradeRaw.toLowerCase()];
-      // Si resuelve contra el catalogo, item "engine-aware" con bonusInBase: el
-      // bono de combate y el CM YA estan en la HA/CM_final que importa el Excel,
-      // asi que el motor NO los re-suma (evita el doble conteo); solo muestra el
-      // detalle. Si no resuelve (homebrew), formato legacy (sin bonos).
+      // Si resuelve contra el catalogo, item "engine-aware" con cmTurnInBase: el
+      // COMBATE (HA/Parada/Esquiva) lo computa el motor sobre la base LIMPIA
+      // (HA_final) con el tope +50 combinado; pero el CM (CM_final) y el Turno
+      // (Turno_Nat_final) YA vienen del Excel en la base -> el motor no los re-suma.
+      // Si no resuelve (homebrew), formato legacy (sin bonos).
       const system =
         canonicalId && gradeKey
           ? {
               canonicalId,
               artType: getMartialArt(canonicalId).type,
               grade: { value: gradeKey },
-              bonusInBase: true
+              cmTurnInBase: true
             }
           : { grade: { value: gradeRaw } };
       await actor.createInnerItem({
@@ -964,6 +988,39 @@ export const parseExcelToActor = async (excelData, actor, options = {}) => {
     }
   }
 
+  // Armas de combate desarmado del compendio: "Desarmado" siempre + "Artes
+  // Marciales" si el PJ tiene artes (el motor le inyecta los bonos en prepare).
+  {
+    const pack = globalThis.game?.packs?.get?.('animabf.weapons');
+    if (!pack) {
+      console.warn('[animabf:AM] pack "animabf.weapons" no encontrado; no se auto-anaden armas desarmadas');
+    } else {
+      const wanted = ['dW1UxURdn2Y4mx9s']; // Desarmado
+      if (hasMartialArt) wanted.push('ArtMarcialPerfil'); // Artes Marciales
+      const docs = [];
+      for (const id of wanted) {
+        try {
+          const doc = await pack.getDocument(id);
+          if (doc) {
+            const o = doc.toObject();
+            delete o._id;
+            docs.push(o);
+          }
+        } catch (e) {
+          console.warn('[animabf:AM] no se pudo cargar del pack:', id, e);
+        }
+      }
+      if (docs.length) {
+        await actor.createEmbeddedDocuments('Item', docs);
+        console.log(
+          '[animabf:AM] armas desarmadas auto-anadidas:',
+          docs.map(d => d.name),
+          '| hasMartialArt:',
+          hasMartialArt
+        );
+      }
+    }
+  }
 
   for (var i = 0; i < invocaciones.length; i++) {
     await actor.createInnerItem({
