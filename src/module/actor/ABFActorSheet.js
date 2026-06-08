@@ -77,6 +77,11 @@ export default class ABFActorSheet extends ActorSheetV1 {
             navSelector: '.combat-tabs',
             contentSelector: '.combat-body',
             initial: 'combat-main'
+          },
+          {
+            navSelector: '.domine-tabs',
+            contentSelector: '.domine-body',
+            initial: 'domine-ki'
           }
         ]
       }

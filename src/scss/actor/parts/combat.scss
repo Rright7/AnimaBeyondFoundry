@@ -69,6 +69,22 @@
     }
   }
 
+  .special-skills {
+    margin-top: 0.5rem;
+
+    .input {
+      @include input;
+    }
+
+    .special-skill-row:first-child {
+      margin-top: 0;
+    }
+
+    .special-skill-row {
+      margin-top: 0.5rem;
+    }
+  }
+
   .ammo {
     .ammo-row:first-child {
       margin-top: 0;
