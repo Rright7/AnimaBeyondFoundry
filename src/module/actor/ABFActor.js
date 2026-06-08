@@ -543,6 +543,39 @@ export class ABFActor extends Actor {
   }
 
   /**
+   * Economia de lanzamiento rapido para los botones de la ficha. Aplica la
+   * prioridad RAW: INNATO (gratis) > PREPARADO (consume el conjuro) > ZEON
+   * ACUMULADO (descuenta el coste). Devuelve true si se puede lanzar (ya
+   * descontado); false si no llega (ya avisa). La eleccion explicita
+   * innato/preparado/override va por el dialogo de escudo sobrenatural.
+   * @param {object} spell
+   * @param {string} spellGrade
+   * @returns {boolean}
+   */
+  tryCastSpell(spell, spellGrade) {
+    // Inteligencia Requerida (RAW Core Exxet): la INT del actor debe alcanzar la
+    // del grado o no puede lanzarlo en ese grado.
+    const intRequired = Number(spell?.system?.grades?.[spellGrade]?.intRequired?.value) || 0;
+    const intel = this.system?.characteristics?.primaries?.intelligence;
+    const intelligence = Number(intel?.final?.value ?? intel?.value) || 0;
+    if (intRequired > 0 && intelligence < intRequired) {
+      ui.notifications?.warn(
+        game.i18n.format('dialogs.spellCasting.warning.intRequired', {
+          required: intRequired,
+          current: intelligence
+        })
+      );
+      return false;
+    }
+    const spellCasting = this.mysticCanCastEvaluate(spell, spellGrade);
+    if (spellCasting.canCast.innate) spellCasting.casted.innate = true;
+    else if (spellCasting.canCast.prepared) spellCasting.casted.prepared = true;
+    if (this.evaluateCast(spellCasting)) return false;
+    this.mysticCast(spellCasting, spell.name, spellGrade);
+    return true;
+  }
+
+  /**
    * Consumes or restores the amount of maintained Zeon for a Mystic character.
    * Used in every turn change in ABFCombat.
    *
@@ -741,7 +774,7 @@ export class ABFActor extends Actor {
   async revertAccumulateKi() {
     const prev = this.flags?.animabf?.kiAccumPrev;
     if (!prev) return;
-    const update = { 'flags.animabf.-=kiAccumPrev': null };
+    const update = { 'flags.animabf.kiAccumPrev': null };
     for (const c of KI_CHAR_KEYS) {
       update[`system.domine.kiAccumulation.${c}.accumulated.value`] = Math.max(
         0,
@@ -785,6 +818,88 @@ export class ABFActor extends Actor {
     return next;
   }
 
+  // ============================
+  // Acumulación de zeón (concentración mágica) — Magia fase 2b
+  // ============================
+
+  /**
+   * Un paso de acumulación de zeón por asalto (lo llama ABFCombat.nextRound).
+   * Mientras "Acumular zeón" está activo, transfiere el ACT Final desde la
+   * reserva (zeon.value) a lo concentrado (zeon.accumulated), hasta agotar la
+   * reserva. RAW (Core Exxet): el zeón se canaliza desde la reserva al concentrar.
+   */
+  async accumulateZeon() {
+    if (!this.flags?.animabf?.accumulatingZeon) return;
+    // ACT es DERIVADO (penalizadores); recalcular antes de leerlo.
+    await prepareActor(this);
+    const zeon = this.system?.mystic?.zeon ?? {};
+    const act = Number(this.system?.mystic?.act?.main?.final?.value) || 0;
+    const value = Number(zeon.value) || 0;
+    const accumulated = Number(zeon.accumulated) || 0;
+    const drawn = Math.max(0, Math.min(act, value));
+    if (drawn <= 0) return;
+    await this.update({
+      'flags.animabf.zeonAccumPrev': { value, accumulated },
+      system: {
+        mystic: { zeon: { value: value - drawn, accumulated: accumulated + drawn } }
+      }
+    });
+  }
+
+  /** Deshace el último paso de acumulación de zeón (ABFCombat.previousRound). */
+  async revertAccumulateZeon() {
+    const prev = this.flags?.animabf?.zeonAccumPrev;
+    if (!prev) return;
+    await this.update({
+      'flags.animabf.zeonAccumPrev': null,
+      system: {
+        mystic: {
+          zeon: {
+            value: Math.max(0, Number(prev.value) || 0),
+            accumulated: Math.max(0, Number(prev.accumulated) || 0)
+          }
+        }
+      }
+    });
+  }
+
+  /**
+   * Activa/desactiva "Acumular zeón". Al activar concentra el primer asalto. Al
+   * PARAR (desactivar), lo concentrado vuelve a la reserva PERDIENDO 10 (RAW:
+   * Core Exxet — si dejas de acumular un turno, lo concentrado vuelve a la
+   * reserva perdiendo 10 puntos en el proceso).
+   */
+  async toggleAccumulateZeon() {
+    const accumulating = !this.flags?.animabf?.accumulatingZeon;
+    if (accumulating) {
+      await prepareActor(this);
+      const zeon = this.system?.mystic?.zeon ?? {};
+      const act = Number(this.system?.mystic?.act?.main?.final?.value) || 0;
+      const value = Number(zeon.value) || 0;
+      const accumulated = Number(zeon.accumulated) || 0;
+      const drawn = Math.max(0, Math.min(act, value));
+      await this.update({
+        'flags.animabf.accumulatingZeon': true,
+        system: {
+          mystic: { zeon: { value: value - drawn, accumulated: accumulated + drawn } }
+        }
+      });
+    } else {
+      const zeon = this.system?.mystic?.zeon ?? {};
+      const value = Number(zeon.value) || 0;
+      const max = Number(zeon.max) || 0;
+      const accumulated = Number(zeon.accumulated) || 0;
+      const returned = accumulated > 0 ? Math.max(0, accumulated - 10) : 0;
+      const newValue = max > 0 ? Math.min(max, value + returned) : value + returned;
+      await this.update({
+        'flags.animabf.accumulatingZeon': false,
+        'flags.animabf.zeonAccumPrev': null,
+        system: { mystic: { zeon: { value: newValue, accumulated: 0 } } }
+      });
+    }
+    return accumulating;
+  }
+
   /**
    * Bucle por asalto (llamado desde ABFCombat): las técnicas mantenidas activas
    * gastan su Ki de mantenimiento; las sostenidas descuentan duración y se
@@ -807,7 +922,7 @@ export class ABFActor extends Actor {
         await technique.update({
           'flags.animabf.active': !!snap.active,
           'flags.animabf.remaining': Number(snap.remaining) || 0,
-          'flags.animabf.-=prevRound': null
+          'flags.animabf.prevRound': null
         });
       }
       return;

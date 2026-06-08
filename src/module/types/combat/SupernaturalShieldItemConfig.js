@@ -3,6 +3,8 @@ import { openComplexInputDialog } from '../../utils/dialogs/openComplexInputDial
 import { openModDialog } from '../../utils/dialogs/openSimpleInputDialog';
 import { SpellGrades } from '../mystic/SpellItemConfig';
 import { ABFItemConfigFactory } from '../ABFItemConfig';
+import { ABFSupernaturalShieldData } from '../../combat/ABFSupernaturalShieldData.js';
+import { shieldValueCheck } from '../../combat/utils/shieldValueCheck.js';
 
 /**
  * Initial data for a new supernatural shield. Used to infer the type of the data inside `supernaturalShield.system`
@@ -65,7 +67,19 @@ export const SupernaturalShieldItemConfig = ABFItemConfigFactory({
         return;
       }
       actor.mysticCast(spellCasting, spell.name, spellGrade);
-      actor.newSupernaturalShield('mystic', {}, 0, spell, spellGrade);
+      const gradeData = spell.system.grades[spellGrade];
+      const shieldPoints = Number(shieldValueCheck(gradeData)) || 0;
+      const gradeLabel = game.i18n.localize(
+        `anima.ui.mystic.spell.grade.${spellGrade}.title`
+      );
+      actor.newSupernaturalShield(
+        ABFSupernaturalShieldData.builder()
+          .name(`${spell.name} (${gradeLabel})`)
+          .shieldPoints(shieldPoints)
+          .abilityFormula('@mystic.magicProjection.imbalance.defensive.final.value')
+          .flags({ animabf: { supernaturalShield: { type: 'mystic' } } })
+          .build()
+      );
     } else if (tab === 'psychic') {
       const powerID = results['new.psychicShield.id'];
       const eliminateFatigue = results['new.psychicShield.eliminateFatigue'];

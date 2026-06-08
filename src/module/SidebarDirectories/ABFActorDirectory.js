@@ -35,51 +35,58 @@ export default class ABFActorDirectory extends ActorDirectoryV1 {
    * @returns {Promise<void>}
    */
   async importFromExcelDialog(document) {
-    new Dialog(
+    const content = await (foundry.applications?.handlebars?.renderTemplate ?? renderTemplate)(
+      'systems/animabf/templates/dialog/import-data-from-excel.html',
       {
+        hint1: game.i18n.format('anima.ui.importDataFromExcelHint1', {
+          documentType: document.documentName
+        }),
+        hint2: game.i18n.format('anima.ui.importDataFromExcelHint2', {
+          name: document.name
+        })
+      }
+    );
+
+    await foundry.applications.api.DialogV2.wait({
+      window: {
         title: game.i18n.format('anima.ui.importDataFromExcelTitle', {
           name: document.name
-        }),
-        content: await (foundry.applications?.handlebars?.renderTemplate ?? renderTemplate)(
-          'systems/animabf/templates/dialog/import-data-from-excel.html',
-          {
-            hint1: game.i18n.format('anima.ui.importDataFromExcelHint1', {
-              documentType: document.documentName
-            }),
-            hint2: game.i18n.format('anima.ui.importDataFromExcelHint2', {
-              name: document.name
-            })
-          }
-        ),
-        buttons: {
-          import: {
-            icon: '<i class="fas fa-file-import"></i>',
-            label: 'Import',
-            callback: html => {
-              const fileInput = html.find('input[type="file"]')[0];
-              const file = fileInput?.files[0];
-              if (!file) {
-                return ui.notifications.error('You did not upload a data file!');
-              }
-
-              this.readExcelData(file)
-                .then(({ rows, workbook }) =>
-                  parseExcelToActor(rows, document, { workbook })
-                )
-                .catch(() => {
-                  ui.notifications.error('Error reading Excel file.');
-                });
+        })
+      },
+      position: { width: 400 },
+      content,
+      buttons: [
+        {
+          action: 'import',
+          icon: 'fas fa-file-import',
+          label: 'Import',
+          default: true,
+          callback: (event, button, dialog) => {
+            const root = button?.form ?? dialog?.element;
+            const fileInput = root?.querySelector?.('input[type="file"]');
+            const file = fileInput?.files?.[0];
+            if (!file) {
+              ui.notifications.error('You did not upload a data file!');
+              return;
             }
-          },
-          no: {
-            icon: '<i class="fas fa-times"></i>',
-            label: 'Cancel'
+
+            this.readExcelData(file)
+              .then(({ rows, workbook }) =>
+                parseExcelToActor(rows, document, { workbook })
+              )
+              .catch(() => {
+                ui.notifications.error('Error reading Excel file.');
+              });
           }
         },
-        default: 'import'
-      },
-      { width: 400 }
-    ).render(true);
+        {
+          action: 'no',
+          icon: 'fas fa-times',
+          label: 'Cancel'
+        }
+      ],
+      rejectClose: false
+    }).catch(() => {});
   }
 
   /**

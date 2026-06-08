@@ -1,5 +1,6 @@
 import { Templates } from '../utils/constants';
 import { ABFAttackData } from '../combat/ABFAttackData';
+import { resistanceEffectCheck } from '../combat/utils/resistanceEffectCheck.js';
 import ABFFoundryRoll from '../rolls/ABFFoundryRoll.js';
 import { ABFConfig } from '../ABFConfig';
 import { getSnapshotTargets } from '../actor/utils/getSnapshotTargets.js';
@@ -86,6 +87,9 @@ export class SpellAttackConfigurationDialog extends FormApplication {
     if (!actor) return ui.notifications?.warn('Actor no encontrado.');
     if (!spell) return ui.notifications?.warn('Hechizo no encontrado.');
 
+    // Economia de zeon: gasta (innato/preparado/acumulado) o bloquea si no llega.
+    if (!actor.tryCastSpell(spell, grade)) return;
+
     try {
       this.modalData.attackSent = true;
       setTimeout(() => this.render(), 0);
@@ -129,6 +133,7 @@ export class SpellAttackConfigurationDialog extends FormApplication {
       const attackData = ABFAttackData.builder()
         .attackAbility(roll.total)
         .damage(finalDamage)
+        .resistanceEffect(resistanceEffectCheck(gradeData))
         .ignoreArmor(false)
         .reducedArmor(0)
         .armorType(

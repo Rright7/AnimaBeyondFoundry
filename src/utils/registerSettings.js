@@ -3,15 +3,6 @@ export { ABFSettingsKeys } from './settingKeys.js';
 import { ABFSettingsKeys } from './settingKeys.js';
 
 export const registerSettings = systemId => {
-  game.settings.register(systemId, ABFSettingsKeys.AUTO_ACCEPT_COMBAT_REQUESTS, {
-    name: 'anima.ui.systemSettings.autoAcceptCombatRequests.title',
-    hint: 'anima.ui.systemSettings.autoAcceptCombatRequests.hint.title',
-    scope: 'world',
-    config: true,
-    default: true,
-    type: Boolean
-  });
-
   game.settings.register(systemId, ABFSettingsKeys.ROUND_DAMAGE_IN_MULTIPLES_OF_5, {
     name: 'anima.ui.systemSettings.roundDamageInMultiplesOf5.title',
     hint: 'anima.ui.systemSettings.roundDamageInMultiplesOf5.hint.title',

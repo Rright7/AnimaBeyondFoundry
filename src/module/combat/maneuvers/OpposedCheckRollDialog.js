@@ -122,30 +122,6 @@ export async function openOpposedCheckRollDialog({
       console.error('[ABF] OpposedCheckRollDialog V2 error:', err);
       return null;
     }
-  } else {
-    // Legacy Dialog fallback
-    chosen = await new Promise(resolve => {
-      let settled = false;
-      const finalize = v => { if (!settled) { settled = true; resolve(v); } };
-      new Dialog({
-        title,
-        content,
-        buttons: {
-          roll: {
-            icon: '<i class="fas fa-dice-d10"></i>',
-            label: 'Tirar D10',
-            callback: html => {
-              const root = html instanceof HTMLElement ? html : html[0];
-              const form = root.querySelector('form');
-              finalize(form ? readForm(form) : null);
-            }
-          },
-          cancel: { icon: '<i class="fas fa-times"></i>', label: 'Cancelar', callback: () => finalize(null) }
-        },
-        default: 'roll',
-        close: () => finalize(null)
-      }).render(true);
-    });
   }
 
   if (!chosen?.stat) return null;

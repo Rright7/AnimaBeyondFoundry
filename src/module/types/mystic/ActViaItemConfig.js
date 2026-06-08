@@ -25,6 +25,7 @@ export const ActViaItemConfig = ABFItemConfigFactory({
   onCreate: async actor => {
     const results = await openComplexInputDialog(actor, 'newActVia');
     const name = results['new.actVia.name'];
+    if (!name) return;
 
     await actor.createInnerItem({
       name,

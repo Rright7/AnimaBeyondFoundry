@@ -6,48 +6,36 @@ export const openSimpleInputDialog = async ({
   content,
   placeholder = ''
 }) => {
-  const referencedGame = game;
+  const [dialogHTML] = await renderTemplates({
+    name: Templates.Dialog.ModDialog,
+    context: { content, placeholder }
+  });
 
-  const [dialogHTML, iconHTML] = await renderTemplates(
-    {
-      name: Templates.Dialog.ModDialog,
-      context: {
-        content,
-        placeholder
+  // DialogV2 (Foundry V13+). El callback de 'ok' lee el input y su valor es lo
+  // que resuelve prompt(); al cerrar/cancelar (rejectClose:false) -> undefined.
+  return foundry.applications.api.DialogV2.prompt({
+    window: { title: title || game.i18n.localize('dialogs.title') },
+    content: dialogHTML,
+    ok: {
+      icon: 'fas fa-check',
+      label: game.i18n.localize('dialogs.continue'),
+      callback: (event, button, dialog) => {
+        const root = button?.form ?? dialog?.element;
+        const el = root?.querySelector?.('[name="dialog-input"], #dialog-input');
+        return el?.value ?? '';
       }
     },
-    {
-      name: Templates.Dialog.Icons.Accept
-    }
-  );
-
-  return new Promise(resolve => {
-    new Dialog({
-      title: title ? title : referencedGame.i18n.localize('dialogs.title'),
-      content: dialogHTML,
-      buttons: {
-        submit: {
-          icon: iconHTML,
-          label: referencedGame.i18n.localize('dialogs.continue'),
-          callback: html => {
-            const results = new FormDataExtended(html.find('form')[0], {}).object;
-            resolve(results['dialog-input']);
-          }
-        }
-      },
-      default: 'submit',
-      render: () => $('#dialog-input').focus()
-    }).render(true);
-  });
+    rejectClose: false,
+    modal: true
+  }).catch(() => undefined);
 };
 
-// Open the mod Dialog window. It returns resolver(html), which in turn returns the modifier
+// Abre el diálogo de modificador. Devuelve el modificador introducido (string) o
+// undefined si se cierra.
 export const openModDialog = async ({ title = '' } = {}) => {
-  const referencedGame = game;
-
   return openSimpleInputDialog({
     title,
-    content: referencedGame.i18n.localize('dialogs.mod.content'),
+    content: game.i18n.localize('dialogs.mod.content'),
     placeholder: '0'
   });
 };

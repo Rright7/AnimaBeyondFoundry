@@ -6,6 +6,7 @@ import { Templates } from '../../../utils/constants';
 import { openModDialog } from '../../../utils/dialogs/openSimpleInputDialog.js';
 import { SpellAttackConfigurationDialog } from '../../../dialogs/SpellAttackConfigurationDialog.js';
 import { getSnapshotTargets } from '../getSnapshotTargets.js';
+import { resistanceEffectCheck } from '../../../combat/utils/resistanceEffectCheck.js';
 
 function localizeGrade(grade) {
   return game.i18n.localize(`anima.ui.mystic.spell.grade.${grade}.title`);
@@ -16,26 +17,22 @@ async function openShieldConfigDialog({ spell, grade }) {
     formulaBonus: 0
   });
 
-  return new Promise(resolve => {
-    new Dialog({
-      title: `${spell.name} (${localizeGrade(grade)})`,
-      content,
-      buttons: {
-        ok: {
-          label: 'OK',
-          callback: html => {
-            const bonus = Number(html.find('input[name="formulaBonus"]').val() ?? 0) || 0;
-            resolve({ bonus, cancelled: false });
-          }
-        },
-        cancel: {
-          label: 'Cancel',
-          callback: () => resolve({ cancelled: true })
-        }
-      },
-      default: 'ok'
-    }).render(true);
-  });
+  const bonus = await foundry.applications.api.DialogV2.prompt({
+    window: { title: `${spell.name} (${localizeGrade(grade)})` },
+    content,
+    ok: {
+      label: 'OK',
+      callback: (event, button, dialog) => {
+        const form = button?.form ?? dialog?.element?.querySelector?.('form');
+        return Number(form?.elements?.formulaBonus?.value ?? 0) || 0;
+      }
+    },
+    rejectClose: false,
+    modal: true
+  }).catch(() => null);
+
+  if (bonus === null) return { cancelled: true };
+  return { bonus, cancelled: false };
 }
 
 export async function castSpellGrade(sheet, event) {
@@ -59,6 +56,9 @@ export async function castSpellGrade(sheet, event) {
       if (res.cancelled) return;
       if (res.bonus !== 0) abilityFormula = `${baseFormula} + ${res.bonus}`;
     }
+
+    // Economia de zeon: gasta (innato/preparado/acumulado) o bloquea si no llega.
+    if (!actor.tryCastSpell(spell, grade)) return;
 
     await actor.newSupernaturalShield(
       ABFSupernaturalShieldData.builder()
@@ -90,6 +90,9 @@ export async function castSpellGrade(sheet, event) {
   // Quick attack
   const mod = Number(await openModDialog()) || 0;
 
+  // Economia de zeon: gasta (innato/preparado/acumulado) o bloquea si no llega.
+  if (!actor.tryCastSpell(spell, grade)) return;
+
   const baseMP = actor.system.mystic.magicProjection.imbalance.offensive.base.value;
   const die = baseMP >= 200 ? '1d100xamastery' : '1d100xa';
 
@@ -106,6 +109,7 @@ export async function castSpellGrade(sheet, event) {
   await ABFAttackData.builder()
     .attackAbility(roll.total)
     .damage(baseDamage)
+    .resistanceEffect(resistanceEffectCheck(spell.system.grades[grade]))
     .ignoreArmor(false)
     .reducedArmor(0)
     .armorType(spell.system.critic?.value ?? game.animabf.weapon.NoneWeaponCritic.NONE)

@@ -10,25 +10,28 @@
     class="martial-arts"
   }}
     {{#each system.domine.martialArts as |martialArt index|}}
-      <div data-item-id='{{martialArt._id}}' class='martial-art-row'>
-        {{>
-        "systems/animabf/templates/common/ui/vertical-titled-input.hbs"
-          class="name"
-          title=(localize "anima.ui.domine.martialArts.name.title")
-          hideTitle=(is "gt" index 0)
-          inputType="text"
-          inputName=(concat "system.dynamic.martialArts." martialArt._id ".name")
-          inputValue=martialArt.name
-        }}
-        {{>
-        "systems/animabf/templates/common/ui/vertical-titled-input.hbs"
-          class="grade"
-          title=(localize "anima.ui.domine.martialArts.grade.title")
-          hideTitle=(is "gt" index 0)
-          inputType="text"
-          inputName=(concat "system.dynamic.martialArts." martialArt._id ".system.grade.value")
-          inputValue=martialArt.system.grade.value
-        }}
+      <div data-item-id='{{martialArt._id}}' class='martial-art-row'
+           style='display:flex;flex-direction:column;gap:.1rem;padding:.25rem 0;'>
+        <div style='display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;'>
+          <strong>{{martialArt.name}}</strong>
+          {{#if martialArt.system.computed.gradeOptions.length}}
+            <select name='system.dynamic.martialArts.{{martialArt._id}}.system.grade.value'
+                    style='max-width:9rem;'>
+              {{#each martialArt.system.computed.gradeOptions as |opt|}}
+                <option value='{{opt.value}}' {{#if opt.selected}}selected{{/if}}>{{opt.label}}</option>
+              {{/each}}
+            </select>
+          {{else}}
+            <em style='opacity:.8;'>{{martialArt.system.computed.gradeLabel}}</em>
+          {{/if}}
+          <span style='opacity:.75;font-size:.85em;'>{{martialArt.system.computed.summary}}</span>
+        </div>
+        {{#if martialArt.system.computed.requirements}}
+          <div style='opacity:.6;font-size:.8em;'>{{localize "anima.ui.domine.martialArts.requirements"}}: {{martialArt.system.computed.requirements}}</div>
+        {{/if}}
+        {{#if martialArt.system.computed.special}}
+          <div style='opacity:.6;font-size:.8em;'>{{localize "anima.ui.domine.martialArts.special"}}: {{martialArt.system.computed.special}}</div>
+        {{/if}}
       </div>
     {{/each}}
   {{/"systems/animabf/templates/common/ui/group-body.hbs"}}

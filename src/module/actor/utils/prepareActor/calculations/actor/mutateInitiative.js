@@ -20,9 +20,14 @@ export const mutateInitiative = data => {
   const { initiative } = data.characteristics.secondaries;
 
   const kiInitiativeBonus = data.general.modifiers.kiBonus?.initiative?.value ?? 0;
+  const martialTurnBonus = data.general.modifiers.martialArtBonus?.turn?.value ?? 0;
 
   initiative.final.value =
-    initiative.base.value + initiative.special.value + penalty + kiInitiativeBonus;
+    initiative.base.value +
+    initiative.special.value +
+    penalty +
+    kiInitiativeBonus +
+    martialTurnBonus;
 
   const equippedWeapons = combat.weapons.filter(weapon => weapon.system.equipped.value);
 
@@ -80,6 +85,7 @@ mutateInitiative.abfFlow = {
     'system.general.modifiers.allActions.final.value',
     'system.general.modifiers.naturalPenalty.final.value',
     'system.general.modifiers.kiBonus.initiative.value',
+    'system.general.modifiers.martialArtBonus.turn.value',
     'system.combat.weapons' // equipped + isShield + size + initiative.*
   ],
   mods: ['system.characteristics.secondaries.initiative.final.value']

@@ -1,24 +1,42 @@
-<div class='domine-tab'>
-  <div class='first-column'>
-    {{{injectFromHook "animabf.actor.domine.first-column.start" @root}}}
-    {{> "systems/animabf/templates/actor/parts/domine/parts/ki-skills.hbs"}}
-    {{> "systems/animabf/templates/actor/parts/domine/parts/nemesis-skills.hbs"}}
-    {{> "systems/animabf/templates/actor/parts/domine/parts/ars-magnus.hbs"}}
-    {{> "systems/animabf/templates/actor/parts/domine/parts/martial-arts.hbs"}}
-    {{> "systems/animabf/templates/actor/parts/domine/parts/creatures.hbs"}}
-    {{> "systems/animabf/templates/actor/parts/domine/parts/special-skills-tables.hbs"}}
-    {{{injectFromHook "animabf.actor.domine.first-column.end" @root}}}
-  </div>
-  <div class='second-column'>
-    <div class='sub-columns'>
-      {{> "systems/animabf/templates/actor/parts/domine/parts/ki-accumulation.hbs"}}
-      <div class='sub-sub-columns'>
-        {{> "systems/animabf/templates/actor/parts/domine/parts/martial-knowledge.hbs"}}
-        {{> "systems/animabf/templates/actor/parts/domine/parts/seals.hbs"}}
+<div class='domine'>
+  <nav class="animabf-tabs domine-tabs tabs secondary-tab" data-group="domineSecondary">
+    <a class="item active" data-tab="domine-ki">{{localize "anima.ui.domine.tabs.ki"}}</a>
+    <a class="item" data-tab="domine-techniques">{{localize "anima.ui.domine.tabs.techniques"}}</a>
+    <a class="item" data-tab="domine-martial">{{localize "anima.ui.domine.tabs.martialArts"}}</a>
+  </nav>
+
+  <section class='domine-body'>
+    <div class='tab' data-group="domineSecondary" data-tab="domine-ki">
+      <div class='domine-tab'>
+        <div class='first-column'>
+          {{{injectFromHook "animabf.actor.domine.first-column.start" @root}}}
+          {{> "systems/animabf/templates/actor/parts/domine/parts/ki-skills.hbs"}}
+          {{> "systems/animabf/templates/actor/parts/domine/parts/nemesis-skills.hbs"}}
+          {{> "systems/animabf/templates/actor/parts/domine/parts/ars-magnus.hbs"}}
+          {{> "systems/animabf/templates/actor/parts/domine/parts/creatures.hbs"}}
+          {{{injectFromHook "animabf.actor.domine.first-column.end" @root}}}
+        </div>
+        <div class='second-column'>
+          <div class='sub-columns'>
+            {{> "systems/animabf/templates/actor/parts/domine/parts/ki-accumulation.hbs"}}
+            <div class='sub-sub-columns'>
+              {{> "systems/animabf/templates/actor/parts/domine/parts/martial-knowledge.hbs"}}
+              {{> "systems/animabf/templates/actor/parts/domine/parts/seals.hbs"}}
+            </div>
+          </div>
+          {{{injectFromHook "animabf.actor.domine.second-column.before-techniques" @root}}}
+          {{> "systems/animabf/templates/actor/parts/domine/parts/techniques.hbs"}}
+          {{{injectFromHook "animabf.actor.domine.second-column.after-techniques" @root}}}
+        </div>
       </div>
     </div>
-    {{{injectFromHook "animabf.actor.domine.second-column.before-techniques" @root}}}
-    {{> "systems/animabf/templates/actor/parts/domine/parts/techniques.hbs"}}
-    {{{injectFromHook "animabf.actor.domine.second-column.after-techniques" @root}}}
-  </div>
+
+    <div class='tab' data-group="domineSecondary" data-tab="domine-techniques">
+      {{> "systems/animabf/templates/actor/parts/ki-techniques/ki-techniques.hbs"}}
+    </div>
+
+    <div class='tab' data-group="domineSecondary" data-tab="domine-martial">
+      {{> "systems/animabf/templates/actor/parts/domine/parts/martial-arts.hbs"}}
+    </div>
+  </section>
 </div>

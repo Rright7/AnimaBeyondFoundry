@@ -9,10 +9,7 @@
 @use 'chat/combat-result-message';
 @use 'chat/attack-data-message';
 @use 'chat/maneuver-opposed-check-message';
-@use 'custom-hotbar/custom-hotbar';
 
-@use 'dialog/gm-combat-dialog';
-@use 'dialog/combat-request-dialog';
 @use 'dialog/combat-attack-dialog';
 @use 'dialog/combat-defense-dialog';
 @use 'dialog/generic-dialog';

@@ -21,25 +21,6 @@ export const Templates = {
     newPsychicDiscipline: T('dialog/new-psychic-discipline.hbs'),
     newMentalPattern: T('dialog/new-mental-pattern.hbs'),
     Combat: {
-      CombatAttackDialog: {
-        main: T('dialog/combat/combat-attack/combat-attack-dialog.hbs'),
-        parts: {
-          combat: T('dialog/combat/combat-attack/parts/combat.hbs'),
-          mystic: T('dialog/combat/combat-attack/parts/mystic.hbs'),
-          psychic: T('dialog/combat/combat-attack/parts/psychic.hbs')
-        }
-      },
-      CombatDefenseDialog: {
-        main: T('dialog/combat/combat-defense/combat-defense-dialog.hbs'),
-        parts: {
-          combat: T('dialog/combat/combat-defense/parts/combat.hbs'),
-          damageResistance: T('dialog/combat/combat-defense/parts/damage-resistance.hbs'),
-          mystic: T('dialog/combat/combat-defense/parts/mystic.hbs'),
-          psychic: T('dialog/combat/combat-defense/parts/psychic.hbs')
-        }
-      },
-      CombatRequestDialog: T('dialog/combat/combat-request-dialog.hbs'),
-      GMCombatDialog: T('dialog/combat/gm-combat-dialog.hbs'),
       DefenseConfigDialog: T('dialog/combat/defense-config-dialog.hbs'),
       AttackConfigDialog: T('dialog/combat/attack-config-dialog.hbs')
     },
@@ -54,8 +35,6 @@ export const Templates = {
     SpellShieldConfigDialog: T('dialog/spell-shield-config-dialog.hbs'),
     SpellAttackConfigDialog: T('dialog/spell-attack-config-dialog.hbs')
   },
-
-  CustomHotBar: T('custom-hotbar/custom-hotbar.hbs'),
 
   Chat: {
     CombatResult: T('chat/combat-result.hbs'),
@@ -170,6 +149,7 @@ export const Templates = {
       BaseValues: T('actor/parts/combat/parts/base-values.hbs'),
       CombatSpecialSkills: T('actor/parts/combat/parts/combat-special-skills.hbs'),
       CombatTables: T('actor/parts/combat/parts/combat-tables.hbs'),
+      SpecialSkillsTables: T('actor/parts/combat/parts/special-skills-tables.hbs'),
       CombatManeuvers: T('actor/parts/combat/parts/combat-maneuvers.hbs'),
       CombatManeuverCard: T('actor/parts/combat/parts/combat-maneuver-card.hbs'),
       Ammo: T('actor/parts/combat/parts/ammo.hbs'),
@@ -204,7 +184,6 @@ export const Templates = {
       ArsMagnus: T('actor/parts/domine/parts/ars-magnus.hbs'),
       MartialArts: T('actor/parts/domine/parts/martial-arts.hbs'),
       Creatures: T('actor/parts/domine/parts/creatures.hbs'),
-      SpecialSkillsTables: T('actor/parts/domine/parts/special-skills-tables.hbs'),
       KiAccumulation: T('actor/parts/domine/parts/ki-accumulation.hbs'),
       MartialKnowledge: T('actor/parts/domine/parts/martial-knowledge.hbs'),
       Seals: T('actor/parts/domine/parts/seals.hbs'),

@@ -9,6 +9,7 @@ import {
   activeTechniqueCombatBonuses,
   usableInstantCombatTechniques
 } from '../domine/techniques/techniqueCombatBonuses.js';
+import { martialArtUnarmedDamage } from '../combat/martialArts/martialArtCatalog.js';
 ///dialogs/AttackConfigurationDialog.js
 ///actor/utils/getSnapshotTargets.js
 
@@ -158,10 +159,13 @@ export class AttackConfigurationDialog extends FormApplication {
     if (!weapon) {
       combat.weapon = undefined;
       combat.projectile = { value: false, type: '' };
-      combat.damage.final =
-        (combat.damage.special ?? 0) +
-        10 +
-        this.attackerActor.system.characteristics.primaries.strength.mod;
+      // Daño desarmado: si hay Arte Marcial, el MAYOR Daño Base entre las artes
+      // conocidas + el bono de daño de las Avanzadas; si no, el brawl 10 + FUE.
+      const brawl =
+        10 + this.attackerActor.system.characteristics.primaries.strength.mod;
+      const ma = martialArtUnarmedDamage(this.attackerActor);
+      const base = ma.base !== null ? Math.max(ma.base, brawl) : brawl;
+      combat.damage.final = (combat.damage.special ?? 0) + base + ma.bonus;
     } else {
       combat.weapon = weapon;
       combat.weaponUsed = weapon._id;

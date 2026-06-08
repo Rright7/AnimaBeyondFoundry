@@ -1,6 +1,28 @@
 @use '../../variable' as *;
 @use '../../mixin' as *;
 
+.domine .martial-arts {
+  .martial-art-row:first-child {
+    margin-top: 0;
+  }
+
+  .martial-art-row {
+    margin-top: 0.75rem;
+
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-column-gap: 1rem;
+
+    .name .input-container {
+      width: 100%;
+    }
+
+    .grade .input-container {
+      width: 100%;
+    }
+  }
+}
+
 .domine-tab {
   // Grids
   width: 100%;
@@ -31,8 +53,7 @@
 
   .ki-skills,
   .nemesis-skills,
-  .ars-magnus,
-  .special-skills {
+  .ars-magnus {
     .input {
       @include input;
     }
@@ -158,33 +179,6 @@
   }
   // Ars Magnus
 
-  // Martial Arts
-  .martial-arts {
-    .martial-art-row:first-child {
-      margin-top: 0;
-    }
-
-    .martial-art-row {
-      margin-top: 0.75rem;
-
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      grid-column-gap: 1rem;
-
-      .name {
-        .input-container {
-          width: 100%;
-        }
-      }
-      .grade {
-        .input-container {
-          width: 100%;
-        }
-      }
-    }
-  }
-  // Martial Arts
-
   // Creatures
   .creatures {
     .creature-row:first-child {
@@ -210,18 +204,6 @@
     }
   }
   // Creatures
-
-  // Special Skills
-  .special-skills {
-    .special-skill-row:first-child {
-      margin-top: 0;
-    }
-
-    .special-skill-row {
-      margin-top: 0.75rem;
-    }
-  }
-  // Special Skills
 
   // Ki Accumulation
   .ki-accumulation {

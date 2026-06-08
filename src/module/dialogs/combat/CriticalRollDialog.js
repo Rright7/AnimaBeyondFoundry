@@ -24,26 +24,29 @@ export function openCriticalRollDialog({ title, label, rollLabel, defaultMod = 0
       </form>
     `;
 
-    new Dialog({
-      title,
+    foundry.applications.api.DialogV2.wait({
+      window: { title },
       content,
-      buttons: {
-        roll: {
-          icon: '<i class="fas fa-dice-d20"></i>',
+      buttons: [
+        {
+          action: 'roll',
+          icon: 'fas fa-dice-d20',
           label: btnRoll,
-          callback: html => {
-            const val = parseInt(html.find('[name=modifier]').val(), 10);
+          default: true,
+          callback: (event, button, dialog) => {
+            const form = button?.form ?? dialog?.element?.querySelector?.('form');
+            const val = parseInt(form?.elements?.modifier?.value, 10);
             resolve(Number.isFinite(val) ? val : 0);
           }
         },
-        cancel: {
-          icon: '<i class="fas fa-times"></i>',
+        {
+          action: 'cancel',
+          icon: 'fas fa-times',
           label: btnCancel,
           callback: () => resolve(null)
         }
-      },
-      default: 'roll',
-      close: () => resolve(null)
-    }).render(true);
+      ],
+      rejectClose: false
+    }).catch(() => resolve(null));
   });
 }

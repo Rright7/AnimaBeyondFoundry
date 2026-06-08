@@ -9,8 +9,6 @@ import ABFItemSheet from './module/items/ABFItemSheet';
 import { ABFConfig } from './module/ABFConfig';
 import ABFItem from './module/items/ABFItem';
 import ABFActorDirectory from './module/SidebarDirectories/ABFActorDirectory';
-import { registerCombatWebsocketRoutes } from './module/combat/websocket/registerCombatWebsocketRoutes';
-import { attachCustomMacroBar } from './utils/attachCustomMacroBar';
 import { registerKeyBindings } from './utils/registerKeyBindings';
 import { applyMigrations } from './module/migration/migrate';
 import { registerGlobalTypes } from './utils/registerGlobalTypes';
@@ -112,8 +110,6 @@ Hooks.once('ready', async () => {
     }
   }
 
-  registerCombatWebsocketRoutes();
-  // attachCustomMacroBar();
   applyMigrations();
   registerGlobalTypes();
 
