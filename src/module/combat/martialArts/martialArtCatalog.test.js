@@ -1,4 +1,9 @@
-import { martialArtUnarmedDamage, buildMartialArtView } from './martialArtCatalog.js';
+import {
+  martialArtUnarmedDamage,
+  buildMartialArtView,
+  findMartialArtByName,
+  GRADE_ES_TO_KEY
+} from './martialArtCatalog.js';
 
 const actorWith = (arts, strMod = 5, powMod = 3) => ({
   system: {
@@ -60,6 +65,16 @@ describe('buildMartialArtView', () => {
   it('Velez (avanzada): opciones de grado base/arcane', () => {
     const v = buildMartialArtView(art('velez', 'base'));
     expect(v.gradeOptions.map(o => o.value)).toEqual(['base', 'arcane']);
+  });
+
+  it('findMartialArtByName resuelve nombres (case-insensible) y GRADE_ES_TO_KEY mapea', () => {
+    expect(findMartialArtByName('Shotokan')).toBe('shotokan');
+    expect(findMartialArtByName('Kung Fu')).toBe('kungFu');
+    expect(findMartialArtByName('MALLA-YUDDHA')).toBe('mallaYuddha');
+    expect(findMartialArtByName('Inventada')).toBe(null);
+    expect(GRADE_ES_TO_KEY.avanzado).toBe('advanced');
+    expect(GRADE_ES_TO_KEY.supremo).toBe('supreme');
+    expect(GRADE_ES_TO_KEY.arcano).toBe('arcane');
   });
 
   it('arte desconocida: known=false, summary avisa de recrear', () => {

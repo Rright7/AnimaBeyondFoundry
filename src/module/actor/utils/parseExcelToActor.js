@@ -6,6 +6,11 @@ import { INITIAL_MENTAL_PATTERN_DATA } from '../../types/psychic/MentalPatternIt
 import { importCombatEquipment } from './excelImporter/combatEquipment/index.js';
 import { importKiSkills } from './excelImporter/kiSkills/index.js';
 import { importTechniques } from './excelImporter/techniques/index.js';
+import {
+  findMartialArtByName,
+  getMartialArt,
+  GRADE_ES_TO_KEY
+} from '../../combat/martialArts/martialArtCatalog.js';
 
 /**
  * Parses excel data to actor data.
@@ -969,13 +974,27 @@ export const parseExcelToActor = async (excelData, actor, options = {}) => {
         .split('(')
         .map(value => value.trim())
         .filter(element => element !== '');
-      const grade = arteMarcialSeparada[1].replace(/[ \)]+/g, '');
+      const name = arteMarcialSeparada[0];
+      const gradeRaw = (arteMarcialSeparada[1] ?? '').replace(/[ \)]+/g, '');
+      const canonicalId = findMartialArtByName(name);
+      const gradeKey = GRADE_ES_TO_KEY[gradeRaw.toLowerCase()];
+      // Si resuelve contra el catalogo, item "engine-aware" con bonusInBase: el
+      // bono de combate y el CM YA estan en la HA/CM_final que importa el Excel,
+      // asi que el motor NO los re-suma (evita el doble conteo); solo muestra el
+      // detalle. Si no resuelve (homebrew), formato legacy (sin bonos).
+      const system =
+        canonicalId && gradeKey
+          ? {
+              canonicalId,
+              artType: getMartialArt(canonicalId).type,
+              grade: { value: gradeKey },
+              bonusInBase: true
+            }
+          : { grade: { value: gradeRaw } };
       await actor.createInnerItem({
-        name: arteMarcialSeparada[0],
+        name,
         type: ABFItems.MARTIAL_ART,
-        system: {
-          grade: { value: grade }
-        }
+        system
       });
     }
   }

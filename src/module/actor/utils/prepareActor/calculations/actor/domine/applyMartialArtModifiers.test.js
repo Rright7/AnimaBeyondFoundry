@@ -67,6 +67,21 @@ describe('applyMartialArtModifiers', () => {
     expect(data.general.modifiers.martialArtBonus.turn.value).toBe(20);
   });
 
+  it('arte importada (bonusInBase): el motor NO re-suma su bono ni su CM', () => {
+    const data = makeData([
+      {
+        name: 'Shotokan',
+        system: { canonicalId: 'shotokan', grade: { value: 'supreme' }, bonusInBase: true }
+      }
+    ]);
+    applyMartialArtModifiers(data);
+    const b = data.general.modifiers.martialArtBonus;
+    expect(b.attack.value).toBe(0); // ya esta en la HA importada
+    expect(b.cm.value).toBe(0);
+    // pero la vista se enriquece igual (se muestra en la ficha)
+    expect(data.domine.martialArts[0].system.computed.known).toBe(true);
+  });
+
   it('arte o grado desconocido se ignora', () => {
     const data = makeData([art('noexiste', 'base'), art('aikido', 'gradomalo')]);
     applyMartialArtModifiers(data);

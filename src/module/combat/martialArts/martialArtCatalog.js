@@ -32,6 +32,36 @@ export function getRequirements(id, grade) {
   return MARTIAL_ART_REQUIREMENTS?.[id]?.[grade] ?? '';
 }
 
+function normalizeName(s) {
+  return String(s || '')
+    .normalize('NFKD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+const NAME_TO_ID = (() => {
+  const map = new Map();
+  for (const id of MARTIAL_ART_IDS) {
+    const def = MARTIAL_ARTS[id];
+    if (def?.name) map.set(normalizeName(def.name), id);
+  }
+  return map;
+})();
+
+/** Resuelve un nombre de arte (p.ej. del Excel) a su canonicalId, o null. */
+export function findMartialArtByName(name) {
+  return NAME_TO_ID.get(normalizeName(name)) ?? null;
+}
+
+/** Grado del Excel (espanol) -> clave del catalogo. */
+export const GRADE_ES_TO_KEY = {
+  base: 'base',
+  avanzado: 'advanced',
+  supremo: 'supreme',
+  arcano: 'arcane'
+};
+
 /** Opciones de grado para el desplegable de la fila, segun el tipo de arte. */
 export function gradeOptionsFor(type, current) {
   const seq = MARTIAL_ART_GRADES[type] ?? [];

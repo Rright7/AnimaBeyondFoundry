@@ -53,6 +53,10 @@ export const applyMartialArtModifiers = (data, actor) => {
     // Vista de solo-lectura para la ficha (grado + bonos del catalogo).
     if (art?.system) art.system.computed = buildMartialArtView(art);
 
+    // Importado del Excel: el bono de combate y el CM YA estan en la HA/CM_final
+    // que trajo el importador; no re-sumar (evita doble conteo). Se muestra igual.
+    if (art?.system?.bonusInBase) continue;
+
     const resolved = resolveArt(art);
     if (!resolved) continue;
     const { g } = resolved;
