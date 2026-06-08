@@ -27,6 +27,13 @@ const primary = (actor, slug) =>
     num(foundry.utils.getProperty(actor, `system.characteristics.primaries.${slug}.value`))
   );
 
+const esc = s =>
+  String(s ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+
 export function openIntegrityCheckDialog({ attacker, defender }) {
   return new Promise(resolve => {
     const L = k => game.i18n.localize(k);
@@ -45,15 +52,15 @@ export function openIntegrityCheckDialog({ attacker, defender }) {
     const lblInteg = L('chat.combatResult.integrity.integrity');
 
     const attackerOpts = attackerWeapons
-      .map(w => `<option value="${w.id}">${w.name} — ${lblBreak} ${finalOf(w, 'breaking')}</option>`)
+      .map(w => `<option value="${w.id}">${esc(w.name)} — ${lblBreak} ${finalOf(w, 'breaking')}</option>`)
       .join('');
 
     const optGroup = (label, opts) => (opts ? `<optgroup label="${label}">${opts}</optgroup>` : '');
     const defWeaponOpts = defWeapons
-      .map(w => `<option value="weapon:${w.id}">${w.name} — ${lblInteg} ${finalOf(w, 'integrity')}</option>`)
+      .map(w => `<option value="weapon:${w.id}">${esc(w.name)} — ${lblInteg} ${finalOf(w, 'integrity')}</option>`)
       .join('');
     const defArmorOpts = defArmors
-      .map(a => `<option value="armor:${a.id}">${a.name} — ${lblInteg} ${finalOf(a, 'integrity')}</option>`)
+      .map(a => `<option value="armor:${a.id}">${esc(a.name)} — ${lblInteg} ${finalOf(a, 'integrity')}</option>`)
       .join('');
 
     const body = Math.max(primary(defender, 'constitution'), primary(defender, 'dexterity'));
@@ -122,6 +129,8 @@ export function openIntegrityCheckDialog({ attacker, defender }) {
         }
       ],
       rejectClose: false
-    }).catch(() => resolve(null));
+      // .finally asienta la Promise tanto al cerrar (wait resuelve con rejectClose:false)
+      // como tras pulsar boton (resolve ya llamado -> no-op). Evita el cuelgue al cerrar.
+    }).finally(() => resolve(null));
   });
 }

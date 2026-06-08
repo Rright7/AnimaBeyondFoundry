@@ -47,6 +47,10 @@ export function openCriticalRollDialog({ title, label, rollLabel, defaultMod = 0
         }
       ],
       rejectClose: false
-    }).catch(() => resolve(null));
+      // DialogV2.wait con rejectClose:false RESUELVE al cerrar (X/Escape), no
+      // rechaza -> .finally asienta la Promise externa tanto al cerrar como tras
+      // pulsar un boton (si ya resolvio, este resolve(null) es no-op). Sin esto
+      // el await del modificador se colgaba al cerrar.
+    }).finally(() => resolve(null));
   });
 }

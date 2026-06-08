@@ -93,10 +93,12 @@ export async function castSpellGrade(sheet, event) {
   // Economia de zeon: gasta (innato/preparado/acumulado) o bloquea si no llega.
   if (!actor.tryCastSpell(spell, grade)) return;
 
-  const baseMP = actor.system.mystic.magicProjection.imbalance.offensive.base.value;
-  const die = baseMP >= 200 ? '1d100xamastery' : '1d100xa';
+  const offensive = actor.system.mystic.magicProjection.imbalance.offensive;
+  // El umbral de maestria mira la base (>=200); la tirada usa el FINAL (con
+  // penalizadores de accion, etc.), como el ataque de arma y SpellAttackDialog.
+  const die = offensive.base.value >= 200 ? '1d100xamastery' : '1d100xa';
 
-  const roll = new ABFFoundryRoll(`${die} + ${baseMP} + ${mod}`, actor.system);
+  const roll = new ABFFoundryRoll(`${die} + ${offensive.final.value} + ${mod}`, actor.system);
   await roll.evaluate({ async: true });
 
   await roll.toMessage({

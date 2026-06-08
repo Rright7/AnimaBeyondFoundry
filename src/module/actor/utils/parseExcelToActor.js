@@ -150,45 +150,10 @@ export const parseExcelToActor = async (excelData, actor, options = {}) => {
     .map(value => value.trim())
     .filter(element => element !== '');
 
-  //Remove previous adventages
-  let previousAdventages = [];
-  actor.system.general.advantages.forEach(adventage => {
-    previousAdventages.push(adventage._id);
-  });
-
-  previousAdventages.forEach(async adventageId => {
-    await actor.deleteItem(adventageId);
-  });
-
-  //Remove previous disadventages
-  let previousDisadventages = [];
-  actor.system.general.disadvantages.forEach(disadvantage => {
-    previousDisadventages.push(disadvantage._id);
-  });
-
-  previousDisadventages.forEach(async disadventageId => {
-    await actor.deleteItem(disadventageId);
-  });
-
-  //Remove psi disciplines
-  let previousPsiDisciplines = [];
-  actor.system.psychic.psychicDisciplines.forEach(discipline => {
-    previousPsiDisciplines.push(discipline._id);
-  });
-
-  previousPsiDisciplines.forEach(async disciplineId => {
-    await actor.deleteItem(disciplineId);
-  });
-
-  //Remove psi patterns
-  let previousPsiPatterns = [];
-  actor.system.psychic.mentalPatterns.forEach(pattern => {
-    previousPsiPatterns.push(pattern._id);
-  });
-
-  previousPsiPatterns.forEach(async patternId => {
-    await actor.deleteItem(patternId);
-  });
+  // Re-importacion idempotente: limpia el actor (items embebidos + arrays de
+  // inner items) ANTES de recrear desde el Excel. Sin esto, re-importar una ficha
+  // existente duplicaba todo (armas, conjuros, Ki, artes marciales, etc.).
+  await actor.clearForReimport();
 
   await actor.update({
     name: excelData.Nombre,

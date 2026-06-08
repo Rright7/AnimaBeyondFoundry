@@ -38,13 +38,15 @@ export default class ABFCombat extends Combat {
       const actor = combatant?.actor;
       if (!actor) continue;
       actor.resetDefensesCounter();
-      actor.consumeMaintainedZeon();
+      // await: gasta el zeon de mantenimiento ANTES de accumulateZeon (que relee
+      // zeon.value). Sin await habia carrera de updates -> concentrado descuadrado.
+      await actor.consumeMaintainedZeon();
       // Ki: serializado con await sobre el mismo actor para evitar carreras de
       // update (mantenimiento de técnicas y acumulación por asalto persisten bien).
       await actor.consumeActiveTechniquesKi();
       await actor.accumulateKi();
       await actor.accumulateZeon();
-      actor.psychicShieldsMaintenance();
+      await actor.psychicShieldsMaintenance();
       // Desangramiento: 1 PV cada 20 asaltos mientras dure el sangrado.
       await tickBleeding(actor, 1);
       // Daño retrasado: aplica los daños que vencen en la ronda que se entra
@@ -62,11 +64,11 @@ export default class ABFCombat extends Combat {
     for (const combatant of this.combatants) {
       const actor = combatant?.actor;
       if (!actor) continue;
-      actor.consumeMaintainedZeon(true);
+      await actor.consumeMaintainedZeon(true);
       await actor.consumeActiveTechniquesKi(true);
       await actor.revertAccumulateKi();
       await actor.revertAccumulateZeon();
-      actor.psychicShieldsMaintenance(true);
+      await actor.psychicShieldsMaintenance(true);
     }
 
     return super.previousRound();

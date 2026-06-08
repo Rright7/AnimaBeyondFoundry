@@ -1052,6 +1052,30 @@ export class ABFActor extends Actor {
   }
 
   /**
+   * Limpia el actor para una RE-importacion idempotente: borra TODOS los items
+   * embebidos (createItem/createEmbeddedDocuments) y vacia los arrays de inner
+   * items (createInnerItem los APPENDEA). Sin esto, re-importar una ficha
+   * existente duplicaba armas, conjuros, habilidades de Ki, artes marciales, etc.
+   * Conserva el actor (id, token, permisos, notas) — solo resetea su contenido.
+   */
+  async clearForReimport() {
+    const ids = this.items.map(i => i.id);
+    if (ids.length) {
+      await this.deleteEmbeddedDocuments('Item', ids);
+    }
+
+    const reset = {};
+    for (const cfg of Object.values(ALL_ITEM_CONFIGURATIONS)) {
+      if (cfg?.isInternal && Array.isArray(cfg.fieldPath) && cfg.fieldPath.length) {
+        foundry.utils.setProperty(reset, ['system', ...cfg.fieldPath].join('.'), []);
+      }
+    }
+    if (Object.keys(reset).length) {
+      await this.update(reset);
+    }
+  }
+
+  /**
    *  @param {Object} data
    *  @param {import('../items/ABFItems').ABFItemsEnum} data.type
    *  @param {string} data.name

@@ -5,7 +5,7 @@ import { shieldValueCheck } from '../../../combat/utils/shieldValueCheck.js';
 import { openModDialog } from '../../../utils/dialogs/openSimpleInputDialog.js';
 import { getSnapshotTargets } from '../getSnapshotTargets.js';
 
-function _getBestEffectKey(effects, rolledValue) {
+export function getBestEffectKey(effects, rolledValue) {
   if (!effects) return null;
 
   const keys = Object.keys(effects)
@@ -155,7 +155,7 @@ export async function castPsychicPower(sheet, event) {
   const rolledValue = Number(roll.total ?? 0);
 
   const effects = power.system?.effects ?? {};
-  const difficultyKey = _getBestEffectKey(effects, rolledValue);
+  const difficultyKey = getBestEffectKey(effects, rolledValue);
 
   const effectData = difficultyKey ? effects?.[difficultyKey] : null;
   const effectText = effectData?.value ?? '';

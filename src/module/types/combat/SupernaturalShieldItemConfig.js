@@ -5,6 +5,7 @@ import { SpellGrades } from '../mystic/SpellItemConfig';
 import { ABFItemConfigFactory } from '../ABFItemConfig';
 import { ABFSupernaturalShieldData } from '../../combat/ABFSupernaturalShieldData.js';
 import { shieldValueCheck } from '../../combat/utils/shieldValueCheck.js';
+import { getBestEffectKey } from '../../actor/utils/buttonCallbacks/castPsychicPower.js';
 
 /**
  * Initial data for a new supernatural shield. Used to infer the type of the data inside `supernaturalShield.system`
@@ -114,7 +115,21 @@ export const SupernaturalShieldItemConfig = ABFItemConfigFactory({
           return;
         }
       }
-      actor.newSupernaturalShield('psychic', power, powerDifficulty);
+      // newSupernaturalShield acepta UN DTO (no la firma vieja de 3 args). Igual
+      // que castPsychicPower: el grado de dificultad (numero: rolled o el elegido
+      // 20..320) resuelve a la mejor clave de efecto -> shieldPoints.
+      const effects = power.system?.effects ?? {};
+      const difficultyKey = getBestEffectKey(effects, Number(powerDifficulty));
+      const effectData = difficultyKey ? effects[difficultyKey] : null;
+      const shieldPoints = Number(shieldValueCheck(effectData?.shieldPoints) ?? 0) || 0;
+      await actor.newSupernaturalShield(
+        ABFSupernaturalShieldData.builder()
+          .name(`${power.name} (${difficultyKey ?? powerDifficulty})`)
+          .shieldPoints(shieldPoints)
+          .abilityFormula('@psychic.psychicProjection.imbalance.defensive.base.value')
+          .flags({ animabf: { supernaturalShield: { type: 'psychic' } } })
+          .build()
+      );
     }
   }
 });
