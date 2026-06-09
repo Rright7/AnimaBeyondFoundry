@@ -959,8 +959,13 @@ Hooks.on('hotbarDrop', async (_bar, data, slot) => {
   const actor = item.parent;
   if (!actor) return; // No actor -> no macro
 
-  const creatorId = item.system?.hotbarMacroCreatorId;
-  if (!creatorId) return; // No reference -> do nothing (let Foundry default)
+  // Las armas crean SIEMPRE una macro de ataque, aunque el item no tenga el campo
+  // poblado: las del compendio/importadas llevan hotbarMacroCreatorId vacio y, sin
+  // este fallback por tipo, Foundry crearia por defecto una macro que abre la hoja
+  // (el bug). El campo sigue siendo un override valido para cualquier tipo de item.
+  const creatorId =
+    item.system?.hotbarMacroCreatorId || (item.type === 'weapon' ? 'weapon.attack' : '');
+  if (!creatorId) return; // Sin creador -> comportamiento por defecto de Foundry
 
   const creator = macroCreators[creatorId];
   if (typeof creator !== 'function') return; // Unknown id -> do nothing
