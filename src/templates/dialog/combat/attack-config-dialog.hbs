@@ -9,6 +9,12 @@
             inputValue=this.attacker.combat.modifier }}
       </div>
 
+      {{#if this.attacker.combat.counterBonus}}
+        <div class='columns'>
+          <label class='label'>{{localize 'macros.combat.dialog.counterBonus.title'}}: +{{this.attacker.combat.counterBonus}}</label>
+        </div>
+      {{/if}}
+
       {{#if this.attacker.kiInstant.length}}
         <div class='columns ki-instant-techniques'>
           <label class='label'>{{localize 'macros.combat.dialog.combatMod.kiTechnique.title'}} (instantáneas)</label>

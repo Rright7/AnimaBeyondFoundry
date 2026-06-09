@@ -49,14 +49,14 @@ describe('techniqueCombatBonus', () => {
         effect('aumento-de-dano', '+30')
       ]
     });
-    expect(techniqueCombatBonus(t)).toEqual({ attack: 50, block: 0, dodge: 40, damage: 30 });
+    expect(techniqueCombatBonus(t)).toEqual({ attack: 50, block: 0, dodge: 40, damage: 30, counterAttack: 0 });
   });
 
-  test('contraataque cuenta como ataque; ignora efectos no mapeados', () => {
+  test('contraataque va a su PROPIO stat counterAttack; ignora efectos no mapeados', () => {
     const t = technique({
       effects: [effect('habilidad-de-contraataque', '+25'), effect('ataque-con-area', '5m')]
     });
-    expect(techniqueCombatBonus(t)).toEqual({ attack: 25, block: 0, dodge: 0, damage: 0 });
+    expect(techniqueCombatBonus(t)).toEqual({ attack: 0, block: 0, dodge: 0, damage: 0, counterAttack: 25 });
   });
 
   test('separa porción persistente e instantánea de una técnica mixta', () => {
@@ -66,9 +66,9 @@ describe('techniqueCombatBonus', () => {
         effect('aumento-de-dano', '+30') // Tipo Acción
       ]
     });
-    expect(techniqueCombatBonus(t, 'persistent')).toEqual({ attack: 50, block: 0, dodge: 0, damage: 0 });
-    expect(techniqueCombatBonus(t, 'instant')).toEqual({ attack: 0, block: 0, dodge: 0, damage: 30 });
-    expect(techniqueCombatBonus(t, 'all')).toEqual({ attack: 50, block: 0, dodge: 0, damage: 30 });
+    expect(techniqueCombatBonus(t, 'persistent')).toEqual({ attack: 50, block: 0, dodge: 0, damage: 0, counterAttack: 0 });
+    expect(techniqueCombatBonus(t, 'instant')).toEqual({ attack: 0, block: 0, dodge: 0, damage: 30, counterAttack: 0 });
+    expect(techniqueCombatBonus(t, 'all')).toEqual({ attack: 50, block: 0, dodge: 0, damage: 30, counterAttack: 0 });
   });
 });
 
@@ -81,6 +81,14 @@ describe('activeTechniqueCombatBonuses', () => {
       technique({ id: 'b', active: false, effects: [mEffect('habilidad-de-ataque', 'maintained', '+100')] })
     ]);
     expect(activeTechniqueCombatBonuses(a).attack).toBe(40);
+  });
+
+  test('el bono solo-contraataque se pliega sobre attack SOLO si isCounterAttack', () => {
+    const a = actor([
+      technique({ id: 'c', active: true, effects: [mEffect('habilidad-de-contraataque', 'maintained', '+30')] })
+    ]);
+    expect(activeTechniqueCombatBonuses(a).attack).toBe(0); // ataque normal: no aplica
+    expect(activeTechniqueCombatBonuses(a, { isCounterAttack: true }).attack).toBe(30); // contra: pliega
   });
 });
 
@@ -156,6 +164,25 @@ describe('usableInstantCombatTechniques', () => {
     );
     const atk = usableInstantCombatTechniques(a, 'attack');
     expect(atk[0]).toMatchObject({ id: 'atk', attack: 50, kiCost: 0, hasEnoughKi: true, free: true });
+  });
+
+  test('una instantánea solo-contraataque se ofrece SOLO en modo contraataque (plegada en attack)', () => {
+    const a = actor(
+      [
+        technique({
+          id: 'co',
+          name: 'Contra',
+          effects: [effect('habilidad-de-contraataque', '+50')],
+          cost: { dexterity: { active: 4 } },
+          kiActiveTotal: 6
+        })
+      ],
+      { dexterity: 10 }
+    );
+    expect(usableInstantCombatTechniques(a, 'attack')).toEqual([]); // ataque normal: no se ofrece
+    const cc = usableInstantCombatTechniques(a, 'attack', { isCounterAttack: true });
+    expect(cc).toHaveLength(1);
+    expect(cc[0]).toMatchObject({ id: 'co', attack: 50, kiCost: 6, free: false });
   });
 
   test('hasEnoughKi=false si falta Ki concentrado', () => {

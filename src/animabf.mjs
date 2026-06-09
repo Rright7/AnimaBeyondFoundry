@@ -214,8 +214,39 @@ Hooks.once('ready', async () => {
       if (!msg) return;
 
       const animabf = msg.flags?.animabf ?? {};
+
+      // Auth: el emisor (p.userId) debe ser GM u owner del defensor o del atacante
+      // del resultado. El canal de socket no esta autenticado de origen, asi que
+      // esto evita que un cliente cualquiera falsee resultados de combate ajenos.
+      const emitter = p.userId ? game.users?.get(p.userId) : null;
+      const defActor = animabf.defender?.actorId
+        ? game.actors.get(animabf.defender.actorId)
+        : null;
+      const atkId = animabf.attacker?.actorId || animabf.attackData?.attackerId || '';
+      const atkActor = atkId ? game.actors.get(atkId) : null;
+      const OWNER = CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER;
+      const allowed =
+        !!emitter &&
+        (emitter.isGM ||
+          defActor?.testUserPermission(emitter, OWNER) ||
+          atkActor?.testUserPermission(emitter, OWNER));
+      if (!allowed) return;
+
+      // Whitelist de claves: solo estado de resolucion de critico y del contraataque,
+      // para que un patch no pueda inyectar campos arbitrarios del resultado (dano, etc).
+      const ALLOWED_KEYS = [
+        'counterAttackConsumed',
+        'isCritical', 'critResolved', 'critImmune', 'critImmuneReason', 'critPhase',
+        'critEffects', 'critLevel', 'critLevelRoll', 'critLevelRaw', 'critMod',
+        'phRoll', 'phBase', 'phMod', 'phTotal', 'phPassed', 'failureLevel',
+        'critLocation', 'critLocationRoll'
+      ];
+      const validPatch = Object.fromEntries(
+        Object.entries(p.patch ?? {}).filter(([k]) => ALLOWED_KEYS.includes(k))
+      );
+
       const current = animabf.result ?? {};
-      const updated = { ...current, ...(p.patch ?? {}) };
+      const updated = { ...current, ...validPatch };
 
       const { Templates } = await import('./module/utils/constants.js');
       const renderFn = foundry.applications?.handlebars?.renderTemplate ?? renderTemplate;

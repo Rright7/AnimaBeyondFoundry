@@ -2,6 +2,7 @@ import { ABFAttackData } from './ABFAttackData.js';
 import { ABFDefenseData } from './ABFDefenseData.js';
 import { ABFCombatResultData } from './ABFCombatResultData.js';
 import { resolveActorForRoll } from '../actor/utils/resolveActorForRoll.js';
+import { calculateCounterAttackBonus } from './utils/calculateCounterAttackBonus.js';
 
 /**
  * Computes a base combat result from the given attack and defense data.
@@ -32,11 +33,12 @@ export function computeCombatResult(attackData, defenseData) {
     attackData.canBeCounterAttacked !== false &&
     defenseData.canCounterAttack !== false;
 
-  const counterAttackMultiplier = 0.5; // TODO: source from defender if needed
-
-  // Round down to nearest multiple of 5
-  const rawBonus = hasCounterAttack ? -difference * counterAttackMultiplier : 0;
-  const counterAttackValue = Math.floor(rawBonus / 5) * 5;
+  // Bono de contraataque (RAW Core Exxet): la MITAD del margen Defensa-Ataque,
+  // redondeado a la baja en multiplos de 5, con tope +150. Fuente unica de verdad:
+  // calculateCounterAttackBonus (antes el 0.5 estaba inline y SIN aplicar el cap).
+  const counterAttackValue = hasCounterAttack
+    ? calculateCounterAttackBonus(attackTotal, defenseTotal)
+    : 0;
 
   let baseDamage = getFinalBaseDamage(attackData, defenseData);
   let finalArmor = getFinalArmor(attackData, defenseData);

@@ -24,12 +24,14 @@ function getTechniques(actor) {
  *  - 'persistent': solo efectos mantenidos/sostenidos (perduran mientras esté activa).
  *  - 'instant': solo efectos Tipo Acción (se aplican únicamente el turno de activación).
  *  - 'all': todos (por defecto; usado por las instantáneas puras).
+ * `counterAttack` es el bono que SOLO aplica al contraatacar (Habilidad de
+ * Contraataque); los callers lo pliegan sobre `attack` unicamente en ese contexto.
  * @param {object} technique
  * @param {'all'|'persistent'|'instant'} [mode]
- * @returns {{attack:number, block:number, dodge:number, damage:number}}
+ * @returns {{attack:number, block:number, dodge:number, damage:number, counterAttack:number}}
  */
 export function techniqueCombatBonus(technique, mode = 'all') {
-  const out = { attack: 0, block: 0, dodge: 0, damage: 0 };
+  const out = { attack: 0, block: 0, dodge: 0, damage: 0, counterAttack: 0 };
   const effects = technique?.system?.build?.effects;
   for (const row of Array.isArray(effects) ? effects : []) {
     const stat = COMBAT_BONUS_MAP[row?.effectId];
@@ -45,16 +47,35 @@ export function techniqueCombatBonus(technique, mode = 'all') {
 }
 
 /**
+ * Pliega el bono "solo-contraataque" sobre `attack` cuando la tirada ES un
+ * contraataque; si no, ese bono no cuenta (queda fuera de los ataques normales).
+ * @param {{attack:number, block:number, dodge:number, damage:number, counterAttack:number}} b
+ * @param {boolean} isCounterAttack
+ */
+function foldCounter(b, isCounterAttack) {
+  return {
+    attack: b.attack + (isCounterAttack ? b.counterAttack : 0),
+    block: b.block,
+    dodge: b.dodge,
+    damage: b.damage
+  };
+}
+
+/**
  * Suma de bonos de combate PERSISTENTES de las técnicas ACTIVAS del actor (auto).
  * Solo cuentan los efectos mantenidos/sostenidos: la porción Tipo Acción de una
  * técnica mixta NO se aplica aquí (solo el turno de activación, vía el diálogo).
+ * El bono "solo-contraataque" se pliega sobre `attack` unicamente si la tirada es
+ * un contraataque (opts.isCounterAttack); en un ataque normal no se aplica.
+ * @param {object} actor
+ * @param {{isCounterAttack?:boolean}} [opts]
  * @returns {{attack:number, block:number, dodge:number, damage:number}}
  */
-export function activeTechniqueCombatBonuses(actor) {
+export function activeTechniqueCombatBonuses(actor, { isCounterAttack = false } = {}) {
   const out = { attack: 0, block: 0, dodge: 0, damage: 0 };
   for (const technique of getTechniques(actor)) {
     if (!technique?.flags?.animabf?.active) continue;
-    const b = techniqueCombatBonus(technique, 'persistent');
+    const b = foldCounter(techniqueCombatBonus(technique, 'persistent'), isCounterAttack);
     out.attack += b.attack;
     out.block += b.block;
     out.dodge += b.dodge;
@@ -86,10 +107,14 @@ function isInstantTechnique(technique) {
  *  - Porción Tipo Acción de una técnica mantenida/mixta, SOLO el turno en que se
  *    activa (`flags.animabf.freshTurn`): ya pagada en la activación, así que es
  *    gratis (`free:true`, sin re-gastar Ki) y deja de ofrecerse al pasar el asalto.
+ * El bono "solo-contraataque" (Habilidad de Contraataque) solo se pliega sobre
+ * `attack` —y por tanto solo se ofrece el checkbox— cuando opts.isCounterAttack
+ * es true (es decir, en el diálogo abierto tras pulsar "Contraatacar").
  * @param {object} actor
  * @param {'attack'|'defense'} kind
+ * @param {{isCounterAttack?:boolean}} [opts]
  */
-export function usableInstantCombatTechniques(actor, kind) {
+export function usableInstantCombatTechniques(actor, kind, { isCounterAttack = false } = {}) {
   const relevant = kind === 'defense' ? ['block', 'dodge'] : ['attack', 'damage'];
   const concentrated = actorConcentrated(actor);
   const out = [];
@@ -100,7 +125,7 @@ export function usableInstantCombatTechniques(actor, kind) {
     if (!flags.active) {
       // Instantánea pura: todos sus efectos son Tipo Acción.
       if (!isInstantTechnique(technique)) continue;
-      const b = techniqueCombatBonus(technique, 'instant');
+      const b = foldCounter(techniqueCombatBonus(technique, 'instant'), isCounterAttack);
       if (!relevant.some(stat => b[stat])) continue;
       // Si ya está "en efecto este asalto" (botón Usar pulsado u otra tirada ya la
       // marcó), su Ki ya se gastó: reaplicarla este asalto es gratis (free).
@@ -119,7 +144,7 @@ export function usableInstantCombatTechniques(actor, kind) {
       });
     } else if (flags.freshTurn) {
       // Porción Tipo Acción de una técnica mixta, solo el turno de activación.
-      const b = techniqueCombatBonus(technique, 'instant');
+      const b = foldCounter(techniqueCombatBonus(technique, 'instant'), isCounterAttack);
       if (!relevant.some(stat => b[stat])) continue;
       out.push({
         id,

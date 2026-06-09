@@ -26,7 +26,7 @@ export class AttackConfigurationDialog extends FormApplication {
     this.render(true);
   }
 
-  static _buildInitialData({ attacker, weaponId, weapon, options = {}, targets, maneuverSlug, maneuverItemName, aimed, aimedZone, delayRounds, chooseTargets, chosenPenalty, causesDamage }) {
+  static _buildInitialData({ attacker, weaponId, weapon, options = {}, targets, maneuverSlug, maneuverItemName, aimed, aimedZone, delayRounds, chooseTargets, chosenPenalty, causesDamage, counterBonus, isCounterAttack }) {
     if (!attacker || !attacker.actor) {
       ui.notifications?.error('AttackConfigurationDialog: attacker is required');
       return { allowed: false };
@@ -70,6 +70,13 @@ export class AttackConfigurationDialog extends FormApplication {
         combat: {
           fatigueUsed: 0,
           modifier: 0,
+          // Contraataque: el bono de margen va en su PROPIO termino (no en el
+          // modificador editable, para no perderlo si el jugador edita ese campo).
+          // _sendAttack lo suma a la formula y lo desglosa en el flavor.
+          counterBonus: Number(counterBonus) || 0,
+          // Modo contraataque: habilita los bonos "solo-contraataque" (Habilidad de
+          // Contraataque) en auto (tecnicas activas) y en los checkbox (instantaneas).
+          isCounterAttack: !!isCounterAttack,
           unarmed:
             !resolvedWeapon && (attackerActor.system?.combat?.weapons?.length ?? 0) === 0,
           weaponUsed: resolvedWeapon?._id,
@@ -237,7 +244,9 @@ export class AttackConfigurationDialog extends FormApplication {
     // F6.3: tecnicas de Ki INSTANTANEAS ofrecibles para este ataque (gastan Ki
     // concentrado al marcarlas). Las ACTIVAS aplican su bono automaticamente en
     // el handler, no necesitan UI aqui.
-    attacker.kiInstant = usableInstantCombatTechniques(this.attackerActor, 'attack');
+    attacker.kiInstant = usableInstantCombatTechniques(this.attackerActor, 'attack', {
+      isCounterAttack: !!attacker.combat?.isCounterAttack
+    });
 
     this.modalData.config = ABFConfig;
     return this.modalData;
@@ -341,14 +350,18 @@ export class AttackConfigurationDialog extends FormApplication {
       // ── F6.3: Bonos de combate de Tecnicas de Ki ──────────────────────
       // Activas (mantenidas/sostenidas): su bono se aplica automaticamente.
       // Instantaneas marcadas en el dialogo: gastan Ki concentrado al usarse.
-      const kiAuto = activeTechniqueCombatBonuses(actor);
+      const kiAuto = activeTechniqueCombatBonuses(actor, {
+        isCounterAttack: !!combat.isCounterAttack
+      });
       let kiAttackBonus = Number(kiAuto.attack) || 0;
       let kiDamageBonus = Number(kiAuto.damage) || 0;
       const kiAppliedBy = [];
       if (kiAuto.attack || kiAuto.damage) kiAppliedBy.push('activa');
 
       const kiInstantSel = combat.kiInstant ?? {};
-      const kiInstantList = usableInstantCombatTechniques(actor, 'attack');
+      const kiInstantList = usableInstantCombatTechniques(actor, 'attack', {
+        isCounterAttack: !!combat.isCounterAttack
+      });
       for (const tech of kiInstantList) {
         if (kiInstantSel[tech.id] !== true) continue;
         // `free` = porción Tipo Acción de una mantenida ya pagada al activar: no re-gasta Ki.
@@ -379,6 +392,7 @@ export class AttackConfigurationDialog extends FormApplication {
 
       const mod =
         Number(combat.modifier ?? 0)
+        + Number(combat.counterBonus ?? 0)
         + maneuverPenalty
         + aimedPenalty
         + secondaryCritPenalty
@@ -414,6 +428,11 @@ export class AttackConfigurationDialog extends FormApplication {
       // chat message shows where each modifier came from (similar to the AE
       // breakdown line in the actor flow).
       const dialogContribs = [];
+      if (Number(combat.counterBonus) > 0) {
+        dialogContribs.push(
+          `${game.i18n.localize('macros.combat.dialog.counterBonus.title')} (+${Number(combat.counterBonus)})`
+        );
+      }
       if (maneuverPenalty !== 0 && this.modalData.maneuver?.itemName) {
         const sign = maneuverPenalty > 0 ? '+' : '';
         const qualityTag = maneuverAppliedBy.length ? ` [${maneuverAppliedBy.join(', ')}]` : '';

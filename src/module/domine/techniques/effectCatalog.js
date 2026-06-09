@@ -97,8 +97,9 @@ export const PERSISTENT_EFFECT_MAP = {
 /**
  * Efectos de combate cuyo resultado es un bono numérico PLANO (+N) a una tirada
  * o al daño, para inyectarlos en los diálogos de ataque/defensa (F6.3).
- * `target` ∈ 'attack' | 'block' | 'dodge' | 'damage'. (Contraataque se trata como
- * ataque.) El valor sale de parseOptionNumber sobre las opciones elegidas.
+ * `target` ∈ 'attack' | 'block' | 'dodge' | 'damage' | 'counterAttack'. El
+ * contraataque ('habilidad-de-contraataque') es su PROPIO stat: solo aplica al
+ * contraatacar (no a un ataque normal). El valor sale de parseOptionNumber.
  *
  * Quedan fuera a propósito: maniobras/penalizadores (-N), predeterminados
  * (dificultad), potenciar-crítico (tirada de crítico), multiplicadores, ataques/
@@ -107,7 +108,7 @@ export const PERSISTENT_EFFECT_MAP = {
 export const COMBAT_BONUS_MAP = {
   'habilidad-de-ataque': 'attack',
   'habilidad-de-ataque-completa': 'attack',
-  'habilidad-de-contraataque': 'attack',
+  'habilidad-de-contraataque': 'counterAttack',
   'habilidad-de-parada': 'block',
   'habilidad-de-parada-completa': 'block',
   'habilidad-de-parada-limitada': 'block',

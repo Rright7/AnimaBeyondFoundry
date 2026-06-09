@@ -529,8 +529,12 @@ export class DefenseConfigurationDialog extends FormApplication {
           0
       );
 
+      // counterAttackConsumed: estado del boton "Contraatacar" del chat (motor de
+      // contraataques). Arranca en false; el handler lo marca true al lanzarse.
+      const resultForChat = { ...combatResult, damageFinal, counterAttackConsumed: false };
+
       const content = await (foundry.applications?.handlebars?.renderTemplate ?? renderTemplate)(Templates.Chat.CombatResult, {
-        combatResult: { ...combatResult, damageFinal },
+        combatResult: resultForChat,
         defenderId: actor.id,
         defenderTokenId: defender?.token?.id ?? ''
       });
@@ -542,7 +546,7 @@ export class DefenseConfigurationDialog extends FormApplication {
         flags: {
           animabf: {
             kind: 'combatResult',
-            result: { ...combatResult, damageFinal },
+            result: resultForChat,
             // Persist the aimed flag so the critical resolver can skip the
             // location roll when the attack was aimed. Also persist
             // maneuverWasUnarmed so the relational-grapple flag setter
