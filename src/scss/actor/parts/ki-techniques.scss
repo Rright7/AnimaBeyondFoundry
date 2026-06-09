@@ -510,6 +510,13 @@
         border-color: #b23b3b;
         color: #b23b3b;
       }
+
+      // Instantánea "en efecto este asalto": relleno acento para que se note que
+      // está aplicando ahora; vuelve a «Usar» normal cuando pasa el asalto.
+      .technique-use--used {
+        background: var(--abf-accent, #6b4f9e);
+        color: #fff;
+      }
     }
   }
 }

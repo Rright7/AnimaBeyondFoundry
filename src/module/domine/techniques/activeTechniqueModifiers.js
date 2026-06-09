@@ -1,4 +1,4 @@
-import { PERSISTENT_EFFECT_MAP, parseOptionNumber } from './effectCatalog';
+import { PERSISTENT_EFFECT_MAP, parseOptionNumber, isPersistentEffect } from './effectCatalog';
 
 // Auto-aplicación de efectos persistentes de Técnicas de Ki (F6 entrega 2).
 // Una técnica con flags.animabf.active aporta sus bonos mecánico-limpios a la
@@ -18,6 +18,7 @@ export function techniquePersistentBonuses(effects) {
   for (const row of Array.isArray(effects) ? effects : []) {
     const map = PERSISTENT_EFFECT_MAP[row?.effectId];
     if (!map) continue;
+    if (!isPersistentEffect(row)) continue; // Tipo Acción: no persiste mientras está activa
 
     const options = Array.isArray(row.tierOptions) ? row.tierOptions : [];
     const value = options.reduce((sum, opt) => sum + parseOptionNumber(opt), 0);

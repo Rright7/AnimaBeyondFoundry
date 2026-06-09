@@ -129,4 +129,15 @@ export const parseOptionNumber = option => {
   return m ? Number(m[0]) : 0;
 };
 
+/** Modos de mantenimiento que hacen PERDURAR un efecto tras el turno de activación. */
+const PERSISTENT_MAINT_MODES = new Set(['maintained', 'sustainMinor', 'sustainMajor']);
+
+/**
+ * True si el efecto PERDURA (mantenido o sostenido); false si es Tipo Acción
+ * (instantáneo: `maintMode` 'none' o ausente). Permite separar, dentro de una
+ * misma técnica, qué efectos siguen aplicándose tras el turno en que se activa.
+ * @param {{maintMode?:string}} row
+ */
+export const isPersistentEffect = row => PERSISTENT_MAINT_MODES.has(row?.maintMode);
+
 export { EFFECT_CATALOG, DISADVANTAGE_CATALOG };

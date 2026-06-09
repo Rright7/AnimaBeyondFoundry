@@ -16,7 +16,7 @@
             <label class='ki-instant-row{{#unless tech.hasEnoughKi}} ki-instant-row--noki{{/unless}}'>
               <input type="checkbox" name="attacker.combat.kiInstant.{{tech.id}}"
                 {{#if (is 'eq' (lookup @root.attacker.combat.kiInstant tech.id) true)}}checked{{/if}}>
-              <span>{{tech.name}}{{#if tech.attack}} · At +{{tech.attack}}{{/if}}{{#if tech.damage}} · Daño +{{tech.damage}}{{/if}} · Ki {{tech.kiCost}}{{#unless tech.hasEnoughKi}} ⚠{{/unless}}</span>
+              <span>{{tech.name}}{{#if tech.attack}} · At +{{tech.attack}}{{/if}}{{#if tech.damage}} · Daño +{{tech.damage}}{{/if}}{{#if tech.free}} · este turno{{else}} · Ki {{tech.kiCost}}{{/if}}{{#unless tech.hasEnoughKi}} ⚠{{/unless}}</span>
             </label>
           {{/each}}
         </div>
@@ -65,6 +65,8 @@
             <option value='{{o.value}}' {{#if o.selected}}selected{{/if}}>{{o.label}}</option>
           {{/each}}
         {{/'systems/animabf/templates/common/ui/custom-select.hbs'}}
+      {{else}}
+        <p class='label no-fatigue'>{{localize 'macros.combat.dialog.notEnoughFatigue.title'}}</p>
       {{/if}}
 
       {{#if this.attacker.combat.weapon}}

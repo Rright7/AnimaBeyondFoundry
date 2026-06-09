@@ -1,6 +1,6 @@
 import { Templates } from '../utils/constants';
 import { ABFConfig } from '../ABFConfig';
-import { getAimedPenalty } from '../combat/criticalTables.js';
+import { getAimedPenalty, getAimedZones } from '../combat/criticalTables.js';
 import { composeAimedPenalty } from '../equipment/qualities/composeWeaponEffects.js';
 import { resolveManeuverAttackPenalty } from '../combat/maneuvers/resolveManeuverPenalty.js';
 import { ABFAttackData } from '../combat/ABFAttackData';
@@ -148,6 +148,14 @@ export class AttackConfigurationDialog extends FormApplication {
 
     const { weapons } = this.attackerActor.system.combat;
     const combat = attacker.combat;
+
+    // Apuntado: si esta activo pero aun no se ha tocado el desplegable, el <select>
+    // muestra la PRIMERA zona (la de mayor penalizador) pero combat.aimedZone sigue
+    // vacio, asi que el penalizador no se aplicaba (bug del "ojo", primera opcion).
+    // Commitea la zona mostrada para que coincida lo visto con lo aplicado.
+    if (combat.aimed && !combat.aimedZone) {
+      combat.aimedZone = getAimedZones()[0]?.id ?? '';
+    }
 
     // Expose the full weapon list so the template can render a picker when the
     // weapon is not locked (e.g. a maneuver, where any weapon may be used).
@@ -343,7 +351,8 @@ export class AttackConfigurationDialog extends FormApplication {
       const kiInstantList = usableInstantCombatTechniques(actor, 'attack');
       for (const tech of kiInstantList) {
         if (kiInstantSel[tech.id] !== true) continue;
-        const ok = await actor.useTechnique(tech.id);
+        // `free` = porción Tipo Acción de una mantenida ya pagada al activar: no re-gasta Ki.
+        const ok = tech.free ? true : await actor.useTechnique(tech.id);
         if (!ok) continue;
         kiAttackBonus += Number(tech.attack) || 0;
         kiDamageBonus += Number(tech.damage) || 0;

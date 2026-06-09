@@ -422,6 +422,17 @@ export default class ABFActorSheet extends ActorSheetV1 {
 
       this._pendingUpdate[el.name] = value;
       this._flushPendingUpdate();
+
+      // Feedback al equipar/desequipar un arma o armadura (accion silenciosa).
+      const equipMatch = String(el.name).match(
+        /^system\.dynamic\.(weapons|armors)\.([^.]+)\.system\.equipped\.value$/
+      );
+      if (equipMatch) {
+        const item = this.actor.items.get(equipMatch[2]);
+        if (item) {
+          ui.notifications?.info(`«${item.name}» ${value ? 'equipada' : 'desequipada'}.`);
+        }
+      }
     });
   }
 

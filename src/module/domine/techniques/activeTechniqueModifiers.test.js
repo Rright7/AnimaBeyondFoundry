@@ -3,7 +3,10 @@ import {
   activeTechniqueModifiers
 } from './activeTechniqueModifiers.js';
 
-const effect = (effectId, ...tierOptions) => ({ effectId, tierOptions });
+// Por defecto los efectos de prueba PERDURAN (mantenidos): es el caso normal de
+// Capacidad Incrementada / Resistencias, que se auto-aplican mientras la técnica
+// está activa. Los Tipo Acción (maintMode 'none') ya no persisten (test aparte).
+const effect = (effectId, ...tierOptions) => ({ effectId, maintMode: 'maintained', tierOptions });
 
 const technique = ({ active = true, effects = [] } = {}) => ({
   flags: { animabf: { active } },
@@ -37,6 +40,13 @@ describe('techniquePersistentBonuses', () => {
   test('unmapped effect (combat) is ignored — stays narrative', () => {
     const b = techniquePersistentBonuses([effect('habilidad-de-ataque', '+50')]);
     expect(b).toEqual({ characteristics: {}, kiBonusEffects: [] });
+  });
+
+  test('Tipo Acción (no mantenido) NO persiste: se omite aunque esté mapeado', () => {
+    const b = techniquePersistentBonuses([
+      { effectId: 'capacidad-incrementada-agi', maintMode: 'none', tierOptions: ['+5'] }
+    ]);
+    expect(b.characteristics).toEqual({});
   });
 
   test('FUE and DES map to strength/dexterity', () => {

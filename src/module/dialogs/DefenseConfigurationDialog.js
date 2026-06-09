@@ -425,7 +425,8 @@ export class DefenseConfigurationDialog extends FormApplication {
           if (kiInstantSel[tech.id] !== true) continue;
           const stat = type === 'block' ? Number(tech.block) || 0 : Number(tech.dodge) || 0;
           if (!stat) continue;
-          const ok = await actor.useTechnique(tech.id);
+          // `free` = porción Tipo Acción de una mantenida ya pagada al activar: no re-gasta Ki.
+          const ok = tech.free ? true : await actor.useTechnique(tech.id);
           if (!ok) continue;
           kiDefenseBonus += stat;
           kiAppliedBy.push(tech.name);

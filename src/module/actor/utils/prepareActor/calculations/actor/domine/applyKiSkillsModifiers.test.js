@@ -66,9 +66,11 @@ describe('applyKiSkillsModifiers — resistances, barrier and dynamic values', (
 });
 
 describe('applyKiSkillsModifiers — active Ki techniques', () => {
+  // Los efectos de resistencia de una técnica activa PERDURAN (mantenidos): es el
+  // caso normal (Coraza de Ki, etc.). Un Tipo Acción ya no se auto-aplicaría.
   const technique = (active, effects) => ({
     flags: { animabf: { active } },
-    system: { build: { effects } }
+    system: { build: { effects: effects.map(e => ({ maintMode: 'maintained', ...e })) } }
   });
 
   test('active technique raises the physical resistance bucket', () => {
@@ -114,7 +116,7 @@ describe('applyKiSkillsModifiers — active Ki techniques', () => {
         flags: { animabf: { active: true } },
         system: {
           build: {
-            effects: [{ effectId: 'incremento-de-resistencia-magica', tierOptions: ['+50 RM'] }]
+            effects: [{ effectId: 'incremento-de-resistencia-magica', maintMode: 'maintained', tierOptions: ['+50 RM'] }]
           }
         }
       }
@@ -155,7 +157,7 @@ describe('applyKiSkillsModifiers — traza (provenance) de habilidades de Ki', (
         flags: { animabf: { active: true } },
         system: {
           build: {
-            effects: [{ effectId: 'incremento-de-resistencia-fisica', tierOptions: ['+50 RF'] }]
+            effects: [{ effectId: 'incremento-de-resistencia-fisica', maintMode: 'maintained', tierOptions: ['+50 RF'] }]
           }
         }
       }
