@@ -479,35 +479,26 @@ export class ABFActor extends Actor {
    * @param {import('../types/mystic/SpellItemConfig.js').SpellCasting} spellCasting - - An object that contains information about the zeon
    * points, whether the spell can be cast (prepared or innate), if the spell has been casted,
    * and whether the casting rules should be overridden.
-   * @returns {boolean} - A boolean value indicating whether the spell can be cast or not.
+   * @returns {false} Permisivo: SIEMPRE devuelve false (nunca bloquea el lanzamiento);
+   * solo emite el aviso que corresponda. El caller decide a la vista del aviso.
    */
   evaluateCast(spellCasting) {
     const { i18n } = game;
     const { canCast, casted, zeon, override } = spellCasting;
-    if (override) {
-      return false;
-    }
+    if (override) return false;
+    // Permisivo (preferencia de la mesa): avisamos claro segun el caso pero NUNCA
+    // bloqueamos el lanzamiento. El gasto posterior (mysticCast / consumeAccumulatedZeon)
+    // tiene suelo 0; decide el jugador/DJ a la vista del aviso. Por eso siempre false.
     if (canCast.innate && casted.innate && canCast.prepared && casted.prepared) {
       ui.notifications.warn(i18n.localize('dialogs.spellCasting.warning.mustChoose'));
-      return true;
-    }
-    if (canCast.innate && casted.innate) {
-      return;
     } else if (!canCast.innate && casted.innate) {
       ui.notifications.warn(i18n.localize('dialogs.spellCasting.warning.innateMagic'));
-      return true;
-    } else if (canCast.prepared && casted.prepared) {
-      return false;
     } else if (!canCast.prepared && casted.prepared) {
-      return ui.notifications.warn(
-        i18n.localize('dialogs.spellCasting.warning.preparedSpell')
-      );
-    } else if (zeon.accumulated < zeon.cost) {
-      ui.notifications.warn(
-        i18n.localize('dialogs.spellCasting.warning.zeonAccumulated')
-      );
-      return true;
-    } else return false;
+      ui.notifications.warn(i18n.localize('dialogs.spellCasting.warning.preparedSpell'));
+    } else if (!casted.innate && !casted.prepared && zeon.accumulated < zeon.cost) {
+      ui.notifications.warn(i18n.localize('dialogs.spellCasting.warning.zeonAccumulated'));
+    }
+    return false;
   }
 
   /**
@@ -538,7 +529,9 @@ export class ABFActor extends Actor {
    * @param {number} zeonCost The amount of zeon to be consumed.
    */
   consumeAccumulatedZeon(zeonCost) {
-    const newAccumulateZeon = this.system.mystic.zeon.accumulated - zeonCost;
+    // Suelo 0: en modo permisivo el lanzamiento no se bloquea aunque falte zeon
+    // acumulado; se descuenta lo que haya, sin bajar de 0.
+    const newAccumulateZeon = Math.max(0, (this.system.mystic.zeon.accumulated ?? 0) - zeonCost);
 
     this.update({
       system: {
@@ -566,13 +559,13 @@ export class ABFActor extends Actor {
     const intel = this.system?.characteristics?.primaries?.intelligence;
     const intelligence = Number(intel?.final?.value ?? intel?.value) || 0;
     if (intRequired > 0 && intelligence < intRequired) {
+      // Permisivo: avisa pero NO bloquea (antes return false).
       ui.notifications?.warn(
         game.i18n.format('dialogs.spellCasting.warning.intRequired', {
           required: intRequired,
           current: intelligence
         })
       );
-      return false;
     }
     const spellCasting = this.mysticCanCastEvaluate(spell, spellGrade);
     if (spellCasting.canCast.innate) spellCasting.casted.innate = true;
@@ -710,8 +703,9 @@ export class ABFActor extends Actor {
 
   /**
    * Gasta el coste activo de una técnica del Ki CONCENTRADO (por característica)
-   * y de la reserva total. Si falta concentración, avisa y NO gasta (devuelve false).
-   * El mantenimiento NO pasa por aquí: es innato (directo de la reserva).
+   * y de la reserva total. Permisivo: si falta concentración avisa claro pero gasta
+   * lo que haya (suelo 0) sin bloquear; solo devuelve false si el coste no está
+   * calculado (técnica sin preparar). El mantenimiento NO pasa por aquí.
    * @param {ABFActor['items'] extends Map<string, infer I> ? I : any} technique
    * @returns {Promise<boolean>}
    */
@@ -735,10 +729,11 @@ export class ABFActor extends Actor {
       const detail = short
         .map(s => `${KI_CHAR_LABELS[s.char] ?? s.char} ${s.have}/${s.need}`)
         .join(', ');
+      // Permisivo: avisa claro pero NO bloquea (antes return false); el gasto de
+      // abajo (concentrado + reserva) ya tiene suelo 0.
       ui.notifications?.warn(
         `Ki concentrado insuficiente para «${technique.name}»: ${detail}. Activa «Cargar Ki».`
       );
-      return false;
     }
 
     const update = {};
