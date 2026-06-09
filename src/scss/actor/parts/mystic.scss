@@ -334,7 +334,17 @@
     .spells {
       & > .group-body {
         display: flex;
-        flex-wrap: wrap;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .spell-via-group {
+        width: 100%;
+
+        & > .group-body {
+          display: flex;
+          flex-wrap: wrap;
+        }
       }
 
       .spell-row {
