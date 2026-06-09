@@ -296,6 +296,7 @@
   "anima.ui.importDataFromExcelTitle": "Import Data: {name}",
   "anima.ui.importDataFromExcelWarning": "Incompatible excel version, please try with one of the following ",
   "anima.ui.excelImporter.combatEquipment.notifSummary": "Equipment imported: {weapons} weapons, {ammo} ammo, {armors} armors.",
+  "anima.ui.excelImporter.spells.notifSummary": "{count} spells imported from the Excel.",
   "anima.ui.excelImporter.combatEquipment.notifNotFound": "{type} '{name}' not found in the compendium. Created with Excel data instead.",
   "anima.ui.excelImporter.combatEquipment.notifNotExcel": "This Excel does not look like a standard Anima sheet. Missing key references (Tabla_Combate or Armor header).",
   "anima.ui.excelImporter.combatEquipment.typeWeapon": "Weapon",

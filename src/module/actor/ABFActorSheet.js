@@ -27,6 +27,7 @@ import {
   ensureLinkedEffectForItem,
   findEffectByItemOrigin
 } from './utils/ensureLinkedEffectForItem.js';
+import { syncViaSpells } from './utils/syncViaSpells.js';
 
 /** @typedef {import('./constants').TActorData} TData */
 /** @typedef {typeof FormApplication<FormApplicationOptions, TData, TData>} TFormApplication */
@@ -239,6 +240,26 @@ export default class ABFActorSheet extends ActorSheetV1 {
     this._activateEffectControls(html);
     this._activateCombatManeuverSearch(html);
     this._activateKiTechniquesListeners(html);
+    this._activateSphereSpellSync(html);
+  }
+
+  // Esferas de Magia: al cambiar el nivel de una vía, sincroniza el grimorio
+  // (añade/quita los hechizos de esa vía según el nuevo nivel).
+  _activateSphereSpellSync(html) {
+    const root = html[0] ?? html;
+    if (!root) return;
+
+    root.querySelectorAll('.sphere-value').forEach(input => {
+      input.addEventListener('change', async ev => {
+        const name = ev.currentTarget.name ?? '';
+        const via = name.match(/spheres\.([^.]+)\.value/)?.[1];
+        if (!via) return;
+        // Vaciar el campo no debe arrasar la vía; un 0 explícito sí.
+        const raw = String(ev.currentTarget.value ?? '').trim();
+        if (raw === '') return;
+        await syncViaSpells(this.actor, via, Number(raw) || 0);
+      });
+    });
   }
 
   // Constructor de Técnicas de Ki dentro de la pestaña: cada control lleva (o
