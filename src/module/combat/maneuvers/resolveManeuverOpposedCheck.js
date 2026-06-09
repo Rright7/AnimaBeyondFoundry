@@ -62,7 +62,15 @@ export async function resolveManeuverOpposedCheck(msg) {
     resolveActorFromRef(flags.defenderTokenUuid) ??
     resolveActorFromRef(flags.defenderId);
 
-  const difference = flags.attackerRoll.total - flags.defenderRoll.total;
+  // Artes Marciales: bono a los chequeos enfrentados de la maniobra (Kardad
+  // defensivo; Melkaiah/Emp/Aikido ofensivo). Se suma al total del lado que aplique.
+  const { martialArtOpposedCheckBonus } = await import(
+    '../martialArts/martialArtSpecials.js'
+  );
+  const atkMaBonus = martialArtOpposedCheckBonus(attackerActor, flags.maneuverSlug, 'attacker');
+  const defMaBonus = martialArtOpposedCheckBonus(defenderActor, flags.maneuverSlug, 'defender');
+  const difference =
+    flags.attackerRoll.total + atkMaBonus - (flags.defenderRoll.total + defMaBonus);
   const attackerWins = difference > 0;
 
   const effects = def.resolveEffects({
@@ -160,9 +168,16 @@ export async function resolveManeuverOpposedCheck(msg) {
     ? `Aplicado: ${appliedNames.join(' · ')}`
     : '';
 
-  const winnerText = attackerWins
-    ? `<strong>${attackerActor?.name ?? 'Atacante'} gana por ${Math.abs(difference)}</strong>`
-    : `<strong>${defenderActor?.name ?? 'Defensor'} resiste</strong>`;
+  const maParts = [];
+  if (atkMaBonus) maParts.push(`AM atacante +${atkMaBonus}`);
+  if (defMaBonus) maParts.push(`AM defensor +${defMaBonus}`);
+  const maNote = maParts.length
+    ? ` <span style="opacity:.7">(${maParts.join(', ')})</span>`
+    : '';
+  const winnerText =
+    (attackerWins
+      ? `<strong>${attackerActor?.name ?? 'Atacante'} gana por ${Math.abs(difference)}</strong>`
+      : `<strong>${defenderActor?.name ?? 'Defensor'} resiste</strong>`) + maNote;
 
   const resolution = {
     attackerWins,

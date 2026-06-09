@@ -3,6 +3,7 @@ import { ABFDefenseData } from './ABFDefenseData.js';
 import { ABFCombatResultData } from './ABFCombatResultData.js';
 import { resolveActorForRoll } from '../actor/utils/resolveActorForRoll.js';
 import { calculateCounterAttackBonus } from './utils/calculateCounterAttackBonus.js';
+import { martialArtSpecialEffects } from './martialArts/martialArtSpecials.js';
 
 /**
  * Computes a base combat result from the given attack and defense data.
@@ -34,10 +35,14 @@ export function computeCombatResult(attackData, defenseData) {
     defenseData.canCounterAttack !== false;
 
   // Bono de contraataque (RAW Core Exxet): la MITAD del margen Defensa-Ataque,
-  // redondeado a la baja en multiplos de 5, con tope +150. Fuente unica de verdad:
-  // calculateCounterAttackBonus (antes el 0.5 estaba inline y SIN aplicar el cap).
+  // redondeado a la baja en multiplos de 5, con tope +150. Las Artes Marciales del
+  // DEFENSOR lo modifican antes del tope: Selene dobla (multiplier), Boxeo suma +10 (flat).
+  const ma = hasCounterAttack ? martialArtSpecialEffects(defenderActor) : null;
   const counterAttackValue = hasCounterAttack
-    ? calculateCounterAttackBonus(attackTotal, defenseTotal)
+    ? calculateCounterAttackBonus(attackTotal, defenseTotal, {
+        multiplier: ma?.counterAttackMultiplier || 1,
+        flat: ma?.counterAttackBonus || 0
+      })
     : 0;
 
   let baseDamage = getFinalBaseDamage(attackData, defenseData);

@@ -26,7 +26,7 @@ export class AttackConfigurationDialog extends FormApplication {
     this.render(true);
   }
 
-  static _buildInitialData({ attacker, weaponId, weapon, options = {}, targets, maneuverSlug, maneuverItemName, aimed, aimedZone, delayRounds, chooseTargets, chosenPenalty, causesDamage, counterBonus, isCounterAttack }) {
+  static _buildInitialData({ attacker, weaponId, weapon, options = {}, targets, maneuverSlug, maneuverItemName, aimed, aimedZone, delayRounds, chooseTargets, chosenPenalty, causesDamage, counterBonus, counterDamageBonus, isCounterAttack }) {
     if (!attacker || !attacker.actor) {
       ui.notifications?.error('AttackConfigurationDialog: attacker is required');
       return { allowed: false };
@@ -74,6 +74,9 @@ export class AttackConfigurationDialog extends FormApplication {
           // modificador editable, para no perderlo si el jugador edita ese campo).
           // _sendAttack lo suma a la formula y lo desglosa en el flavor.
           counterBonus: Number(counterBonus) || 0,
+          // Daño extra de contraataque por Arte Marcial (Aikido: N x mod FUE del
+          // agresor). Termino propio, se suma al daño en _sendAttack y se desglosa.
+          counterDamageBonus: Number(counterDamageBonus) || 0,
           // Modo contraataque: habilita los bonos "solo-contraataque" (Habilidad de
           // Contraataque) en auto (tecnicas activas) y en los checkbox (instantaneas).
           isCounterAttack: !!isCounterAttack,
@@ -287,7 +290,8 @@ export class AttackConfigurationDialog extends FormApplication {
           weapon,
           aimed: !!combat.aimed,
           aimedZone: combat.aimedZone,
-          actor
+          actor,
+          isCounterAttack: !!combat.isCounterAttack
         });
         maneuverPenalty = resolved.penalty;
         maneuverAppliedBy = resolved.appliedBy;
@@ -433,6 +437,11 @@ export class AttackConfigurationDialog extends FormApplication {
           `${game.i18n.localize('macros.combat.dialog.counterBonus.title')} (+${Number(combat.counterBonus)})`
         );
       }
+      if (Number(combat.counterDamageBonus) > 0) {
+        dialogContribs.push(
+          `${game.i18n.localize('macros.combat.dialog.counterDamageBonus.title')} (+${Number(combat.counterDamageBonus)})`
+        );
+      }
       if (maneuverPenalty !== 0 && this.modalData.maneuver?.itemName) {
         const sign = maneuverPenalty > 0 ? '+' : '';
         const qualityTag = maneuverAppliedBy.length ? ` [${maneuverAppliedBy.join(', ')}]` : '';
@@ -488,7 +497,8 @@ export class AttackConfigurationDialog extends FormApplication {
             0,
             Number(combat.damage?.final ?? weapon.system.damage?.final?.value ?? 0) +
               (this.modalData.maneuver?.damageDelta ?? 0) +
-              kiDamageBonus
+              kiDamageBonus +
+              (Number(combat.counterDamageBonus) || 0)
           ) * (this.modalData.maneuver?.damageMultiplier ?? 1)
         )
         .ignoreArmor(!!weapon.system.ignoreArmor?.value)

@@ -1,5 +1,6 @@
 import { AttackConfigurationDialog } from '../../module/dialogs/AttackConfigurationDialog';
 import { Templates } from '../../module/utils/constants.js';
+import { martialArtSpecialEffects } from '../../module/combat/martialArts/martialArtSpecials.js';
 
 // Mensajes en proceso (anti doble-click en el mismo cliente, antes de que la marca
 // de "consumido" persista; la guardia por flag cubre el resto).
@@ -81,11 +82,21 @@ export default async function counterAttackActionHandler(message, html, dataset)
 
     const bonus = Number(result.counterAttackValue) || 0;
 
+    // Daño extra de contraataque por Arte Marcial del defensor (Aikido: N x mod FUE
+    // del AGRESOR original). N sale del descriptor; el mod FUE, del agresor.
+    const defSpecials = martialArtSpecialEffects(defenderToken.actor);
+    const attackerActor =
+      attackerToken?.actor ?? (atkActorId ? game.actors.get(atkActorId) : null);
+    const atkStrMod =
+      Number(attackerActor?.system?.characteristics?.primaries?.strength?.mod?.value ?? 0) || 0;
+    const counterDamageBonus = (defSpecials.counterDamageFromEnemyStr || 0) * atkStrMod;
+
     new AttackConfigurationDialog(
       {
         attacker: defenderToken,
         weaponId,
         counterBonus: bonus,
+        counterDamageBonus,
         isCounterAttack: true,
         targets
       },

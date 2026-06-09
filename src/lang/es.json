@@ -952,6 +952,7 @@
   "chat.counterAttack.noPermission": "No tienes permiso para contraatacar con ese personaje.",
   "chat.counterAttack.openFailed": "No se pudo abrir el contraataque.",
   "macros.combat.dialog.counterBonus.title": "Bono de contraataque",
+  "macros.combat.dialog.counterDamageBonus.title": "Daño de contraataque (AM)",
   "chat.combatResult.armor": "Armadura (TA)",
   "chat.combatResult.reduced": "reducida",
   "chat.combatResult.finalDamage": "Daño final",

@@ -431,6 +431,12 @@ img {
     accent-color: var(--abf-accent);
   }
 
+  // On the red footer (e.g. weapon "Equipada") a light fill keeps the checked
+  // state visible instead of blending into the accent background.
+  .group-footer input[type='checkbox'] {
+    accent-color: var(--abf-surface);
+  }
+
   a:focus-visible,
   button:focus-visible {
     outline: none;

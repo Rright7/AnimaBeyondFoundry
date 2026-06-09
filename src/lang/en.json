@@ -950,6 +950,7 @@
   "chat.counterAttack.noPermission": "You don't have permission to counterattack with that actor.",
   "chat.counterAttack.openFailed": "Could not open the counterattack.",
   "macros.combat.dialog.counterBonus.title": "Counterattack bonus",
+  "macros.combat.dialog.counterDamageBonus.title": "Counterattack damage (MA)",
   "chat.combatResult.armor": "Armor (AT)",
   "chat.combatResult.reduced": "reduced",
   "chat.combatResult.finalDamage": "Final Damage",
