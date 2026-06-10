@@ -94,7 +94,7 @@
 
         .experience-bar {
           position: relative;
-          background-color: $light-cream;
+          background-color: var(--abf-surface);
           overflow: hidden;
 
           .current-experience {
@@ -102,7 +102,7 @@
             left: 0;
             top: 0;
 
-            background-color: $red;
+            background-color: var(--abf-accent);
           }
         }
 
@@ -115,7 +115,7 @@
           }
 
           &.red {
-            color: $red;
+            color: var(--abf-gold);
           }
         }
       }
@@ -134,7 +134,7 @@
           width: 100%;
 
           margin-top: 0;
-          border-radius: 0.5rem;
+          border-radius: var(--abf-radius-sm);
         }
       }
     }
@@ -227,9 +227,9 @@
         }
 
         .elan-row {
-          box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+          box-shadow: var(--abf-shadow);
           padding: 0.5rem;
-          border-radius: 0.5rem;
+          border-radius: var(--abf-radius-sm);
 
           margin-top: 0.75rem;
 
@@ -341,7 +341,7 @@
             width: 100%;
 
             margin-top: 0;
-            border-radius: 0.5rem;
+            border-radius: var(--abf-radius-sm);
           }
         }
       }

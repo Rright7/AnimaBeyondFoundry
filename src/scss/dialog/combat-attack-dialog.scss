@@ -30,13 +30,13 @@
 
     margin-bottom: 0.75rem;
 
-    border-top: 1px solid $red;
-    border-bottom: 1px solid $red;
+    border-top: 1px solid var(--abf-accent);
+    border-bottom: 1px solid var(--abf-accent);
 
     .item {
       background: transparent;
-      border-radius: $border-radius;
-      color: $black;
+      border-radius: var(--abf-radius);
+      color: var(--abf-text);
       font-weight: 600;
 
       display: flex;
@@ -46,8 +46,8 @@
 
     .active {
       text-shadow: none;
-      background-color: $red;
-      color: $white;
+      background-color: var(--abf-accent);
+      color: var(--abf-on-accent);
       font-weight: 600;
     }
   }
@@ -101,7 +101,7 @@
     }
 
     .hr {
-      border-bottom: 1px solid $red;
+      border-bottom: 1px solid var(--abf-accent);
     }
 
     // ─── Ataque apuntado (Variante B) ──────────────────────────────
@@ -118,7 +118,7 @@
       // apuntado" checkbox above. The left border is the visual hook.
       padding-left: 0.75rem;
       margin-left: 0.5rem;
-      border-left: 3px solid $red !important;
+      border-left: 3px solid var(--abf-accent) !important;
       position: relative;
 
       .aim-zone-row__label {

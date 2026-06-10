@@ -1,8 +1,15 @@
 @use 'variable' as *;
 @use 'mixin' as *;
 
+@font-face { font-family: 'Cinzel'; font-weight: 600; font-display: swap; src: url('/systems/animabf/assets/fonts/cinzel-600.woff2') format('woff2'); }
+@font-face { font-family: 'Cinzel'; font-weight: 700; font-display: swap; src: url('/systems/animabf/assets/fonts/cinzel-700.woff2') format('woff2'); }
+@font-face { font-family: 'Alegreya'; font-weight: 400; font-style: normal; font-display: swap; src: url('/systems/animabf/assets/fonts/alegreya-400.woff2') format('woff2'); }
+@font-face { font-family: 'Alegreya'; font-weight: 500; font-style: normal; font-display: swap; src: url('/systems/animabf/assets/fonts/alegreya-500.woff2') format('woff2'); }
+@font-face { font-family: 'Alegreya'; font-weight: 700; font-style: normal; font-display: swap; src: url('/systems/animabf/assets/fonts/alegreya-700.woff2') format('woff2'); }
+@font-face { font-family: 'Alegreya'; font-weight: 400; font-style: italic; font-display: swap; src: url('/systems/animabf/assets/fonts/alegreya-400-italic.woff2') format('woff2'); }
+
 .window-app .window-content {
-  background: $light-cream;
+  background: var(--abf-bg);
   overflow-x: auto;
 }
 
@@ -20,28 +27,81 @@ img {
 }
 
 
+// Tema claro "Pergamino calido" (por defecto). Contraste de texto verificado >= 7:1.
 :root {
   --abf-accent: #{$red};
   --abf-accent-soft: #{rgba($red, 0.1)};
   --abf-accent-border: #{rgba($red, 0.28)};
-  --abf-surface: #{$light-cream};
-  --abf-surface-2: #{$dark-cream};
-  --abf-text: #{$black};
-  --abf-text-muted: #3b3b3b;
-  --abf-on-accent: #{$white};
-  --abf-gold: #b8860b;
-  --abf-gold-soft: rgba(184, 134, 11, 0.1);
+  --abf-accent-text: #{$red};
+  --abf-bg: #ecdfc3;
+  --abf-surface: #f6efdd;
+  --abf-surface-2: #ece0c6;
+  --abf-text: #281c12;
+  --abf-text-muted: #4d4032;
+  --abf-on-accent: #ffffff;
+  --abf-gold: #5a400d;
+  --abf-gold-soft: rgba(184, 134, 11, 0.12);
   --abf-gold-border: rgba(184, 134, 11, 0.55);
-  --abf-border: #{rgba($black, 0.18)};
-  --abf-border-strong: #{rgba($black, 0.3)};
+  --abf-success: #0a5a45;
+  --abf-danger: #8a2347;
+  --abf-info: #1f3a6b;
+  --abf-border: rgba(40, 28, 18, 0.2);
+  --abf-border-strong: rgba(40, 28, 18, 0.34);
   --abf-radius: #{$border-radius};
   --abf-radius-sm: 6px;
-  --abf-shadow: 0 2px 8px rgb(0 0 0 / 12%);
+  --abf-radius-lg: 1rem;
+  --abf-shadow: 0 2px 8px rgb(40 28 18 / 14%);
   --abf-focus-ring: 0 0 0 2px #{rgba($red, 0.45)};
   --abf-space-1: 0.25rem;
   --abf-space-2: 0.5rem;
   --abf-space-3: 0.75rem;
   --abf-space-4: 1rem;
+  --abf-space-5: 1.5rem;
+  --abf-space-6: 2rem;
+  --abf-font-display: 'Cinzel', Georgia, 'Times New Roman', serif;
+  --abf-font-body: 'Alegreya', Georgia, 'Times New Roman', serif;
+  --abf-font-sans: var(--font-primary, 'Signika', sans-serif);
+  --abf-fs-xs: 0.72rem;
+  --abf-fs-sm: 0.8rem;
+  --abf-fs-md: 0.9rem;
+  --abf-fs-lg: 1.05rem;
+  --abf-fs-xl: 1.3rem;
+}
+
+// Tema oscuro "Carbon neutro" (conmutable por usuario). En oscuro el rojo solo
+// como relleno/borde; el oro asume el rol de texto-acento.
+body.abf-theme-dark {
+  --abf-accent: #6e2917;
+  --abf-accent-soft: rgba(110, 41, 23, 0.28);
+  --abf-accent-border: rgba(207, 165, 63, 0.35);
+  --abf-accent-text: #dcb45a;
+  --abf-bg: #1b1a18;
+  --abf-surface: #262523;
+  --abf-surface-2: #322f2b;
+  --abf-text: #ece9e3;
+  --abf-text-muted: #c7c2b7;
+  --abf-on-accent: #f2e8d5;
+  --abf-gold: #dcb45a;
+  --abf-gold-soft: rgba(207, 165, 63, 0.14);
+  --abf-gold-border: rgba(207, 165, 63, 0.6);
+  --abf-success: #5fc9a6;
+  --abf-danger: #e8869b;
+  --abf-info: #93b3e6;
+  --abf-border: rgba(255, 255, 255, 0.1);
+  --abf-border-strong: rgba(255, 255, 255, 0.2);
+  --abf-shadow: 0 2px 10px rgb(0 0 0 / 45%);
+  --abf-focus-ring: 0 0 0 2px rgba(207, 165, 63, 0.55);
+}
+
+// La rueda de esferas es una imagen de pergamino CLARA fija (no cambia de tema).
+// En oscuro, el texto claro desaparece sobre ella -> tratamos ese widget como
+// "isla clara": sus tokens vuelven a los valores del tema claro.
+body.abf-theme-dark .spheres-container {
+  --abf-text: #281c12;
+  --abf-text-muted: #4d4032;
+  --abf-surface: #f6efdd;
+  --abf-surface-2: #ece0c6;
+  --abf-on-accent: #ffffff;
 }
 
 .animabf.sheet.actor {
@@ -123,7 +183,7 @@ img {
           justify-content: center;
           align-items: center;
           cursor: pointer;
-          background-color: white;
+          background-color: var(--abf-surface);
           width: 1.25rem;
           height: 1.25rem;
           border-radius: 50%;
@@ -133,7 +193,7 @@ img {
           transition: background-color 0.3s ease-in-out;
 
           &:hover {
-            background-color: $light-gray;
+            background-color: var(--abf-surface-2);
           }
         }
       }
@@ -143,7 +203,7 @@ img {
         right: -0.5rem;
         z-index: 10;
         cursor: pointer;
-        background-color: white;
+        background-color: var(--abf-surface);
         width: 1.25rem;
         height: 1.25rem;
         border-radius: 50%;
@@ -154,7 +214,7 @@ img {
         transform: translate(-0.625rem, 0.625rem);
 
         &:hover {
-          background-color: $light-gray;
+          background-color: var(--abf-surface-2);
         }
 
         &.contracted {
@@ -182,7 +242,7 @@ img {
       align-items: center;
       justify-content: center;
       width: 100%;
-      min-height: 1.7rem;
+      min-height: 1.4rem;
       padding-right: 0.5rem;
 
       .group-header-title {
@@ -210,9 +270,9 @@ img {
       z-index: 1;
 
       margin-top: 0;
-      padding: var(--abf-space-3) var(--abf-space-2) var(--abf-space-2);
+      padding: var(--abf-space-2);
 
-      min-height: 3.5rem;
+      min-height: 2.25rem;
       width: 100%;
     }
 
@@ -229,7 +289,7 @@ img {
       justify-content: flex-end;
 
       width: 100%;
-      min-height: 3.3rem;
+      min-height: 2rem;
       margin-top: 0;
 
       .input {
@@ -310,8 +370,8 @@ img {
       &.primary-3 {
         
         &.disabled{
-          background-color: $light-cream-transparent;
-          color: $transparent-black;
+          background-color: var(--abf-surface-2);
+          color: var(--abf-text-muted);
         }
       }
     }
@@ -320,14 +380,14 @@ img {
       &.secondary-2 {
         margin-left: -1rem; 
         width: 4rem;
-        background-color: $red;
-        color: $white;
+        background-color: var(--abf-accent);
+        color: var(--abf-on-accent);
       }
 
       &.secondary-3 {
         margin-left: -1rem; 
         width: 5rem;
-        color: $black;
+        color: var(--abf-text);
         text-align: center;
         text-indent: -0.5rem;
       }
@@ -337,8 +397,8 @@ img {
       width: 4rem;
       margin-left: -1rem; 
       z-index: 1;
-      background-color: $red;
-      color: $white;
+      background-color: var(--abf-accent);
+      color: var(--abf-on-accent);
     }
   }
 }
@@ -408,18 +468,89 @@ img {
 }
 
 .common-titled-input select.input {
-  color: $black;              
+  color: var(--abf-text);              
 }
 
 .common-titled-input select.input:disabled {
-  color: $black;
+  color: var(--abf-text);
 }
 
 .common-titled-input select.input option { color: inherit; }
 
+// Opciones del desplegable nativo: el fondo del <option> es claro por defecto,
+// asi que en tema oscuro hay que tematizarlo (si no, texto invisible).
+.animabf.sheet select option,
+.animabf-dialog select option,
+.animabf-chat-message select option {
+  background-color: var(--abf-surface);
+  color: var(--abf-text);
+}
+
+// `.animabf-button` solo estaba estilado en dialogos; en la ficha quedaba como
+// boton crudo de Foundry (texto oscuro ilegible). Le damos el estilo de boton.
+.animabf.sheet .animabf-button {
+  @include button;
+  cursor: pointer;
+}
+
+// Botones de accion del chat (Defensa, x0.5/x1/x2, etc.): no traian color/fondo
+// propio -> en oscuro el texto quedaba invisible. Les damos caja + texto por token.
+.animabf-chat-message .chat-action-button {
+  background: var(--abf-surface-2);
+  color: var(--abf-text);
+  border: 1px solid var(--abf-border);
+  border-radius: var(--abf-radius-sm);
+}
+
 .animabf.sheet,
 .animabf-dialog,
 .animabf-chat-message {
+  font-family: var(--abf-font-body);
+  color: var(--abf-text);
+
+  // Inputs deshabilitados/solo lectura: forzar color por token (los navegadores
+  // los pintan en gris tenue -> ilegibles sobre fondo oscuro).
+  input:disabled,
+  select:disabled,
+  textarea:disabled,
+  input[readonly] {
+    color: var(--abf-text);
+    -webkit-text-fill-color: var(--abf-text);
+    opacity: 1;
+  }
+
+  // El contenido del cuerpo de tarjeta debe ir en el color de texto del tema.
+  // Algunos elementos (labels, inputs) traen color propio oscuro (Foundry/navegador)
+  // que no se ve sobre el fondo oscuro -> lo forzamos. Cabeceras/pies van aparte
+  // (sobre el rojo, con --abf-on-accent).
+  .group-body {
+    color: var(--abf-text);
+
+    .label,
+    label,
+    input,
+    select,
+    textarea {
+      color: var(--abf-text);
+    }
+  }
+
+  // Cabecera roja: las etiquetas/titulos van sobre el rojo (texto on-accent);
+  // los inputs tienen su propia caja (surface) -> color de texto por token
+  // (oscuro en claro, claro en oscuro), legible en ambos temas.
+  .group-header {
+    .label,
+    label {
+      color: var(--abf-on-accent);
+    }
+
+    input,
+    select,
+    textarea {
+      color: var(--abf-text);
+    }
+  }
+
   &,
   *,
   *::before,

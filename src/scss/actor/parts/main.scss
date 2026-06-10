@@ -77,3 +77,15 @@
     }
   }
 }
+
+// En tema oscuro el icono de Ajustes (que va en negro) se invierte a blanco.
+body.abf-theme-dark .actor-sheet {
+  .sheet-tabs,
+  .mystic-tabs,
+  .psychic-tabs,
+  .general-tabs {
+    .item[data-tab='settings'] img {
+      filter: brightness(0) invert(1);
+    }
+  }
+}

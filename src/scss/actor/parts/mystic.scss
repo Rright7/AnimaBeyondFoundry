@@ -80,7 +80,7 @@
           left: 24.5%;
 
           font-size: 1.1rem;
-          color: white;
+          color: var(--abf-on-accent);
           font-weight: bold;
           text-align: center;
         }
@@ -104,7 +104,7 @@
         .total,
         .used {
           .label {
-            color: white;
+            color: var(--abf-on-accent);
           }
 
           .input-container .input {
@@ -182,7 +182,7 @@
             font-size: 1.1rem;
             letter-spacing: -0.05rem;
 
-            -webkit-text-stroke-color: $red;
+            -webkit-text-stroke-color: var(--abf-accent);
             -webkit-text-stroke-width: 0.035rem;
 
             margin-bottom: 0;
@@ -191,7 +191,7 @@
           .sphere-value {
             margin-top: 0.1rem;
             max-width: 2rem;
-            color: $black;
+            color: #281c12;
             border: none;
             border-radius: 50%;
             background: transparent;
@@ -251,12 +251,12 @@
         font-size: 1rem;
 
         strong {
-          color: $red;
+          color: var(--abf-gold);
         }
 
         .total-cost {
           font-weight: bold;
-          color: $black;
+          color: var(--abf-text);
           font-size: 1.1rem;
         }
       }
@@ -297,8 +297,8 @@
         margin-top: 0.75rem;
 
         .input {
-          border-radius: $border-radius;
-          background: $light-cream;
+          border-radius: var(--abf-radius);
+          background: var(--abf-surface);
           font-weight: bold;
           padding: 0.25rem 1rem;
 
@@ -351,8 +351,8 @@
         width: calc(50% - 1rem);
         height: 100%;
 
-        border-radius: $border-radius;
-        box-shadow: $card-box-shadow;
+        border-radius: var(--abf-radius);
+        box-shadow: var(--abf-shadow);
 
         margin: 0.5rem;
         .input {

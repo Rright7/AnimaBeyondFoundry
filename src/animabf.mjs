@@ -95,6 +95,11 @@ Hooks.once('setup', () => {
 /* When ready */
 /* ------------------------------------ */
 Hooks.once('ready', async () => {
+  document.body.classList.toggle(
+    'abf-theme-dark',
+    game.settings.get(System.id, ABFSettingsKeys.COLOR_THEME) === 'dark'
+  );
+
   if (game.user.isGM) {
     const creationVersion = game.settings.get(
       System.id,

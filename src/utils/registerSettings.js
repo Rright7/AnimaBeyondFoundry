@@ -12,6 +12,22 @@ export const registerSettings = systemId => {
     type: Boolean
   });
 
+  game.settings.register(systemId, ABFSettingsKeys.COLOR_THEME, {
+    name: 'anima.ui.systemSettings.colorTheme.title',
+    hint: 'anima.ui.systemSettings.colorTheme.hint.title',
+    scope: 'client',
+    config: true,
+    type: String,
+    choices: {
+      light: 'anima.ui.systemSettings.colorTheme.light',
+      dark: 'anima.ui.systemSettings.colorTheme.dark'
+    },
+    default: 'light',
+    onChange: value => {
+      document.body.classList.toggle('abf-theme-dark', value === 'dark');
+    }
+  });
+
   game.settings.register(systemId, ABFSettingsKeys.USE_BREAKAGE_RULE, {
     name: 'anima.ui.systemSettings.breakageRule.title',
     hint: 'anima.ui.systemSettings.breakageRule.hint.title',

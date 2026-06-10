@@ -23,7 +23,7 @@
 }
 
 .animabf-dialog {
-  border-radius: 0.5rem;
+  border-radius: var(--abf-radius);
   overflow: hidden;
 
   &.no-close {
@@ -36,7 +36,7 @@
 
   .window-header {
     width: 100%;
-    background-color: $red;
+    background-color: var(--abf-accent);
 
     font-weight: bold;
 
@@ -44,7 +44,7 @@
       font-weight: bold;
     }
 
-    color: white;
+    color: var(--abf-on-accent);
   }
 
   .window-content {
@@ -55,7 +55,8 @@
 
     width: 100%;
 
-    background-color: $light-cream;
+    background-color: var(--abf-surface);
+    color: var(--abf-text);
 
     form {
       width: 100%;

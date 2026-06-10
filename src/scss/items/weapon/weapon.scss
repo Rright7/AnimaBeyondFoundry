@@ -62,19 +62,19 @@
       .weapon-qualities-section {
         margin-top: 0.6rem;
         padding: 0.4rem 0.6rem;
-        border: 1px dashed $red;
-        border-radius: $border-radius;
-        background: rgba($red, 0.04);
+        border: 1px dashed var(--abf-accent);
+        border-radius: var(--abf-radius);
+        background: color-mix(in srgb, var(--abf-accent) 4%, transparent);
 
         &.weapon-qualities-section--drag-over {
-          background: rgba($red, 0.15);
+          background: color-mix(in srgb, var(--abf-accent) 15%, transparent);
         }
 
         .weapon-qualities-section__title {
           display: block;
           font-weight: 600;
           font-size: 0.85rem;
-          color: $red;
+          color: var(--abf-gold);
           margin-bottom: 0.3rem;
           text-align: center;
         }
@@ -95,10 +95,10 @@
             display: inline-flex;
             align-items: center;
             gap: 0.3rem;
-            background: $red;
-            color: $white;
+            background: var(--abf-accent);
+            color: var(--abf-on-accent);
             padding: 0.15rem 0.5rem;
-            border-radius: $border-radius;
+            border-radius: var(--abf-radius);
             font-size: 0.8rem;
 
             .weapon-quality-chip__remove {

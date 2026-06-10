@@ -7,7 +7,19 @@
   color: var(--abf-on-accent);
   background: var(--abf-accent);
   border-radius: var(--abf-radius) var(--abf-radius) 0 0;
+  font-family: var(--abf-font-display);
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+@mixin microlabel {
+  font-family: var(--abf-font-sans);
+  font-size: var(--abf-fs-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--abf-text-muted);
 }
 
 @mixin group-body {
@@ -41,6 +53,7 @@
 @mixin button {
   border-radius: var(--abf-radius-sm);
   background: var(--abf-surface);
+  color: var(--abf-text);
   border: 1px solid var(--abf-border);
   box-sizing: border-box;
   max-width: 100%;

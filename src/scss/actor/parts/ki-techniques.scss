@@ -24,8 +24,9 @@
       }
 
       .ki-acc {
-        background: #fff;
-        border: 1px solid #d8d2c4;
+        background: var(--abf-surface);
+        color: var(--abf-text);
+        border: 1px solid var(--abf-border);
         border-radius: 10px;
         padding: 0 8px;
         font-variant-numeric: tabular-nums;
@@ -34,7 +35,7 @@
   }
 
   .ki-techniques-empty {
-    color: #8a8275;
+    color: var(--abf-text-muted);
     font-style: italic;
   }
 }
@@ -42,10 +43,10 @@
 .tech-add {
   width: auto;
   flex: 0 0 auto;
-  border: 1px solid var(--abf-accent, #6b4f9e);
+  border: 1px solid var(--abf-accent);
   border-radius: 4px;
-  background: #fff;
-  color: var(--abf-accent, #6b4f9e);
+  background: var(--abf-surface);
+  color: var(--abf-accent-text);
   font-weight: 600;
   padding: 1px 10px;
   cursor: pointer;
@@ -54,34 +55,36 @@
 .tech-remove,
 .tech-delete {
   width: auto;
-  border: 1px solid #d8d2c4;
+  border: 1px solid var(--abf-border);
   border-radius: 4px;
-  background: #fff;
-  color: #b23b3b;
+  background: var(--abf-surface);
+  color: var(--abf-danger);
   cursor: pointer;
   padding: 0 6px;
 }
 
 .tech-builder {
-  border: 1px solid #cfc8b8;
+  border: 1px solid var(--abf-border);
   border-radius: 6px;
-  background: #faf8f3;
+  background: var(--abf-surface);
+  color: var(--abf-text);
   padding: 8px 10px;
   display: flex;
   flex-direction: column;
   gap: 8px;
 
   &.technique-drop-zone--drag-over {
-    outline: 2px dashed var(--abf-accent, #6b4f9e);
+    outline: 2px dashed var(--abf-accent);
     outline-offset: 3px;
   }
 
   input,
   select,
   textarea {
-    border: 1px solid #d8d2c4;
+    border: 1px solid var(--abf-border);
     border-radius: 3px;
-    background: #fff;
+    background: var(--abf-surface);
+    color: var(--abf-text);
     padding: 1px 3px;
     font-size: 12px;
   }
@@ -91,7 +94,7 @@
     align-items: center;
     gap: 12px;
     flex-wrap: wrap;
-    border-bottom: 2px solid #2b2b2b;
+    border-bottom: 2px solid var(--abf-border-strong);
     padding-bottom: 4px;
 
     .tech-name {
@@ -108,7 +111,7 @@
 
       span {
         font-weight: 600;
-        color: #5b5446;
+        color: var(--abf-text-muted);
       }
 
       select,
@@ -125,11 +128,11 @@
       font-weight: 700;
 
       &.is-error {
-        color: #b23b3b;
+        color: var(--abf-danger);
       }
 
       small {
-        color: #8a8275;
+        color: var(--abf-text-muted);
         font-weight: 400;
       }
     }
@@ -139,13 +142,13 @@
       font-variant-numeric: tabular-nums;
 
       small {
-        color: #8a8275;
+        color: var(--abf-text-muted);
         font-weight: 400;
       }
     }
 
     .tech-coste {
-      color: #5b5446;
+      color: var(--abf-text-muted);
       font-variant-numeric: tabular-nums;
     }
 
@@ -163,7 +166,7 @@
     gap: 2px;
 
     li {
-      color: #b23b3b;
+      color: var(--abf-danger);
       font-weight: 600;
     }
   }
@@ -174,12 +177,12 @@
     gap: 4px 8px;
 
     .tech-cost-note {
-      background: #ece7da;
-      border: 1px solid #d8d2c4;
+      background: var(--abf-surface-2);
+      border: 1px solid var(--abf-border);
       border-radius: 10px;
       padding: 0 8px;
       font-size: 11px;
-      color: #5b5446;
+      color: var(--abf-text-muted);
     }
   }
 
@@ -187,13 +190,13 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid #cfc8b8;
+    border-bottom: 1px solid var(--abf-border);
     padding-bottom: 2px;
     margin-top: 4px;
 
     span {
       font-weight: 700;
-      color: var(--abf-accent, #6b4f9e);
+      color: var(--abf-gold);
       text-transform: uppercase;
       font-size: 11px;
       letter-spacing: 0.4px;
@@ -211,21 +214,21 @@
 
     th,
     td {
-      border: 1px solid #d8d2c4;
+      border: 1px solid var(--abf-border);
       padding: 1px 3px;
       text-align: center;
     }
 
     thead th {
-      background: #ece7da;
+      background: var(--abf-surface-2);
       font-weight: 600;
-      color: #4e160c;
+      color: var(--abf-text);
       text-shadow: none;
     }
 
     .tech-role {
       font-weight: 700;
-      color: var(--abf-accent, #6b4f9e);
+      color: var(--abf-gold);
       white-space: nowrap;
 
       select {
@@ -237,7 +240,7 @@
     .tech-charstr {
       text-align: left;
       white-space: nowrap;
-      color: #5b5446;
+      color: var(--abf-text-muted);
     }
 
     .tech-num {
@@ -254,7 +257,7 @@
     }
 
     .tech-empty {
-      color: #8a8275;
+      color: var(--abf-text-muted);
       font-style: italic;
       text-align: left;
     }
@@ -295,7 +298,7 @@
 
       span {
         font-weight: 600;
-        color: #5b5446;
+        color: var(--abf-text-muted);
       }
 
       input {
@@ -313,7 +316,7 @@
         flex: 1 0 100%;
         font-size: 10px;
         text-transform: uppercase;
-        color: #7a7263;
+        color: var(--abf-text-muted);
       }
 
       .tech-redistribution-cell {
@@ -325,7 +328,7 @@
         span {
           font-size: 10px;
           font-weight: 700;
-          color: #5b5446;
+          color: var(--abf-text-muted);
         }
 
         input {
@@ -341,12 +344,12 @@
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.4px;
-      color: var(--abf-accent, #6b4f9e);
+      color: var(--abf-gold);
       font-weight: 700;
     }
 
     .tech-effect-options {
-      border: 1px solid #e2dccd;
+      border: 1px solid var(--abf-border);
       border-radius: 4px;
       padding: 4px 6px;
       margin-top: 4px;
@@ -358,11 +361,11 @@
         flex-wrap: wrap;
 
         strong {
-          color: #3a342a;
+          color: var(--abf-text);
         }
 
         span {
-          color: #8a8275;
+          color: var(--abf-text-muted);
           font-size: 11px;
         }
       }
@@ -390,7 +393,7 @@
     span {
       font-size: 10px;
       text-transform: uppercase;
-      color: #7a7263;
+      color: var(--abf-text-muted);
     }
 
     textarea {
@@ -408,26 +411,26 @@
 
   .technique-cards-empty {
     grid-column: 1 / -1;
-    color: #8a8275;
+    color: var(--abf-text-muted);
     font-style: italic;
   }
 
   .technique-card {
-    border: 1px solid #cfc8b8;
+    border: 1px solid var(--abf-border);
     border-radius: 6px;
-    background: #faf8f3;
+    background: var(--abf-surface);
     padding: 6px 8px;
     display: flex;
     flex-direction: column;
     gap: 2px;
 
     &--invalid {
-      border-color: #b23b3b;
+      border-color: var(--abf-danger);
     }
 
     &--active {
-      border-color: var(--abf-accent, #6b4f9e);
-      box-shadow: inset 0 0 0 1px var(--abf-accent, #6b4f9e);
+      border-color: var(--abf-accent);
+      box-shadow: inset 0 0 0 1px var(--abf-accent);
     }
 
     .technique-card-head {
@@ -438,14 +441,14 @@
       .technique-card-name {
         font-weight: 700;
         font-style: italic;
-        color: #3a342a;
+        color: var(--abf-text);
       }
 
       .technique-card-badge {
         font-size: 10px;
         font-weight: 700;
         font-style: normal;
-        color: var(--abf-accent, #6b4f9e);
+        color: var(--abf-gold);
         text-transform: uppercase;
       }
 
@@ -459,24 +462,24 @@
       display: flex;
       justify-content: space-between;
       gap: 8px;
-      color: #5b5446;
+      color: var(--abf-text-muted);
       font-size: 11px;
       font-variant-numeric: tabular-nums;
     }
 
     .technique-card-effects {
       font-size: 11px;
-      color: #6b6356;
+      color: var(--abf-text-muted);
       font-style: italic;
     }
 
     .technique-card-applied {
       font-size: 11px;
-      color: #6b6356;
+      color: var(--abf-text-muted);
       font-variant-numeric: tabular-nums;
 
       &.is-active {
-        color: var(--abf-accent, #6b4f9e);
+        color: var(--abf-gold);
         font-weight: 600;
       }
     }
@@ -490,7 +493,7 @@
 
       .technique-card-ki {
         font-size: 11px;
-        color: #5b5446;
+        color: var(--abf-text-muted);
         font-variant-numeric: tabular-nums;
       }
 
@@ -501,21 +504,21 @@
         padding: 1px 10px;
         cursor: pointer;
         font-weight: 600;
-        border: 1px solid var(--abf-accent, #6b4f9e);
-        background: #fff;
-        color: var(--abf-accent, #6b4f9e);
+        border: 1px solid var(--abf-accent);
+        background: var(--abf-surface);
+        color: var(--abf-accent-text);
       }
 
       .technique-deactivate {
-        border-color: #b23b3b;
-        color: #b23b3b;
+        border-color: var(--abf-danger);
+        color: var(--abf-danger);
       }
 
       // Instantánea "en efecto este asalto": relleno acento para que se note que
       // está aplicando ahora; vuelve a «Usar» normal cuando pasa el asalto.
       .technique-use--used {
-        background: var(--abf-accent, #6b4f9e);
-        color: #fff;
+        background: var(--abf-accent);
+        color: var(--abf-on-accent);
       }
     }
   }
