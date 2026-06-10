@@ -1,5 +1,6 @@
 import { FormulaEvaluator } from '../../utils/formulaEvaluator.js';
 import { martialArtsDodgeBonus } from './martialArts/martialArtsDodge.js';
+import { defensesCounterCheck, freeDefensesFor } from './utils/defensesCounterCheck.js';
 
 const toSafeNumber = v => {
   const n = Number(v);
@@ -52,13 +53,10 @@ function isProjectileAttack(attackData) {
   );
 }
 
-function multipleDefensePenaltyFromAccumulated(accumulated) {
-  const a = Math.max(0, Number(accumulated) || 0);
-  if (a <= 0) return 0;
-  if (a === 1) return 30;
-  if (a === 2) return 50;
-  if (a === 3) return 70;
-  return 90;
+function multipleDefensePenaltyFromAccumulated(accumulated, opts) {
+  // Positivo (se RESTA en las formulas de defensa). Reusa la funcion canonica
+  // (negativa) para no duplicar la tabla; opts permite el margen de defensas exentas.
+  return -defensesCounterCheck(accumulated, opts);
 }
 
 function getAccumulated(defensesCounter) {
@@ -156,11 +154,11 @@ export const SupernaturalShieldStrategy = {
   }
 };
 
-function computeEffectiveScore(candidate, attackData, defensesCounter) {
+function computeEffectiveScore(candidate, attackData, defensesCounter, freeDef) {
   const accumulated = getAccumulated(defensesCounter);
 
   const multiPenalty = candidate.applyMultipleDefensePenalty
-    ? multipleDefensePenaltyFromAccumulated(accumulated)
+    ? multipleDefensePenaltyFromAccumulated(accumulated, freeDef)
     : 0;
 
   const projPenalty = isProjectileAttack(attackData)
@@ -190,6 +188,10 @@ export function pickBestDefenseCandidate(
     SupernaturalShieldStrategy.compute(actor)
   ];
 
+  // Margen de defensas exentas (Artes Marciales + extra manual). Mismo para todos
+  // los candidatos del actor; los escudos lo ignoran (applyMultipleDefensePenalty=false).
+  const freeDef = freeDefensesFor(actor);
+
   const priority = { block: 0, dodge: 1, supernaturalShield: 2 };
 
   let best = null;
@@ -198,7 +200,8 @@ export function pickBestDefenseCandidate(
     const { effectiveScore, appliedPenalties } = computeEffectiveScore(
       c,
       attackData,
-      defensesCounter
+      defensesCounter,
+      freeDef
     );
     const enriched = { ...c, effectiveScore, appliedPenalties };
 

@@ -4,6 +4,7 @@ import {
   variableBonusAmount
 } from '../../../../../../combat/martialArts/martialArtCatalog.js';
 import { depositModifier } from '../../../../effectFow/modifiers/synthetics.js';
+import { martialArtFlatArmor } from '../../../../../../combat/martialArts/martialArtSpecials.js';
 
 // Tope RAW de bonos innatos por Categoria a HA/Parada/Esquiva (Dominus Exxet).
 const INNATE_CAP = 50;
@@ -128,6 +129,11 @@ export const applyMartialArtModifiers = (data, actor) => {
   m.martialArtBonus.masterAttack = { value: totals.masterAttack };
   m.martialArtBonus.masterDefense = { value: totals.masterDefense };
   m.martialArtBonus.cm = { value: totals.cm };
+
+  // Rex Frame: TA adicional plana contra TODO. La consume mutateTotalArmor como una
+  // capa de armadura (formula max+mitad). MAX entre artes (no se apila consigo misma).
+  m.armorBonus = m.armorBonus ?? {};
+  m.armorBonus.flat = { value: martialArtFlatArmor({ system: data }) };
 };
 
 function depositMartialArt(actor, path, value, source, id) {
@@ -150,7 +156,8 @@ applyMartialArtModifiers.abfFlow = {
     'system.general.modifiers.martialArtBonus.damage.value',
     'system.general.modifiers.martialArtBonus.masterAttack.value',
     'system.general.modifiers.martialArtBonus.masterDefense.value',
-    'system.general.modifiers.martialArtBonus.cm.value'
+    'system.general.modifiers.martialArtBonus.cm.value',
+    'system.general.modifiers.armorBonus.flat.value'
   ]
 };
 

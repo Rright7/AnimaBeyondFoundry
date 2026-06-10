@@ -51,6 +51,8 @@
       {{#if this.readonly}}readonly{{/if}}
       name='{{this.inputName}}'
       type='{{#if this.inputType}}{{this.inputType}}{{else}}number{{/if}}'
+      {{#if this.min}}min='{{this.min}}'{{/if}}
+      {{#if this.step}}step='{{this.step}}'{{/if}}
       class='input primary-input {{#if this.hasTertiaryInput}}primary-3{{else}}{{#if this.hasSecondaryInput}}primary-2{{else}}primary-1{{/if}}{{/if}} {{#if this.disabled}}disabled{{/if}}'
       {{#if (is 'eq' this.inputType 'checkbox')}}
         {{checked this.inputValue}}

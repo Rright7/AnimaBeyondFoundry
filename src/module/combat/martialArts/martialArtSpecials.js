@@ -14,6 +14,8 @@ import { gradeOf } from './martialArtCatalog.js';
 //  - counterDamageFromEnemyStr: number -> suma N x (mod FUE del agresor) al DAÑO del contraataque (Aikido).
 //  - opposedCheckBonus: { maneuvers:[slug...], value:number, side:'attacker'|'defender' }
 //      bono al chequeo enfrentado (D10) de esa maniobra (atacante = quien la hace; defender = quien la sufre).
+//  - extraDefenses: { count:N } | { never:true } -> defensas adicionales sin penalizador
+//      (count exime el penalizador desplazando la progresion N pasos; never = exencion total).
 //
 // Slugs de maniobra: 'presa', 'derribo', 'desarme' (ver maneuvers/definitions).
 export const MARTIAL_ART_SPECIALS = {
@@ -86,6 +88,49 @@ export const MARTIAL_ART_SPECIALS = {
   selene: {
     base: { counterAttackMultiplier: 2 },
     arcane: { counterAttackMultiplier: 2 }
+  },
+  // Lama — "Permite una/dos defensas adicionales sin penalizador".
+  lama: {
+    advanced: { extraDefenses: { count: 1 } },
+    supreme: { extraDefenses: { count: 2 } }
+  },
+  // Lama Tsu (avanzada) — Base "2 defensas adicionales sin penalizador";
+  // Arcano "Nunca aplica penalizador por defensas adicionales".
+  lamaTsu: {
+    base: { extraDefenses: { count: 2 } },
+    arcane: { extraDefenses: { never: true } }
+  },
+  // ── Cat.4 (bono al critico) + Cat.5 (reduccion de TA) + Rex Frame (armadura) ──
+  // critBonus: { value, condition:'always'|'aimed'|'inconsciencia' } -> suma al nivel
+  //   del critico (attackData.critBonus) si la condicion se cumple.
+  // taReduction: { amount, onlySoft } -> reduce la TA del defensor; onlySoft solo la
+  //   parte blanda (no 'hard'); amount Infinity = la anula.
+  // extraArmor: { value } -> +N a TODAS las TA del propio actor (bono de armadura).
+  // doublePrecise: true -> dobla la ventaja de la calidad Precisa (segunda mitad del
+  //   penalizador de apuntado/maniobra) del arma del atacante.
+  moaiThai: {
+    supreme: { critBonus: { value: 20, condition: 'always' } }
+  },
+  hakyoukuken: {
+    base: { critBonus: { value: 20, condition: 'always' }, taReduction: { amount: 2, onlySoft: true } },
+    // amount 999 = "anula" la TA blanda (centinela finito > cualquier TA; Infinity se
+    // serializaria a null en el flag JSON del chat y romperia el efecto).
+    arcane: { critBonus: { value: 40, condition: 'always' }, taReduction: { amount: 999, onlySoft: true } }
+  },
+  asakusen: {
+    arcane: { critBonus: { value: 20, condition: 'aimed' } }
+  },
+  enuth: {
+    base: { critBonus: { value: 20, condition: 'inconsciencia' }, doublePrecise: true },
+    arcane: { critBonus: { value: 50, condition: 'inconsciencia' }, doublePrecise: true }
+  },
+  dumah: {
+    base: { taReduction: { amount: 2, onlySoft: false } },
+    arcane: { taReduction: { amount: 6, onlySoft: false } }
+  },
+  rexFrame: {
+    base: { extraArmor: { value: 3 } },
+    arcane: { extraArmor: { value: 6 } }
   }
 };
 
@@ -162,4 +207,99 @@ export function martialArtOpposedCheckBonus(actor, maneuverSlug, side) {
     bonus += Number(b.value) || 0;
   }
   return bonus;
+}
+
+/**
+ * Defensas adicionales sin penalizador que conceden las Artes Marciales del actor
+ * (Lama, Lama Tsu). RAW: SE SUMAN entre artes (p.ej. Lama Supremo 2 + Lama Tsu Base 2
+ * = 4 defensas exentas); never = OR (exencion total, gana sobre cualquier count).
+ * @param {object} actor
+ * @returns {{count:number, never:boolean}}
+ */
+export function martialArtExtraDefenses(actor) {
+  const arts = actor?.system?.domine?.martialArts ?? [];
+  let count = 0;
+  let never = false;
+  for (const art of arts) {
+    const ed = getMartialArtSpecial(art?.system?.canonicalId, gradeOf(art))?.extraDefenses;
+    if (!ed) continue;
+    if (ed.never) never = true;
+    if (ed.count) count += Number(ed.count) || 0;
+  }
+  return { count, never };
+}
+
+/** Itera las Artes Marciales del actor (helper interno). */
+function actorArts(actor) {
+  return actor?.system?.domine?.martialArts ?? [];
+}
+
+/**
+ * Bono al NIVEL del critico que aportan las Artes Marciales, segun el contexto:
+ * Moai Thai sup +20 (siempre), Hakyoukuken +20/+40 (siempre), Asakusen +20 (apuntado),
+ * Enuth +20/+50 (con maniobra Inconsciencia). Se SUMA (varias artes acumulan).
+ * @param {object} actor
+ * @param {{aimed?:boolean, maneuverSlug?:string}} [ctx]
+ * @returns {number}
+ */
+export function martialArtCritBonus(actor, { aimed = false, maneuverSlug = '' } = {}) {
+  let bonus = 0;
+  for (const art of actorArts(actor)) {
+    const cb = getMartialArtSpecial(art?.system?.canonicalId, gradeOf(art))?.critBonus;
+    if (!cb) continue;
+    const cond = cb.condition ?? 'always';
+    if (cond === 'aimed' && !aimed) continue;
+    if (cond === 'inconsciencia' && maneuverSlug !== 'inconsciencia') continue;
+    bonus += Number(cb.value) || 0;
+  }
+  return bonus;
+}
+
+/**
+ * Reduccion de TA del defensor que aplica el atacante por Artes Marciales:
+ *  - general: reduce toda la TA (Dumah -2/-6).
+ *  - soft: reduce SOLO la TA blanda (Hakyoukuken -2 / Infinity=anula).
+ * Maximo por canal (no se apilan dos artes del mismo canal; hoy hay una de cada).
+ * @param {object} actor
+ * @returns {{general:number, soft:number}}
+ */
+export function martialArtArmorReduction(actor) {
+  let general = 0;
+  let soft = 0;
+  for (const art of actorArts(actor)) {
+    const tr = getMartialArtSpecial(art?.system?.canonicalId, gradeOf(art))?.taReduction;
+    if (!tr) continue;
+    const amount = Number(tr.amount) || 0;
+    if (tr.onlySoft) soft = Math.max(soft, amount);
+    else general = Math.max(general, amount);
+  }
+  return { general, soft };
+}
+
+/**
+ * TA adicional plana (a TODAS las TA del propio actor) por Artes Marciales: Rex Frame
+ * +3/+6 contra todo. Maximo entre artes.
+ * @param {object} actor
+ * @returns {number}
+ */
+export function martialArtFlatArmor(actor) {
+  let value = 0;
+  for (const art of actorArts(actor)) {
+    const ea = getMartialArtSpecial(art?.system?.canonicalId, gradeOf(art))?.extraArmor;
+    if (ea?.value) value = Math.max(value, Number(ea.value) || 0);
+  }
+  return value;
+}
+
+/**
+ * True si alguna Arte Marcial del actor DOBLA la ventaja de la calidad Precisa
+ * (Enuth): el penalizador de apuntado/maniobra ya reducido por Precisa se reduce otra
+ * vez a la mitad.
+ * @param {object} actor
+ * @returns {boolean}
+ */
+export function martialArtDoublesPrecise(actor) {
+  return actorArts(actor).some(
+    art => !!getMartialArtSpecial(art?.system?.canonicalId, gradeOf(art))?.doublePrecise
+  );
 }

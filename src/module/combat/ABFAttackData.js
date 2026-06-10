@@ -8,6 +8,8 @@ export class ABFAttackData {
     this.attackAbility = p.attackAbility ?? 0;
     this.damage = p.damage ?? 0;
     this.reducedArmor = p.reducedArmor ?? 0;
+    // Reduccion de TA SOLO blanda del defensor (Hakyoukuken; 999 = la anula).
+    this.softArmorReduction = p.softArmorReduction ?? 0;
     this.ignoreArmor = !!p.ignoreArmor;
     this.armorType = p.armorType ?? game.animabf.weapon.NoneWeaponCritic.NONE;
 
@@ -235,6 +237,10 @@ export class ABFAttackDataBuilder {
   }
   reducedArmor(v) {
     this._p.reducedArmor = Number(v) || 0;
+    return this;
+  }
+  softArmorReduction(v) {
+    this._p.softArmorReduction = Number(v) || 0;
     return this;
   }
   ignoreArmor(b = true) {

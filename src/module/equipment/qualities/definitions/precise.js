@@ -1,4 +1,5 @@
 import { EquipmentQualityDefinition } from '../EquipmentQualityDefinition.js';
+import { martialArtDoublesPrecise } from '../../../combat/martialArts/martialArtSpecials.js';
 
 /**
  * Precisa
@@ -16,11 +17,14 @@ export const precise = new EquipmentQualityDefinition({
   meleeOnly: true,
   aliases: ['precisa', 'précise'],
 
-  modifyAimedPenalty(penalty /*, ctx */) {
+  modifyAimedPenalty(penalty, ctx) {
     // All Tabla 45 values are even multiples of 10, so the halved result
     // is always a clean multiple of 5. Truncation toward zero is therefore
     // exact, not lossy.
-    return Math.trunc(Number(penalty || 0) / 2);
+    let p = Math.trunc(Number(penalty || 0) / 2);
+    // Enuth dobla la ventaja de Precisa: aplica la mitad otra vez (penalizador a 1/4).
+    if (martialArtDoublesPrecise(ctx?.actor)) p = Math.trunc(p / 2);
+    return p;
   },
 
   modifyManeuverPenalty(penalty, ctx) {
@@ -28,7 +32,9 @@ export const precise = new EquipmentQualityDefinition({
     // (Inutilizar, Inconsciencia) get their discount through the aimed
     // pathway, not through this hook.
     if (ctx?.maneuverSlug === 'engatillar') {
-      return Math.trunc(Number(penalty || 0) / 2);
+      let p = Math.trunc(Number(penalty || 0) / 2);
+      if (martialArtDoublesPrecise(ctx?.actor)) p = Math.trunc(p / 2);
+      return p;
     }
     return penalty;
   }

@@ -253,7 +253,15 @@ function getFinalArmor(attackData, defenseData) {
   } else if (defenseData.inmodifiableArmor) {
     armor = defenseData.armor ?? 0;
   } else {
-    armor = (defenseData.armor ?? 0) - (attackData.reducedArmor ?? 0);
+    const reduced = Number(attackData.reducedArmor) || 0;
+    armor = (defenseData.armor ?? 0) - reduced;
+    // Hakyoukuken: reduce SOLO la porcion blanda de la TA; no puede bajar de la TA
+    // dura (que ya sufrio la reduccion general). 999 = anula la blanda del todo.
+    const softReduction = Number(attackData.softArmorReduction) || 0;
+    if (softReduction > 0) {
+      const hardFloor = Math.max(0, (Number(defenseData.hardArmor) || 0) - reduced);
+      armor = Math.max(hardFloor, armor - softReduction);
+    }
   }
 
   return Math.max(0, armor);

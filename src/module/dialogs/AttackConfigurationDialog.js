@@ -13,7 +13,12 @@ import {
   martialArtUnarmedDamage,
   martialArtsAdditionalAttack
 } from '../combat/martialArts/martialArtCatalog.js';
+import {
+  martialArtCritBonus,
+  martialArtArmorReduction
+} from '../combat/martialArts/martialArtSpecials.js';
 import { maxFatiguePerAction } from '../combat/utils/fatigue.js';
+import { buildRollFormula } from '../combat/utils/buildRollFormula.js';
 ///dialogs/AttackConfigurationDialog.js
 ///actor/utils/getSnapshotTargets.js
 
@@ -415,7 +420,7 @@ export class AttackConfigurationDialog extends FormApplication {
           ? actor.system.general.diceSettings.abilityMasteryDie.value
           : actor.system.general.diceSettings.abilityDie.value;
 
-      const formula = `${die} + ${baseAttack} + ${mod}`;
+      const formula = buildRollFormula(die, [baseAttack, mod]);
       const roll = new ABFFoundryRoll(formula, actor.system);
       await roll.evaluate({ async: true });
 
@@ -502,13 +507,26 @@ export class AttackConfigurationDialog extends FormApplication {
           ) * (this.modalData.maneuver?.damageMultiplier ?? 1)
         )
         .ignoreArmor(!!weapon.system.ignoreArmor?.value)
-        .reducedArmor(Number(weapon.system.reducedArmor?.final?.value ?? 0))
+        // TA reducida del arma + reduccion general de Artes Marciales (Dumah -2/-6).
+        .reducedArmor(
+          Number(weapon.system.reducedArmor?.final?.value ?? 0) +
+            martialArtArmorReduction(actor).general
+        )
+        // Reduccion SOLO de TA blanda (Hakyoukuken); el resolver no baja de la TA dura.
+        .softArmorReduction(martialArtArmorReduction(actor).soft)
         .armorType(combat.criticSelected ?? weapon.system.critic?.primary?.value)
         .damageType(game.animabf.combat.DamageType.NONE)
         .presence(Number(weapon.system.presence?.final?.value ?? 0))
         .isProjectile(!!combat.projectile?.value)
         .automaticCrit(!!combat.automaticCrit)
-        .critBonus(0)
+        // Bono al nivel del critico por Artes Marciales (Moai Thai/Hakyoukuken siempre;
+        // Asakusen solo apuntado; Enuth solo con Inconsciencia).
+        .critBonus(
+          martialArtCritBonus(actor, {
+            aimed: !!combat.aimed,
+            maneuverSlug: this.modalData.maneuver?.slug ?? ''
+          })
+        )
         .critDamageBonus(Number(combat.critDamageBonus ?? 0))
         .attackerId(actor.id)
         .weaponId(weapon.id)

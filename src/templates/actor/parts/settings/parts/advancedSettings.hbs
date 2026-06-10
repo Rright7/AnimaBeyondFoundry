@@ -78,5 +78,23 @@
           <option {{#if (is "eq" this.inputValue 'mass')}} selected{{/if}} value='mass'>{{localize 'anima.ui.settings.advancedSettings.defenseType.mass.title'}}</option>
       {{/'systems/animabf/templates/common/ui/custom-select.hbs'}}
     </div>
+    <div>
+      {{> "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
+        class="extraDefenses"
+        inputType="number"
+        min="0"
+        step="1"
+        title=(localize "anima.ui.settings.advancedSettings.extraDefenses.title")
+        inputName="system.general.settings.extraDefensesBonus.value"
+        inputValue=system.general.settings.extraDefensesBonus.value
+      }}
+      {{#if maExtraDefenses.never}}
+        <p class="hint" style="opacity:.7;font-size:.85em;">{{localize "anima.ui.settings.advancedSettings.extraDefenses.never"}}</p>
+      {{else}}
+        {{#if maExtraDefenses.count}}
+          <p class="hint" style="opacity:.7;font-size:.85em;">{{localize "anima.ui.settings.advancedSettings.extraDefenses.fromMA"}}: {{maExtraDefenses.count}}</p>
+        {{/if}}
+      {{/if}}
+    </div>
   {{/"systems/animabf/templates/common/ui/group-body.hbs"}}
 {{/"systems/animabf/templates/common/ui/group.hbs"}}

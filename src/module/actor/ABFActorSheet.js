@@ -10,6 +10,7 @@ import { ABFItems } from '../items/ABFItems';
 import { ABFDialogs } from '../dialogs/ABFDialogs';
 import { Logger } from '../../utils';
 import { ABFSettingsKeys } from '../../utils/registerSettings';
+import { martialArtExtraDefenses } from '../combat/martialArts/martialArtSpecials.js';
 import {
   buildTechniqueViewModel,
   techAddEffect,
@@ -209,6 +210,9 @@ export default class ABFActorSheet extends ActorSheetV1 {
       value: actor.system?.domine?.kiAccumulation?.[c.key]?.final?.value ?? 0
     }));
     // Estado de "Cargar Ki" (concentración por asalto).
+    // Defensas adicionales sin penalizador por Artes Marciales (Lama/Lama Tsu), para
+    // mostrarlas (read-only) en Opciones Avanzadas junto al extra manual.
+    sheet.maExtraDefenses = martialArtExtraDefenses(actor);
     sheet.kiCharging = !!actor.flags?.animabf?.chargingKi;
     sheet.kiFullAccumulation = !!actor.flags?.animabf?.fullKiAccumulation;
     // Estado de "Acumular zeón" (concentración mágica por asalto).

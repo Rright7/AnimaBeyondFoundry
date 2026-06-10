@@ -7,7 +7,8 @@ import { updateAttackTargetsFlag } from '../../utils/updateAttackTargetsFlag.js'
 import { getChatVisibilityOptions } from '../utils/chatVisibility.js';
 import ABFFoundryRoll from '../rolls/ABFFoundryRoll.js';
 import { FormulaEvaluator } from '../../utils/formulaEvaluator.js';
-import { defensesCounterCheck } from '../combat/utils/defensesCounterCheck.js';
+import { defensesCounterCheck, freeDefensesFor } from '../combat/utils/defensesCounterCheck.js';
+import { buildRollFormula } from '../combat/utils/buildRollFormula.js';
 import {
   activeTechniqueCombatBonuses,
   usableInstantCombatTechniques
@@ -111,7 +112,11 @@ export class DefenseConfigurationDialog extends FormApplication {
           // No manual UI override is exposed in this dialog by design: the penalty
           // is fully driven by the rules (counter -> defensesCounterCheck mapping)
           // and the dialog only shows the resulting value as a read-only label.
-          multipleDefensesPenalty: defensesCounterCheck(defensesCounter.accumulated),
+          // Incluye el margen de defensas exentas (Artes Marciales + extra manual).
+          multipleDefensesPenalty: defensesCounterCheck(
+            defensesCounter.accumulated,
+            freeDefensesFor(defenderActor)
+          ),
           accumulateDefenses: defensesCounter.keepAccumulating,
           // Resistir el golpe: -80 a la defensa, NO acumula defensa
           // múltiple este asalto.
@@ -444,7 +449,15 @@ export class DefenseConfigurationDialog extends FormApplication {
       // Split each contribution into its own term so the Foundry roll tooltip
       // shows the breakdown: defense ability, situational modifier, the
       // multiple-defenses penalty, the resist-the-hit penalty and fatigue.
-      const formula = `${die} + ${baseValue} + ${mod} + (${effectiveMultiPenalty}) + (${resistPenalty}) + (${kiDefenseBonus}) + (${fatigueBonus})`;
+      // Omite los terminos a 0 para no ensuciar el chat (cada uno trae su signo).
+      const formula = buildRollFormula(die, [
+        baseValue,
+        mod,
+        effectiveMultiPenalty,
+        resistPenalty,
+        kiDefenseBonus,
+        fatigueBonus
+      ]);
       const roll = new ABFFoundryRoll(formula, actor.system);
       await roll.evaluate({ async: true });
 
@@ -506,10 +519,16 @@ export class DefenseConfigurationDialog extends FormApplication {
         armorType != null
           ? actor.system?.combat?.totalArmor?.at?.[armorType]?.value ?? 0
           : 0;
+      // TA solo de armaduras duras (suelo para la reduccion de TA blanda de Hakyoukuken).
+      const hardTaFinal =
+        armorType != null
+          ? actor.system?.combat?.totalArmor?.hardAt?.[armorType]?.value ?? 0
+          : 0;
 
       const defenseData = ABFDefenseData.builder()
         .defenseAbility(Math.max(0, roll.total))
         .armor(taFinal)
+        .hardArmor(hardTaFinal)
         .inmodifiableArmor(false)
         .defenseType(type)
         .defenderId(actor.id)
