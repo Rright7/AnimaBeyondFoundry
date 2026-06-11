@@ -89,7 +89,13 @@ export async function sendAccumulationZeroDefense({
           maneuverWasUnarmed: !!attackData?.maneuverWasUnarmed,
           delayRounds: Number(attackData?.delayRounds ?? 0) || 0
         },
-        attacker: { actorId: attackData?.attackerId ?? '' },
+        attacker: {
+          actorId: attackData?.attackerId ?? '',
+          // Token del atacante (uuid preferido): el control enfrentado resuelve el token
+          // (sin vincular incluido) en vez del actor base, que pierde overrides del token.
+          tokenId:
+            attackerToken?.document?.uuid ?? attackerToken?.uuid ?? attackerToken?.id ?? ''
+        },
         defender: { actorId: actor.id, tokenId: defenderToken?.id ?? '' },
         damageControl: { appliedOnce: false, apps: [] }
       }

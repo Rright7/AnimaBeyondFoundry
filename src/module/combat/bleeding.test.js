@@ -86,12 +86,14 @@ describe('critTypeCausesBleeding (físico sí, energía no)', () => {
     expect(critTypeCausesBleeding('thrust')).toBe(true);
   });
   test('energía no desangra', () => {
+    expect(critTypeCausesBleeding('energy')).toBe(false);
     expect(critTypeCausesBleeding('heat')).toBe(false);
     expect(critTypeCausesBleeding('cold')).toBe(false);
     expect(critTypeCausesBleeding('electricity')).toBe(false);
   });
-  test('tipo ausente → por defecto desangra (físico)', () => {
+  test('tipo ausente (vacío o NONE "-") → por defecto desangra (físico)', () => {
     expect(critTypeCausesBleeding('')).toBe(true);
     expect(critTypeCausesBleeding(undefined)).toBe(true);
+    expect(critTypeCausesBleeding('-')).toBe(true);
   });
 });

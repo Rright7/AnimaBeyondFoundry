@@ -44,7 +44,7 @@
         <div class='columns aim-zone-row'>
           <label class='aim-zone-row__label'>{{localize 'macros.combat.dialog.aimed.zone'}}</label>
           <select name='attacker.combat.aimedZone' class='input aim-zone-row__select' {{#if this.maneuver}}disabled{{/if}}>
-            {{#each (aimedZonesWithPenalty this.attacker.combat.weapon) as |z|}}
+            {{#each (aimedZonesWithPenalty this.attacker.combat.weapon this.attacker.actor) as |z|}}
               <option value='{{z.id}}' {{#if (is 'eq' ../this.attacker.combat.aimedZone z.id)}}selected{{/if}}>
                 {{z.label}} {{z.penaltyLabel}}
               </option>
@@ -108,6 +108,19 @@
         <p class='label'>{{localize 'macros.combat.dialog.weapon.notFound'}}</p>
       {{/if}}
 
+      {{#if this.ui.martialAttackTables}}
+        {{!-- Perfil Arte Marcial: tabla de ataque elegible (CON/FIL/PEN/ENE) segun las
+              artes del atacante (Dumah FIL/PEN, Velez ENE). 'impact' siempre disponible. --}}
+        {{#> 'systems/animabf/templates/common/ui/custom-select.hbs'
+            title=(localize 'macros.combat.dialog.weapon.critic.title')
+            inputName='attacker.combat.criticSelected' }}
+          {{#each this.ui.martialAttackTables as |t|}}
+            <option value='{{t.value}}' {{#if t.selected}}selected{{/if}}>
+              {{localize (concat 'anima.ui.combat.armors.at.' t.value '.title')}}
+            </option>
+          {{/each}}
+        {{/'systems/animabf/templates/common/ui/custom-select.hbs'}}
+      {{else}}
       {{#unless this.attacker.combat.unarmed}}
         {{#if this.ui.weaponHasSecondaryCritic}}
           {{#> 'systems/animabf/templates/common/ui/custom-select.hbs'
@@ -133,6 +146,7 @@
           {{/'systems/animabf/templates/common/ui/custom-select.hbs'}}
         {{/if}}
       {{/unless}}
+      {{/if}}
 
       {{> "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
           title=(localize 'macros.combat.dialog.damage.title')

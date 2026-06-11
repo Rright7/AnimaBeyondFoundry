@@ -42,7 +42,12 @@ export const MARTIAL_ART_SPECIALS = {
   grappling: {
     base: { maneuverPenaltyReduction: { maneuvers: ['presa', 'derribo'], factor: 0.5 } },
     advanced: { maneuverPenaltyReduction: { maneuvers: ['presa', 'derribo'], factor: 0 } },
-    supreme: { maneuverPenaltyReduction: { maneuvers: ['presa', 'derribo'], factor: 0 } }
+    // Supremo: sin penalizador y ademas "Se puede hacer Dano COMPLETO en Presa y Derribo"
+    // (excepcion a la mitad de la regla general de maniobras).
+    supreme: {
+      maneuverPenaltyReduction: { maneuvers: ['presa', 'derribo'], factor: 0 },
+      fullDamageManeuvers: ['presa', 'derribo']
+    }
   },
   // Kardad — "Bono +1/+3 a los controles para DEFENDERSE de Presa y Derribo".
   kardad: {
@@ -65,7 +70,14 @@ export const MARTIAL_ART_SPECIALS = {
   sambo: {
     base: { maneuverPenaltyReduction: { maneuvers: ['derribo', 'desarme'], factor: 0.5 } },
     advanced: { maneuverPenaltyReduction: { maneuvers: ['derribo', 'desarme', 'presa'], factor: 0.5 } },
-    supreme: { maneuverPenaltyReduction: { maneuvers: ['derribo', 'desarme', 'presa'], factor: 0.5 } }
+    // Supremo: ademas reduce los apuntados a la mitad, acumulable con Precisa -> 1/4.
+    supreme: {
+      maneuverPenaltyReduction: { maneuvers: ['derribo', 'desarme', 'presa'], factor: 0.5 },
+      doublePrecise: true,
+      // Mitad INTRINSECA del penalizador de Apuntados (independiente de Precisa): sin Precisa
+      // -> mitad; con Precisa, doublePrecise lo acumula al cuarto (no se aplican ambos).
+      aimedPenaltyFactor: 0.5
+    }
   },
   // Emp (avanzada) — "Desarmar sin penalizador y +3 a los controles enfrentados".
   emp: {
@@ -106,8 +118,12 @@ export const MARTIAL_ART_SPECIALS = {
   // taReduction: { amount, onlySoft } -> reduce la TA del defensor; onlySoft solo la
   //   parte blanda (no 'hard'); amount Infinity = la anula.
   // extraArmor: { value } -> +N a TODAS las TA del propio actor (bono de armadura).
-  // doublePrecise: true -> dobla la ventaja de la calidad Precisa (segunda mitad del
-  //   penalizador de apuntado/maniobra) del arma del atacante.
+  // doublePrecise: true (Sambo Supremo) -> su reduccion a la mitad de los Ataques
+  //   Apuntados se ACUMULA con la calidad Precisa del Desarmado: el atacante aplica
+  //   solo una CUARTA parte del penalizador de apuntado (redondeado hacia arriba en
+  //   grupos de 5). Solo apuntados (no Engatillar).
+  // attackTables: ['impact'|'cut'|'thrust'|'energy'] -> tablas (CON/FIL/PEN/ENE) que el
+  //   arte PERMITE ELEGIR al atacar (perfil AM); se UNEN entre artes y CON siempre esta.
   moaiThai: {
     supreme: { critBonus: { value: 20, condition: 'always' } }
   },
@@ -121,16 +137,29 @@ export const MARTIAL_ART_SPECIALS = {
     arcane: { critBonus: { value: 20, condition: 'aimed' } }
   },
   enuth: {
-    base: { critBonus: { value: 20, condition: 'inconsciencia' }, doublePrecise: true },
-    arcane: { critBonus: { value: 50, condition: 'inconsciencia' }, doublePrecise: true }
+    base: { critBonus: { value: 20, condition: 'inconsciencia' } },
+    arcane: { critBonus: { value: 50, condition: 'inconsciencia' } }
   },
+  // Dumah ("arte del viento"): corta el aire -> ataca en tabla de FIL o PEN (elegible)
+  // desde Base; la opcion persiste en Arcano (el lector toma el grado actual, se replica).
   dumah: {
-    base: { taReduction: { amount: 2, onlySoft: false } },
-    arcane: { taReduction: { amount: 6, onlySoft: false } }
+    base: { taReduction: { amount: 2, onlySoft: false }, attackTables: ['cut', 'thrust'] },
+    // Arcano: ademas, "cualquier Dano produce automaticamente desangramiento, incluso sin
+    // Critico" (directBleeding).
+    arcane: {
+      taReduction: { amount: 6, onlySoft: false },
+      attackTables: ['cut', 'thrust'],
+      directBleeding: true
+    }
   },
   rexFrame: {
     base: { extraArmor: { value: 3 } },
     arcane: { extraArmor: { value: 6 } }
+  },
+  // Velez (avanzada): en Arcano "Ataques intangibles de Energia" -> tabla ENE (elegible) y
+  // "Permite usar POD para chequeos" -> POD elegible en los controles enfrentados (powerChecks).
+  velez: {
+    arcane: { attackTables: ['energy'], powerChecks: true }
   }
 };
 
@@ -159,6 +188,21 @@ export function martialArtManeuverPenaltyFactor(actor, maneuverSlug, { isCounter
     if (Number(r.factor) < factor) factor = Number(r.factor);
   }
   return factor;
+}
+
+/**
+ * True si alguna Arte Marcial del actor concede DANO COMPLETO en una maniobra concreta
+ * (excepcion a la mitad de la regla general): Grappling Supremo en Presa/Derribo.
+ * @param {object} actor
+ * @param {string} maneuverSlug
+ * @returns {boolean}
+ */
+export function martialArtGrantsFullManeuverDamage(actor, maneuverSlug) {
+  if (!maneuverSlug) return false;
+  return actorArts(actor).some(art => {
+    const fd = getMartialArtSpecial(art?.system?.canonicalId, gradeOf(art))?.fullDamageManeuvers;
+    return Array.isArray(fd) && fd.includes(maneuverSlug);
+  });
 }
 
 /**
@@ -301,5 +345,65 @@ export function martialArtFlatArmor(actor) {
 export function martialArtDoublesPrecise(actor) {
   return actorArts(actor).some(
     art => !!getMartialArtSpecial(art?.system?.canonicalId, gradeOf(art))?.doublePrecise
+  );
+}
+
+/**
+ * Factor de reduccion del penalizador de Ataques Apuntados que un Arte Marcial aporta POR
+ * SI MISMO (Sambo Supremo: 0.5 = mitad). 1 = sin reduccion. Independiente de la calidad
+ * Precisa: cuando ambas concurren, la acumulacion al cuarto la maneja doublePrecise.
+ * @param {object} actor
+ * @returns {number} min factor entre las artes del actor
+ */
+export function martialArtAimedPenaltyFactor(actor) {
+  let factor = 1;
+  for (const art of actorArts(actor)) {
+    const f = getMartialArtSpecial(art?.system?.canonicalId, gradeOf(art))?.aimedPenaltyFactor;
+    if (f != null && Number(f) < factor) factor = Number(f);
+  }
+  return factor;
+}
+
+/**
+ * True si alguna Arte Marcial del actor provoca DESANGRAMIENTO DIRECTO: cualquier dano
+ * causado desangra al defensor aunque NO haya critico (Dumah Arcano).
+ * @param {object} actor
+ * @returns {boolean}
+ */
+export function martialArtCausesDirectBleeding(actor) {
+  return actorArts(actor).some(
+    art => !!getMartialArtSpecial(art?.system?.canonicalId, gradeOf(art))?.directBleeding
+  );
+}
+
+/**
+ * Tablas de ataque (tipos de critico/TA) que las Artes Marciales del actor permiten
+ * ELEGIR al atacar con el perfil "Artes Marciales": 'impact' (CON) siempre disponible
+ * (golpe basico); las artes ANADEN opciones -> Dumah 'cut'/'thrust' (FIL/PEN), Velez
+ * 'energy' (ENE). Se UNEN entre artes. El valor elegido viaja como armorType y define
+ * tanto la TA del defensor como la tabla de criticos. Fundamento: Dominus Exxet.
+ * @param {object} actor
+ * @returns {string[]} subconjunto de ['impact','cut','thrust','energy']
+ */
+export function martialArtAllowedAttackTables(actor) {
+  const tables = new Set(['impact']);
+  for (const art of actorArts(actor)) {
+    const at = getMartialArtSpecial(art?.system?.canonicalId, gradeOf(art))?.attackTables;
+    if (!Array.isArray(at)) continue;
+    for (const t of at) tables.add(t);
+  }
+  return [...tables];
+}
+
+/**
+ * True si alguna Arte Marcial del actor permite usar PODer en los chequeos enfrentados
+ * de maniobras (Velez Arcano: "Permite usar POD para chequeos"). El dialogo de control
+ * enfrentado ofrece POD como caracteristica elegible ademas de las de la maniobra.
+ * @param {object} actor
+ * @returns {boolean}
+ */
+export function martialArtAllowsPowerChecks(actor) {
+  return actorArts(actor).some(
+    art => !!getMartialArtSpecial(art?.system?.canonicalId, gradeOf(art))?.powerChecks
   );
 }

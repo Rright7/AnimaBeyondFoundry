@@ -66,6 +66,12 @@ export class ABFAttackData {
     // damage (Derribo, Presa, Inutilizar, Inconsciencia), this flag
     // mirrors the player's "Causar daño" checkbox. False by default RAW.
     this.causesDamage = !!p.causesDamage;
+    // Dano COMPLETO en la maniobra (excepcion a la mitad general): Grappling Supremo en
+    // Presa/Derribo. Lo fija el dialogo de ataque segun las Artes Marciales del atacante.
+    this.maneuverFullDamage = !!p.maneuverFullDamage;
+    // Desangramiento directo del atacante (Dumah Arcano): cualquier dano desangra al
+    // defensor aunque no haya critico.
+    this.directBleeding = !!p.directBleeding;
     // Set true when the maneuver was launched without an equipped
     // weapon (or with an unarmed weapon). Persisted so post-combat
     // resolvers can decide e.g. whether the resulting Presa allows
@@ -363,6 +369,14 @@ export class ABFAttackDataBuilder {
 
   causesDamage(b = true) {
     this._p.causesDamage = !!b;
+    return this;
+  }
+  maneuverFullDamage(b = true) {
+    this._p.maneuverFullDamage = !!b;
+    return this;
+  }
+  directBleeding(b = true) {
+    this._p.directBleeding = !!b;
     return this;
   }
 

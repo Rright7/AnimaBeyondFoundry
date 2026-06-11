@@ -580,7 +580,15 @@ export class DefenseConfigurationDialog extends FormApplication {
               delayRounds: Number(attackData?.delayRounds ?? 0) || 0
             },
             attacker: {
-              actorId: attackData?.attackerId ?? ''
+              actorId: attackData?.attackerId ?? '',
+              // Token del atacante (uuid preferido): el control enfrentado de maniobras debe
+              // resolver el TOKEN (sin vincular incluido), no el actor base, que pierde los
+              // overrides del token (artes, AE, caracteristicas). Best-effort: '' si no hay token.
+              tokenId:
+                this.modalData.attacker?.token?.document?.uuid ??
+                this.modalData.attacker?.token?.uuid ??
+                this.modalData.attacker?.token?.id ??
+                ''
             },
             defender: {
               actorId: actor.id,

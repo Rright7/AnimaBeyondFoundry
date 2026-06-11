@@ -80,6 +80,8 @@ export function isImmuneToBleeding(actor) {
  * @returns {boolean}
  */
 export function critTypeCausesBleeding(critType) {
-  if (!critType) return true;
+  // '' / '-' (NoneWeaponCritic.NONE) = tipo ausente: por defecto desangra (se asume fisico).
+  // Solo los tipos NO fisicos EXPLICITOS (energy/heat/cold/electricity) no desangran.
+  if (!critType || critType === '-') return true;
   return PHYSICAL_CRIT_TYPES.includes(String(critType).toLowerCase());
 }

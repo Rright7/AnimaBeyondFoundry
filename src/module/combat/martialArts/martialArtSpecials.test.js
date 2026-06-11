@@ -7,7 +7,12 @@ import {
   martialArtCritBonus,
   martialArtArmorReduction,
   martialArtFlatArmor,
-  martialArtDoublesPrecise
+  martialArtDoublesPrecise,
+  martialArtAllowedAttackTables,
+  martialArtAllowsPowerChecks,
+  martialArtGrantsFullManeuverDamage,
+  martialArtAimedPenaltyFactor,
+  martialArtCausesDirectBleeding
 } from './martialArtSpecials.js';
 
 const art = (canonicalId, grade) => ({ system: { canonicalId, grade: { value: grade } } });
@@ -164,9 +169,116 @@ describe('martialArtFlatArmor', () => {
 });
 
 describe('martialArtDoublesPrecise', () => {
-  test('Enuth dobla Precisa; otras no', () => {
-    expect(martialArtDoublesPrecise(actor(art('enuth', 'base')))).toBe(true);
-    expect(martialArtDoublesPrecise(actor(art('enuth', 'arcane')))).toBe(true);
+  test('Sambo Supremo dobla Precisa; otros grados/artes no', () => {
+    expect(martialArtDoublesPrecise(actor(art('sambo', 'supreme')))).toBe(true);
+    expect(martialArtDoublesPrecise(actor(art('sambo', 'advanced')))).toBe(false);
+    expect(martialArtDoublesPrecise(actor(art('enuth', 'base')))).toBe(false);
     expect(martialArtDoublesPrecise(actor(art('boxeo', 'advanced')))).toBe(false);
+  });
+});
+
+describe('martialArtAllowedAttackTables', () => {
+  test('Dumah permite FIL/PEN desde Base y se mantiene en Arcano', () => {
+    expect(martialArtAllowedAttackTables(actor(art('dumah', 'base')))).toEqual([
+      'impact',
+      'cut',
+      'thrust'
+    ]);
+    expect(martialArtAllowedAttackTables(actor(art('dumah', 'arcane')))).toEqual([
+      'impact',
+      'cut',
+      'thrust'
+    ]);
+  });
+
+  test('Velez permite ENE solo en Arcano (en Base, solo CON)', () => {
+    expect(martialArtAllowedAttackTables(actor(art('velez', 'base')))).toEqual(['impact']);
+    expect(martialArtAllowedAttackTables(actor(art('velez', 'arcane')))).toEqual([
+      'impact',
+      'energy'
+    ]);
+  });
+
+  test('CON (impact) siempre disponible aunque el arte no aporte tablas', () => {
+    expect(martialArtAllowedAttackTables(actor(art('boxeo', 'advanced')))).toEqual(['impact']);
+    expect(martialArtAllowedAttackTables(actor())).toEqual(['impact']);
+    expect(martialArtAllowedAttackTables({})).toEqual(['impact']);
+  });
+
+  test('varias artes UNEN sus tablas sin duplicar', () => {
+    const a = actor(art('dumah', 'base'), art('velez', 'arcane'));
+    expect(martialArtAllowedAttackTables(a)).toEqual(['impact', 'cut', 'thrust', 'energy']);
+  });
+
+  test('descriptor: Dumah base/arcano declaran attackTables', () => {
+    expect(getMartialArtSpecial('dumah', 'base').attackTables).toEqual(['cut', 'thrust']);
+    expect(getMartialArtSpecial('dumah', 'arcane').attackTables).toEqual(['cut', 'thrust']);
+    expect(getMartialArtSpecial('velez', 'arcane').attackTables).toEqual(['energy']);
+  });
+});
+
+describe('martialArtAllowsPowerChecks', () => {
+  test('Velez Arcano permite POD en chequeos; Base no', () => {
+    expect(martialArtAllowsPowerChecks(actor(art('velez', 'arcane')))).toBe(true);
+    expect(martialArtAllowsPowerChecks(actor(art('velez', 'base')))).toBe(false);
+  });
+  test('otras artes o sin artes -> false', () => {
+    expect(martialArtAllowsPowerChecks(actor(art('dumah', 'arcane')))).toBe(false);
+    expect(martialArtAllowsPowerChecks(actor(art('boxeo', 'advanced')))).toBe(false);
+    expect(martialArtAllowsPowerChecks(actor())).toBe(false);
+    expect(martialArtAllowsPowerChecks({})).toBe(false);
+  });
+  test('descriptor: velez.arcane declara powerChecks', () => {
+    expect(getMartialArtSpecial('velez', 'arcane').powerChecks).toBe(true);
+  });
+});
+
+describe('martialArtGrantsFullManeuverDamage', () => {
+  test('Grappling Supremo concede dano completo en Presa y Derribo', () => {
+    const a = actor(art('grappling', 'supreme'));
+    expect(martialArtGrantsFullManeuverDamage(a, 'presa')).toBe(true);
+    expect(martialArtGrantsFullManeuverDamage(a, 'derribo')).toBe(true);
+  });
+  test('Grappling Base/Avanzado NO conceden dano completo (siguen a la mitad)', () => {
+    expect(martialArtGrantsFullManeuverDamage(actor(art('grappling', 'base')), 'derribo')).toBe(false);
+    expect(martialArtGrantsFullManeuverDamage(actor(art('grappling', 'advanced')), 'presa')).toBe(false);
+  });
+  test('no aplica a otras maniobras ni otras artes ni sin slug', () => {
+    expect(martialArtGrantsFullManeuverDamage(actor(art('grappling', 'supreme')), 'desarme')).toBe(false);
+    expect(martialArtGrantsFullManeuverDamage(actor(art('sambo', 'supreme')), 'derribo')).toBe(false);
+    expect(martialArtGrantsFullManeuverDamage(actor(art('grappling', 'supreme')), '')).toBe(false);
+    expect(martialArtGrantsFullManeuverDamage(actor(), 'presa')).toBe(false);
+  });
+  test('descriptor: grappling.supreme declara fullDamageManeuvers', () => {
+    expect(getMartialArtSpecial('grappling', 'supreme').fullDamageManeuvers).toEqual(['presa', 'derribo']);
+  });
+});
+
+describe('martialArtAimedPenaltyFactor', () => {
+  test('Sambo Supremo reduce apuntados a la mitad (0.5) por si mismo', () => {
+    expect(martialArtAimedPenaltyFactor(actor(art('sambo', 'supreme')))).toBe(0.5);
+  });
+  test('Sambo Base/Avanzado y otras artes no reducen apuntados (1)', () => {
+    expect(martialArtAimedPenaltyFactor(actor(art('sambo', 'base')))).toBe(1);
+    expect(martialArtAimedPenaltyFactor(actor(art('sambo', 'advanced')))).toBe(1);
+    expect(martialArtAimedPenaltyFactor(actor(art('grappling', 'supreme')))).toBe(1);
+    expect(martialArtAimedPenaltyFactor(actor())).toBe(1);
+  });
+  test('descriptor: sambo.supreme declara aimedPenaltyFactor', () => {
+    expect(getMartialArtSpecial('sambo', 'supreme').aimedPenaltyFactor).toBe(0.5);
+  });
+});
+
+describe('martialArtCausesDirectBleeding', () => {
+  test('Dumah Arcano desangra directamente; Base no', () => {
+    expect(martialArtCausesDirectBleeding(actor(art('dumah', 'arcane')))).toBe(true);
+    expect(martialArtCausesDirectBleeding(actor(art('dumah', 'base')))).toBe(false);
+  });
+  test('otras artes o sin artes -> false', () => {
+    expect(martialArtCausesDirectBleeding(actor(art('hakyoukuken', 'arcane')))).toBe(false);
+    expect(martialArtCausesDirectBleeding(actor())).toBe(false);
+  });
+  test('descriptor: dumah.arcane declara directBleeding', () => {
+    expect(getMartialArtSpecial('dumah', 'arcane').directBleeding).toBe(true);
   });
 });

@@ -94,8 +94,10 @@ export function computeCombatResult(attackData, defenseData) {
         causesDamage &&
         def.damageHalvedIfApplied
       ) {
-        // Path 2: damage with halved base and normal TA.
-        baseDamage = Math.floor(baseDamage / 2);
+        // Path 2: damage with halved base and normal TA. EXCEPCION: ciertas Artes
+        // Marciales conceden dano COMPLETO en la maniobra (Grappling Supremo en
+        // Presa/Derribo) -> no se halvea el base.
+        if (!attackData.maneuverFullDamage) baseDamage = Math.floor(baseDamage / 2);
         // RAW: aimed maneuvers count the FULL damage for the critical (trigger
         // + level), while HP loss stays halved.
         critUsesFullDamage = !!def.dealsMandatoryDamage;
@@ -144,6 +146,11 @@ export function computeCombatResult(attackData, defenseData) {
   const isCritical = critLifePercent >= criticThreshold || attackData.automaticCrit; //TO-DO: Add crit inmunity
   const critValue = critDamage + attackData.critBonus + (attackData.critDamageBonus ?? 0);
 
+  // Reduccion de TA BLANDA (Hakyoukuken) para mostrarla en la tarjeta: cantidad plana (-2
+  // Base) o, con el centinela 999, "anula" la TA blanda (Arcano).
+  const softTaReduction = Number(attackData.softArmorReduction) || 0;
+  const softArmorNullified = softTaReduction >= 999;
+
   const result = ABFCombatResultData.builder()
     .difference(difference)
     .hasCounterAttack(hasCounterAttack)
@@ -157,6 +164,10 @@ export function computeCombatResult(attackData, defenseData) {
     .isCritical(isCritical)
     .baseCriticalValue(critValue)
     .attackBreak(attackData.breakage)
+    .armorType(attackData.armorType)
+    .softReducedArmor(softArmorNullified ? 0 : softTaReduction)
+    .softArmorNullified(softArmorNullified)
+    .directBleeding(attackData.directBleeding)
     .build();
 
   // Attach maneuver context (consumed by the chat hook that auto-posts the

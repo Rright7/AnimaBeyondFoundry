@@ -138,6 +138,17 @@ Hooks.once('ready', async () => {
       all: () => maneuverRegistry.all(),
       executePostCombat: executeManeuverPostCombat
     };
+    // Panel rapido de maniobras (keybinding + macro de compendio): abre todas las
+    // maniobras del token sin pasar por la ficha. game.animabf.openManeuvers([token]).
+    const { openManeuversPanel } = await import(
+      './module/combat/maneuvers/openManeuversPanel.js'
+    );
+    game.animabf.openManeuvers = token => openManeuversPanel(token);
+    // Panel rapido de habilidades secundarias (keybinding + macro de compendio).
+    const { openSecondaryAbilitiesPanel } = await import(
+      './module/actor/utils/openSecondaryAbilitiesPanel.js'
+    );
+    game.animabf.openSecondaryAbilities = token => openSecondaryAbilitiesPanel(token);
     registerGrappleRelationalSync();
   } catch (e) {
     console.warn('[ABF] maneuvers API not initialized:', e);
@@ -527,9 +538,13 @@ Hooks.on('createChatMessage', async message => {
     // return temprano cuando el mensaje no proviene de una maniobra.
     // Excepción: Daño retrasado difiere el daño Y su desangrado a cuando se
     // manifiesta (processDueDelayedDamage), así que NO sangra en el impacto.
+    // Desangramiento: por CRITICO (RAW general) o por desangramiento DIRECTO del atacante
+    // (Dumah Arcano: cualquier dano desangra aunque no haya critico).
+    const directBleedHit =
+      !!flags.result?.directBleeding && Number(flags.result?.damageFinal ?? 0) > 0;
     if (
       flags.kind === 'combatResult' &&
-      flags.result?.isCritical &&
+      (flags.result?.isCritical || directBleedHit) &&
       flags.result?.maneuverSlug !== 'dano-retrasado'
     ) {
       const defRef = flags.defender?.tokenId || flags.defender?.actorId || '';
@@ -643,12 +658,13 @@ Hooks.on('createChatMessage', async message => {
     // multiDefenseResult (auto-defense). The maneuver flags are copied onto
     // the multiDefenseResult itself by the autoDefend handlers, so we don't
     // depend on the (sometimes-null) sourceAttackMessageId. Entries carry a
-    // full tokenUuid per defender; the attacker only has an actor id here.
+    // full tokenUuid per defender; the attacker carries its token uuid too so
+    // unlinked-token attackers resolve to their on-map token actor.
     if (flags.kind === 'multiDefenseResult') {
       const slug = flags.maneuverSlug;
       if (!slug) return;
       const itemName = flags.maneuverItemName || slug;
-      const attackerRef = flags.attackerId || '';
+      const attackerRef = flags.attackerTokenUuid || flags.attackerId || '';
       const wasUnarmed = !!flags.maneuverWasUnarmed;
       const entries = flags.entries ?? [];
       for (const entry of entries) {

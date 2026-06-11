@@ -15,7 +15,10 @@ import {
 } from '../combat/martialArts/martialArtCatalog.js';
 import {
   martialArtCritBonus,
-  martialArtArmorReduction
+  martialArtArmorReduction,
+  martialArtAllowedAttackTables,
+  martialArtGrantsFullManeuverDamage,
+  martialArtCausesDirectBleeding
 } from '../combat/martialArts/martialArtSpecials.js';
 import { maxFatiguePerAction } from '../combat/utils/fatigue.js';
 import { buildRollFormula } from '../combat/utils/buildRollFormula.js';
@@ -43,7 +46,7 @@ export class AttackConfigurationDialog extends FormApplication {
       weapon ?? (weaponId ? attackerActor.items.get(weaponId) : undefined);
 
     if (!resolvedWeapon) {
-      ui.notifications?.warn('Arma no encontrada.');
+      ui.notifications?.warn(game.i18n.localize('macros.combat.dialog.weapon.notFound'));
     }
 
     // Fallback targets snapshot (reusing shared helper)
@@ -191,7 +194,10 @@ export class AttackConfigurationDialog extends FormApplication {
       const brawl =
         10 + this.attackerActor.system.characteristics.primaries.strength.mod;
       const ma = martialArtUnarmedDamage(this.attackerActor);
-      const base = ma.base !== null ? Math.max(ma.base, brawl) : brawl;
+      // Con Arte Marcial el Dano Base del arte ES el dano (puede usar POD, p.ej. Tai Chi):
+      // no aplicar el suelo brawl (10+FUE), que pisaria POD con FUE. El brawl solo cuenta
+      // para el desarmado SIN arte.
+      const base = ma.base !== null ? ma.base : brawl;
       combat.damage.final = (combat.damage.special ?? 0) + base + ma.bonus;
     } else {
       combat.weapon = weapon;
@@ -208,6 +214,17 @@ export class AttackConfigurationDialog extends FormApplication {
       ui.weaponHasSecondaryCritic =
         weapon?.system?.critic?.secondary?.value !==
         game.animabf.weapon.NoneWeaponCritic.NONE;
+
+      // Perfil "Artes Marciales": el atacante elige la TABLA de ataque entre las que sus
+      // artes permiten (Dumah FIL/PEN, Velez ENE), no solo CON. 'impact' siempre disponible.
+      if (weapon.system?.isMartialArtsProfile?.value) {
+        const tables = martialArtAllowedAttackTables(this.attackerActor);
+        if (!tables.includes(combat.criticSelected)) combat.criticSelected = 'impact';
+        ui.martialAttackTables = tables.map(value => ({
+          value,
+          selected: value === combat.criticSelected
+        }));
+      }
 
       combat.damage.final =
         (combat.damage.special ?? 0) + (weapon?.system?.damage?.final?.value ?? 0);
@@ -273,7 +290,7 @@ export class AttackConfigurationDialog extends FormApplication {
     if (!actor) return ui.notifications?.warn('Actor no encontrado.');
     const combat = this.modalData.attacker?.combat;
     const weapon = combat?.weapon;
-    if (!weapon) return ui.notifications?.warn('Arma no encontrada.');
+    if (!weapon) return ui.notifications?.warn(game.i18n.localize('macros.combat.dialog.weapon.notFound'));
 
     try {
       this.modalData.attackSent = true;
@@ -535,6 +552,13 @@ export class AttackConfigurationDialog extends FormApplication {
         .maneuverWasUnarmed(!combat.weapon || !!combat.weapon.system?.isUnarmed?.value)
         .delayRounds(this.modalData.maneuver?.delayRounds ?? 0)
         .causesDamage(!!combat.causesDamage)
+        // Excepcion de dano completo en maniobra (Grappling Supremo en Presa/Derribo):
+        // el resolver no halvea el dano base si esto es true.
+        .maneuverFullDamage(
+          martialArtGrantsFullManeuverDamage(actor, this.modalData.maneuver?.slug ?? '')
+        )
+        // Desangramiento directo (Dumah Arcano): cualquier impacto con dano desangra.
+        .directBleeding(martialArtCausesDirectBleeding(actor))
         .aimed(!!combat.aimed)
         .aimedWhere(combat.aimedZone || '')
         .targets(this.modalData.targets ?? [])

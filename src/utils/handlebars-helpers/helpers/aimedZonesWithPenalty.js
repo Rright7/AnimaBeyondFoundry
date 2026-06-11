@@ -50,19 +50,27 @@ const formatPenalty = penalty => {
 
 export const aimedZonesWithPenaltyHelper = {
   name: 'aimedZonesWithPenalty',
-  fn: function (weapon) {
-    // Handlebars passes its options object as the last argument; if the
-    // template called the helper with no arguments, what we receive in
-    // `weapon` is that options object, not a weapon. Detect and ignore.
-    const isOptions =
-      weapon && typeof weapon === 'object' && 'hash' in weapon && 'name' in weapon;
-    const effectiveWeapon = isOptions ? undefined : weapon;
+  fn: function (weapon, actor) {
+    // Handlebars passes its options object as the LAST argument. Detectarlo tanto si
+    // se llamo con (weapon, actor), solo (weapon) o sin args, para no confundir las
+    // opciones con un arma/actor. El actor es necesario para que el desplegable
+    // refleje los efectos de Artes Marciales sobre el penalizador (Sambo Supremo dobla
+    // la ventaja de Precisa), igual que la tirada real.
+    const isOptions = v => v && typeof v === 'object' && 'hash' in v && 'name' in v;
+    let effectiveWeapon = weapon;
+    let effectiveActor = actor;
+    if (isOptions(effectiveActor)) effectiveActor = undefined; // llamado solo con weapon
+    if (isOptions(effectiveWeapon)) {
+      effectiveWeapon = undefined; // llamado sin args
+      effectiveActor = undefined;
+    }
 
     return getAimedZones().map(({ id, penalty: rawPenalty }) => {
       let penalty = rawPenalty;
       if (effectiveWeapon) {
         const composed = composeAimedPenalty(rawPenalty, {
           weapon: effectiveWeapon,
+          actor: effectiveActor,
           aimedZone: id
         });
         penalty = composed.penalty;

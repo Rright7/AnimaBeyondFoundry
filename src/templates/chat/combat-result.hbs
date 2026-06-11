@@ -27,7 +27,7 @@
       {{/unless}}
     {{/if}}
 
-    <p data-requires-permission="gm"><strong>{{localize "chat.combatResult.armor"}}:</strong> {{combatResult.finalArmor}}{{#if combatResult.reducedArmor}} (−{{combatResult.reducedArmor}} {{localize "chat.combatResult.reduced"}}){{/if}}</p>
+    <p data-requires-permission="gm"><strong>{{localize "chat.combatResult.armor"}}:</strong> {{combatResult.finalArmor}}{{#if combatResult.reducedArmor}} (−{{combatResult.reducedArmor}} {{localize "chat.combatResult.reduced"}}){{/if}}{{#if combatResult.softArmorNullified}} ({{localize "chat.combatResult.softNullified"}}){{/if}}{{#if combatResult.softReducedArmor}} (−{{combatResult.softReducedArmor}} {{localize "chat.combatResult.softReduced"}}){{/if}}</p>
     {{#if combatResult.appliedDamage}}
       <p><strong>{{localize "chat.combatResult.finalDamage"}}:</strong> {{combatResult.appliedDamage}}<span data-requires-permission="gm"> ({{localize "chat.combatResult.baseDamage"}}: {{combatResult.damageFinal}}, {{combatResult.damagePercentage}}% of {{combatResult.finalBaseDamage}})</span></p>
     {{else}}

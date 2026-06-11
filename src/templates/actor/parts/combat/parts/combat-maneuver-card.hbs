@@ -29,7 +29,7 @@
     </div>
     {{#if maneuver.slug}}
       <div class='combat-maneuver-card__rules'>
-        {{combatManeuverRulesSummary maneuver.slug}}
+        {{combatManeuverRulesSummary maneuver.slug @root.actor}}
       </div>
     {{/if}}
     {{#with (combatManeuverAimedZoneOptions maneuver.slug) as |zones|}}

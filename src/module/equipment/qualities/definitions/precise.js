@@ -18,23 +18,25 @@ export const precise = new EquipmentQualityDefinition({
   aliases: ['precisa', 'précise'],
 
   modifyAimedPenalty(penalty, ctx) {
-    // All Tabla 45 values are even multiples of 10, so the halved result
-    // is always a clean multiple of 5. Truncation toward zero is therefore
-    // exact, not lossy.
-    let p = Math.trunc(Number(penalty || 0) / 2);
-    // Enuth dobla la ventaja de Precisa: aplica la mitad otra vez (penalizador a 1/4).
-    if (martialArtDoublesPrecise(ctx?.actor)) p = Math.trunc(p / 2);
-    return p;
+    const base = Number(penalty || 0);
+    // Sambo Supremo: su reduccion a la mitad de los Ataques Apuntados se ACUMULA con
+    // Precisa, dejando una CUARTA parte del penalizador, redondeada HACIA ARRIBA (hacia
+    // 0) en grupos de 5. base/4 redondeado a 5 = ceil(base/20)*5 (base es negativo).
+    if (martialArtDoublesPrecise(ctx?.actor)) {
+      // || 0 normaliza el -0 que produce Math.ceil(negativo cercano a 0).
+      return Math.ceil(base / 20) * 5 || 0;
+    }
+    // Precisa: la mitad. Tabla 45 son multiplos de 10, asi que /2 da multiplos de 5
+    // exactos (truncar hacia 0 no pierde precision).
+    return Math.trunc(base / 2);
   },
 
   modifyManeuverPenalty(penalty, ctx) {
     // RAW only calls out Engatillar by name. Aimed-attack maneuvers
     // (Inutilizar, Inconsciencia) get their discount through the aimed
-    // pathway, not through this hook.
+    // pathway, not through this hook. (Sambo Supremo solo afecta a los apuntados.)
     if (ctx?.maneuverSlug === 'engatillar') {
-      let p = Math.trunc(Number(penalty || 0) / 2);
-      if (martialArtDoublesPrecise(ctx?.actor)) p = Math.trunc(p / 2);
-      return p;
+      return Math.trunc(Number(penalty || 0) / 2);
     }
     return penalty;
   }

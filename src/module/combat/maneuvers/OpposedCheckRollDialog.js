@@ -1,10 +1,12 @@
 import { rollOpenD10, getCharacteristicValue } from './opposedCheck/resolveOpposedCheck.js';
+import { martialArtAllowsPowerChecks } from '../martialArts/martialArtSpecials.js';
 
 const STAT_LABELS = {
   strength: 'FUE',
   dexterity: 'DES',
   agility: 'AGI',
-  constitution: 'CON'
+  constitution: 'CON',
+  power: 'POD'
 };
 
 /**
@@ -31,7 +33,13 @@ export async function openOpposedCheckRollDialog({
   damagePercent,
   defenderIsQuadruped = false
 }) {
-  const stats = role === 'attacker' ? maneuver.attackerStats : maneuver.defenderStats;
+  const baseStats = role === 'attacker' ? maneuver.attackerStats : maneuver.defenderStats;
+  // Velez (Arcano) "permite usar POD para chequeos": anade POD como caracteristica elegible
+  // en el control enfrentado, ademas de las que define la maniobra.
+  const stats =
+    Array.isArray(baseStats) && martialArtAllowsPowerChecks(actor) && !baseStats.includes('power')
+      ? [...baseStats, 'power']
+      : baseStats;
   // Inmovilizar a distancia: el atacante usa un valor de característica FIJO (8)
   // en vez de elegir FUE/DES. El "Modificador extra" sirve de ±3 del DJ.
   const useFixed = role === 'attacker' && Number(maneuver?.fixedAttackerValue) > 0;
