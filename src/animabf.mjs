@@ -95,6 +95,11 @@ Hooks.once('setup', () => {
 /* When ready */
 /* ------------------------------------ */
 Hooks.once('ready', async () => {
+  document.body.classList.toggle(
+    'abf-theme-dark',
+    game.settings.get(System.id, ABFSettingsKeys.COLOR_THEME) === 'dark'
+  );
+
   if (game.user.isGM) {
     const creationVersion = game.settings.get(
       System.id,
@@ -133,6 +138,17 @@ Hooks.once('ready', async () => {
       all: () => maneuverRegistry.all(),
       executePostCombat: executeManeuverPostCombat
     };
+    // Panel rapido de maniobras (keybinding + macro de compendio): abre todas las
+    // maniobras del token sin pasar por la ficha. game.animabf.openManeuvers([token]).
+    const { openManeuversPanel } = await import(
+      './module/combat/maneuvers/openManeuversPanel.js'
+    );
+    game.animabf.openManeuvers = token => openManeuversPanel(token);
+    // Panel rapido de habilidades secundarias (keybinding + macro de compendio).
+    const { openSecondaryAbilitiesPanel } = await import(
+      './module/actor/utils/openSecondaryAbilitiesPanel.js'
+    );
+    game.animabf.openSecondaryAbilities = token => openSecondaryAbilitiesPanel(token);
     registerGrappleRelationalSync();
   } catch (e) {
     console.warn('[ABF] maneuvers API not initialized:', e);
@@ -214,8 +230,39 @@ Hooks.once('ready', async () => {
       if (!msg) return;
 
       const animabf = msg.flags?.animabf ?? {};
+
+      // Auth: el emisor (p.userId) debe ser GM u owner del defensor o del atacante
+      // del resultado. El canal de socket no esta autenticado de origen, asi que
+      // esto evita que un cliente cualquiera falsee resultados de combate ajenos.
+      const emitter = p.userId ? game.users?.get(p.userId) : null;
+      const defActor = animabf.defender?.actorId
+        ? game.actors.get(animabf.defender.actorId)
+        : null;
+      const atkId = animabf.attacker?.actorId || animabf.attackData?.attackerId || '';
+      const atkActor = atkId ? game.actors.get(atkId) : null;
+      const OWNER = CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER;
+      const allowed =
+        !!emitter &&
+        (emitter.isGM ||
+          defActor?.testUserPermission(emitter, OWNER) ||
+          atkActor?.testUserPermission(emitter, OWNER));
+      if (!allowed) return;
+
+      // Whitelist de claves: solo estado de resolucion de critico y del contraataque,
+      // para que un patch no pueda inyectar campos arbitrarios del resultado (dano, etc).
+      const ALLOWED_KEYS = [
+        'counterAttackConsumed',
+        'isCritical', 'critResolved', 'critImmune', 'critImmuneReason', 'critPhase',
+        'critEffects', 'critLevel', 'critLevelRoll', 'critLevelRaw', 'critMod',
+        'phRoll', 'phBase', 'phMod', 'phTotal', 'phPassed', 'failureLevel',
+        'critLocation', 'critLocationRoll'
+      ];
+      const validPatch = Object.fromEntries(
+        Object.entries(p.patch ?? {}).filter(([k]) => ALLOWED_KEYS.includes(k))
+      );
+
       const current = animabf.result ?? {};
-      const updated = { ...current, ...(p.patch ?? {}) };
+      const updated = { ...current, ...validPatch };
 
       const { Templates } = await import('./module/utils/constants.js');
       const renderFn = foundry.applications?.handlebars?.renderTemplate ?? renderTemplate;
@@ -491,9 +538,13 @@ Hooks.on('createChatMessage', async message => {
     // return temprano cuando el mensaje no proviene de una maniobra.
     // Excepción: Daño retrasado difiere el daño Y su desangrado a cuando se
     // manifiesta (processDueDelayedDamage), así que NO sangra en el impacto.
+    // Desangramiento: por CRITICO (RAW general) o por desangramiento DIRECTO del atacante
+    // (Dumah Arcano: cualquier dano desangra aunque no haya critico).
+    const directBleedHit =
+      !!flags.result?.directBleeding && Number(flags.result?.damageFinal ?? 0) > 0;
     if (
       flags.kind === 'combatResult' &&
-      flags.result?.isCritical &&
+      (flags.result?.isCritical || directBleedHit) &&
       flags.result?.maneuverSlug !== 'dano-retrasado'
     ) {
       const defRef = flags.defender?.tokenId || flags.defender?.actorId || '';
@@ -607,12 +658,13 @@ Hooks.on('createChatMessage', async message => {
     // multiDefenseResult (auto-defense). The maneuver flags are copied onto
     // the multiDefenseResult itself by the autoDefend handlers, so we don't
     // depend on the (sometimes-null) sourceAttackMessageId. Entries carry a
-    // full tokenUuid per defender; the attacker only has an actor id here.
+    // full tokenUuid per defender; the attacker carries its token uuid too so
+    // unlinked-token attackers resolve to their on-map token actor.
     if (flags.kind === 'multiDefenseResult') {
       const slug = flags.maneuverSlug;
       if (!slug) return;
       const itemName = flags.maneuverItemName || slug;
-      const attackerRef = flags.attackerId || '';
+      const attackerRef = flags.attackerTokenUuid || flags.attackerId || '';
       const wasUnarmed = !!flags.maneuverWasUnarmed;
       const entries = flags.entries ?? [];
       for (const entry of entries) {
@@ -928,8 +980,13 @@ Hooks.on('hotbarDrop', async (_bar, data, slot) => {
   const actor = item.parent;
   if (!actor) return; // No actor -> no macro
 
-  const creatorId = item.system?.hotbarMacroCreatorId;
-  if (!creatorId) return; // No reference -> do nothing (let Foundry default)
+  // Las armas crean SIEMPRE una macro de ataque, aunque el item no tenga el campo
+  // poblado: las del compendio/importadas llevan hotbarMacroCreatorId vacio y, sin
+  // este fallback por tipo, Foundry crearia por defecto una macro que abre la hoja
+  // (el bug). El campo sigue siendo un override valido para cualquier tipo de item.
+  const creatorId =
+    item.system?.hotbarMacroCreatorId || (item.type === 'weapon' ? 'weapon.attack' : '');
+  if (!creatorId) return; // Sin creador -> comportamiento por defecto de Foundry
 
   const creator = macroCreators[creatorId];
   if (typeof creator !== 'function') return; // Unknown id -> do nothing

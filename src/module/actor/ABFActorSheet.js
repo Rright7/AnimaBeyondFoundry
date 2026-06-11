@@ -10,6 +10,7 @@ import { ABFItems } from '../items/ABFItems';
 import { ABFDialogs } from '../dialogs/ABFDialogs';
 import { Logger } from '../../utils';
 import { ABFSettingsKeys } from '../../utils/registerSettings';
+import { martialArtExtraDefenses } from '../combat/martialArts/martialArtSpecials.js';
 import {
   buildTechniqueViewModel,
   techAddEffect,
@@ -27,6 +28,7 @@ import {
   ensureLinkedEffectForItem,
   findEffectByItemOrigin
 } from './utils/ensureLinkedEffectForItem.js';
+import { syncViaSpells } from './utils/syncViaSpells.js';
 
 /** @typedef {import('./constants').TActorData} TData */
 /** @typedef {typeof FormApplication<FormApplicationOptions, TData, TData>} TFormApplication */
@@ -208,6 +210,9 @@ export default class ABFActorSheet extends ActorSheetV1 {
       value: actor.system?.domine?.kiAccumulation?.[c.key]?.final?.value ?? 0
     }));
     // Estado de "Cargar Ki" (concentración por asalto).
+    // Defensas adicionales sin penalizador por Artes Marciales (Lama/Lama Tsu), para
+    // mostrarlas (read-only) en Opciones Avanzadas junto al extra manual.
+    sheet.maExtraDefenses = martialArtExtraDefenses(actor);
     sheet.kiCharging = !!actor.flags?.animabf?.chargingKi;
     sheet.kiFullAccumulation = !!actor.flags?.animabf?.fullKiAccumulation;
     // Estado de "Acumular zeón" (concentración mágica por asalto).
@@ -239,6 +244,26 @@ export default class ABFActorSheet extends ActorSheetV1 {
     this._activateEffectControls(html);
     this._activateCombatManeuverSearch(html);
     this._activateKiTechniquesListeners(html);
+    this._activateSphereSpellSync(html);
+  }
+
+  // Esferas de Magia: al cambiar el nivel de una vía, sincroniza el grimorio
+  // (añade/quita los hechizos de esa vía según el nuevo nivel).
+  _activateSphereSpellSync(html) {
+    const root = html[0] ?? html;
+    if (!root) return;
+
+    root.querySelectorAll('.sphere-value').forEach(input => {
+      input.addEventListener('change', async ev => {
+        const name = ev.currentTarget.name ?? '';
+        const via = name.match(/spheres\.([^.]+)\.value/)?.[1];
+        if (!via) return;
+        // Vaciar el campo no debe arrasar la vía; un 0 explícito sí.
+        const raw = String(ev.currentTarget.value ?? '').trim();
+        if (raw === '') return;
+        await syncViaSpells(this.actor, via, Number(raw) || 0);
+      });
+    });
   }
 
   // Constructor de Técnicas de Ki dentro de la pestaña: cada control lleva (o
@@ -422,6 +447,17 @@ export default class ABFActorSheet extends ActorSheetV1 {
 
       this._pendingUpdate[el.name] = value;
       this._flushPendingUpdate();
+
+      // Feedback al equipar/desequipar un arma o armadura (accion silenciosa).
+      const equipMatch = String(el.name).match(
+        /^system\.dynamic\.(weapons|armors)\.([^.]+)\.system\.equipped\.value$/
+      );
+      if (equipMatch) {
+        const item = this.actor.items.get(equipMatch[2]);
+        if (item) {
+          ui.notifications?.info(`«${item.name}» ${value ? 'equipada' : 'desequipada'}.`);
+        }
+      }
     });
   }
 

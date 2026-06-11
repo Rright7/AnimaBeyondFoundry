@@ -1,15 +1,15 @@
 import { buildGrappleOptions } from './rollOptions.js';
 import { upsertGrappleSource } from '../../../../combat/maneuvers/grappleSources.js';
 
-// Attacker whose "Apresando" effect carries per-defender sources. The effect is
-// exposed via items.find (the live document API), matching how Foundry actors
-// expose embedded items.
+// Attacker whose "Apresando" effect carries per-defender sources. Foundry's
+// actor.items is a Collection: exposes .find AND .contents AND is iterable, so the
+// mock provides both (.contents is what activeEffectItems spreads with [...]).
 function attackerWithSources(sources) {
   const apresando = { type: 'effect', name: 'Apresando', system: { sources } };
   return {
     type: 'character',
     getFlag: () => undefined,
-    items: { find: fn => [apresando].find(fn) }
+    items: { find: fn => [apresando].find(fn), contents: [apresando] }
   };
 }
 
@@ -49,7 +49,11 @@ describe('buildGrappleOptions — relational wasUnarmed (per defender)', () => {
   });
 
   test('no Apresando effect: not grappling', () => {
-    const noGrab = { type: 'character', getFlag: () => undefined, items: { find: () => undefined } };
+    const noGrab = {
+      type: 'character',
+      getFlag: () => undefined,
+      items: { find: () => undefined, contents: [] }
+    };
     expect(buildGrappleOptions(noGrab, defender('oni')).has('self:grappling')).toBe(false);
   });
 });

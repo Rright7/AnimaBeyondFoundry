@@ -87,6 +87,10 @@ export default async function autoDefendActionHandler(message, _html, ds) {
           maneuverWasUnarmed: !!attackData?.maneuverWasUnarmed,
           delayRounds: Number(attackData?.delayRounds ?? 0) || 0,
           attackerId: attackData?.attackerId ?? '',
+          // Token del atacante (uuid preferido): el control enfrentado de maniobras
+          // resuelve el TOKEN (sin vincular incluido) en vez del actor base, que pierde
+          // los overrides del token (artes, AE, caracteristicas).
+          attackerTokenUuid: resolveAttackerTokenUuid(msg, attackData),
           batch: { createdAt: Date.now() },
           entries: entries.map(e => ({ ...e, applied: false }))
         }
@@ -124,6 +128,17 @@ function safeParseJSON(s) {
   } catch {
     return null;
   }
+}
+
+// Resuelve el uuid de token del atacante a partir del mensaje de ataque (su
+// speaker es el atacante), con fallback por id de actor. Vacio si no hay token.
+function resolveAttackerTokenUuid(msg, attackData) {
+  let token = msg?.speaker?.token ? canvas.tokens?.get?.(msg.speaker.token) : null;
+  if (!token && attackData?.attackerId) {
+    token =
+      canvas.tokens?.placeables?.find(t => t.actor?.id === attackData.attackerId) ?? null;
+  }
+  return token?.document?.uuid ?? token?.uuid ?? token?.id ?? '';
 }
 
 // Build one entry of the consolidated result (prefer token name)

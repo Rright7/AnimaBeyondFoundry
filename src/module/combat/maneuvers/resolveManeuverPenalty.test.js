@@ -72,7 +72,7 @@ describe('resolveManeuverAttackPenalty', () => {
 
   test('no def → zeros', () => {
     expect(resolveManeuverAttackPenalty({ def: null, weapon: weapon(), aimed: true, aimedZone: 'head' }))
-      .toEqual({ penalty: 0, appliedBy: [], nonImpactExtra: 0 });
+      .toEqual({ penalty: 0, appliedBy: [], nonImpactExtra: 0, maFactor: 1 });
   });
 
   test('non-aimed maneuver uses def.getAttackPenalty(weapon) (weapon size matters)', () => {

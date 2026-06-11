@@ -97,8 +97,9 @@ export const PERSISTENT_EFFECT_MAP = {
 /**
  * Efectos de combate cuyo resultado es un bono numérico PLANO (+N) a una tirada
  * o al daño, para inyectarlos en los diálogos de ataque/defensa (F6.3).
- * `target` ∈ 'attack' | 'block' | 'dodge' | 'damage'. (Contraataque se trata como
- * ataque.) El valor sale de parseOptionNumber sobre las opciones elegidas.
+ * `target` ∈ 'attack' | 'block' | 'dodge' | 'damage' | 'counterAttack'. El
+ * contraataque ('habilidad-de-contraataque') es su PROPIO stat: solo aplica al
+ * contraatacar (no a un ataque normal). El valor sale de parseOptionNumber.
  *
  * Quedan fuera a propósito: maniobras/penalizadores (-N), predeterminados
  * (dificultad), potenciar-crítico (tirada de crítico), multiplicadores, ataques/
@@ -107,7 +108,7 @@ export const PERSISTENT_EFFECT_MAP = {
 export const COMBAT_BONUS_MAP = {
   'habilidad-de-ataque': 'attack',
   'habilidad-de-ataque-completa': 'attack',
-  'habilidad-de-contraataque': 'attack',
+  'habilidad-de-contraataque': 'counterAttack',
   'habilidad-de-parada': 'block',
   'habilidad-de-parada-completa': 'block',
   'habilidad-de-parada-limitada': 'block',
@@ -128,5 +129,16 @@ export const parseOptionNumber = option => {
   const m = typeof option === 'string' ? option.match(/\d+/) : null;
   return m ? Number(m[0]) : 0;
 };
+
+/** Modos de mantenimiento que hacen PERDURAR un efecto tras el turno de activación. */
+const PERSISTENT_MAINT_MODES = new Set(['maintained', 'sustainMinor', 'sustainMajor']);
+
+/**
+ * True si el efecto PERDURA (mantenido o sostenido); false si es Tipo Acción
+ * (instantáneo: `maintMode` 'none' o ausente). Permite separar, dentro de una
+ * misma técnica, qué efectos siguen aplicándose tras el turno en que se activa.
+ * @param {{maintMode?:string}} row
+ */
+export const isPersistentEffect = row => PERSISTENT_MAINT_MODES.has(row?.maintMode);
 
 export { EFFECT_CATALOG, DISADVANTAGE_CATALOG };

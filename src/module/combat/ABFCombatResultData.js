@@ -13,6 +13,16 @@ export class ABFCombatResultData {
     this.isCritical = p.isCritical ?? false;
     this.baseCriticalValue = p.baseCriticalValue ?? 0;
     this.attackBreak = p.attackBreak ?? 0;
+    // Tipo de critico/tabla del ataque (cut/thrust/impact/energy/...). Se propaga para que
+    // el disparador de sangrado sepa si el critico es fisico (desangra) o de energia (no).
+    this.armorType = p.armorType ?? '-';
+    // Reduccion de TA BLANDA (Hakyoukuken) para la tarjeta: cantidad plana (-2) o, si
+    // softArmorNullified, "anula" la TA blanda (Arcano).
+    this.softReducedArmor = p.softReducedArmor ?? 0;
+    this.softArmorNullified = p.softArmorNullified ?? false;
+    // Desangramiento directo (Dumah Arcano): el hook de chat inicia hemorragia en un impacto
+    // con dano aunque no haya critico.
+    this.directBleeding = p.directBleeding ?? false;
 
     // Critical resolution (populated by resolveCriticalHit)
     this.critResolved = p.critResolved ?? false;
@@ -96,6 +106,22 @@ export class ABFCombatResultDataBuilder {
   }
   attackBreak(v) {
     this._p.attackBreak = Number(v) || 0;
+    return this;
+  }
+  armorType(v) {
+    this._p.armorType = v ?? '-';
+    return this;
+  }
+  softReducedArmor(v) {
+    this._p.softReducedArmor = Number(v) || 0;
+    return this;
+  }
+  softArmorNullified(v) {
+    this._p.softArmorNullified = !!v;
+    return this;
+  }
+  directBleeding(v) {
+    this._p.directBleeding = !!v;
     return this;
   }
 

@@ -6,6 +6,7 @@ import { INITIAL_MENTAL_PATTERN_DATA } from '../../types/psychic/MentalPatternIt
 import { importCombatEquipment } from './excelImporter/combatEquipment/index.js';
 import { importKiSkills } from './excelImporter/kiSkills/index.js';
 import { importTechniques } from './excelImporter/techniques/index.js';
+import { importSpells } from './excelImporter/spells/index.js';
 import {
   findMartialArtByName,
   getMartialArt,
@@ -1119,6 +1120,8 @@ export const parseExcelToActor = async (excelData, actor, options = {}) => {
     await importCombatEquipment(actor, options.workbook);
     await importTechniques(actor, options.workbook);
   }
+
+  await importSpells(actor, excelData.VíasDeMagiaSeleccionadas);
 
   actor.prepareData();
   actor.sheet.render(false);

@@ -129,6 +129,7 @@ async function patchAndRender(msg, patch) {
     game.socket.emit('system.animabf', {
       op: 'critUpdate',
       messageId: msg.id,
+      userId: game.user.id,
       patch
     });
   }

@@ -3,6 +3,7 @@ import {
   composeAimedPenalty,
   composeManeuverPenalty
 } from '../../equipment/qualities/composeWeaponEffects.js';
+import { martialArtManeuverPenaltyFactor } from '../martialArts/martialArtSpecials.js';
 
 /**
  * Resolve the attack penalty of a combat maneuver against a SPECIFIC weapon —
@@ -26,14 +27,26 @@ import {
  * @param {boolean} [params.aimed]
  * @param {string} [params.aimedZone]
  * @param {object} [params.actor]         passed through to the quality composer ctx
- * @returns {{ penalty: number, appliedBy: string[], nonImpactExtra: number }}
+ * @param {boolean} [params.isCounterAttack] true si la tirada es un contraataque
+ *   (habilita reducciones de Artes Marciales marcadas `counterOnly`, p.ej. Aikido).
+ * @returns {{ penalty: number, appliedBy: string[], nonImpactExtra: number, maFactor: number }}
  */
-export function resolveManeuverAttackPenalty({ def, weapon, aimed, aimedZone, actor } = {}) {
-  if (!def) return { penalty: 0, appliedBy: [], nonImpactExtra: 0 };
+export function resolveManeuverAttackPenalty({ def, weapon, aimed, aimedZone, actor, isCounterAttack = false } = {}) {
+  if (!def) return { penalty: 0, appliedBy: [], nonImpactExtra: 0, maFactor: 1 };
 
   // 1. Base penalty.
   let penalty =
     aimed && aimedZone ? getAimedPenalty(aimedZone) : def.getAttackPenalty(weapon);
+
+  // 1b. Artes Marciales: reduccion del penalizador de la maniobra (mitad/sin),
+  // p.ej. Grappling/Sambo/Pankration. Solo aplica al penalizador de MANIOBRA (no al
+  // de apuntado). Se hace antes de las calidades del arma. counterOnly se gatea con
+  // isCounterAttack (el contraataque con maniobra es de una fase posterior del motor).
+  let maFactor = 1;
+  if (!(aimed && aimedZone)) {
+    maFactor = martialArtManeuverPenaltyFactor(actor, def.slug, { isCounterAttack });
+    if (maFactor !== 1) penalty = Math.round(penalty * maFactor);
+  }
 
   // 2. Weapon qualities (Precisa, ...). Only the aimed/base penalty is halved.
   let appliedBy = [];
@@ -56,5 +69,5 @@ export function resolveManeuverAttackPenalty({ def, weapon, aimed, aimedZone, ac
     }
   }
 
-  return { penalty, appliedBy, nonImpactExtra };
+  return { penalty, appliedBy, nonImpactExtra, maFactor };
 }

@@ -2,6 +2,8 @@ import { ABFAttackData } from './ABFAttackData.js';
 import { ABFDefenseData } from './ABFDefenseData.js';
 import { ABFCombatResultData } from './ABFCombatResultData.js';
 import { resolveActorForRoll } from '../actor/utils/resolveActorForRoll.js';
+import { calculateCounterAttackBonus } from './utils/calculateCounterAttackBonus.js';
+import { martialArtSpecialEffects } from './martialArts/martialArtSpecials.js';
 
 /**
  * Computes a base combat result from the given attack and defense data.
@@ -32,11 +34,16 @@ export function computeCombatResult(attackData, defenseData) {
     attackData.canBeCounterAttacked !== false &&
     defenseData.canCounterAttack !== false;
 
-  const counterAttackMultiplier = 0.5; // TODO: source from defender if needed
-
-  // Round down to nearest multiple of 5
-  const rawBonus = hasCounterAttack ? -difference * counterAttackMultiplier : 0;
-  const counterAttackValue = Math.floor(rawBonus / 5) * 5;
+  // Bono de contraataque (RAW Core Exxet): la MITAD del margen Defensa-Ataque,
+  // redondeado a la baja en multiplos de 5, con tope +150. Las Artes Marciales del
+  // DEFENSOR lo modifican antes del tope: Selene dobla (multiplier), Boxeo suma +10 (flat).
+  const ma = hasCounterAttack ? martialArtSpecialEffects(defenderActor) : null;
+  const counterAttackValue = hasCounterAttack
+    ? calculateCounterAttackBonus(attackTotal, defenseTotal, {
+        multiplier: ma?.counterAttackMultiplier || 1,
+        flat: ma?.counterAttackBonus || 0
+      })
+    : 0;
 
   let baseDamage = getFinalBaseDamage(attackData, defenseData);
   let finalArmor = getFinalArmor(attackData, defenseData);
@@ -87,8 +94,10 @@ export function computeCombatResult(attackData, defenseData) {
         causesDamage &&
         def.damageHalvedIfApplied
       ) {
-        // Path 2: damage with halved base and normal TA.
-        baseDamage = Math.floor(baseDamage / 2);
+        // Path 2: damage with halved base and normal TA. EXCEPCION: ciertas Artes
+        // Marciales conceden dano COMPLETO en la maniobra (Grappling Supremo en
+        // Presa/Derribo) -> no se halvea el base.
+        if (!attackData.maneuverFullDamage) baseDamage = Math.floor(baseDamage / 2);
         // RAW: aimed maneuvers count the FULL damage for the critical (trigger
         // + level), while HP loss stays halved.
         critUsesFullDamage = !!def.dealsMandatoryDamage;
@@ -137,6 +146,11 @@ export function computeCombatResult(attackData, defenseData) {
   const isCritical = critLifePercent >= criticThreshold || attackData.automaticCrit; //TO-DO: Add crit inmunity
   const critValue = critDamage + attackData.critBonus + (attackData.critDamageBonus ?? 0);
 
+  // Reduccion de TA BLANDA (Hakyoukuken) para mostrarla en la tarjeta: cantidad plana (-2
+  // Base) o, con el centinela 999, "anula" la TA blanda (Arcano).
+  const softTaReduction = Number(attackData.softArmorReduction) || 0;
+  const softArmorNullified = softTaReduction >= 999;
+
   const result = ABFCombatResultData.builder()
     .difference(difference)
     .hasCounterAttack(hasCounterAttack)
@@ -150,6 +164,10 @@ export function computeCombatResult(attackData, defenseData) {
     .isCritical(isCritical)
     .baseCriticalValue(critValue)
     .attackBreak(attackData.breakage)
+    .armorType(attackData.armorType)
+    .softReducedArmor(softArmorNullified ? 0 : softTaReduction)
+    .softArmorNullified(softArmorNullified)
+    .directBleeding(attackData.directBleeding)
     .build();
 
   // Attach maneuver context (consumed by the chat hook that auto-posts the
@@ -246,7 +264,15 @@ function getFinalArmor(attackData, defenseData) {
   } else if (defenseData.inmodifiableArmor) {
     armor = defenseData.armor ?? 0;
   } else {
-    armor = (defenseData.armor ?? 0) - (attackData.reducedArmor ?? 0);
+    const reduced = Number(attackData.reducedArmor) || 0;
+    armor = (defenseData.armor ?? 0) - reduced;
+    // Hakyoukuken: reduce SOLO la porcion blanda de la TA; no puede bajar de la TA
+    // dura (que ya sufrio la reduccion general). 999 = anula la blanda del todo.
+    const softReduction = Number(attackData.softArmorReduction) || 0;
+    if (softReduction > 0) {
+      const hardFloor = Math.max(0, (Number(defenseData.hardArmor) || 0) - reduced);
+      armor = Math.max(hardFloor, armor - softReduction);
+    }
   }
 
   return Math.max(0, armor);

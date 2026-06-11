@@ -3,6 +3,8 @@ import ABFFoundryRoll from '../rolls/ABFFoundryRoll.js';
 import { computeCombatResult } from './computeCombatResult.js';
 import { pickBestDefenseCandidate } from './DefenseStrategies.js';
 import { getMessageMode } from '../utils/chatVisibility.js';
+import { defensesCounterCheck, freeDefensesFor } from './utils/defensesCounterCheck.js';
+import { buildRollFormula } from './utils/buildRollFormula.js';
 
 function toSafeNumber(v) {
   const n = Number(v);
@@ -20,13 +22,10 @@ function isProjectileAttack(attackData) {
   );
 }
 
-function multipleDefensePenaltyFromAccumulated(accumulated) {
-  const a = Math.max(0, Number(accumulated) || 0);
-  if (a <= 0) return 0;
-  if (a === 1) return 30;
-  if (a === 2) return 50;
-  if (a === 3) return 70;
-  return 90;
+function multipleDefensePenaltyFromAccumulated(accumulated, opts) {
+  // Positivo (se RESTA en la formula). Reusa la funcion canonica (negativa) con el
+  // margen de defensas exentas (opts) para no duplicar la tabla.
+  return -defensesCounterCheck(accumulated, opts);
 }
 
 function getDefensesCounter(actor) {
@@ -104,7 +103,7 @@ export async function autoRollDefenseAgainstAttack({
   const accumulated = defensesCounter.keepAccumulating ? defensesCounter.accumulated : 0;
 
   const multipleDefensePenalty = candidate.applyMultipleDefensePenalty
-    ? multipleDefensePenaltyFromAccumulated(accumulated)
+    ? multipleDefensePenaltyFromAccumulated(accumulated, freeDefensesFor(actor))
     : 0;
 
   const projectilePenalty = isProjectileAttack(attackData)
@@ -116,7 +115,13 @@ export async function autoRollDefenseAgainstAttack({
       ? actor.system?.general?.diceSettings?.abilityMasteryDie?.value ?? '1d100xa'
       : actor.system?.general?.diceSettings?.abilityDie?.value ?? '1d100xa';
 
-  const formula = `${die} + ${candidate.finalBase} + ${safeMod} - ${projectilePenalty} - ${multipleDefensePenalty}`;
+  // Omite los terminos a 0; los penalizadores se pasan negativos (se restan).
+  const formula = buildRollFormula(die, [
+    candidate.finalBase,
+    safeMod,
+    -projectilePenalty,
+    -multipleDefensePenalty
+  ]);
 
   const roll = new ABFFoundryRoll(formula, actor.system);
   await roll.evaluate({ async: true });

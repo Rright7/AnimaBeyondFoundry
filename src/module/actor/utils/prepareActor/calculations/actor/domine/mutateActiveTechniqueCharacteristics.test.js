@@ -9,7 +9,9 @@ const characteristic = (value, special = 0) => ({
 
 const technique = ({ active = true, effects = [] } = {}) => ({
   flags: { animabf: { active } },
-  system: { build: { effects } }
+  // Por defecto los efectos de prueba PERDURAN (mantenidos): un Tipo Acción ya no
+  // se auto-aplica mientras la técnica está activa (ver test específico).
+  system: { build: { effects: effects.map(e => ({ maintMode: 'maintained', ...e })) } }
 });
 
 const makeData = (techniques, { agilitySpecial = 0 } = {}) => ({
@@ -39,6 +41,16 @@ describe('mutateActiveTechniqueCharacteristics', () => {
     );
     mutateActiveTechniqueCharacteristics(data);
     expect(data.characteristics.primaries.agility.special.value).toBe(5);
+  });
+
+  test('Tipo Acción (no mantenido) NO persiste: no toca la característica', () => {
+    const data = makeData([
+      technique({
+        effects: [{ effectId: 'capacidad-incrementada-agi', maintMode: 'none', tierOptions: ['+5'] }]
+      })
+    ]);
+    mutateActiveTechniqueCharacteristics(data);
+    expect(data.characteristics.primaries.agility.special.value).toBe(0);
   });
 
   test('inactive technique leaves characteristics untouched', () => {
@@ -71,7 +83,7 @@ describe('mutateActiveTechniqueCharacteristics', () => {
         flags: { animabf: { active: true } },
         system: {
           build: {
-            effects: [{ effectId: 'capacidad-incrementada-agi', tierOptions: ['+5'] }]
+            effects: [{ effectId: 'capacidad-incrementada-agi', maintMode: 'maintained', tierOptions: ['+5'] }]
           }
         }
       }

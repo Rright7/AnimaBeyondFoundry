@@ -83,8 +83,8 @@
         }
 
         .input {
-          border-radius: $border-radius;
-          background: $light-cream;
+          border-radius: var(--abf-radius);
+          background: var(--abf-surface);
           font-weight: bold;
           padding: 0.25rem 0.5rem;
         }
@@ -137,8 +137,8 @@
         height: 100%;
 
         margin: 0.5rem;
-        border-radius: $border-radius;
-        box-shadow: $card-box-shadow;
+        border-radius: var(--abf-radius);
+        box-shadow: var(--abf-shadow);
 
         .input {
           height: 1.25rem;

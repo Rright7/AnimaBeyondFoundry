@@ -15,7 +15,7 @@ export function isMartialArtsProfileWeapon(weapon) {
  *  - Ataque/Parada/Turno: de los buckets `general.modifiers.martialArtBonus` (ya con
  *    el tope +50 COMBINADO aplicado en applyMartialArtModifiers; Maestro exento).
  *  - Daño: el MAYOR Daño Base entre las artes (artBase + mult x mod, p.ej. "20 + FUE"
- *    o "20 + 2xFUE") o el brawl 10+FUE, lo que sea mayor, + el bono de daño de las
+ *    o "20 + 2xFUE"; el brawl 10+FUE SOLO si no hay arte) + el bono de daño de las
  *    Avanzadas. Como el catalogo usa el modificador de caracteristica (no la tabla
  *    de FUE de arma), se inyecta via FORMULA CUSTOM: en esa rama calculateWeaponDamage
  *    NO suma el FUE de tabla encima, evitando el doble conteo.
@@ -41,7 +41,9 @@ export function applyMartialArtsWeaponBonuses(weapon, data) {
   const sMod = data?.characteristics?.primaries?.strength?.mod;
   const strMod = num(sMod?.value ?? sMod);
   const brawl = 10 + strMod;
-  const maDamage = (ma.base !== null ? Math.max(ma.base, brawl) : brawl) + num(b.damage?.value);
+  // Con arte, el Dano Base del arte ES el dano (puede usar POD, p.ej. Tai Chi): no se aplica
+  // el suelo brawl (10+FUE), que pisaria POD con FUE. El brawl solo cuenta SIN arte.
+  const maDamage = (ma.base !== null ? ma.base : brawl) + num(b.damage?.value);
   if (s?.damage) {
     s.damage.special = { value: 0 };
     s.damage.formula = { value: String(maDamage) };

@@ -33,7 +33,7 @@
         .label {
           font-size: 2rem;
           font-weight: bold;
-          color: $red;
+          color: var(--abf-gold);
           padding-top: 1rem;
         }
       }
@@ -51,7 +51,7 @@
           img {
             height: 5rem;
             width: 5rem;
-            background-color: $red;
+            background-color: var(--abf-accent);
             border-radius: 50%;
           }
         }

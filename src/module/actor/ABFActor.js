@@ -194,6 +194,13 @@ export class ABFActor extends Actor {
 
     const [item] = await this.createEmbeddedDocuments('Item', [itemCreateData]);
 
+    const shieldPts =
+      Number(itemCreateData?.system?.shieldPoints?.value ?? itemCreateData?.system?.shieldPoints) ||
+      0;
+    ui.notifications?.info(
+      `Escudo «${itemCreateData.name}» creado${shieldPts ? ` (${shieldPts} puntos)` : ''}.`
+    );
+
     const args = { thisActor: this, newShield: true, shieldId: item._id };
     executeMacro(itemCreateData.name, args);
     return item._id;
@@ -472,35 +479,26 @@ export class ABFActor extends Actor {
    * @param {import('../types/mystic/SpellItemConfig.js').SpellCasting} spellCasting - - An object that contains information about the zeon
    * points, whether the spell can be cast (prepared or innate), if the spell has been casted,
    * and whether the casting rules should be overridden.
-   * @returns {boolean} - A boolean value indicating whether the spell can be cast or not.
+   * @returns {false} Permisivo: SIEMPRE devuelve false (nunca bloquea el lanzamiento);
+   * solo emite el aviso que corresponda. El caller decide a la vista del aviso.
    */
   evaluateCast(spellCasting) {
     const { i18n } = game;
     const { canCast, casted, zeon, override } = spellCasting;
-    if (override) {
-      return false;
-    }
+    if (override) return false;
+    // Permisivo (preferencia de la mesa): avisamos claro segun el caso pero NUNCA
+    // bloqueamos el lanzamiento. El gasto posterior (mysticCast / consumeAccumulatedZeon)
+    // tiene suelo 0; decide el jugador/DJ a la vista del aviso. Por eso siempre false.
     if (canCast.innate && casted.innate && canCast.prepared && casted.prepared) {
       ui.notifications.warn(i18n.localize('dialogs.spellCasting.warning.mustChoose'));
-      return true;
-    }
-    if (canCast.innate && casted.innate) {
-      return;
     } else if (!canCast.innate && casted.innate) {
       ui.notifications.warn(i18n.localize('dialogs.spellCasting.warning.innateMagic'));
-      return true;
-    } else if (canCast.prepared && casted.prepared) {
-      return false;
     } else if (!canCast.prepared && casted.prepared) {
-      return ui.notifications.warn(
-        i18n.localize('dialogs.spellCasting.warning.preparedSpell')
-      );
-    } else if (zeon.accumulated < zeon.cost) {
-      ui.notifications.warn(
-        i18n.localize('dialogs.spellCasting.warning.zeonAccumulated')
-      );
-      return true;
-    } else return false;
+      ui.notifications.warn(i18n.localize('dialogs.spellCasting.warning.preparedSpell'));
+    } else if (!casted.innate && !casted.prepared && zeon.accumulated < zeon.cost) {
+      ui.notifications.warn(i18n.localize('dialogs.spellCasting.warning.zeonAccumulated'));
+    }
+    return false;
   }
 
   /**
@@ -531,7 +529,9 @@ export class ABFActor extends Actor {
    * @param {number} zeonCost The amount of zeon to be consumed.
    */
   consumeAccumulatedZeon(zeonCost) {
-    const newAccumulateZeon = this.system.mystic.zeon.accumulated - zeonCost;
+    // Suelo 0: en modo permisivo el lanzamiento no se bloquea aunque falte zeon
+    // acumulado; se descuenta lo que haya, sin bajar de 0.
+    const newAccumulateZeon = Math.max(0, (this.system.mystic.zeon.accumulated ?? 0) - zeonCost);
 
     this.update({
       system: {
@@ -559,19 +559,26 @@ export class ABFActor extends Actor {
     const intel = this.system?.characteristics?.primaries?.intelligence;
     const intelligence = Number(intel?.final?.value ?? intel?.value) || 0;
     if (intRequired > 0 && intelligence < intRequired) {
+      // Permisivo: avisa pero NO bloquea (antes return false).
       ui.notifications?.warn(
         game.i18n.format('dialogs.spellCasting.warning.intRequired', {
           required: intRequired,
           current: intelligence
         })
       );
-      return false;
     }
     const spellCasting = this.mysticCanCastEvaluate(spell, spellGrade);
     if (spellCasting.canCast.innate) spellCasting.casted.innate = true;
     else if (spellCasting.canCast.prepared) spellCasting.casted.prepared = true;
     if (this.evaluateCast(spellCasting)) return false;
     this.mysticCast(spellCasting, spell.name, spellGrade);
+    const zeonCost = Number(spell?.system?.grades?.[spellGrade]?.zeon?.value) || 0;
+    const src = spellCasting.casted?.innate
+      ? 'innato'
+      : spellCasting.casted?.prepared
+      ? 'preparado'
+      : 'acumulado';
+    ui.notifications?.info(`Conjuro «${spell.name}»: ${zeonCost} zeon (${src}).`);
     return true;
   }
 
@@ -631,7 +638,22 @@ export class ABFActor extends Actor {
   async useTechnique(techniqueId) {
     const technique = this.items.get(techniqueId);
     if (technique?.type !== 'technique') return false;
-    return this._consumeConcentratedForTechnique(technique);
+    // Ya en efecto este asalto (botón «Usar» pulsado o checkbox ya marcado en una
+    // tirada): el Ki se gastó la primera vez, así que reaplicarla este asalto es
+    // gratis. El hook de ronda limpia freshTurn y vuelve a cobrar al asalto siguiente.
+    if (technique.flags?.animabf?.freshTurn) {
+      ui.notifications?.info(`Tecnica «${technique.name}» ya en efecto este asalto (sin coste).`);
+      return true;
+    }
+    const ok = await this._consumeConcentratedForTechnique(technique);
+    if (ok) {
+      const ki = Number(technique.system?.computed?.kiActiveTotal) || 0;
+      // Marca "en efecto este asalto" (feedback del botón «Usando…»); lo limpia el
+      // hook de ronda (consumeActiveTechniquesKi) al pasar el asalto completo.
+      await technique.update({ 'flags.animabf.freshTurn': true });
+      ui.notifications?.info(`Tecnica «${technique.name}» usada${ki ? ` (Ki ${ki})` : ''}.`);
+    }
+    return ok;
   }
 
   /** Activa una técnica mantenida/sostenida: gasta el coste y marca el estado. */
@@ -648,8 +670,17 @@ export class ABFActor extends Actor {
     const remaining = sostenida ? (sostenidaMayor ? 20 : 5) : 0;
     await technique.update({
       'flags.animabf.active': true,
-      'flags.animabf.remaining': remaining
+      'flags.animabf.remaining': remaining,
+      // Marca el turno de activación: la porción Tipo Acción de la técnica solo se
+      // ofrece este asalto; el hook de ronda (consumeActiveTechniquesKi) lo limpia.
+      'flags.animabf.freshTurn': true
     });
+    const ki = Number(computed.kiActiveTotal) || 0;
+    ui.notifications?.info(
+      `Tecnica «${technique.name}» activada${ki ? ` (Ki ${ki})` : ''}${
+        remaining ? ` · dura ${remaining} asaltos` : ''
+      }.`
+    );
     return true;
   }
 
@@ -657,7 +688,12 @@ export class ABFActor extends Actor {
   async deactivateTechnique(techniqueId) {
     const technique = this.items.get(techniqueId);
     if (technique?.type !== 'technique') return false;
-    await technique.update({ 'flags.animabf.active': false, 'flags.animabf.remaining': 0 });
+    await technique.update({
+      'flags.animabf.active': false,
+      'flags.animabf.remaining': 0,
+      'flags.animabf.freshTurn': false
+    });
+    ui.notifications?.info(`Tecnica «${technique.name}» desactivada.`);
     return true;
   }
 
@@ -667,8 +703,9 @@ export class ABFActor extends Actor {
 
   /**
    * Gasta el coste activo de una técnica del Ki CONCENTRADO (por característica)
-   * y de la reserva total. Si falta concentración, avisa y NO gasta (devuelve false).
-   * El mantenimiento NO pasa por aquí: es innato (directo de la reserva).
+   * y de la reserva total. Permisivo: si falta concentración avisa claro pero gasta
+   * lo que haya (suelo 0) sin bloquear; solo devuelve false si el coste no está
+   * calculado (técnica sin preparar). El mantenimiento NO pasa por aquí.
    * @param {ABFActor['items'] extends Map<string, infer I> ? I : any} technique
    * @returns {Promise<boolean>}
    */
@@ -692,10 +729,11 @@ export class ABFActor extends Actor {
       const detail = short
         .map(s => `${KI_CHAR_LABELS[s.char] ?? s.char} ${s.have}/${s.need}`)
         .join(', ');
+      // Permisivo: avisa claro pero NO bloquea (antes return false); el gasto de
+      // abajo (concentrado + reserva) ya tiene suelo 0.
       ui.notifications?.warn(
         `Ki concentrado insuficiente para «${technique.name}»: ${detail}. Activa «Cargar Ki».`
       );
-      return false;
     }
 
     const update = {};
@@ -808,6 +846,11 @@ export class ABFActor extends Actor {
       }
     }
     await this.update(update);
+    ui.notifications?.info(
+      charging
+        ? 'Concentracion de Ki activada.'
+        : 'Concentracion de Ki detenida (concentrado a 0).'
+    );
     return charging;
   }
 
@@ -815,6 +858,7 @@ export class ABFActor extends Actor {
   async toggleFullKiAccumulation() {
     const next = !this.flags?.animabf?.fullKiAccumulation;
     await this.setFlag('animabf', 'fullKiAccumulation', next);
+    ui.notifications?.info(`Acumulacion plena de Ki ${next ? 'activada' : 'desactivada'}.`);
     return next;
   }
 
@@ -884,6 +928,9 @@ export class ABFActor extends Actor {
           mystic: { zeon: { value: value - drawn, accumulated: accumulated + drawn } }
         }
       });
+      ui.notifications?.info(
+        `Acumulacion de zeon activada${drawn ? ` (+${drawn} concentrado)` : ''}.`
+      );
     } else {
       const zeon = this.system?.mystic?.zeon ?? {};
       const value = Number(zeon.value) || 0;
@@ -896,6 +943,11 @@ export class ABFActor extends Actor {
         'flags.animabf.zeonAccumPrev': null,
         system: { mystic: { zeon: { value: newValue, accumulated: 0 } } }
       });
+      ui.notifications?.info(
+        accumulated > 0
+          ? `Acumulacion de zeon detenida (devueltos ${returned} a reserva, -10).`
+          : 'Acumulacion de zeon detenida.'
+      );
     }
     return accumulating;
   }
@@ -922,16 +974,31 @@ export class ABFActor extends Actor {
         await technique.update({
           'flags.animabf.active': !!snap.active,
           'flags.animabf.remaining': Number(snap.remaining) || 0,
+          'flags.animabf.freshTurn': !!snap.freshTurn,
           'flags.animabf.prevRound': null
         });
       }
       return;
     }
 
+    // Activas (mantienen/sostienen) o instantáneas marcadas "este asalto" (freshTurn).
     const techniques = this.items.filter(
-      i => i.type === 'technique' && i.flags?.animabf?.active
+      i =>
+        i.type === 'technique' &&
+        (i.flags?.animabf?.active || i.flags?.animabf?.freshTurn)
     );
     for (const technique of techniques) {
+      const wasFresh = !!technique.flags?.animabf?.freshTurn;
+
+      // Instantánea usada este asalto (no activa): solo limpia el feedback «Usando…».
+      if (!technique.flags?.animabf?.active) {
+        await technique.update({
+          'flags.animabf.prevRound': { active: false, remaining: 0, maint: 0, freshTurn: wasFresh },
+          'flags.animabf.freshTurn': false
+        });
+        continue;
+      }
+
       const computed = technique.system?.computed ?? {};
       const flags = computed.flags ?? {};
       const step = techniqueRoundStep({
@@ -942,8 +1009,13 @@ export class ABFActor extends Actor {
 
       if (step.maintSpent) await this._spendKiReserve(step.maintSpent, technique.name);
 
-      // Snapshot del estado PRE-paso para poder revertir (previousRound).
-      const techUpdate = { 'flags.animabf.prevRound': step.snapshot };
+      // Snapshot del estado PRE-paso para poder revertir (previousRound). Al pasar
+      // de asalto la técnica deja de ser "fresca": su porción Tipo Acción ya no se
+      // ofrece (solo perduran los efectos mantenidos/sostenidos).
+      const techUpdate = {
+        'flags.animabf.prevRound': { ...step.snapshot, freshTurn: wasFresh },
+        'flags.animabf.freshTurn': false
+      };
       if (step.sustained) {
         techUpdate['flags.animabf.active'] = step.nextActive;
         techUpdate['flags.animabf.remaining'] = step.nextRemaining;

@@ -1,6 +1,6 @@
 import { Templates } from '../utils/constants';
 import { ABFConfig } from '../ABFConfig';
-import { getAimedPenalty } from '../combat/criticalTables.js';
+import { getAimedPenalty, getAimedZones } from '../combat/criticalTables.js';
 import { composeAimedPenalty } from '../equipment/qualities/composeWeaponEffects.js';
 import { resolveManeuverAttackPenalty } from '../combat/maneuvers/resolveManeuverPenalty.js';
 import { ABFAttackData } from '../combat/ABFAttackData';
@@ -13,7 +13,15 @@ import {
   martialArtUnarmedDamage,
   martialArtsAdditionalAttack
 } from '../combat/martialArts/martialArtCatalog.js';
+import {
+  martialArtCritBonus,
+  martialArtArmorReduction,
+  martialArtAllowedAttackTables,
+  martialArtGrantsFullManeuverDamage,
+  martialArtCausesDirectBleeding
+} from '../combat/martialArts/martialArtSpecials.js';
 import { maxFatiguePerAction } from '../combat/utils/fatigue.js';
+import { buildRollFormula } from '../combat/utils/buildRollFormula.js';
 ///dialogs/AttackConfigurationDialog.js
 ///actor/utils/getSnapshotTargets.js
 
@@ -26,7 +34,7 @@ export class AttackConfigurationDialog extends FormApplication {
     this.render(true);
   }
 
-  static _buildInitialData({ attacker, weaponId, weapon, options = {}, targets, maneuverSlug, maneuverItemName, aimed, aimedZone, delayRounds, chooseTargets, chosenPenalty, causesDamage }) {
+  static _buildInitialData({ attacker, weaponId, weapon, options = {}, targets, maneuverSlug, maneuverItemName, aimed, aimedZone, delayRounds, chooseTargets, chosenPenalty, causesDamage, counterBonus, counterDamageBonus, isCounterAttack }) {
     if (!attacker || !attacker.actor) {
       ui.notifications?.error('AttackConfigurationDialog: attacker is required');
       return { allowed: false };
@@ -38,7 +46,7 @@ export class AttackConfigurationDialog extends FormApplication {
       weapon ?? (weaponId ? attackerActor.items.get(weaponId) : undefined);
 
     if (!resolvedWeapon) {
-      ui.notifications?.warn('Arma no encontrada.');
+      ui.notifications?.warn(game.i18n.localize('macros.combat.dialog.weapon.notFound'));
     }
 
     // Fallback targets snapshot (reusing shared helper)
@@ -70,6 +78,16 @@ export class AttackConfigurationDialog extends FormApplication {
         combat: {
           fatigueUsed: 0,
           modifier: 0,
+          // Contraataque: el bono de margen va en su PROPIO termino (no en el
+          // modificador editable, para no perderlo si el jugador edita ese campo).
+          // _sendAttack lo suma a la formula y lo desglosa en el flavor.
+          counterBonus: Number(counterBonus) || 0,
+          // Daño extra de contraataque por Arte Marcial (Aikido: N x mod FUE del
+          // agresor). Termino propio, se suma al daño en _sendAttack y se desglosa.
+          counterDamageBonus: Number(counterDamageBonus) || 0,
+          // Modo contraataque: habilita los bonos "solo-contraataque" (Habilidad de
+          // Contraataque) en auto (tecnicas activas) y en los checkbox (instantaneas).
+          isCounterAttack: !!isCounterAttack,
           unarmed:
             !resolvedWeapon && (attackerActor.system?.combat?.weapons?.length ?? 0) === 0,
           weaponUsed: resolvedWeapon?._id,
@@ -149,6 +167,14 @@ export class AttackConfigurationDialog extends FormApplication {
     const { weapons } = this.attackerActor.system.combat;
     const combat = attacker.combat;
 
+    // Apuntado: si esta activo pero aun no se ha tocado el desplegable, el <select>
+    // muestra la PRIMERA zona (la de mayor penalizador) pero combat.aimedZone sigue
+    // vacio, asi que el penalizador no se aplicaba (bug del "ojo", primera opcion).
+    // Commitea la zona mostrada para que coincida lo visto con lo aplicado.
+    if (combat.aimed && !combat.aimedZone) {
+      combat.aimedZone = getAimedZones()[0]?.id ?? '';
+    }
+
     // Expose the full weapon list so the template can render a picker when the
     // weapon is not locked (e.g. a maneuver, where any weapon may be used).
     ui.weapons = weapons ?? [];
@@ -168,7 +194,10 @@ export class AttackConfigurationDialog extends FormApplication {
       const brawl =
         10 + this.attackerActor.system.characteristics.primaries.strength.mod;
       const ma = martialArtUnarmedDamage(this.attackerActor);
-      const base = ma.base !== null ? Math.max(ma.base, brawl) : brawl;
+      // Con Arte Marcial el Dano Base del arte ES el dano (puede usar POD, p.ej. Tai Chi):
+      // no aplicar el suelo brawl (10+FUE), que pisaria POD con FUE. El brawl solo cuenta
+      // para el desarmado SIN arte.
+      const base = ma.base !== null ? ma.base : brawl;
       combat.damage.final = (combat.damage.special ?? 0) + base + ma.bonus;
     } else {
       combat.weapon = weapon;
@@ -185,6 +214,17 @@ export class AttackConfigurationDialog extends FormApplication {
       ui.weaponHasSecondaryCritic =
         weapon?.system?.critic?.secondary?.value !==
         game.animabf.weapon.NoneWeaponCritic.NONE;
+
+      // Perfil "Artes Marciales": el atacante elige la TABLA de ataque entre las que sus
+      // artes permiten (Dumah FIL/PEN, Velez ENE), no solo CON. 'impact' siempre disponible.
+      if (weapon.system?.isMartialArtsProfile?.value) {
+        const tables = martialArtAllowedAttackTables(this.attackerActor);
+        if (!tables.includes(combat.criticSelected)) combat.criticSelected = 'impact';
+        ui.martialAttackTables = tables.map(value => ({
+          value,
+          selected: value === combat.criticSelected
+        }));
+      }
 
       combat.damage.final =
         (combat.damage.special ?? 0) + (weapon?.system?.damage?.final?.value ?? 0);
@@ -229,7 +269,9 @@ export class AttackConfigurationDialog extends FormApplication {
     // F6.3: tecnicas de Ki INSTANTANEAS ofrecibles para este ataque (gastan Ki
     // concentrado al marcarlas). Las ACTIVAS aplican su bono automaticamente en
     // el handler, no necesitan UI aqui.
-    attacker.kiInstant = usableInstantCombatTechniques(this.attackerActor, 'attack');
+    attacker.kiInstant = usableInstantCombatTechniques(this.attackerActor, 'attack', {
+      isCounterAttack: !!attacker.combat?.isCounterAttack
+    });
 
     this.modalData.config = ABFConfig;
     return this.modalData;
@@ -248,7 +290,7 @@ export class AttackConfigurationDialog extends FormApplication {
     if (!actor) return ui.notifications?.warn('Actor no encontrado.');
     const combat = this.modalData.attacker?.combat;
     const weapon = combat?.weapon;
-    if (!weapon) return ui.notifications?.warn('Arma no encontrada.');
+    if (!weapon) return ui.notifications?.warn(game.i18n.localize('macros.combat.dialog.weapon.notFound'));
 
     try {
       this.modalData.attackSent = true;
@@ -270,7 +312,8 @@ export class AttackConfigurationDialog extends FormApplication {
           weapon,
           aimed: !!combat.aimed,
           aimedZone: combat.aimedZone,
-          actor
+          actor,
+          isCounterAttack: !!combat.isCounterAttack
         });
         maneuverPenalty = resolved.penalty;
         maneuverAppliedBy = resolved.appliedBy;
@@ -333,17 +376,22 @@ export class AttackConfigurationDialog extends FormApplication {
       // ── F6.3: Bonos de combate de Tecnicas de Ki ──────────────────────
       // Activas (mantenidas/sostenidas): su bono se aplica automaticamente.
       // Instantaneas marcadas en el dialogo: gastan Ki concentrado al usarse.
-      const kiAuto = activeTechniqueCombatBonuses(actor);
+      const kiAuto = activeTechniqueCombatBonuses(actor, {
+        isCounterAttack: !!combat.isCounterAttack
+      });
       let kiAttackBonus = Number(kiAuto.attack) || 0;
       let kiDamageBonus = Number(kiAuto.damage) || 0;
       const kiAppliedBy = [];
       if (kiAuto.attack || kiAuto.damage) kiAppliedBy.push('activa');
 
       const kiInstantSel = combat.kiInstant ?? {};
-      const kiInstantList = usableInstantCombatTechniques(actor, 'attack');
+      const kiInstantList = usableInstantCombatTechniques(actor, 'attack', {
+        isCounterAttack: !!combat.isCounterAttack
+      });
       for (const tech of kiInstantList) {
         if (kiInstantSel[tech.id] !== true) continue;
-        const ok = await actor.useTechnique(tech.id);
+        // `free` = porción Tipo Acción de una mantenida ya pagada al activar: no re-gasta Ki.
+        const ok = tech.free ? true : await actor.useTechnique(tech.id);
         if (!ok) continue;
         kiAttackBonus += Number(tech.attack) || 0;
         kiDamageBonus += Number(tech.damage) || 0;
@@ -370,6 +418,7 @@ export class AttackConfigurationDialog extends FormApplication {
 
       const mod =
         Number(combat.modifier ?? 0)
+        + Number(combat.counterBonus ?? 0)
         + maneuverPenalty
         + aimedPenalty
         + secondaryCritPenalty
@@ -388,7 +437,7 @@ export class AttackConfigurationDialog extends FormApplication {
           ? actor.system.general.diceSettings.abilityMasteryDie.value
           : actor.system.general.diceSettings.abilityDie.value;
 
-      const formula = `${die} + ${baseAttack} + ${mod}`;
+      const formula = buildRollFormula(die, [baseAttack, mod]);
       const roll = new ABFFoundryRoll(formula, actor.system);
       await roll.evaluate({ async: true });
 
@@ -405,6 +454,16 @@ export class AttackConfigurationDialog extends FormApplication {
       // chat message shows where each modifier came from (similar to the AE
       // breakdown line in the actor flow).
       const dialogContribs = [];
+      if (Number(combat.counterBonus) > 0) {
+        dialogContribs.push(
+          `${game.i18n.localize('macros.combat.dialog.counterBonus.title')} (+${Number(combat.counterBonus)})`
+        );
+      }
+      if (Number(combat.counterDamageBonus) > 0) {
+        dialogContribs.push(
+          `${game.i18n.localize('macros.combat.dialog.counterDamageBonus.title')} (+${Number(combat.counterDamageBonus)})`
+        );
+      }
       if (maneuverPenalty !== 0 && this.modalData.maneuver?.itemName) {
         const sign = maneuverPenalty > 0 ? '+' : '';
         const qualityTag = maneuverAppliedBy.length ? ` [${maneuverAppliedBy.join(', ')}]` : '';
@@ -460,17 +519,31 @@ export class AttackConfigurationDialog extends FormApplication {
             0,
             Number(combat.damage?.final ?? weapon.system.damage?.final?.value ?? 0) +
               (this.modalData.maneuver?.damageDelta ?? 0) +
-              kiDamageBonus
+              kiDamageBonus +
+              (Number(combat.counterDamageBonus) || 0)
           ) * (this.modalData.maneuver?.damageMultiplier ?? 1)
         )
         .ignoreArmor(!!weapon.system.ignoreArmor?.value)
-        .reducedArmor(Number(weapon.system.reducedArmor?.final?.value ?? 0))
+        // TA reducida del arma + reduccion general de Artes Marciales (Dumah -2/-6).
+        .reducedArmor(
+          Number(weapon.system.reducedArmor?.final?.value ?? 0) +
+            martialArtArmorReduction(actor).general
+        )
+        // Reduccion SOLO de TA blanda (Hakyoukuken); el resolver no baja de la TA dura.
+        .softArmorReduction(martialArtArmorReduction(actor).soft)
         .armorType(combat.criticSelected ?? weapon.system.critic?.primary?.value)
         .damageType(game.animabf.combat.DamageType.NONE)
         .presence(Number(weapon.system.presence?.final?.value ?? 0))
         .isProjectile(!!combat.projectile?.value)
         .automaticCrit(!!combat.automaticCrit)
-        .critBonus(0)
+        // Bono al nivel del critico por Artes Marciales (Moai Thai/Hakyoukuken siempre;
+        // Asakusen solo apuntado; Enuth solo con Inconsciencia).
+        .critBonus(
+          martialArtCritBonus(actor, {
+            aimed: !!combat.aimed,
+            maneuverSlug: this.modalData.maneuver?.slug ?? ''
+          })
+        )
         .critDamageBonus(Number(combat.critDamageBonus ?? 0))
         .attackerId(actor.id)
         .weaponId(weapon.id)
@@ -479,6 +552,13 @@ export class AttackConfigurationDialog extends FormApplication {
         .maneuverWasUnarmed(!combat.weapon || !!combat.weapon.system?.isUnarmed?.value)
         .delayRounds(this.modalData.maneuver?.delayRounds ?? 0)
         .causesDamage(!!combat.causesDamage)
+        // Excepcion de dano completo en maniobra (Grappling Supremo en Presa/Derribo):
+        // el resolver no halvea el dano base si esto es true.
+        .maneuverFullDamage(
+          martialArtGrantsFullManeuverDamage(actor, this.modalData.maneuver?.slug ?? '')
+        )
+        // Desangramiento directo (Dumah Arcano): cualquier impacto con dano desangra.
+        .directBleeding(martialArtCausesDirectBleeding(actor))
         .aimed(!!combat.aimed)
         .aimedWhere(combat.aimedZone || '')
         .targets(this.modalData.targets ?? [])

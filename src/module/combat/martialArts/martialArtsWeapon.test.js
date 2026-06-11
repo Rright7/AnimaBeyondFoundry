@@ -57,6 +57,25 @@ describe('applyMartialArtsWeaponBonuses', () => {
     expect(w.system.damage.formula.value).toBe('15'); // 10 + 5
   });
 
+  it('daño: arte de POD (Tai Chi) usa su Daño Base con POD, no el brawl de FUE', () => {
+    const w = mkWeapon(true);
+    applyMartialArtsWeaponBonuses(
+      w,
+      mkData(
+        {},
+        {
+          domine: {
+            martialArts: [{ system: { canonicalId: 'taiChi', grade: { value: 'base' } } }]
+          },
+          characteristics: { primaries: { strength: { mod: 20 }, power: { mod: 5 } } }
+        }
+      )
+    );
+    // Tai Chi base = 20 + 1xPOD(5) = 25; brawl = 10 + FUE(20) = 30. Antes Math.max -> 30 (FUE);
+    // ahora usa el Dano Base del arte (POD) = 25, sin que el FUE lo pise.
+    expect(w.system.damage.formula.value).toBe('25');
+  });
+
   it('no toca armas normales (no-op si no es el perfil)', () => {
     const w = mkWeapon(false);
     applyMartialArtsWeaponBonuses(w, mkData({ attack: { value: 20 } }));

@@ -3,6 +3,8 @@
 // compara con la dificultad del conjuro. RAW (Core Exxet): SIN tirada abierta;
 // un 100 natural en el dado siempre es éxito; nivel de fracaso = dif - total.
 
+import { openModDialog } from '../../module/utils/dialogs/openSimpleInputDialog.js';
+
 const RES_PATH = type =>
   `system.characteristics.secondaries.resistances.${type}.final.value`;
 
@@ -50,11 +52,18 @@ export default async function resistActionHandler(message, _html, dataset) {
     const resistance = Number(foundry.utils.getProperty(actor, RES_PATH(res.type))) || 0;
     const difficulty = Number(res.value) || 0;
 
+    // Ventana de modificador manual antes de tirar (cerrar = cancelar).
+    const modStr = await openModDialog({
+      title: game.i18n.localize('chat.attackData.resistButton')
+    });
+    if (modStr === undefined) return;
+    const mod = Number(modStr) || 0;
+
     // 1d100 PLANO (sin tirada abierta). 100 natural = éxito automático.
-    const roll = new Roll('1d100');
+    const roll = new Roll(mod ? '1d100 + @mod' : '1d100', { mod });
     await roll.evaluate();
-    const die = roll.total;
-    const total = die + resistance;
+    const die = roll.dice[0].total;
+    const total = die + resistance + mod;
     const success = die === 100 || total >= difficulty;
     const failBy = success ? 0 : difficulty - total;
 

@@ -2,7 +2,7 @@
   "id": "animabf",
   "title": "Anima Beyond Fantasy",
   "description": "Unofficial Anima Beyond Fantasy system for Foundry VTT",
-  "version": "3.4.0",
+  "version": "3.4.2",
   "compatibility": {
     "minimum": "13",
     "verified": "14.363"
@@ -39,6 +39,15 @@
   ],
   "socket": true,
   "packs": [
+    {
+      "name": "macros",
+      "label": "(ES) Macros",
+      "system": "animabf",
+      "path": "./packs/macros",
+      "type": "Macro",
+      "private": false,
+      "flags": {}
+    },
     {
       "name": "weapons",
       "label": "(ES) Armas",
@@ -126,15 +135,6 @@
       "system": "animabf",
       "path": "./packs/equipment-qualities",
       "type": "Item",
-      "private": false,
-      "flags": {}
-    },
-    {
-      "name": "macros",
-      "label": "(ES) Macros",
-      "type": "Macro",
-      "path": "packs/macros.db",
-      "system": "animabf",
       "private": false,
       "flags": {}
     }

@@ -16,8 +16,8 @@
   .spell-item-dialog {
     width: calc(100% - 0.5rem);
 
-    border-radius: $border-radius;
-    box-shadow: $card-box-shadow;
+    border-radius: var(--abf-radius);
+    box-shadow: var(--abf-shadow);
 
     margin-left: 0.5rem;
     margin-right: 0.5rem;

@@ -224,7 +224,14 @@ export class ManeuverDefinition {
     if (this.precisePenalty && weaponHasQuality(weapon, 'precise')) {
       penalty = this.precisePenalty;
     }
-    if (this.attackPenaltyByWeaponSize && weapon?.system?.size?.value) {
+    // El extra por arma corta NO aplica al combate DESARMADO (RAW Derribo: "-60 si se usa
+    // arma corta QUE NO SEA combate desarmado"). El perfil "Artes Marciales" / "Desarmado"
+    // tiene size 'small' pero isUnarmed -> se queda en el penalizador base.
+    if (
+      this.attackPenaltyByWeaponSize &&
+      weapon?.system?.size?.value &&
+      !weapon?.system?.isUnarmed?.value
+    ) {
       const extra = this.attackPenaltyByWeaponSize[weapon.system.size.value];
       if (typeof extra === 'number') penalty += extra;
     }

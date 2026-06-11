@@ -1,4 +1,5 @@
 import { equipmentQualityRegistry } from './EquipmentQualityRegistry.js';
+import { martialArtAimedPenaltyFactor } from '../../combat/martialArts/martialArtSpecials.js';
 
 /**
  * Read all `weaponQuality` Items embedded in a weapon and return the live
@@ -60,6 +61,25 @@ export function composeAimedPenalty(penalty, ctx) {
       appliedBy.push(def.slug);
     }
   }
+
+  // Sambo Supremo reduce a la mitad los Apuntados POR SI MISMO, pero SOLO cuerpo a cuerpo
+  // (igual que Precisa, que es meleeOnly). Si el arma tiene Precisa ACTIVA, precise.js ya
+  // aplico el cuarto acumulado (doublePrecise) -> no reducir otra vez. No se anade a
+  // appliedBy: el slug se mostraria sin traducir en el flavor; el penalizador reducido basta.
+  const preciseActive = defs.some(
+    d =>
+      d.slug === 'precise' &&
+      typeof d.modifyAimedPenalty === 'function' &&
+      !d.isGatedOutFor(ctx?.weapon)
+  );
+  if (!preciseActive && !ctx?.weapon?.system?.isRanged?.value) {
+    const maFactor = martialArtAimedPenaltyFactor(ctx?.actor);
+    if (maFactor !== 1) {
+      const next = Math.trunc(current * maFactor) || 0;
+      if (next !== current) current = next;
+    }
+  }
+
   return { penalty: current, appliedBy };
 }
 

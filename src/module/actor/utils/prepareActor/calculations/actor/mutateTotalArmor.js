@@ -18,19 +18,25 @@ const calculateTA = tas => {
 /**
  * @param {import('../../../../../../../types/Actor').ABFActorDataSourceData} data
  */
+const ARMOR_DAMAGE_TYPES = [
+  'cold',
+  'cut',
+  'electricity',
+  'energy',
+  'heat',
+  'impact',
+  'thrust'
+];
+
+/**
+ * @param {import('../../../../../../../types/Actor').ABFActorDataSourceData} data
+ */
 export const mutateTotalArmor = data => {
-  /** @type {import('../../../../../types/Actor').ABFActorDataSourceData['combat']['totalArmor']} */
-  const totalArmor = {
-    at: {
-      cold: { value: 0 },
-      cut: { value: 0 },
-      electricity: { value: 0 },
-      energy: { value: 0 },
-      heat: { value: 0 },
-      impact: { value: 0 },
-      thrust: { value: 0 }
-    }
-  };
+  const totalArmor = { at: {}, hardAt: {} };
+  for (const type of ARMOR_DAMAGE_TYPES) {
+    totalArmor.at[type] = { value: 0 };
+    totalArmor.hardAt[type] = { value: 0 };
+  }
 
   /** @type {import('../../../../../types/Items').ArmorDataSource[]} */
   const equippedArmors = data.combat.armors.filter(
@@ -38,47 +44,37 @@ export const mutateTotalArmor = data => {
       armor.system.equipped.value &&
       armor.system.localization.value !== ArmorLocation.HEAD
   );
+  // Armadura DURA = type 'hard'. Cualquier otra (cuero, tela, natural, magica/
+  // sobrenatural, o sin tipo) es BLANDA (definicion de mesa). hardAt es el suelo
+  // para la reduccion de TA blanda de Hakyoukuken.
+  const hardArmors = equippedArmors.filter(a => a?.system?.type?.value === 'hard');
 
-  if (equippedArmors.length > 0) {
-    totalArmor.at.cold.value = calculateTA(
-      equippedArmors.map(armor => armor.system.cold.final.value)
-    );
-    totalArmor.at.cut.value = calculateTA(
-      equippedArmors.map(armor => armor.system.cut.final.value)
-    );
-    totalArmor.at.electricity.value = calculateTA(
-      equippedArmors.map(armor => armor.system.electricity.final.value)
-    );
-    totalArmor.at.energy.value = calculateTA(
-      equippedArmors.map(armor => armor.system.energy.final.value)
-    );
-    totalArmor.at.heat.value = calculateTA(
-      equippedArmors.map(armor => armor.system.heat.final.value)
-    );
-    totalArmor.at.impact.value = calculateTA(
-      equippedArmors.map(armor => armor.system.impact.final.value)
-    );
-    totalArmor.at.thrust.value = calculateTA(
-      equippedArmors.map(armor => armor.system.thrust.final.value)
-    );
-  }
-
-  // Ki passive armor (Armadura de energía / mayor / arcana) — treated as a
-  // virtual extra armor layer of energy type. The bucket already encodes the
-  // "no se apilan entre ellas, prevalece la mayor" rule (Math.max in
-  // applyKiSkillsModifiers), so here it's just one more TA fed into the
-  // same combined formula as physical armors.
+  // Capas virtuales (NO son armaduras duras): Armadura de energia del Ki (solo en
+  // 'energy') y Rex Frame (TA fija contra TODO). Entran en la misma formula max+mitad
+  // que las fisicas (las armaduras no se apilan linealmente).
   const kiEnergyArmorTA = data.general?.modifiers?.kiBonus?.energyArmor?.value ?? 0;
-  if (kiEnergyArmorTA > 0) {
-    const energyTAs = equippedArmors.map(armor => armor.system.energy.final.value);
-    energyTAs.push(kiEnergyArmorTA);
-    totalArmor.at.energy.value = calculateTA(energyTAs);
+  const flatArmorTA = data.general?.modifiers?.armorBonus?.flat?.value ?? 0;
+
+  for (const type of ARMOR_DAMAGE_TYPES) {
+    const tas = equippedArmors.map(armor => armor.system[type].final.value);
+    if (type === 'energy' && kiEnergyArmorTA > 0) tas.push(kiEnergyArmorTA);
+    if (flatArmorTA > 0) tas.push(flatArmorTA);
+    totalArmor.at[type].value = calculateTA(tas);
+
+    // hardAt: TA SOLO de armaduras duras (las capas virtuales magicas/Ki NO entran).
+    totalArmor.hardAt[type].value = calculateTA(
+      hardArmors.map(armor => armor.system[type].final.value)
+    );
   }
 
   data.combat.totalArmor = totalArmor;
 };
 
 mutateTotalArmor.abfFlow = {
-  deps: ['system.combat.armors', 'system.general.modifiers.kiBonus.energyArmor.value'],
+  deps: [
+    'system.combat.armors',
+    'system.general.modifiers.kiBonus.energyArmor.value',
+    'system.general.modifiers.armorBonus.flat.value'
+  ],
   mods: ['system.combat.totalArmor']
 };

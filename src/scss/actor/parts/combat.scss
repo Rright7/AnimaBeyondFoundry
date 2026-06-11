@@ -125,15 +125,15 @@
 
     .weapon-row {
       margin-top: 0.5rem;
-      border-radius: $border-radius;
-      box-shadow: $card-box-shadow;
-      
+      border-radius: var(--abf-radius);
+      box-shadow: var(--abf-shadow);
+
       .initiative,
       .damage,
       .attack,
       .block {
         .input {
-          border: 1px white solid;
+          border: 1px solid var(--abf-on-accent);
         }
       }
 
@@ -234,8 +234,8 @@
 
     .armor-row {
       margin-top: 0.5rem;
-      border-radius: $border-radius;
-      box-shadow: $card-box-shadow;
+      border-radius: var(--abf-radius);
+      box-shadow: var(--abf-shadow);
 
       .cut,
       .impact,
@@ -467,7 +467,7 @@
     line-height: 1;
 
     &:hover {
-      color: var(--abf-accent);
+      color: var(--abf-accent-text);
     }
   }
 

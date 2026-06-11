@@ -27,7 +27,8 @@
           "inmaterial": { "value": false },
           "inhuman": { "value": false },
           "zen": { "value": false },
-          "defenseType": { "value": "" }
+          "defenseType": { "value": "" },
+          "extraDefensesBonus": { "value": 0 }
         },
         "diceSettings": {
           "characteristicDie": { "value": "1d10ControlRoll" },

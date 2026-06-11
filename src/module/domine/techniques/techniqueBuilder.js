@@ -296,6 +296,9 @@ export function buildTechniqueViewModel(item) {
     appliedBonusesString: appliedBonuses.join(' · '),
     // Estado de uso en juego (F6).
     active: !!item?.flags?.animabf?.active,
+    // "En efecto este asalto": instantánea recién usada o activa recién activada.
+    // Se limpia al pasar el asalto (consumeActiveTechniquesKi).
+    freshTurn: !!item?.flags?.animabf?.freshTurn,
     remaining: Number(item?.flags?.animabf?.remaining) || 0,
     isMantenida: !!computed.flags?.anyMaintained,
     isSostenida: !!(computed.flags?.anySostMenor || computed.flags?.anySostMayor),

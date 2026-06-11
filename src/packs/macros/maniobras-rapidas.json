@@ -1,0 +1,24 @@
+{
+  "name": "Maniobras rápidas",
+  "type": "script",
+  "author": "jsmBo00pwrK7EnHs",
+  "img": "icons/skills/melee/unarmed-punch-fist.webp",
+  "scope": "global",
+  "command": "if (game.animabf?.openManeuvers) game.animabf.openManeuvers();\nelse ui.notifications.warn('Sistema Anima Beyond Fantasy no inicializado.');",
+  "folder": null,
+  "ownership": {
+    "default": 2
+  },
+  "flags": {},
+  "_stats": {
+    "systemId": "animabf",
+    "systemVersion": "3.4.1",
+    "coreVersion": "13.345",
+    "createdTime": 0,
+    "modifiedTime": 0,
+    "lastModifiedBy": "jsmBo00pwrK7EnHs"
+  },
+  "sort": 0,
+  "_id": "abfQuickManeuver",
+  "_key": "!macros!abfQuickManeuver"
+}

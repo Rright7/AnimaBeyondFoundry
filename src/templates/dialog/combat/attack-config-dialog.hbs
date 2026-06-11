@@ -9,6 +9,12 @@
             inputValue=this.attacker.combat.modifier }}
       </div>
 
+      {{#if this.attacker.combat.counterBonus}}
+        <div class='columns'>
+          <label class='label'>{{localize 'macros.combat.dialog.counterBonus.title'}}: +{{this.attacker.combat.counterBonus}}</label>
+        </div>
+      {{/if}}
+
       {{#if this.attacker.kiInstant.length}}
         <div class='columns ki-instant-techniques'>
           <label class='label'>{{localize 'macros.combat.dialog.combatMod.kiTechnique.title'}} (instantáneas)</label>
@@ -16,7 +22,7 @@
             <label class='ki-instant-row{{#unless tech.hasEnoughKi}} ki-instant-row--noki{{/unless}}'>
               <input type="checkbox" name="attacker.combat.kiInstant.{{tech.id}}"
                 {{#if (is 'eq' (lookup @root.attacker.combat.kiInstant tech.id) true)}}checked{{/if}}>
-              <span>{{tech.name}}{{#if tech.attack}} · At +{{tech.attack}}{{/if}}{{#if tech.damage}} · Daño +{{tech.damage}}{{/if}} · Ki {{tech.kiCost}}{{#unless tech.hasEnoughKi}} ⚠{{/unless}}</span>
+              <span>{{tech.name}}{{#if tech.attack}} · At +{{tech.attack}}{{/if}}{{#if tech.damage}} · Daño +{{tech.damage}}{{/if}}{{#if tech.free}} · este turno{{else}} · Ki {{tech.kiCost}}{{/if}}{{#unless tech.hasEnoughKi}} ⚠{{/unless}}</span>
             </label>
           {{/each}}
         </div>
@@ -38,7 +44,7 @@
         <div class='columns aim-zone-row'>
           <label class='aim-zone-row__label'>{{localize 'macros.combat.dialog.aimed.zone'}}</label>
           <select name='attacker.combat.aimedZone' class='input aim-zone-row__select' {{#if this.maneuver}}disabled{{/if}}>
-            {{#each (aimedZonesWithPenalty this.attacker.combat.weapon) as |z|}}
+            {{#each (aimedZonesWithPenalty this.attacker.combat.weapon this.attacker.actor) as |z|}}
               <option value='{{z.id}}' {{#if (is 'eq' ../this.attacker.combat.aimedZone z.id)}}selected{{/if}}>
                 {{z.label}} {{z.penaltyLabel}}
               </option>
@@ -65,6 +71,8 @@
             <option value='{{o.value}}' {{#if o.selected}}selected{{/if}}>{{o.label}}</option>
           {{/each}}
         {{/'systems/animabf/templates/common/ui/custom-select.hbs'}}
+      {{else}}
+        <p class='label no-fatigue'>{{localize 'macros.combat.dialog.notEnoughFatigue.title'}}</p>
       {{/if}}
 
       {{#if this.attacker.combat.weapon}}
@@ -100,6 +108,19 @@
         <p class='label'>{{localize 'macros.combat.dialog.weapon.notFound'}}</p>
       {{/if}}
 
+      {{#if this.ui.martialAttackTables}}
+        {{!-- Perfil Arte Marcial: tabla de ataque elegible (CON/FIL/PEN/ENE) segun las
+              artes del atacante (Dumah FIL/PEN, Velez ENE). 'impact' siempre disponible. --}}
+        {{#> 'systems/animabf/templates/common/ui/custom-select.hbs'
+            title=(localize 'macros.combat.dialog.weapon.critic.title')
+            inputName='attacker.combat.criticSelected' }}
+          {{#each this.ui.martialAttackTables as |t|}}
+            <option value='{{t.value}}' {{#if t.selected}}selected{{/if}}>
+              {{localize (concat 'anima.ui.combat.armors.at.' t.value '.title')}}
+            </option>
+          {{/each}}
+        {{/'systems/animabf/templates/common/ui/custom-select.hbs'}}
+      {{else}}
       {{#unless this.attacker.combat.unarmed}}
         {{#if this.ui.weaponHasSecondaryCritic}}
           {{#> 'systems/animabf/templates/common/ui/custom-select.hbs'
@@ -125,6 +146,7 @@
           {{/'systems/animabf/templates/common/ui/custom-select.hbs'}}
         {{/if}}
       {{/unless}}
+      {{/if}}
 
       {{> "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
           title=(localize 'macros.combat.dialog.damage.title')

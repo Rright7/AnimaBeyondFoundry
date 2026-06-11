@@ -98,7 +98,7 @@
     }
 
     &.unlocked {
-      color: var(--abf-accent);
+      color: var(--abf-accent-text);
     }
   }
   // Section lock button
@@ -347,7 +347,7 @@
           border: 1px solid var(--abf-accent);
           border-radius: 999px;
           background: var(--abf-surface);
-          color: var(--abf-accent);
+          color: var(--abf-accent-text);
           font-weight: bold;
           font-size: 0.85rem;
           padding: 0.2rem 1rem;
@@ -367,7 +367,7 @@
         .ki-accumulated-total {
           font-size: 0.8rem;
           font-weight: bold;
-          color: var(--abf-accent);
+          color: var(--abf-accent-text);
           font-variant-numeric: tabular-nums;
           text-align: center;
         }
@@ -441,7 +441,7 @@
         top: 0;
         width: 5.5rem;
         height: 100%;
-        background-color: $red;
+        background-color: var(--abf-accent);
         border-top-left-radius: 1rem;
         border-bottom-left-radius: 1rem;
 
@@ -457,7 +457,7 @@
           justify-content: flex-start;
           align-items: center;
 
-          color: white;
+          color: var(--abf-on-accent);
           font-weight: bold;
           font-size: 1rem;
           width: 100%;
@@ -485,8 +485,8 @@
 
     .technique-row {
       margin-top: 0.5rem;
-      border-radius: $border-radius;
-      box-shadow: $card-box-shadow;
+      border-radius: var(--abf-radius);
+      box-shadow: var(--abf-shadow);
     }
 
     .technique-row:last-child {
@@ -503,7 +503,7 @@
         width: 100%;
 
         margin-top: 0;
-        border-radius: 0.5rem;
+        border-radius: var(--abf-radius);
       }
 
       .technique-header {

@@ -2,6 +2,8 @@ export class ABFDefenseData {
   constructor(p = {}) {
     this.defenseAbility = p.defenseAbility ?? 0;
     this.armor = p.armor ?? 0;
+    // TA solo de armaduras DURAS (suelo de la reduccion de TA blanda de Hakyoukuken).
+    this.hardArmor = p.hardArmor ?? 0;
     this.inmodifiableArmor = !!p.inmodifiableArmor;
     this.canCounterAttack = p.canCounterAttack ?? true;
     this.damageReduction = p.damageReduction ?? 0;
@@ -51,6 +53,11 @@ export class ABFDefenseDataBuilder {
 
   armor(v) {
     this._p.armor = Number(v) || 0;
+    return this;
+  }
+
+  hardArmor(v) {
+    this._p.hardArmor = Number(v) || 0;
     return this;
   }
 

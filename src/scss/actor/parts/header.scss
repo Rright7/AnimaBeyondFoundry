@@ -16,7 +16,7 @@
     align-items: center;
     width: 100%;
     margin-bottom: 0.25rem;
-    border-bottom: 2px solid $red;
+    border-bottom: 2px solid var(--abf-accent);
 
     .header-top {
       flex: 1 1 auto;
@@ -85,7 +85,7 @@
       width: auto;        // mantiene proporción
       height: auto;
       object-fit: contain;
-      border-radius: 1rem;
+      border-radius: var(--abf-radius-lg);
       min-width: 8rem;
     }
   }
@@ -105,6 +105,7 @@
       text-align: center;
       border: none;
       background: transparent;
+      color: var(--abf-text);
 
       &:hover,
       &:focus {
@@ -133,7 +134,7 @@
           left: 50%;
           transform: translate(-50%, -50%);
 
-          color: white;
+          color: var(--abf-on-accent);
           font-weight: bold;
         }
       }
