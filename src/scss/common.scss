@@ -13,6 +13,21 @@
   overflow-x: auto;
 }
 
+// La barra de titulo (chrome de Foundry) es oscura siempre; nuestra regla
+// `.animabf.sheet { color: --abf-text }` la tenia de oscuro en tema claro, dejando
+// los controles (Close, Sheet, config) invisibles. Forzamos texto claro en la barra.
+.animabf.sheet .window-header {
+  color: #f0f0e0;
+
+  .window-title,
+  a,
+  .header-button,
+  .header-control,
+  i {
+    color: #f0f0e0;
+  }
+}
+
 img {
   border: none;
 }
@@ -519,6 +534,16 @@ body.abf-theme-dark .spheres-container {
     opacity: 1;
   }
 
+  // Cajas de total/final sobre rojo (fondo acento): el numero debe ir claro.
+  // La regla de arriba fuerza --abf-text (oscuro) en cualquier disabled, lo que
+  // deja estas cajas ilegibles (oscuro sobre rojo). Como llevan fondo acento,
+  // su texto va en --abf-on-accent. Mas especifico que `input:disabled` para ganar.
+  .secondary-input.secondary-2,
+  .input.tertiary-input {
+    color: var(--abf-on-accent);
+    -webkit-text-fill-color: var(--abf-on-accent);
+  }
+
   // El contenido del cuerpo de tarjeta debe ir en el color de texto del tema.
   // Algunos elementos (labels, inputs) traen color propio oscuro (Foundry/navegador)
   // que no se ve sobre el fondo oscuro -> lo forzamos. Cabeceras/pies van aparte
@@ -548,6 +573,16 @@ body.abf-theme-dark .spheres-container {
     select,
     textarea {
       color: var(--abf-text);
+    }
+  }
+
+  // Pie rojo: las etiquetas/titulos van sobre el acento -> texto claro. El pie de
+  // cada arma/armadura queda anidado dentro del .group-body del grupo exterior, asi
+  // que sin esto hereda `.group-body .label` (oscuro) e ilegible sobre el rojo.
+  .group-footer {
+    .label,
+    label {
+      color: var(--abf-on-accent);
     }
   }
 
