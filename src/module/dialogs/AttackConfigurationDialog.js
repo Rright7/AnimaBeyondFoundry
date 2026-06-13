@@ -34,7 +34,7 @@ export class AttackConfigurationDialog extends FormApplication {
     this.render(true);
   }
 
-  static _buildInitialData({ attacker, weaponId, weapon, options = {}, targets, maneuverSlug, maneuverItemName, aimed, aimedZone, delayRounds, chooseTargets, chosenPenalty, causesDamage, counterBonus, counterDamageBonus, isCounterAttack }) {
+  static _buildInitialData({ attacker, weaponId, weapon, options = {}, targets, maneuverSlug, maneuverItemName, aimed, aimedZone, delayRounds, chooseTargets, chosenPenalty, causesDamage, counterBonus, counterDamageBonus, isCounterAttack, onCounterAttackSent }) {
     if (!attacker || !attacker.actor) {
       ui.notifications?.error('AttackConfigurationDialog: attacker is required');
       return { allowed: false };
@@ -60,9 +60,11 @@ export class AttackConfigurationDialog extends FormApplication {
     // A maneuver may be performed with any of the actor's weapons, so when the
     // dialog is opened from a maneuver we do NOT lock the weapon: the resolved
     // (equipped) weapon is only the default selection and the player can pick
-    // another from the dropdown. A plain weapon attack keeps the weapon locked
+    // another from the dropdown. A counter-attack is the same case: the weapon
+    // was auto-picked (equipped/first), so the defender must be able to choose
+    // which weapon to counter with. A plain weapon attack keeps the weapon locked
     // (the player already chose it by clicking that weapon's button).
-    const lockWeapon = !!resolvedWeapon && !maneuverSlug;
+    const lockWeapon = !!resolvedWeapon && !maneuverSlug && !isCounterAttack;
 
     return {
       ui: {
@@ -135,7 +137,11 @@ export class AttackConfigurationDialog extends FormApplication {
         : null,
       allowed: options?.allowed ?? isOwner ?? false,
       config: ABFConfig,
-      attackSent: false
+      attackSent: false,
+      // Contraataque: callback que marca el resultado como consumido. Se invoca
+      // SOLO cuando el ataque se envia de verdad (no al abrir el dialogo), para que
+      // cerrar sin atacar conserve el boton del mensaje de resultado.
+      onCounterAttackSent: typeof onCounterAttackSent === 'function' ? onCounterAttackSent : null
     };
   }
 
@@ -535,6 +541,7 @@ export class AttackConfigurationDialog extends FormApplication {
         .damageType(game.animabf.combat.DamageType.NONE)
         .presence(Number(weapon.system.presence?.final?.value ?? 0))
         .isProjectile(!!combat.projectile?.value)
+        .projectileType(weapon.system.shotType?.value ?? '')
         .automaticCrit(!!combat.automaticCrit)
         // Bono al nivel del critico por Artes Marciales (Moai Thai/Hakyoukuken siempre;
         // Asakusen solo apuntado; Enuth solo con Inconsciencia).
@@ -568,6 +575,17 @@ export class AttackConfigurationDialog extends FormApplication {
       if (attackMsg && this.modalData.maneuver?.slug) {
         await attackMsg.setFlag('animabf', 'maneuverSlug', this.modalData.maneuver.slug);
         await attackMsg.setFlag('animabf', 'maneuverItemName', this.modalData.maneuver.itemName);
+      }
+
+      // Contraataque enviado de verdad: ahora si se marca como consumido y se oculta
+      // el boton del mensaje de resultado. Si se hubiera cerrado el dialogo sin enviar,
+      // el boton seguiria disponible para reintentarlo.
+      if (attackMsg && combat.isCounterAttack && typeof this.modalData.onCounterAttackSent === 'function') {
+        try {
+          await this.modalData.onCounterAttackSent();
+        } catch (e) {
+          console.error('[ABF] onCounterAttackSent error:', e);
+        }
       }
 
       // Consume el Cansancio gastado (reduce el pool; afecta a acciones futuras).

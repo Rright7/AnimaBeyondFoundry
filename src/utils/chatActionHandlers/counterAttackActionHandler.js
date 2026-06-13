@@ -10,9 +10,11 @@ const inFlight = new Set();
  * Boton "Contraatacar" del mensaje de resultado de combate (kind:'combatResult').
  * Aparece para el defensor (su owner / GM) cuando hubo defensa con exito y margen
  * de contra >= 0 (result.hasCounterAttack). Al pulsarlo abre el AttackConfigurationDialog
- * del DEFENSOR contra el AGRESOR original, con el bono de margen precargado. Es un
- * ataque normal (defendible y encadenable, RAW). Tras lanzarse, marca
- * result.counterAttackConsumed=true para que el boton no se reuse.
+ * del DEFENSOR contra el AGRESOR original, con el bono de margen precargado y el arma
+ * elegible (la equipada es solo el valor por defecto). Es un ataque normal (defendible
+ * y encadenable, RAW). Solo cuando el ataque se ENVIA de verdad (no al abrir el dialogo)
+ * marca result.counterAttackConsumed=true para ocultar el boton; cerrar el dialogo sin
+ * atacar conserva el boton para reintentarlo.
  */
 export default async function counterAttackActionHandler(message, html, dataset) {
   const msg = game.messages.get(dataset.messageId ?? message?.id);
@@ -47,9 +49,6 @@ export default async function counterAttackActionHandler(message, html, dataset)
       if (!ok)
         return ui.notifications?.warn(game.i18n.localize('chat.counterAttack.noPermission'));
     }
-
-    // Feedback inmediato: desactiva el boton mientras se procesa (el re-render lo quita).
-    html?.querySelector?.('[data-action="counter-attack"]')?.setAttribute('disabled', 'true');
 
     // Objetivo del contraataque = agresor original.
     const atkActorId = animabf.attacker?.actorId || animabf.attackData?.attackerId || '';
@@ -98,12 +97,13 @@ export default async function counterAttackActionHandler(message, html, dataset)
         counterBonus: bonus,
         counterDamageBonus,
         isCounterAttack: true,
-        targets
+        targets,
+        // El contraataque se marca como consumido SOLO al enviarse (dentro del
+        // dialogo). Cerrar el dialogo sin atacar deja el boton disponible.
+        onCounterAttackSent: () => markCounterAttackConsumed(msg, animabf)
       },
       { allowed: true }
     );
-
-    await markCounterAttackConsumed(msg, animabf);
   } catch (err) {
     console.error('[ABF] counterAttackActionHandler error:', err);
     ui.notifications?.error(game.i18n.localize('chat.counterAttack.openFailed'));
