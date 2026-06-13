@@ -32,24 +32,28 @@ export async function openCanonicalSkillSelectDialog(type) {
   const options = candidates
     .map(s => {
       const indent = '&nbsp;&nbsp;&nbsp;&nbsp;'.repeat(s.tree?.depth ?? 0);
-      return `<option value="${s.id}">${indent}${escapeHtml(s.name)}</option>`;
+      const name = escapeHtml(s.name);
+      return `<option value="${s.id}" data-name="${name.toLowerCase()}">${indent}${name}</option>`;
     })
     .join('');
 
   const content = `
     <form>
       <div class="form-group" style="display:flex;flex-direction:column;gap:0.5rem;">
+        <input type="text" name="skill-search" placeholder="${i18n.localize(
+          'dialogs.search'
+        )}" style="width:100%;" autofocus autocomplete="off" />
         <label for="canonical-skill-select">${i18n.localize(labelKey)}</label>
-        <select id="canonical-skill-select" name="canonicalId" style="width:100%;">
+        <select id="canonical-skill-select" name="canonicalId" size="8" style="width:100%;">
           ${options}
-          <option value="__homebrew__">&mdash; ${i18n.localize(
+          <option value="__homebrew__" data-name="">&mdash; ${i18n.localize(
             'dialogs.items.kiSkill.homebrew'
           )} &mdash;</option>
         </select>
         <input id="canonical-skill-homebrew-name" name="homebrewName"
                type="text" placeholder="${i18n.localize(
                  'dialogs.items.kiSkill.homebrewPlaceholder'
-               )}" style="width:100%;" />
+               )}" style="width:100%; display:none;" />
       </div>
     </form>
   `;
@@ -68,6 +72,46 @@ export async function openCanonicalSkillSelectDialog(type) {
         }
         const entry = candidates.find(s => s.id === value);
         return entry ? { name: entry.name, canonicalId: entry.id } : null;
+      }
+    },
+    render: (...renderArgs) => {
+      const root = renderArgs
+        .map(a => (a?.querySelectorAll ? a : a?.element))
+        .find(Boolean);
+      if (!root) return;
+      const search = root.querySelector('[name="skill-search"]');
+      const select = root.querySelector('#canonical-skill-select');
+      const homebrew = root.querySelector('#canonical-skill-homebrew-name');
+      if (!select) return;
+
+      // En lista (size>1) no hay seleccion por defecto: preselecciona la primera
+      if (select.selectedIndex < 0) select.selectedIndex = 0;
+
+      // El nombre libre solo tiene sentido para "— Otra (homebrew) —"
+      const syncHomebrew = () => {
+        if (homebrew) {
+          homebrew.style.display = select.value === '__homebrew__' ? '' : 'none';
+        }
+      };
+      select.addEventListener('change', syncHomebrew);
+      syncHomebrew();
+
+      if (search) {
+        search.addEventListener('input', () => {
+          const q = search.value.trim().toLowerCase();
+          let firstVisible = null;
+          for (const opt of select.querySelectorAll('option')) {
+            const hay = opt.dataset.name ?? opt.textContent.toLowerCase();
+            const match = !q || hay.includes(q);
+            opt.style.display = match ? '' : 'none';
+            if (match && !firstVisible) firstVisible = opt;
+          }
+          const sel = select.selectedOptions[0];
+          if ((!sel || sel.style.display === 'none') && firstVisible) {
+            firstVisible.selected = true;
+          }
+          syncHomebrew();
+        });
       }
     },
     rejectClose: false,
