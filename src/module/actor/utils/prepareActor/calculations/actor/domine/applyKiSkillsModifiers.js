@@ -83,7 +83,18 @@ export const applyKiSkillsModifiers = (data, actor) => {
   // Provenance para el chat: una entrada por técnica/resistencia, sobre el path
   // `.final.value` (el que se tira desde la hoja).
   for (const rec of techMods.records) {
-    const key = rec.scope === 'bucket' ? RESISTANCE_TARGET[rec.target] : null;
+    if (rec.scope !== 'bucket') continue;
+    // Turno (Incrementar Turno): la traza va sobre el path de iniciativa.
+    if (rec.target === 'initiative') {
+      depositModifier(actor, {
+        path: 'system.characteristics.secondaries.initiative.final.value',
+        value: rec.value,
+        source: rec.source,
+        slug: rec.slug ? `technique:${rec.slug}:initiative` : undefined
+      });
+      continue;
+    }
+    const key = RESISTANCE_TARGET[rec.target];
     if (!key) continue;
     depositModifier(actor, {
       path: `system.characteristics.secondaries.resistances.${key}.final.value`,
@@ -182,6 +193,7 @@ function enrichListFromCanonical(list, totals, actor) {
     for (const eff of canonical.effects ?? []) {
       accumulateEffect(totals, eff);
       depositKiSkillResistance(actor, skill, canonical, eff);
+      depositKiSkillInitiative(actor, skill, canonical, eff);
     }
   }
 }
@@ -213,6 +225,25 @@ function depositKiSkillResistance(actor, skill, canonical, eff) {
       slug: `kiSkill:${id}:${key}`
     });
   }
+}
+
+/**
+ * Deposita en synthetics la provenance del bono de INICIATIVA de una habilidad de
+ * Ki/Nemesis, para que la linea 'Mod:' del chat incluya esa fuente igual que el
+ * Turno de Artes Marciales. Solo target 'initiative' con operation:'add'.
+ * depositModifier ignora un actor falsy (los tests sin actor siguen funcionando).
+ */
+function depositKiSkillInitiative(actor, skill, canonical, eff) {
+  if (!actor || eff?.operation !== 'add' || eff?.target !== 'initiative') return;
+  const value = Number(eff.value) || 0;
+  if (!value) return;
+  const id = skill?.system?.canonicalId ?? canonical.id;
+  depositModifier(actor, {
+    path: 'system.characteristics.secondaries.initiative.final.value',
+    value,
+    source: skill?.name ?? canonical.name,
+    slug: `kiSkill:${id}:initiative`
+  });
 }
 
 function populateTreePrefixes(list) {

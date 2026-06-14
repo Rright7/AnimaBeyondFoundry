@@ -10,7 +10,7 @@ export const calculateWeaponIntegrity = weapon => {
     integrity += 6;
   }
 
-  if (weapon.system.sizeProportion.value === WeaponSizeProportion.ENORMOUS) {
+  if (weapon.system.sizeProportion.value === WeaponSizeProportion.GIANT) {
     integrity += 16;
   }
 

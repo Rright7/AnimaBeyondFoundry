@@ -155,6 +155,7 @@
               {{>
               "systems/animabf/templates/common/ui/vertical-titled-input.hbs"
                 class="attack"
+                disabled=(is 'eq' weapon.system.isMartialArtsProfile.value true)
                 title=(localize "anima.ui.combat.weapons.attack.title")
                 rollableMessage=(concat (localize "anima.ui.combat.weapons.attack.roll.message") weapon.name)
                 inputName=(concat "system.dynamic.weapons." weapon._id ".system.attack.special.value")
@@ -169,6 +170,7 @@
               {{>
               "systems/animabf/templates/common/ui/vertical-titled-input.hbs"
                 class="block"
+                disabled=(is 'eq' weapon.system.isMartialArtsProfile.value true)
                 title=(localize "anima.ui.combat.weapons.block.title")
                 rollableMessage=(concat (localize "anima.ui.combat.weapons.block.roll.message") weapon.name)
                 inputName=(concat "system.dynamic.weapons." weapon._id ".system.block.special.value")
@@ -183,6 +185,7 @@
               {{>
               "systems/animabf/templates/common/ui/vertical-titled-input.hbs"
                 class="damage"
+                disabled=(is 'eq' weapon.system.isMartialArtsProfile.value true)
                 title=(localize "anima.ui.combat.weapons.damage.final.title")
                 inputName=(concat "system.dynamic.weapons." weapon._id ".system.damage.special.value")
                 inputValue=weapon.system.damage.special.value
@@ -195,6 +198,7 @@
               {{>
               "systems/animabf/templates/common/ui/vertical-titled-input.hbs"
                 class="initiative"
+                disabled=(is 'eq' weapon.system.isMartialArtsProfile.value true)
                 rollable=true
                 rollableDice=@root.system.general.diceSettings.initiativeDie.value
                 title=(localize "anima.ui.combat.weapons.initiative.final.title")

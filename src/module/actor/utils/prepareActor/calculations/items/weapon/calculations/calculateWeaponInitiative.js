@@ -4,7 +4,11 @@ import { WeaponSizeProportion } from '../../../../../../../types/combat/WeaponIt
  * @param {import('../../../../../../../types/Items').WeaponDataSource} weapon
  */
 export const calculateWeaponInitiative = weapon => {
-  let initiative = weapon.system.initiative.base.value + weapon.system.initiative.special.value + weapon.system.quality.value;
+  const num = v => Number(v) || 0;
+  let initiative =
+    num(weapon.system.initiative.base.value) +
+    num(weapon.system.initiative.special.value) +
+    num(weapon.system.quality.value);
 
   // This depends on the size of the character but right now is not automatized
   if (weapon.system.sizeProportion.value !== WeaponSizeProportion.NORMAL) {

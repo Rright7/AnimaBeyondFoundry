@@ -1,5 +1,10 @@
 import { WeaponSize } from '../../../../../types/combat/WeaponItemConfig';
 
+// Predicado inline (mismo criterio que combat/martialArts/martialArtsWeapon.js):
+// se evita importar ese modulo para no arrastrar la cadena del catalogo de AM.
+const isMartialArtsProfileWeapon = weapon =>
+  !!weapon?.system?.isMartialArtsProfile?.value;
+
 /** @param {import('../../../../../types/Actor').ABFActorDataSourceData} data */
 export const mutateInitiative = data => {
   /** @type {{weapons: import('../../../../../types/Items').WeaponDataSource[]}} */
@@ -19,8 +24,16 @@ export const mutateInitiative = data => {
 
   const { initiative } = data.characteristics.secondaries;
 
+  const equippedWeapons = combat.weapons.filter(weapon => weapon.system.equipped.value);
+
   const kiInitiativeBonus = data.general.modifiers.kiBonus?.initiative?.value ?? 0;
-  const martialTurnBonus = data.general.modifiers.martialArtBonus?.turn?.value ?? 0;
+  // Si el perfil "Artes Marciales" esta equipado, el bono de Turno del arte ya llega
+  // por el initiative.final de ese arma (martialArtsWeapon lo inyecta en su special),
+  // asi que NO se suma tambien aqui: evita el doble conteo del Turno de AM.
+  const maProfileEquipped = equippedWeapons.some(isMartialArtsProfileWeapon);
+  const martialTurnBonus = maProfileEquipped
+    ? 0
+    : data.general.modifiers.martialArtBonus?.turn?.value ?? 0;
 
   initiative.final.value =
     initiative.base.value +
@@ -28,8 +41,6 @@ export const mutateInitiative = data => {
     penalty +
     kiInitiativeBonus +
     martialTurnBonus;
-
-  const equippedWeapons = combat.weapons.filter(weapon => weapon.system.equipped.value);
 
   // We subtract 20 because people are used to put as base unarmed initiative
   initiative.final.value -= 20;
