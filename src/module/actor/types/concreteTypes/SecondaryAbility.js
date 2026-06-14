@@ -148,10 +148,14 @@ export class SecondaryAbility extends Ability {
     if (!ch) return 0;
 
     const chBase = Number(ch.base?.value ?? ch.base ?? 0);
-    const chFinal = Number(ch.final?.value ?? ch.final ?? 0);
+    const chSpecial = Number(ch.special?.value ?? 0);
+    // Valor REAL (sin el tope de Inhumanidad/Zen): el bono natural de la
+    // habilidad fisica aprovecha la caracteristica real aunque su 'final' este
+    // capado. Para las psiquicas, real == final (techo 20), sin cambio.
+    const chReal = Math.min(Math.max(chBase + chSpecial, 0), 20);
 
     const baseNaturalMod = this.#calculateNaturalMod(chBase);
-    const finalNaturalMod = this.#calculateNaturalMod(chFinal);
+    const finalNaturalMod = this.#calculateNaturalMod(chReal);
 
     return finalNaturalMod - baseNaturalMod;
   }

@@ -88,18 +88,35 @@ export default class ABFCombat extends Combat {
    * @param {{updateTurn?: boolean, messageOptions?: any}} [options]
    */
   async rollInitiative(ids, { updateTurn = false, messageOptions } = {}) {
-    const mod = await openModDialog();
+    // Number(...) || 0: cubre cancelar el dialogo (undefined), dejarlo vacio ('') y
+    // entradas no numericas. Sin esto la formula quedaba "... + undefined" y la tirada
+    // de iniciativa fallaba. Mismo patron que los lanzamientos de hechizos/poderes.
+    const mod = Number(await openModDialog()) || 0;
 
     if (typeof ids === 'string') {
       ids = [ids];
     }
     for (const id of ids) {
       const combatant = this.combatants.get(id);
+      const actor = combatant?.actor;
+      // El token puede no resolverse en la escena (o el actor estar borrado): saltar
+      // en vez de reventar, igual que nextRound/_sortCombatants.
+      if (!actor) continue;
 
       const baseInit =
-        combatant.actor.system.characteristics.secondaries.initiative.final.value || 0;
+        actor.system?.characteristics?.secondaries?.initiative?.final?.value ?? 0;
       const formula = `${combatant._getInitiativeFormula()} + ${baseInit} + ${mod}`;
       await super.rollInitiative(id, { formula, updateTurn, messageOptions });
+
+      // Marca explicita de pifia: una pifia de iniciativa (dado 1-3) aplica un
+      // penalizador grande negativo en ABFInitiativeRoll, asi que la contribucion del
+      // dado (= total - base - mod) cae por debajo de 0; una tirada normal es >= 4.
+      // Guardar el flag evita que _sortCombatants tenga que inferir la pifia con
+      // numeros magicos a partir del total.
+      if (Number.isFinite(combatant.initiative)) {
+        const dieContribution = combatant.initiative - baseInit - mod;
+        await combatant.setFlag('animabf', 'initiativeFumble', dieContribution < 0);
+      }
     }
 
     if (this.getFlag('world', 'newRound')) {
@@ -110,23 +127,31 @@ export default class ABFCombat extends Combat {
   }
 
   /**
+   * Orden de turno (mayor iniciativa actua antes), con las reglas de Anima:
+   *  - Quien aun no ha tirado va al final.
+   *  - Una pifia de iniciativa actua siempre DESPUES de quien no pifio.
+   *  - Dentro del mismo grupo, mayor iniciativa (ya con penalizadores) primero.
+   *  - En empate, desempata la base cruda de iniciativa (mayor primero).
    * @protected @override
    * @param {Combatant} combatantA
    * @param {Combatant} combatantB
    */
   _sortCombatants(combatantA, combatantB) {
-    let initiativeA = combatantA.initiative || -9999;
-    let initiativeB = combatantB.initiative || -9999;
-    if (
-      initiativeA <
-      (combatantA?.actor?.system.characteristics.secondaries.initiative.final.value || 0)
-    )
-      initiativeA -= 2000;
-    if (
-      initiativeB <
-      (combatantB?.actor?.system.characteristics.secondaries.initiative.final.value || 0)
-    )
-      initiativeB -= 2000;
-    return initiativeB - initiativeA;
+    const aRolled = Number.isFinite(combatantA?.initiative);
+    const bRolled = Number.isFinite(combatantB?.initiative);
+    if (aRolled !== bRolled) return aRolled ? -1 : 1;
+    if (!aRolled && !bRolled) return 0;
+
+    const aFumble = combatantA.getFlag('animabf', 'initiativeFumble') === true;
+    const bFumble = combatantB.getFlag('animabf', 'initiativeFumble') === true;
+    if (aFumble !== bFumble) return aFumble ? 1 : -1;
+
+    if (combatantA.initiative !== combatantB.initiative) {
+      return combatantB.initiative - combatantA.initiative;
+    }
+
+    const baseOf = c =>
+      c?.actor?.system?.characteristics?.secondaries?.initiative?.base?.value ?? 0;
+    return baseOf(combatantB) - baseOf(combatantA);
   }
 }

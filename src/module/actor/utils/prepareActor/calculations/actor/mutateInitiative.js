@@ -1,4 +1,14 @@
 import { WeaponSize } from '../../../../../types/combat/WeaponItemConfig';
+import {
+  getCombatHandWeapons,
+  getActiveTurnShield,
+  isUnarmedWeapon
+} from '../../utils/getCombatHandWeapons.js';
+
+// Predicado inline (mismo criterio que combat/martialArts/martialArtsWeapon.js):
+// se evita importar ese modulo para no arrastrar la cadena del catalogo de AM.
+const isMartialArtsProfileWeapon = weapon =>
+  !!weapon?.system?.isMartialArtsProfile?.value;
 
 /** @param {import('../../../../../types/Actor').ABFActorDataSourceData} data */
 export const mutateInitiative = data => {
@@ -19,8 +29,16 @@ export const mutateInitiative = data => {
 
   const { initiative } = data.characteristics.secondaries;
 
+  const equippedWeapons = combat.weapons.filter(weapon => weapon.system.equipped.value);
+
   const kiInitiativeBonus = data.general.modifiers.kiBonus?.initiative?.value ?? 0;
-  const martialTurnBonus = data.general.modifiers.martialArtBonus?.turn?.value ?? 0;
+  // Si el perfil "Artes Marciales" esta equipado, el bono de Turno del arte ya llega
+  // por el initiative.final de ese arma (martialArtsWeapon lo inyecta en su special),
+  // asi que NO se suma tambien aqui: evita el doble conteo del Turno de AM.
+  const maProfileEquipped = equippedWeapons.some(isMartialArtsProfileWeapon);
+  const martialTurnBonus = maProfileEquipped
+    ? 0
+    : data.general.modifiers.martialArtBonus?.turn?.value ?? 0;
 
   initiative.final.value =
     initiative.base.value +
@@ -29,12 +47,12 @@ export const mutateInitiative = data => {
     kiInitiativeBonus +
     martialTurnBonus;
 
-  const equippedWeapons = combat.weapons.filter(weapon => weapon.system.equipped.value);
-
   // We subtract 20 because people are used to put as base unarmed initiative
   initiative.final.value -= 20;
 
-  const equippedShield = equippedWeapons.find(weapon => weapon.system.isShield.value);
+  // Escudo que penaliza el Turno: la rodela (pequeño) por estar equipada (se lleva sin
+  // mano); cualquier otro escudo solo si está asignado a una mano (fuente única = manos).
+  const equippedShield = getActiveTurnShield(equippedWeapons);
 
   //Ajuste por llevar un escudo
   if (equippedShield) {
@@ -47,19 +65,27 @@ export const mutateInitiative = data => {
     }
   }
 
-  //Ajuste según la cantidad de armas que lleva equipadas el personaje
-  const firstTwoWeapons = equippedWeapons
-    .filter(weapon => !weapon.system.isShield.value)
-    .slice(0, 2);
+  // Armas en mano para el Turno. FUENTE ÚNICA = handSlot (main/off); lo equipado SIN
+  // asignar NO cuenta. Excluye escudos y armas de cuerpo entero; un arma a dos manos
+  // cuenta sola (ocupa ambas manos). Ver getCombatHandWeapons.
+  const combatWeapons = getCombatHandWeapons(equippedWeapons);
 
-  if (firstTwoWeapons.length === 0) {
-    initiative.final.value += 20;
-  } else if (firstTwoWeapons.length === 1) {
-    initiative.final.value += firstTwoWeapons[0].system.initiative.final.value;
-  } else if (firstTwoWeapons.length === 2) {
+  if (combatWeapons.length === 0) {
+    // Sin armas en mano -> combate desarmado por defecto: usa el initiative.final del
+    // arma de cuerpo entero equipada (perfil "Artes Marciales" preferente, que incluye
+    // el Turno del arte por #1; si no, "Desarmado"); sin ninguna, el +20 base.
+    const unarmedWeapon =
+      equippedWeapons.find(isMartialArtsProfileWeapon) ??
+      equippedWeapons.find(isUnarmedWeapon);
+    initiative.final.value += unarmedWeapon
+      ? unarmedWeapon.system.initiative.final.value
+      : 20;
+  } else if (combatWeapons.length === 1) {
+    initiative.final.value += combatWeapons[0].system.initiative.final.value;
+  } else if (combatWeapons.length === 2) {
     //Ajuste por llevar dos armas
-    const leftWeapon = firstTwoWeapons[0].system;
-    const rightWeapon = firstTwoWeapons[1].system;
+    const leftWeapon = combatWeapons[0].system;
+    const rightWeapon = combatWeapons[1].system;
 
     initiative.final.value += Math.min(
       leftWeapon.initiative.final.value,
@@ -86,7 +112,7 @@ mutateInitiative.abfFlow = {
     'system.general.modifiers.naturalPenalty.final.value',
     'system.general.modifiers.kiBonus.initiative.value',
     'system.general.modifiers.martialArtBonus.turn.value',
-    'system.combat.weapons' // equipped + isShield + size + initiative.*
+    'system.combat.weapons' // equipped + isShield + size + handSlot + initiative.*
   ],
   mods: ['system.characteristics.secondaries.initiative.final.value']
 };

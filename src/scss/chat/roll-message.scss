@@ -1,0 +1,45 @@
+@use '../variable' as *;
+
+// Realce "de un vistazo" de tiradas en el chat. La clase la pone _handleChatMessage
+// en el nodo raiz del mensaje segun flags.animabf.rollOutcome.
+// Se usan --abf-danger/--abf-success como TEXTO/BORDE (no fondo): en tema oscuro esos
+// tokens son tonos claros y como fondo darian bajo contraste.
+
+.abf-roll-fumble {
+  border-left: 3px solid var(--abf-danger);
+
+  .dice-total {
+    color: var(--abf-danger);
+    font-weight: 700;
+  }
+}
+
+.abf-roll-open {
+  border-left: 3px solid var(--abf-success);
+
+  .dice-total {
+    color: var(--abf-success);
+    font-weight: 700;
+  }
+}
+
+// Boton "Tirar pifia" inyectado en el mensaje (no esta dentro de .animabf-chat-message,
+// asi que no hereda el estilo generico de .chat-action-button).
+.abf-fumble-button {
+  display: block;
+  width: 100%;
+  margin-top: 0.4rem;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid var(--abf-danger);
+  border-radius: var(--abf-radius-sm);
+  background: var(--abf-surface-2);
+  color: var(--abf-danger);
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 0.15s ease, background 0.15s ease;
+
+  &:hover {
+    background: var(--abf-surface);
+    filter: brightness(1.05);
+  }
+}

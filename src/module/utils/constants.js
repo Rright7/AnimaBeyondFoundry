@@ -78,7 +78,8 @@ export const Templates = {
     Weapon: {
       OneOrTwoHanded: T('common/domain/weapon/one-or-two-handed.hbs'),
       KnowledgeType: T('common/domain/weapon/knowledge-type.hbs'),
-      SelectAmmo: T('common/domain/weapon/select-ammo.hbs')
+      SelectAmmo: T('common/domain/weapon/select-ammo.hbs'),
+      SelectHand: T('common/domain/weapon/select-hand.hbs')
     },
     Armor: {
       SelectArmorType: T('common/domain/armor/select-armor-type.hbs'),
@@ -155,6 +156,8 @@ export const Templates = {
       Ammo: T('actor/parts/combat/parts/ammo.hbs'),
       Armors: T('actor/parts/combat/parts/armors.hbs'),
       Weapons: T('actor/parts/combat/parts/weapons.hbs'),
+      EquippedWeapons: T('actor/parts/combat/parts/equipped-weapons.hbs'),
+      EquippedWeaponRow: T('actor/parts/combat/parts/equipped-weapon-row.hbs'),
       SupernaturalShields: T('actor/parts/combat/parts/supernatural-shields.hbs')
     },
 

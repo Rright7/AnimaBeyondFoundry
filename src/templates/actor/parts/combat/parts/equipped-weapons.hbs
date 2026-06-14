@@ -1,0 +1,63 @@
+{{#> "systems/animabf/templates/common/ui/group.hbs"
+  class="equipped-weapons"
+}}
+  {{#> "systems/animabf/templates/common/ui/group-header.hbs"}}
+    <div class='equipped-weapons-header'>
+      <span class='group-header-title'>{{localize "anima.ui.combat.equippedWeapons.title"}}</span>
+      <span class='hands-used {{#if @root.combatHands.overLimit}}over-limit{{/if}}'>
+        {{localize "anima.ui.combat.equippedWeapons.handsUsed"}}: {{@root.combatHands.handsUsed}} / 2
+      </span>
+    </div>
+  {{/"systems/animabf/templates/common/ui/group-header.hbs"}}
+  {{#> "systems/animabf/templates/common/ui/group-body.hbs"
+    class="equipped-weapons"
+  }}
+    {{#if @root.combatHands.hasEquipped}}
+      <div class='hands-columns'>
+        <div class='hand-col'>
+          <div class='hand-col-label'>{{localize "anima.ui.combat.weapons.handSlot.main"}}</div>
+          {{#each @root.combatHands.main as |weapon|}}
+            {{> "systems/animabf/templates/actor/parts/combat/parts/equipped-weapon-row.hbs" weapon=weapon}}
+          {{/each}}
+          {{#unless @root.combatHands.main.length}}<div class='hand-empty'>—</div>{{/unless}}
+        </div>
+        <div class='hand-col'>
+          <div class='hand-col-label'>{{localize "anima.ui.combat.weapons.handSlot.off"}}</div>
+          {{#each @root.combatHands.off as |weapon|}}
+            {{> "systems/animabf/templates/actor/parts/combat/parts/equipped-weapon-row.hbs" weapon=weapon}}
+          {{/each}}
+          {{#unless @root.combatHands.off.length}}<div class='hand-empty'>—</div>{{/unless}}
+        </div>
+      </div>
+      {{#if @root.combatHands.unarmed.length}}
+        <div class='hand-col-label muted'>
+          {{localize "anima.ui.combat.equippedWeapons.unarmed"}}
+          {{#if @root.combatHands.unarmedActive}}<span class='in-use'>{{localize "anima.ui.combat.equippedWeapons.inUse"}}</span>{{/if}}
+        </div>
+        <div class='unarmed-list'>
+          {{#each @root.combatHands.unarmed as |weapon|}}
+            {{> "systems/animabf/templates/actor/parts/combat/parts/equipped-weapon-row.hbs" weapon=weapon worn=true}}
+          {{/each}}
+        </div>
+      {{/if}}
+      {{#if @root.combatHands.unassigned.length}}
+        <div class='hand-col-label muted'>{{localize "anima.ui.combat.equippedWeapons.unassigned"}}</div>
+        <div class='unassigned-list'>
+          {{#each @root.combatHands.unassigned as |weapon|}}
+            {{> "systems/animabf/templates/actor/parts/combat/parts/equipped-weapon-row.hbs" weapon=weapon}}
+          {{/each}}
+        </div>
+      {{/if}}
+      {{#if @root.combatHands.worn.length}}
+        <div class='hand-col-label muted'>{{localize "anima.ui.combat.equippedWeapons.worn"}}</div>
+        <div class='worn-list'>
+          {{#each @root.combatHands.worn as |weapon|}}
+            {{> "systems/animabf/templates/actor/parts/combat/parts/equipped-weapon-row.hbs" weapon=weapon worn=true}}
+          {{/each}}
+        </div>
+      {{/if}}
+    {{else}}
+      <div class='equipped-weapons-empty'>{{localize "anima.ui.combat.equippedWeapons.empty"}}</div>
+    {{/if}}
+  {{/"systems/animabf/templates/common/ui/group-body.hbs"}}
+{{/"systems/animabf/templates/common/ui/group.hbs"}}

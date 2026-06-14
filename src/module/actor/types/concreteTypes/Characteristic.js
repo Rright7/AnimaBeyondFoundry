@@ -1,5 +1,10 @@
 import { BaseType } from '../BaseType.js';
 import { calculateAttributeModifier } from '../../utils/prepareActor/calculations/util/calculateAttributeModifier.js';
+import {
+  characteristicCap,
+  PHYSICAL_CHARACTERISTIC_KEYS as PHYSICAL_KEYS,
+  SYSTEM_CHARACTERISTIC_CEILING
+} from '../../utils/prepareActor/calculations/util/characteristicLimits.js';
 //src/module/actor/
 
 export class Characteristic extends BaseType {
@@ -83,7 +88,7 @@ export class Characteristic extends BaseType {
   }
 
   getDerivedFlowSpecs() {
-    return [
+    const specs = [
       {
         id: 'final',
         deps: ['base.value', 'special.value'],
@@ -92,21 +97,50 @@ export class Characteristic extends BaseType {
       },
       {
         id: 'mod',
-        deps: ['final.value'],
+        deps: ['base.value', 'special.value'],
         mods: ['mod.value'],
         compute: this._computeMod.bind(this)
       }
     ];
+
+    if (PHYSICAL_KEYS.has(this.key)) {
+      this.setInstanceDeps('final', [
+        'system.general.settings.inhuman.value',
+        'system.general.settings.zen.value'
+      ]);
+    } else {
+      this.clearInstanceDeps('final');
+    }
+
+    return this._mergeInstanceDeps(specs);
+  }
+
+  /**
+   * Tope del 'final' (valor de la caracteristica) para las fisicas: 10 sin nada,
+   * 13 con Inhumanidad, 20 con Zen. Las psiquicas mantienen el techo del sistema (20).
+   */
+  _characteristicCap() {
+    const settings = this.actor?.system?.general?.settings;
+    return characteristicCap(this.key, {
+      inhuman: !!settings?.inhuman?.value,
+      zen: !!settings?.zen?.value
+    });
   }
 
   /** @param {{ base:number, special:number }} inputs */
   _computeFinal({ base = 0, special = 0 }) {
-    const final = Math.min(Math.max(base + special, 0), 20);
+    const final = Math.min(Math.max(base + special, 0), this._characteristicCap());
     return { final };
   }
 
-  /** @param {{ final:number }} inputs */
-  _computeMod({ final = 0 }) {
-    return { mod: calculateAttributeModifier(final) };
+  /**
+   * El modificador (bono) usa SIEMPRE el valor real (base+special, hasta el techo
+   * del sistema 20), no el 'final' topado por Inhumanidad/Zen: el tope limita el
+   * valor de la caracteristica, no el bono que aporta (p.ej. al daño).
+   * @param {{ base:number, special:number }} inputs
+   */
+  _computeMod({ base = 0, special = 0 }) {
+    const real = Math.min(Math.max(base + special, 0), SYSTEM_CHARACTERISTIC_CEILING);
+    return { mod: calculateAttributeModifier(real) };
   }
 }

@@ -674,6 +674,7 @@
     "weapon": {
       "equipped": { "value": false },
       "isShield": { "value": false },
+      "handSlot": { "value": "none" },
       "ignoreArmor": { "value": false },
       "special": { "value": "" },
       "notes": { "value": "" },

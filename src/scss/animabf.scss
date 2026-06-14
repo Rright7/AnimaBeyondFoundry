@@ -9,6 +9,7 @@
 @use 'chat/combat-result-message';
 @use 'chat/attack-data-message';
 @use 'chat/maneuver-opposed-check-message';
+@use 'chat/roll-message';
 
 @use 'dialog/combat-attack-dialog';
 @use 'dialog/combat-defense-dialog';

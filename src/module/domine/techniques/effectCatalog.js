@@ -79,7 +79,7 @@ export const DISADVANTAGE_DETAIL = {
  * - kind 'characteristic': suma a `primaries.<target>.special.value` (los typed
  *   ops del tipo Characteristic recalculan final/mod y cascada a derivados).
  * - kind 'bucket': alimenta `kiBonus` vía applyKiSkillsModifiers; `target` es la
- *   clave que espera RESISTANCE_TARGET (resistancePhysical/Magic/Psychic).
+ *   clave que enruta accumulateEffect (resistancePhysical/Magic/Psychic o initiative).
  *
  * El resto de efectos (combate por tirada, multiplicadores, estados, escudos de
  * PV, etc.) NO están aquí a propósito: se aplican de forma narrativa o en
@@ -91,7 +91,8 @@ export const PERSISTENT_EFFECT_MAP = {
   'capacidad-incrementada-des': { target: 'dexterity', kind: 'characteristic' },
   'incremento-de-resistencia-fisica': { target: 'resistancePhysical', kind: 'bucket' },
   'incremento-de-resistencia-magica': { target: 'resistanceMagic', kind: 'bucket' },
-  'incremento-de-resistencia-psiquica': { target: 'resistancePsychic', kind: 'bucket' }
+  'incremento-de-resistencia-psiquica': { target: 'resistancePsychic', kind: 'bucket' },
+  'incrementar-turno': { target: 'initiative', kind: 'bucket' }
 };
 
 /**

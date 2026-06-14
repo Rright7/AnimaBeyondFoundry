@@ -542,3 +542,130 @@
     text-align: center;
   }
 }
+
+// ── Panel "Armas en mano" (Combate>Combate) ──────────────────────
+.combat {
+  .hands-row {
+    margin-top: 0.75rem;
+  }
+
+  .equipped-weapons {
+    .equipped-weapons-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      gap: 0.5rem;
+
+      .hands-used {
+        font-family: var(--abf-font-sans);
+        font-size: var(--abf-fs-xs);
+        background: rgba(255, 255, 255, 0.16);
+        border-radius: 999px;
+        padding: 0.05rem 0.6rem;
+
+        &.over-limit {
+          background: var(--abf-danger);
+          color: var(--abf-on-accent);
+        }
+      }
+    }
+
+    .group-body {
+      padding: 0.5rem 0.6rem;
+    }
+
+    .hands-columns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .hand-col-label {
+      @include microlabel;
+      color: var(--abf-gold);
+      border-bottom: 1px solid var(--abf-border);
+      padding-bottom: 0.15rem;
+      margin-bottom: 0.35rem;
+
+      &.muted {
+        color: var(--abf-text-muted);
+        margin-top: 0.5rem;
+      }
+
+      .in-use {
+        margin-left: 0.4rem;
+        color: var(--abf-success);
+        font-weight: 700;
+      }
+    }
+
+    .equipped-weapon-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--abf-surface-2);
+      border: 1px solid var(--abf-border);
+      border-radius: var(--abf-radius-sm);
+      padding: 0.25rem 0.4rem;
+      margin-bottom: 0.3rem;
+
+      &.ew-unequipped {
+        opacity: 0.5;
+      }
+
+      .ew-equip {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+
+        input {
+          accent-color: var(--abf-accent);
+          cursor: pointer;
+          margin: 0;
+        }
+      }
+
+      .ew-info {
+        flex: 1 1 auto;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        line-height: 1.1;
+      }
+
+      .ew-name {
+        font-weight: 700;
+        font-size: 0.9rem;
+      }
+
+      .ew-sub {
+        font-size: var(--abf-fs-xs);
+        color: var(--abf-text-muted);
+      }
+
+      .hand-slot {
+        flex: 0 0 auto;
+        margin: 0;
+        width: auto;
+
+        .input {
+          width: 6rem;
+          height: 1.5rem;
+          font-size: 0.8rem;
+        }
+      }
+    }
+
+    .hand-empty {
+      color: var(--abf-text-muted);
+      font-style: italic;
+      padding: 0.2rem 0.4rem;
+    }
+
+    .equipped-weapons-empty {
+      color: var(--abf-text-muted);
+      font-style: italic;
+    }
+  }
+}

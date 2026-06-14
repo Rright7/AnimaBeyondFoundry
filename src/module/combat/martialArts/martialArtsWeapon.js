@@ -11,9 +11,11 @@ export function isMartialArtsProfileWeapon(weapon) {
 }
 
 /**
- * Inyecta en el arma-perfil "Artes Marciales" los bonos de Arte Marcial:
- *  - Ataque/Parada/Turno: de los buckets `general.modifiers.martialArtBonus` (ya con
- *    el tope +50 COMBINADO aplicado en applyMartialArtModifiers; Maestro exento).
+ * Prepara el arma-perfil "Artes Marciales":
+ *  - Ataque/Parada/Turno: NO se inyectan aqui; el `.special` es el bono manual del
+ *    jugador. Esos bonos del arte (buckets `general.modifiers.martialArtBonus`, ya con
+ *    el tope +50 COMBINADO; Maestro exento) los suman calculateWeaponAttack/Block/Initiative
+ *    para el perfil, de modo que el bono manual no se pisa.
  *  - Daño: el MAYOR Daño Base entre las artes (artBase + mult x mod, p.ej. "20 + FUE"
  *    o "20 + 2xFUE"; el brawl 10+FUE SOLO si no hay arte) + el bono de daño de las
  *    Avanzadas. Como el catalogo usa el modificador de caracteristica (no la tabla
@@ -30,13 +32,14 @@ export function applyMartialArtsWeaponBonuses(weapon, data) {
   const b = data?.general?.modifiers?.martialArtBonus ?? {};
   const s = weapon.system;
 
-  if (s?.attack?.special) s.attack.special.value = num(b.attack?.value) + num(b.masterAttack?.value);
-  if (s?.block?.special) s.block.special.value = num(b.block?.value) + num(b.masterDefense?.value);
-  if (s?.initiative?.special) s.initiative.special.value = num(b.turn?.value);
+  // Ataque/Parada/Turno del arte NO se inyectan en `.special`: ese campo es el bono
+  // MANUAL editable del jugador. Esos bonos del arte se suman en calculateWeaponAttack/
+  // Block/Initiative cuando el arma es el perfil, asi el bono manual no se pisa.
 
   // Daño desarmado de AM (mayor Daño Base de las artes vs brawl 10+FUE) + el bono de
   // daño. Para el bono se usa el bucket `damage` (catalogo + bono variable de Kung Fu),
-  // no ma.bonus, para no perder la opcion "Dano" del Kung Fu.
+  // no ma.bonus, para no perder la opcion "Dano" del Kung Fu. Va via FORMULA CUSTOM; el
+  // `.special` (bono manual) se conserva y calculateWeaponDamage lo suma sobre la formula.
   const ma = martialArtUnarmedDamage({ system: data });
   const sMod = data?.characteristics?.primaries?.strength?.mod;
   const strMod = num(sMod?.value ?? sMod);
@@ -45,7 +48,6 @@ export function applyMartialArtsWeaponBonuses(weapon, data) {
   // el suelo brawl (10+FUE), que pisaria POD con FUE. El brawl solo cuenta SIN arte.
   const maDamage = (ma.base !== null ? ma.base : brawl) + num(b.damage?.value);
   if (s?.damage) {
-    s.damage.special = { value: 0 };
     s.damage.formula = { value: String(maDamage) };
   }
   s.useCustomFormula = { value: true };

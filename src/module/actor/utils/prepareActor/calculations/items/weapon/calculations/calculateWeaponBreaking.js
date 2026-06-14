@@ -20,7 +20,7 @@ export const calculateWeaponBreaking = (weapon, data) => {
     breaking += 3;
   }
 
-  if (weapon.system.sizeProportion.value === WeaponSizeProportion.ENORMOUS) {
+  if (weapon.system.sizeProportion.value === WeaponSizeProportion.GIANT) {
     breaking += 8;
   }
 
