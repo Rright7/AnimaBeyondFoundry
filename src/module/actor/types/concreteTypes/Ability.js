@@ -1,4 +1,5 @@
 import { AffectedByCharacteristicValue } from './AffectedByCharacteristicValue.js';
+import { calculateAttributeModifier } from '../../utils/prepareActor/calculations/util/calculateAttributeModifier.js';
 
 export class Ability extends AffectedByCharacteristicValue {
   static type = 'Ability';
@@ -77,6 +78,25 @@ export class Ability extends AffectedByCharacteristicValue {
   }
 
   /**
+   * El bono de caracteristica de una habilidad usa SIEMPRE el modificador REAL
+   * (mod.value, calculado del valor real base+special), no el final topado por
+   * Inhumanidad/Zen. Asi Ataque/Parada (DES) y Esquiva (AGI) aprovechan la
+   * caracteristica real aunque su valor este capado. wearArmor (capacidad de
+   * carga) se queda con el final topado via la clase base.
+   */
+  _computeCharacteristicDelta() {
+    if (!this.computeCharacteristicMod || !this.attribute) return 0;
+
+    const ch = this.actor?.system?.characteristics?.primaries?.[this.attribute];
+    if (!ch) return 0;
+
+    const chBase = Number(ch.base?.value ?? ch.base ?? 0);
+    const chMod = Number(ch.mod?.value ?? 0);
+
+    return chMod - calculateAttributeModifier(chBase);
+  }
+
+  /**
    *
    * Calculates ability mod
    * @returns {Number}
@@ -106,20 +126,24 @@ export class Ability extends AffectedByCharacteristicValue {
       finalSpec.deps = [...finalSpec.deps, 'applyAllActionMod', 'applyPhysicalActionMod'];
       finalSpec.compute = this._computeFinal.bind(this);
 
-      const extraDeps = [];
+      // El bono usa mod.value (valor real), no final.value (topado por
+      // Inhumanidad/Zen): re-apunta la dependencia de caracteristica a mod.value
+      // para que el toposort recalcule cuando cambie el modificador real.
+      const chPath = this.attribute
+        ? `system.characteristics.primaries.${this.attribute}`
+        : null;
+      const deps = [...(this.getInstanceDeps('final') ?? [])].map(d =>
+        chPath && d === `${chPath}.final.value` ? `${chPath}.mod.value` : d
+      );
 
       if (this.applyAllActionMod) {
-        extraDeps.push('system.general.modifiers.allActions.final.value');
+        deps.push('system.general.modifiers.allActions.final.value');
       }
       if (this.applyPhysicalActionMod) {
-        extraDeps.push('system.general.modifiers.physicalActions.final.value');
+        deps.push('system.general.modifiers.physicalActions.final.value');
       }
 
-      if (extraDeps.length) {
-        // merge with existing instance deps set by parent (characteristic deps)
-        const current = this.getInstanceDeps?.('final') ?? null; // if you don't have getter, ignore this line
-        this.setInstanceDeps('final', [...(current ?? []), ...extraDeps]);
-      }
+      this.setInstanceDeps('final', deps);
     }
 
     return this._mergeInstanceDeps(specs);
