@@ -10,6 +10,10 @@ import { ABFConfig } from './module/ABFConfig';
 import ABFItem from './module/items/ABFItem';
 import ABFActorDirectory from './module/SidebarDirectories/ABFActorDirectory';
 import { registerKeyBindings } from './utils/registerKeyBindings';
+import {
+  registerAnimationSettings,
+  registerAnimationHooks
+} from './module/animations/registerAnimations.js';
 import { applyMigrations } from './module/migration/migrate';
 import { registerGlobalTypes } from './utils/registerGlobalTypes';
 import ABFCombatant from './module/combat/ABFCombatant';
@@ -78,6 +82,11 @@ Hooks.once('init', async () => {
   registerHelpers();
 
   registerKeyBindings();
+
+  // Capa de animaciones (Sequencer + JB2A, dependencias opcionales en runtime): setting
+  // global y enganche del aura de "Cargar Ki". No-op si faltan los modulos.
+  registerAnimationSettings();
+  registerAnimationHooks();
 
   // Warm-up click handlers so they stay cached for later use from sheets
   preloadClickHandlers();
@@ -277,6 +286,26 @@ Hooks.once('ready', async () => {
       return;
     }
 
+    // Marca una pifia como resuelta (oculta el boton "Tirar pifia"). Un jugador no
+    // puede setFlag en mensajes ajenos, asi que lo proxya al GM. Auth: emisor GM u
+    // owner del actor que hablo en el mensaje.
+    if (p.op === 'fumbleResolve') {
+      const msg = game.messages.get(p.messageId);
+      if (!msg) return;
+      const animabf = msg.flags?.animabf ?? {};
+      const emitter = p.userId ? game.users?.get(p.userId) : null;
+      const speakerActorId = msg.speaker?.actor;
+      const actor = speakerActorId ? game.actors.get(speakerActorId) : null;
+      const OWNER = CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER;
+      const allowed =
+        !!emitter && (emitter.isGM || actor?.testUserPermission(emitter, OWNER));
+      if (!allowed) return;
+      const fumble = { ...(animabf.fumble ?? {}), resolved: true };
+      if (typeof p.fumble?.level === 'number') fumble.level = p.fumble.level;
+      await msg.setFlag(System.id, 'fumble', fumble);
+      return;
+    }
+
     // Maneuver opposed check — a player triggered their D10 roll but cannot
     // setFlag on a message they don't own. We persist for them, then run the
     // automatic resolution if both sides have rolled.
@@ -361,6 +390,33 @@ async function _handleChatMessage(message, html) {
     if (handler) handler(message, html, btn.dataset);
     else console.warn(`No handler found for action: ${action}`);
   });
+
+  // Pifia / Abierta: color del mensaje (rojo pifia, verde abierta) + boton "Tirar pifia"
+  // donde aplica el grado (no en turno ni resistencias). Va ANTES del return de attackData
+  // para que afecte a todas las tiradas (habilidades, ataque, defensa, magia, psiquica).
+  const rollOutcome = message.getFlag(System.id, 'rollOutcome');
+  if (rollOutcome === 'fumble') html.classList.add('abf-roll-fumble');
+  else if (rollOutcome === 'open') html.classList.add('abf-roll-open');
+
+  const fumbleFlag = message.flags?.[System.id]?.fumble;
+  if (
+    fumbleFlag?.pending &&
+    !fumbleFlag?.resolved &&
+    !html.querySelector('[data-action="roll-fumble"]')
+  ) {
+    const canRoll =
+      game.user.isGM ||
+      (speakerActor &&
+        speakerActor.testUserPermission(game.user, CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER));
+    if (canRoll) {
+      const btn = document.createElement('button');
+      btn.className = 'chat-action-button abf-fumble-button';
+      btn.dataset.action = 'roll-fumble';
+      btn.dataset.messageId = message.id;
+      btn.textContent = game.i18n.localize('chat.fumble.rollButton');
+      (html.querySelector('.message-content') ?? html).appendChild(btn);
+    }
+  }
 
   if (message.getFlag(System.id, 'kind') !== 'attackData') return;
 
@@ -554,6 +610,20 @@ Hooks.on('createChatMessage', async message => {
         const { startBleeding } = await import('./module/combat/bleedingEffect.js');
         await startBleeding(defenderActor, { critType });
       }
+    }
+
+    // Animación de impacto (Sequencer/JB2A): al crearse la tarjeta de un golpe que
+    // causa daño, reproducir el efecto segun la tabla de daño (y un proyectil si el
+    // ataque es a distancia). No-op silencioso si faltan los módulos. Se excluye el
+    // daño retrasado (el golpe se manifiesta rondas después, no al crear la tarjeta).
+    if (
+      flags.kind === 'combatResult' &&
+      Number(flags.result?.damageFinal ?? 0) > 0 &&
+      flags.result?.maneuverSlug !== 'dano-retrasado'
+    ) {
+      const { playCombatResultAnimation } =
+        await import('./module/animations/combatAnimations.js');
+      await playCombatResultAnimation(flags);
     }
 
     // Daño retrasado: programar automáticamente el daño diferido al crearse la
@@ -807,6 +877,43 @@ Hooks.on('preCreateChatMessage', (message, _data, _options, _userId) => {
   try {
     const rolls = message.rolls;
     if (!Array.isArray(rolls) || rolls.length === 0) return;
+
+    // Pifia / Abierta: detecta el resultado para colorear el chat (rojo/verde) y, si
+    // pifia en una tirada aplicable, marcar que ofrece el boton "Tirar pifia". Se basa
+    // en los flags por-dado de ABFExploderRoll (r.failure = pifia en dado base, r.exploded
+    // = abierta); las resistencias/control (Roll plano) no los tienen -> 'normal'. El grado
+    // de pifia NO aplica en turno (penalizador numerico), asi que se excluye la iniciativa.
+    try {
+      let hasFumble = false;
+      let hasOpen = false;
+      let isInitiative = false;
+      for (const roll of rolls) {
+        if (String(roll?.formula ?? '').includes('Initiative')) isInitiative = true;
+        for (const die of roll?.dice ?? []) {
+          for (const r of die?.results ?? []) {
+            if (r?.failure === true) hasFumble = true;
+            if (r?.exploded === true) hasOpen = true;
+          }
+        }
+      }
+      const outcome = hasFumble ? 'fumble' : hasOpen ? 'open' : 'normal';
+      const flagUpdate = {};
+      if (outcome !== 'normal') flagUpdate[`flags.${System.id}.rollOutcome`] = outcome;
+      if (hasFumble && !isInitiative) {
+        const kind = message.flags?.[System.id]?.kind;
+        const attr = message.flags?.[System.id]?.rollAttribute;
+        const context =
+          kind === 'attackData'
+            ? 'attack'
+            : attr === 'block' || attr === 'dodge' || attr === 'shield'
+            ? 'defense'
+            : 'general';
+        flagUpdate[`flags.${System.id}.fumble`] = { pending: true, context };
+      }
+      if (Object.keys(flagUpdate).length) message.updateSource(flagUpdate);
+    } catch (e) {
+      console.warn('[ABF] deteccion pifia/abierta fallo:', e);
+    }
 
     const flavor = message.flavor ?? message.flags?.core?.flavor ?? '';
 
