@@ -900,15 +900,7 @@ Hooks.on('preCreateChatMessage', (message, _data, _options, _userId) => {
       const flagUpdate = {};
       if (outcome !== 'normal') flagUpdate[`flags.${System.id}.rollOutcome`] = outcome;
       if (hasFumble && !isInitiative) {
-        const kind = message.flags?.[System.id]?.kind;
-        const attr = message.flags?.[System.id]?.rollAttribute;
-        const context =
-          kind === 'attackData'
-            ? 'attack'
-            : attr === 'block' || attr === 'dodge' || attr === 'shield'
-            ? 'defense'
-            : 'general';
-        flagUpdate[`flags.${System.id}.fumble`] = { pending: true, context };
+        flagUpdate[`flags.${System.id}.fumble`] = { pending: true };
       }
       if (Object.keys(flagUpdate).length) message.updateSource(flagUpdate);
     } catch (e) {

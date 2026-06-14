@@ -40,7 +40,7 @@ export default async function fumbleRollActionHandler(message, html, dataset) {
 
     await roll.toMessage({
       speaker: msg.speaker,
-      flavor: buildFumbleFlavor(fumble.context, level)
+      flavor: buildFumbleFlavor(level)
     });
 
     await markFumbleResolved(msg, animabf, level);
@@ -54,19 +54,12 @@ export default async function fumbleRollActionHandler(message, html, dataset) {
 
 export const action = 'roll-fumble';
 
-/** Texto de regla segun el contexto de la tirada (combate vs general/directa). */
-function buildFumbleFlavor(context, level) {
+/** Flavor limpio: solo titulo + Nivel de Pifia (la regla la interpreta el GM). */
+function buildFumbleFlavor(level) {
   const i18n = game.i18n;
-  const head = `<b>${i18n.localize('chat.fumble.title')}</b> — ${i18n.format(
-    'chat.fumble.level',
-    { level }
-  )}`;
-  let rule;
-  if (context === 'attack') rule = i18n.localize('chat.fumble.rule.attack');
-  else if (context === 'defense') rule = i18n.localize('chat.fumble.rule.defense');
-  else rule = i18n.localize('chat.fumble.rule.general');
-  const extra = level > 80 ? `<br><i>${i18n.localize('chat.fumble.rule.over80')}</i>` : '';
-  return `${head}<br>${rule}${extra}`;
+  return `<b>${i18n.localize('chat.fumble.title')}</b> — ${i18n.format('chat.fumble.level', {
+    level
+  })}`;
 }
 
 /**
