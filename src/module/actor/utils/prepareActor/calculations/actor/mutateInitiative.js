@@ -1,4 +1,8 @@
 import { WeaponSize } from '../../../../../types/combat/WeaponItemConfig';
+import {
+  getCombatHandWeapons,
+  getActiveTurnShield
+} from '../../utils/getCombatHandWeapons.js';
 
 // Predicado inline (mismo criterio que combat/martialArts/martialArtsWeapon.js):
 // se evita importar ese modulo para no arrastrar la cadena del catalogo de AM.
@@ -45,7 +49,9 @@ export const mutateInitiative = data => {
   // We subtract 20 because people are used to put as base unarmed initiative
   initiative.final.value -= 20;
 
-  const equippedShield = equippedWeapons.find(weapon => weapon.system.isShield.value);
+  // Escudo que penaliza el Turno: la rodela (pequeño) por estar equipada (se lleva sin
+  // mano); cualquier otro escudo solo si está asignado a una mano (fuente única = manos).
+  const equippedShield = getActiveTurnShield(equippedWeapons);
 
   //Ajuste por llevar un escudo
   if (equippedShield) {
@@ -58,19 +64,24 @@ export const mutateInitiative = data => {
     }
   }
 
-  //Ajuste según la cantidad de armas que lleva equipadas el personaje
-  const firstTwoWeapons = equippedWeapons
-    .filter(weapon => !weapon.system.isShield.value)
-    .slice(0, 2);
+  // Armas en mano para el Turno. FUENTE ÚNICA = handSlot (main/off); lo equipado SIN
+  // asignar NO cuenta. Excluye escudos y armas de cuerpo entero; un arma a dos manos
+  // cuenta sola (ocupa ambas manos). Ver getCombatHandWeapons.
+  const combatWeapons = getCombatHandWeapons(equippedWeapons);
 
-  if (firstTwoWeapons.length === 0) {
-    initiative.final.value += 20;
-  } else if (firstTwoWeapons.length === 1) {
-    initiative.final.value += firstTwoWeapons[0].system.initiative.final.value;
-  } else if (firstTwoWeapons.length === 2) {
+  if (combatWeapons.length === 0) {
+    // Desarmado: con el perfil "Artes Marciales" equipado su initiative.final ya
+    // incluye el Turno del arte (#1); si no, el +20 base de combate desarmado.
+    const maProfile = equippedWeapons.find(isMartialArtsProfileWeapon);
+    initiative.final.value += maProfile
+      ? maProfile.system.initiative.final.value
+      : 20;
+  } else if (combatWeapons.length === 1) {
+    initiative.final.value += combatWeapons[0].system.initiative.final.value;
+  } else if (combatWeapons.length === 2) {
     //Ajuste por llevar dos armas
-    const leftWeapon = firstTwoWeapons[0].system;
-    const rightWeapon = firstTwoWeapons[1].system;
+    const leftWeapon = combatWeapons[0].system;
+    const rightWeapon = combatWeapons[1].system;
 
     initiative.final.value += Math.min(
       leftWeapon.initiative.final.value,
@@ -97,7 +108,7 @@ mutateInitiative.abfFlow = {
     'system.general.modifiers.naturalPenalty.final.value',
     'system.general.modifiers.kiBonus.initiative.value',
     'system.general.modifiers.martialArtBonus.turn.value',
-    'system.combat.weapons' // equipped + isShield + size + initiative.*
+    'system.combat.weapons' // equipped + isShield + size + handSlot + initiative.*
   ],
   mods: ['system.characteristics.secondaries.initiative.final.value']
 };

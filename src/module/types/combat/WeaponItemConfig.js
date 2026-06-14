@@ -13,6 +13,18 @@ export const WeaponEquippedHandType = /** @type {const} */ ({
 });
 
 /**
+ * Mano en la que se empuña un arma equipada (hábil / torpe / sin asignar). Es un
+ * concepto DISTINTO de WeaponEquippedHandType (que es el agarre a una o dos manos).
+ * @readonly
+ * @enum {string}
+ */
+export const WeaponHandSlot = /** @type {const} */ ({
+  NONE: 'none',
+  MAIN: 'main',
+  OFF: 'off'
+});
+
+/**
  * @readonly
  * @enum {string}
  */
@@ -99,6 +111,7 @@ export const WeaponSizeProportion = /** @type {const} */ ({
 export const INITIAL_WEAPON_DATA = {
   equipped: { value: false },
   isShield: { value: false },
+  handSlot: { value: WeaponHandSlot.NONE },
   special: { value: '' },
   hasOwnStr: { value: false },
   ignoreArmor: { value: false },

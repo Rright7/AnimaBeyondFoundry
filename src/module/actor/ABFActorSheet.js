@@ -29,10 +29,61 @@ import {
   findEffectByItemOrigin
 } from './utils/ensureLinkedEffectForItem.js';
 import { syncViaSpells } from './utils/syncViaSpells.js';
+import {
+  isUnarmedWeapon,
+  isRodela,
+  isTwoHandedGrip
+} from './utils/prepareActor/utils/getCombatHandWeapons.js';
 
 /** @typedef {import('./constants').TActorData} TData */
 /** @typedef {typeof FormApplication<FormApplicationOptions, TData, TData>} TFormApplication */
 const ActorSheetV1 = foundry.appv1?.sheets?.ActorSheet ?? ActorSheet;
+
+/**
+ * View-model (solo lectura) para el panel "Armas en mano" de Combate>Combate:
+ * agrupa las armas equipadas (excluyendo el perfil de Artes Marciales) por
+ * handSlot (main/off/sin asignar) y cuenta las manos usadas (un arma a dos manos
+ * cuenta 2). No toca ningun calculo; solo alimenta la vista.
+ * @param {object} system actor.system
+ */
+function computeCombatHands(system) {
+  const weapons = system?.combat?.weapons ?? [];
+  const vm = w => ({
+    id: w._id,
+    name: w.name,
+    ini: w.system?.initiative?.final?.value ?? 0,
+    isShield: !!w.system?.isShield?.value,
+    isRanged: !!w.system?.isRanged?.value,
+    twoHanded: isTwoHandedGrip(w),
+    handSlot: w.system?.handSlot?.value ?? 'none'
+  });
+
+  // Excluye armas de cuerpo entero (Desarmado / perfil "Artes Marciales") y la rodela
+  // (escudo pequeño: se lleva sin ocupar mano): no se asignan a mano hábil/torpe.
+  const equipped = weapons.filter(
+    w => w.system?.equipped?.value && !isUnarmedWeapon(w) && !isRodela(w)
+  );
+  const main = equipped.filter(w => w.system?.handSlot?.value === 'main').map(vm);
+  const off = equipped.filter(w => w.system?.handSlot?.value === 'off').map(vm);
+  const unassigned = equipped
+    .filter(w => {
+      const h = w.system?.handSlot?.value;
+      return h !== 'main' && h !== 'off';
+    })
+    .map(vm);
+
+  const handsUsed = [...main, ...off].reduce((n, w) => n + (w.twoHanded ? 2 : 1), 0);
+
+  return {
+    main,
+    off,
+    unassigned,
+    handsUsed,
+    overLimit: handsUsed > 2,
+    hasEquipped: equipped.length > 0
+  };
+}
+
 export default class ABFActorSheet extends ActorSheetV1 {
   i18n;
 
@@ -187,6 +238,9 @@ export default class ABFActorSheet extends ActorSheetV1 {
       }
       sheet.system = actor.system;
     }
+
+    // Panel "Armas en mano" (Combate>Combate): grupos por mano + manos usadas.
+    sheet.combatHands = computeCombatHands(actor?.system);
 
     sheet.config = CONFIG.config;
 
