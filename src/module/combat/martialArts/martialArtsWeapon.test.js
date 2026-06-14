@@ -29,8 +29,9 @@ describe('isMartialArtsProfileWeapon', () => {
 });
 
 describe('applyMartialArtsWeaponBonuses', () => {
-  it('inyecta HA+Maestro, Parada+Maestro y Turno desde los buckets', () => {
+  it('NO inyecta Ataque/Parada/Turno en .special (es el bono manual del jugador)', () => {
     const w = mkWeapon(true);
+    w.system.attack.special.value = 3; // bono manual previo del jugador
     applyMartialArtsWeaponBonuses(
       w,
       mkData({
@@ -41,19 +42,22 @@ describe('applyMartialArtsWeaponBonuses', () => {
         turn: { value: 10 }
       })
     );
-    expect(w.system.attack.special.value).toBe(25); // 20 + 5
-    expect(w.system.block.special.value).toBe(25); // 10 + 15
-    expect(w.system.initiative.special.value).toBe(10);
+    // El bono del arte se suma en calculateWeaponAttack/Block/Initiative, no aqui:
+    // .special queda intacto (el bono manual se conserva).
+    expect(w.system.attack.special.value).toBe(3);
+    expect(w.system.block.special.value).toBe(0);
+    expect(w.system.initiative.special.value).toBe(0);
   });
 
-  it('daño: sin artes -> brawl 10+FUE via formula custom', () => {
+  it('daño: formula custom (brawl 10+FUE) y conserva el bono manual de daño', () => {
     const w = mkWeapon(true);
+    w.system.damage.special.value = 7; // bono manual del jugador
     applyMartialArtsWeaponBonuses(
       w,
       mkData({}, { characteristics: { primaries: { strength: { mod: 5 } } } })
     );
     expect(w.system.useCustomFormula.value).toBe(true);
-    expect(w.system.damage.special.value).toBe(0);
+    expect(w.system.damage.special.value).toBe(7); // preservado, NO forzado a 0
     expect(w.system.damage.formula.value).toBe('15'); // 10 + 5
   });
 

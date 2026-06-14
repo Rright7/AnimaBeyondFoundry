@@ -40,7 +40,7 @@ export const mutateWeaponsData = data => {
     weapon.system.initiative = {
       base: weapon.system.initiative.base,
       special: weapon.system.initiative.special,
-      final: { value: calculateWeaponInitiative(weapon) }
+      final: { value: calculateWeaponInitiative(weapon, data) }
     };
 
     weapon.system.damage = {
