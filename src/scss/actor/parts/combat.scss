@@ -592,6 +592,12 @@
         color: var(--abf-text-muted);
         margin-top: 0.5rem;
       }
+
+      .in-use {
+        margin-left: 0.4rem;
+        color: var(--abf-success);
+        font-weight: 700;
+      }
     }
 
     .equipped-weapon-row {
@@ -603,6 +609,22 @@
       border-radius: var(--abf-radius-sm);
       padding: 0.25rem 0.4rem;
       margin-bottom: 0.3rem;
+
+      &.ew-unequipped {
+        opacity: 0.5;
+      }
+
+      .ew-equip {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+
+        input {
+          accent-color: var(--abf-accent);
+          cursor: pointer;
+          margin: 0;
+        }
+      }
 
       .ew-info {
         flex: 1 1 auto;

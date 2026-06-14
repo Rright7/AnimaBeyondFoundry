@@ -1,4 +1,4 @@
-<div class='equipped-weapon-row' data-item-id='{{weapon.id}}'>
+<div class='equipped-weapon-row{{#if worn}}{{#unless weapon.equipped}} ew-unequipped{{/unless}}{{/if}}' data-item-id='{{weapon.id}}'>
   <div class='ew-info'>
     <span class='ew-name'>{{weapon.name}}</span>
     <span class='ew-sub'>
@@ -8,11 +8,21 @@
       {{#if weapon.isRanged}} · {{localize "anima.ui.combat.equippedWeapons.ranged"}}{{/if}}
     </span>
   </div>
-  {{>
-  'systems/animabf/templates/common/domain/weapon/select-hand.hbs'
-    class="hand-slot"
-    hideTitle=true
-    inputName=(concat "system.dynamic.weapons." weapon.id ".system.handSlot.value")
-    inputValue=weapon.handSlot
-  }}
+  {{#if worn}}
+    <label class='ew-equip' title='{{localize "anima.ui.combat.weapons.equipped.title"}}'>
+      <input
+        type='checkbox'
+        name='{{concat "system.dynamic.weapons." weapon.id ".system.equipped.value"}}'
+        {{#if weapon.equipped}}checked{{/if}}
+      />
+    </label>
+  {{else}}
+    {{>
+    'systems/animabf/templates/common/domain/weapon/select-hand.hbs'
+      class="hand-slot"
+      hideTitle=true
+      inputName=(concat "system.dynamic.weapons." weapon.id ".system.handSlot.value")
+      inputValue=weapon.handSlot
+    }}
+  {{/if}}
 </div>

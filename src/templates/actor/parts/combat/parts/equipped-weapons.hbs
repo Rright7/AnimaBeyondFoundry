@@ -29,11 +29,30 @@
           {{#unless @root.combatHands.off.length}}<div class='hand-empty'>—</div>{{/unless}}
         </div>
       </div>
+      {{#if @root.combatHands.unarmed.length}}
+        <div class='hand-col-label muted'>
+          {{localize "anima.ui.combat.equippedWeapons.unarmed"}}
+          {{#if @root.combatHands.unarmedActive}}<span class='in-use'>{{localize "anima.ui.combat.equippedWeapons.inUse"}}</span>{{/if}}
+        </div>
+        <div class='unarmed-list'>
+          {{#each @root.combatHands.unarmed as |weapon|}}
+            {{> "systems/animabf/templates/actor/parts/combat/parts/equipped-weapon-row.hbs" weapon=weapon worn=true}}
+          {{/each}}
+        </div>
+      {{/if}}
       {{#if @root.combatHands.unassigned.length}}
         <div class='hand-col-label muted'>{{localize "anima.ui.combat.equippedWeapons.unassigned"}}</div>
         <div class='unassigned-list'>
           {{#each @root.combatHands.unassigned as |weapon|}}
             {{> "systems/animabf/templates/actor/parts/combat/parts/equipped-weapon-row.hbs" weapon=weapon}}
+          {{/each}}
+        </div>
+      {{/if}}
+      {{#if @root.combatHands.worn.length}}
+        <div class='hand-col-label muted'>{{localize "anima.ui.combat.equippedWeapons.worn"}}</div>
+        <div class='worn-list'>
+          {{#each @root.combatHands.worn as |weapon|}}
+            {{> "systems/animabf/templates/actor/parts/combat/parts/equipped-weapon-row.hbs" weapon=weapon worn=true}}
           {{/each}}
         </div>
       {{/if}}

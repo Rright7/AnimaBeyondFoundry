@@ -55,17 +55,23 @@ function computeCombatHands(system) {
     isShield: !!w.system?.isShield?.value,
     isRanged: !!w.system?.isRanged?.value,
     twoHanded: isTwoHandedGrip(w),
-    handSlot: w.system?.handSlot?.value ?? 'none'
+    handSlot: w.system?.handSlot?.value ?? 'none',
+    equipped: !!w.system?.equipped?.value
   });
 
-  // Excluye armas de cuerpo entero (Desarmado / perfil "Artes Marciales") y la rodela
-  // (escudo pequeño: se lleva sin ocupar mano): no se asignan a mano hábil/torpe.
-  const equipped = weapons.filter(
+  // La rodela (escudo pequeño) y las armas de cuerpo entero (Desarmado / perfil "Artes
+  // Marciales") se muestran SIEMPRE (equipadas o no) con un toggle de equipar/desequipar
+  // como atajo; no se asignan a mano. La rodela además no cuenta para "manos usadas".
+  const worn = weapons.filter(w => isRodela(w)).map(vm);
+  const unarmed = weapons.filter(w => isUnarmedWeapon(w)).map(vm);
+
+  // Armas y escudos (no rodela, no cuerpo entero) EQUIPADOS: se asignan a mano hábil/torpe.
+  const assignable = weapons.filter(
     w => w.system?.equipped?.value && !isUnarmedWeapon(w) && !isRodela(w)
   );
-  const main = equipped.filter(w => w.system?.handSlot?.value === 'main').map(vm);
-  const off = equipped.filter(w => w.system?.handSlot?.value === 'off').map(vm);
-  const unassigned = equipped
+  const main = assignable.filter(w => w.system?.handSlot?.value === 'main').map(vm);
+  const off = assignable.filter(w => w.system?.handSlot?.value === 'off').map(vm);
+  const unassigned = assignable
     .filter(w => {
       const h = w.system?.handSlot?.value;
       return h !== 'main' && h !== 'off';
@@ -78,9 +84,14 @@ function computeCombatHands(system) {
     main,
     off,
     unassigned,
+    worn,
+    unarmed,
+    // "En uso": no hay armas en mano y hay un arma de cuerpo entero equipada.
+    unarmedActive:
+      main.length === 0 && off.length === 0 && unarmed.some(u => u.equipped),
     handsUsed,
     overLimit: handsUsed > 2,
-    hasEquipped: equipped.length > 0
+    hasEquipped: assignable.length > 0 || unarmed.length > 0 || worn.length > 0
   };
 }
 

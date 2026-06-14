@@ -1,7 +1,8 @@
 import { WeaponSize } from '../../../../../types/combat/WeaponItemConfig';
 import {
   getCombatHandWeapons,
-  getActiveTurnShield
+  getActiveTurnShield,
+  isUnarmedWeapon
 } from '../../utils/getCombatHandWeapons.js';
 
 // Predicado inline (mismo criterio que combat/martialArts/martialArtsWeapon.js):
@@ -70,11 +71,14 @@ export const mutateInitiative = data => {
   const combatWeapons = getCombatHandWeapons(equippedWeapons);
 
   if (combatWeapons.length === 0) {
-    // Desarmado: con el perfil "Artes Marciales" equipado su initiative.final ya
-    // incluye el Turno del arte (#1); si no, el +20 base de combate desarmado.
-    const maProfile = equippedWeapons.find(isMartialArtsProfileWeapon);
-    initiative.final.value += maProfile
-      ? maProfile.system.initiative.final.value
+    // Sin armas en mano -> combate desarmado por defecto: usa el initiative.final del
+    // arma de cuerpo entero equipada (perfil "Artes Marciales" preferente, que incluye
+    // el Turno del arte por #1; si no, "Desarmado"); sin ninguna, el +20 base.
+    const unarmedWeapon =
+      equippedWeapons.find(isMartialArtsProfileWeapon) ??
+      equippedWeapons.find(isUnarmedWeapon);
+    initiative.final.value += unarmedWeapon
+      ? unarmedWeapon.system.initiative.final.value
       : 20;
   } else if (combatWeapons.length === 1) {
     initiative.final.value += combatWeapons[0].system.initiative.final.value;
