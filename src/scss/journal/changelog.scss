@@ -1,0 +1,159 @@
+// Estilo del compendio "Novedades (Changelog)". Usa los tokens --abf-* (luz
+// Pergamino / oscuro Carbon, definidos en :root y body.abf-theme-dark) para
+// verse integrado y adaptarse al tema activo.
+.abf-changelog {
+  // Panel autocontenido: fondo propio (pergamino/carbon) + texto del tema, para
+  // que SIEMPRE contraste, independientemente del fondo del journal de Foundry.
+  font-family: 'Alegreya', serif;
+  color: var(--abf-text);
+  background: var(--abf-bg);
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--abf-border);
+  border-radius: var(--abf-radius, 8px);
+  line-height: 1.55;
+
+  .abf-cl-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0.5rem 0.85rem;
+    background: var(--abf-accent-soft);
+    border-left: 4px solid var(--abf-accent);
+    border-radius: 5px;
+  }
+
+  .abf-cl-ver {
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 1.4em;
+    color: var(--abf-accent-text);
+  }
+
+  .abf-cl-tag {
+    font-style: italic;
+    color: var(--abf-text-muted);
+  }
+
+  .abf-cl-date {
+    margin: 0.3rem 0 0.9rem;
+    font-size: 0.8em;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--abf-text-muted);
+  }
+
+  .abf-cl-intro {
+    padding: 0.85rem 1rem;
+    background: var(--abf-surface-2);
+    border: 1px solid var(--abf-gold-border);
+    border-radius: 6px;
+  }
+
+  ul.abf-cl-feats {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      position: relative;
+      padding: 0.4rem 0 0.4rem 1.4rem;
+      border-bottom: 1px solid var(--abf-gold-soft);
+
+      &::before {
+        content: '\25C6'; // diamante, coloreado con el oro del tema
+        position: absolute;
+        left: 0.15rem;
+        top: 0.45rem;
+        font-size: 0.7em;
+        color: var(--abf-gold);
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      strong {
+        color: var(--abf-accent-text);
+      }
+    }
+  }
+
+  // --- Guia funcional: subtitulos de seccion, pasos y etiquetas automatico/manual ---
+  .abf-cl-sub {
+    margin: 1rem 0 0.4rem;
+    font-family: 'Cinzel', serif;
+    font-weight: 600;
+    font-size: 0.92em;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--abf-gold);
+  }
+
+  ol.abf-cl-steps {
+    margin: 0 0 0.3rem;
+    padding-left: 1.3rem;
+
+    li {
+      padding: 0.2rem 0;
+    }
+  }
+
+  ul.abf-auto-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.45rem;
+      padding: 0.35rem 0;
+      border-bottom: 1px solid var(--abf-gold-soft);
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+
+  .abf-badge {
+    flex: none;
+    display: inline-block;
+    padding: 0.04rem 0.5rem;
+    border: 1px solid;
+    border-radius: 999px;
+    font-family: var(--abf-font-sans, sans-serif);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+
+    &.abf-auto {
+      color: var(--abf-success);
+      border-color: var(--abf-success);
+    }
+
+    &.abf-manual {
+      color: var(--abf-accent-text);
+      border-color: var(--abf-accent-border);
+    }
+
+    &.abf-mixto {
+      color: var(--abf-info);
+      border-color: var(--abf-info);
+    }
+  }
+
+  .abf-cl-note {
+    margin: 0.6rem 0 0;
+    padding: 0.5rem 0.7rem;
+    background: var(--abf-surface-2);
+    border-left: 3px solid var(--abf-gold-border);
+    border-radius: 4px;
+    font-size: 0.92em;
+    color: var(--abf-text-muted);
+  }
+}

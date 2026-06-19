@@ -122,6 +122,27 @@ Hooks.once('ready', async () => {
       );
       console.log(`Registrada versión de creación del mundo: ${game.system.version}`);
     }
+
+    // Mostrar el changelog una vez por versión: al crear el mundo y tras cada
+    // actualización del sistema (se reabre solo cuando cambia la version).
+    const seenChangelogVersion = game.settings.get(
+      System.id,
+      ABFSettingsKeys.CHANGELOG_LAST_VERSION
+    );
+    if (seenChangelogVersion !== game.system.version) {
+      try {
+        const pack = game.packs.get(`${System.id}.changelog`);
+        const entry = await pack?.getDocument('abfNovedadesV300');
+        entry?.sheet?.render(true);
+      } catch (e) {
+        console.warn('animabf | no se pudo abrir el changelog:', e);
+      }
+      await game.settings.set(
+        System.id,
+        ABFSettingsKeys.CHANGELOG_LAST_VERSION,
+        game.system.version
+      );
+    }
   }
 
   applyMigrations();

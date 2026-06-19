@@ -2,7 +2,7 @@
   "id": "animabf",
   "title": "Anima Beyond Fantasy",
   "description": "Unofficial Anima Beyond Fantasy system for Foundry VTT",
-  "version": "3.4.5",
+  "version": "3.4.6",
   "compatibility": {
     "minimum": "13",
     "verified": "14.363"
@@ -116,6 +116,15 @@
       "label": "(ES) Habilidades de Ki y Némesis",
       "system": "animabf",
       "path": "./packs/ki-nemesis-skills",
+      "type": "JournalEntry",
+      "private": false,
+      "flags": {}
+    },
+    {
+      "name": "changelog",
+      "label": "(ES) Novedades",
+      "system": "animabf",
+      "path": "./packs/changelog",
       "type": "JournalEntry",
       "private": false,
       "flags": {}
