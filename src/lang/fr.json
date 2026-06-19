@@ -301,7 +301,7 @@
   "anima.ui.general.tabs.second": "Détails",
   "anima.ui.general.tabs.third": "Inventaire",
   "anima.ui.importDataFromExcelHint1": "Vous pouvez importer des données de ce {documentType} à partir d'un fichier Excel.",
-  "anima.ui.importDataFromExcelHint2": "Cette opération met à jour les données de {name} et ne peut être annulée.",
+  "anima.ui.importDataFromExcelHint2": "Cette opération REMPLACE tout le contenu actuel de {name} (y compris les objets ajoutés manuellement) par les données de l'Excel, et ne peut être annulée.",
   "anima.ui.importDataFromExcelTitle": "Importer des données: {name}",
   "anima.ui.importDataFromExcelWarning": "Version incompatible d'Excel, veuillez essayer avec l'une des versions suivantes: ",
   "anima.ui.excelImporter.combatEquipment.notifSummary": "Équipement importé: {weapons} armes, {ammo} munitions, {armors} armures.",
