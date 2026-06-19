@@ -1,0 +1,871 @@
+{
+  "name": "Novedades y Guia del sistema",
+  "pages": [
+    {
+      "sort": 100000,
+      "name": "Sobre estas novedades",
+      "type": "text",
+      "_id": "abfNovedadesP000",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-intro\"><p>Registro de novedades del sistema <strong>Anima Beyond Fantasy</strong> para Foundry VTT (fork de la comunidad). Recoge los cambios de la <strong>l&iacute;nea v3</strong>, desde sus inicios hasta hoy, ordenados de m&aacute;s reciente a m&aacute;s antiguo.</p><p>Cada versi&oacute;n corresponde a una publicaci&oacute;n del sistema; al actualizar en Foundry se aplican autom&aacute;ticamente. Las versiones de parche (3.4.1, 3.4.2&hellip;) se agrupan bajo su versi&oacute;n menor.</p></div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfNovedadesP000"
+    },
+    {
+      "sort": 200000,
+      "name": "v3.4 — Combate avanzado, Artes Marciales y rediseño",
+      "type": "text",
+      "_id": "abfNovedadesP034",
+      "title": {
+        "show": false,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-ver\">v3.4</span><span class=\"abf-cl-tag\">Combate avanzado, Artes Marciales y redise&ntilde;o</span></div><p class=\"abf-cl-date\">Junio 2026 &middot; v3.4.0 &ndash; v3.4.5</p><ul class=\"abf-cl-feats\"><li><strong>Artes Marciales (motor completo):</strong> perfil de arma de AM y esquiva de AM; bono variable, ataques adicionales y gasto de cansancio en combate; tablas FIL/PEN/ENE, cr&iacute;tico y reducci&oacute;n de TA; especiales (Rex Frame, Enuth, Dumah, Grappling Supremo) y sangrado por tipo.</li><li><strong>Contraataques:</strong> motor con bot&oacute;n en el chat, bonos de solo-contraataque y elecci&oacute;n del arma.</li><li><strong>Panel &laquo;Armas en mano&raquo;:</strong> asignar cada arma a la mano h&aacute;bil o torpe, combate desarmado y rodela; el Turno se calcula seg&uacute;n lo que llevas en mano.</li><li><strong>L&iacute;mite de caracter&iacute;sticas por Inhumanidad/Zen:</strong> el valor f&iacute;sico se capa (10 / 13 / 20) pero el bono de la caracter&iacute;stica real sigue cont&aacute;ndose siempre.</li><li><strong>Pifia y abierta visibles:</strong> la tirada se colorea (rojo pifia, verde abierta) y hay un bot&oacute;n &laquo;Tirar pifia&raquo; donde aplica.</li><li><strong>Redise&ntilde;o visual:</strong> temas claro (Pergamino) y oscuro (Carb&oacute;n) conmutables, con mejor legibilidad.</li><li><strong>M&iacute;stica:</strong> lanzamiento permisivo (avisa pero no bloquea), grimorio agrupado por v&iacute;a/subv&iacute;a y plegable, importaci&oacute;n del grimorio y ventana de modificador al Resistir.</li><li><strong>Atajos:</strong> paneles r&aacute;pidos de maniobras (Ctrl+M) y habilidades secundarias (Ctrl+2) con buscador; arrastrar un arma a la barra crea una macro de ataque.</li><li><strong>Animaciones JB2A (base):</strong> integraci&oacute;n opcional v&iacute;a Sequencer.</li><li>Correcciones varias del Turno/iniciativa y del importador de Excel.</li><li><strong>Gu&iacute;a y novedades in-app:</strong> este compendio, con c&oacute;mo se usa cada sistema y qu&eacute; es autom&aacute;tico o manual; se abre solo al actualizar (3.4.6).</li></ul></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfNovedadesP034"
+    },
+    {
+      "sort": 300000,
+      "name": "v3.3 — Artes Marciales, Mística y migración a V13",
+      "type": "text",
+      "_id": "abfNovedadesP033",
+      "title": {
+        "show": false,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-ver\">v3.3</span><span class=\"abf-cl-tag\">Artes Marciales, M&iacute;stica y migraci&oacute;n a V13</span></div><p class=\"abf-cl-date\">Junio 2026 &middot; v3.3.0 &ndash; v3.3.2</p><ul class=\"abf-cl-feats\"><li><strong>Artes Marciales (primera versi&oacute;n):</strong> c&aacute;lculo de HA, Esquiva, da&ntilde;o y Turno + CM; buscador, grado editable en la fila y requisitos/especial.</li><li><strong>M&iacute;stica:</strong> gasto de ze&oacute;n al lanzar conjuros, Resistencia M&aacute;gica (bot&oacute;n Resistir + tirada), acumulaci&oacute;n de ze&oacute;n por turno y validaci&oacute;n de Inteligencia Requerida.</li><li><strong>Reorganizaci&oacute;n:</strong> la pesta&ntilde;a Domine se divide en sub-pesta&ntilde;as y las Habilidades Especiales y Tablas pasan a Combate.</li><li><strong>Migraci&oacute;n a Foundry V13:</strong> di&aacute;logos modernos (DialogV2) en confirmaciones y entradas.</li><li><strong>Re-import idempotente:</strong> reimportar una ficha de Excel deja de duplicar armas, armaduras y dem&aacute;s.</li><li>Eliminado el antiguo combate por websocket en tiempo real (simplificaci&oacute;n).</li></ul></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfNovedadesP033"
+    },
+    {
+      "sort": 400000,
+      "name": "v3.2 — Subsistema de Ki y Técnicas",
+      "type": "text",
+      "_id": "abfNovedadesP032",
+      "title": {
+        "show": false,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-ver\">v3.2</span><span class=\"abf-cl-tag\">Subsistema de Ki y T&eacute;cnicas</span></div><p class=\"abf-cl-date\">Junio 2026 &middot; v3.2.0 &ndash; v3.2.1</p><ul class=\"abf-cl-feats\"><li><strong>Ki y Acumulaci&oacute;n:</strong> calculados siempre desde las caracter&iacute;sticas, con reserva de Ki unificada, CM derivado y nueva interfaz.</li><li><strong>Habilidades del Ki funcionales:</strong> resistencias, barrera de da&ntilde;o, TA de energ&iacute;a, etc.</li><li><strong>Constructor de T&eacute;cnicas de Ki</strong> estilo Excel: motor de coste, tarjetas en Domine y usar/activar/mantener con coste de Ki por asalto.</li><li><strong>Compendios editables:</strong> 65 efectos de t&eacute;cnica y 24 desventajas como objetos.</li><li><strong>Bonos de combate</strong> de las t&eacute;cnicas de Ki aplicados a ataque y defensa.</li><li>Importar T&eacute;cnicas de Ki desde el Excel.</li></ul></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfNovedadesP032"
+    },
+    {
+      "sort": 500000,
+      "name": "v3.1 — Maniobras y efectos",
+      "type": "text",
+      "_id": "abfNovedadesP031",
+      "title": {
+        "show": false,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-ver\">v3.1</span><span class=\"abf-cl-tag\">Maniobras, efectos y migraci&oacute;n a V13</span></div><p class=\"abf-cl-date\">Mayo&ndash;junio 2026 &middot; l&iacute;nea v3 inicial</p><ul class=\"abf-cl-feats\"><li><strong>Migraci&oacute;n a Foundry V13/V14</strong> y nuevo sistema de tipos del actor.</li><li><strong>Maniobras maestras:</strong> desangramiento (autom&aacute;tico al recibir un cr&iacute;tico), da&ntilde;o retrasado, lluvia de proyectiles, inmovilizar a distancia y m&aacute;s, con buscador y puerta de maestr&iacute;a.</li><li><strong>Active Effects avanzados:</strong> selectores l&oacute;gicos, predicados y rollOptions, y un buz&oacute;n de modificadores con atribuci&oacute;n y sin duplicados.</li><li><strong>Presas y estado montado</strong> con modificadores derivados.</li><li><strong>Regla opcional de rotura y entereza</strong> (armas, armaduras y combate sin armas).</li><li><strong>Cualidades de arma:</strong> interfaz + compendio.</li><li>Bot&oacute;n de DJ para forzar un cr&iacute;tico tras la tirada.</li><li>Compendio de referencia: Habilidades de Ki y N&eacute;mesis.</li></ul></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfNovedadesP031"
+    },
+    {
+      "sort": 600000,
+      "name": "Guia: como funciona el sistema",
+      "type": "text",
+      "_id": "abfGuiaIntroZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-intro\"><p>Esta gu&iacute;a explica <strong>c&oacute;mo</strong> funciona cada parte del sistema y, sobre todo, qu&eacute; hace el sistema <strong>solo</strong> y qu&eacute; tienes que hacer <strong>t&uacute;</strong>.</p><p>En el apartado &laquo;Autom&aacute;tico o manual&raquo; de cada p&aacute;gina ver&aacute;s estas etiquetas:</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-auto\">Automático</span><span>lo hace el sistema sin que toques nada.</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span>requiere que pulses o elijas algo.</span></li><li><span class=\"abf-badge abf-mixto\">Mixto</span><span>t&uacute; decides algo y el sistema calcula el resto.</span></li></ul></div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaIntroZZZZ"
+    },
+    {
+      "sort": 700000,
+      "name": "Combate basico: el flujo Atacante -> Defensor por chat",
+      "type": "text",
+      "_id": "abfGuiaP00ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">El corazon del combate: atacas, el rival se defiende y el chat hace las cuentas</span></div><p>El nucleo del combate de Anima. Atacas con un arma, el sistema tira tu Habilidad de Ataque y publica una tarjeta en el chat; el defensor elige como defenderse y el sistema calcula solo la diferencia, el dano, el critico y el posible contraataque.</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>Ficha del actor, pestana 'Combate' -&gt; sub-pestana 'Combate' -&gt; seccion 'Armas': cada arma tiene un boton 'Atacar' (icono de espada). Todo el intercambio posterior (defensa, resultado, aplicar dano) ocurre en tarjetas del panel de Chat con botones.</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>Selecciona en el lienzo tu token y, ANTES de atacar, el/los token(s) objetivo (se guardan como blancos del ataque).</li><li>En tu ficha -&gt; Combate -&gt; Combate, pulsa 'Atacar' en el arma deseada. Se abre el dialogo 'Ataque'; ajusta lo que necesites y pulsa 'Lanzar ataque'.</li><li>En el chat sale tu tirada y la tarjeta 'Datos de ataque' con botones de defensa. El defensor pulsa 'Defender' y elige Esquivar / Parar / Escudo.</li><li>El sistema publica la tarjeta 'Resultado de combate' con la diferencia, la armadura, el dano final y el % de vida.</li><li>El propietario del defensor aplica el dano con los botones 'Mitad / Total / Doble' de esa tarjeta (el dano NO se resta solo).</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Tiradas de Ataque y de Defensa:</strong> Ambos dialogos construyen la formula (dado + habilidad + modificadores) y la tiran solos al pulsar enviar.</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Eleccion de a quien atacar (blancos):</strong> Debes seleccionar/targetear los tokens en el lienzo ANTES de lanzar; se toman como 'foto' (getSnapshotTargets). Sin blanco, el defensor se resuelve por token seleccionado o por tu personaje.</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Eleccion del tipo de defensa:</strong> El dialogo abre ya en la MEJOR opcion segun tus valores, pero tu decides cual enviar (Esquivar/Parar/Escudo).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Calculo de diferencia, armadura, dano y % de vida:</strong> computeCombatResult.js hace toda la aritmetica al recibir la defensa: reduccion de TA, suelo a 0 de habilidades (computeCombatResult.js:28-30) y redondeo del dano (Math.ceil, linea 117).</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Aplicar el dano a los Puntos de Vida:</strong> Hay que pulsar Mitad/Total/Doble en la tarjeta de resultado (applyDamageActionHandler). El sistema solo apunta el dano, no lo descuenta hasta que pulsas.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Eleccion del eje del dado (normal vs maestria):</strong> Si tu habilidad base/natural es &gt;=200 usa el dado de maestria (abierto); si no, el normal. Calculado en ambos dialogos.</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>En el chat veras (1) la tirada de ataque con una linea 'Mods:' detallando cada modificador, (2) la tarjeta 'Datos de ataque' con botones de defensa, (3) la tirada de defensa y (4) la tarjeta 'Resultado de combate'. Algunos datos (diferencia, armadura, dano base) solo los ve el DJ; el % de vida y los botones de aplicar dano los ve el propietario del defensor.</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>Si seleccionas MAS de un token al pulsar 'Defender', el sistema aborta con aviso: para varios usa la defensa automatica. Los seres de 'acumulacion' (resistencia) y las 'masas' no abren el dialogo de defensa: pasan por una defensa de valor 0 (sendAccumulationZeroDefense) y no pueden 'encajar el golpe'.</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP00ZZZZZZ"
+    },
+    {
+      "sort": 710000,
+      "name": "Dialogo de Ataque: opciones y que automatiza",
+      "type": "text",
+      "_id": "abfGuiaP01ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">La ventana donde decides como golpeas y casi todo el calculo va solo</span></div><p>La ventana 'Ataque' donde eliges arma, modificador, apuntado, numero de ataques, gasto de Cansancio, tecnicas de Ki, proyectil y dano critico. El sistema convierte tus elecciones en penalizadores/bonos y los aplica solo a la tirada.</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>Se abre al pulsar 'Atacar' en un arma (pestana Combate), al ejecutar una maniobra o al contraatacar desde el chat. Titulo de la ventana: 'Ataque'.</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>Elige el arma (en un ataque normal queda fijada al arma pulsada; desde una maniobra hay desplegable para cambiarla).</li><li>Si quieres apuntar, activa 'Apuntar' y elige la zona del desplegable (la penalizacion de Tabla 45 se aplica sola).</li><li>Ajusta 'Numero de ataques' (1 por cada 100 de HA) y el gasto de Cansancio (+15 por punto, max 2 por asalto).</li><li>Marca las tecnicas de Ki instantaneas que quieras gastar en este golpe.</li><li>Anade cualquier modificador situacional en su campo y pulsa 'Lanzar ataque'.</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Penalizador por apuntar (Tabla 45):</strong> getAimedPenalty + composeAimedPenalty; la cualidad 'Precisa' del arma lo reduce sola. Se calcula contra el ARMA SELECCIONADA en el desplegable, no la equipada.</span></li><li><span class=\"abf-badge abf-mixto\">Mixto</span><span><strong>Numero de ataques adicionales:</strong> TU eliges cuantos (manual); el penalizador -(N-1) x (20/30/40 segun tamano de arma) se calcula y aplica solo. Kempo lo reduce automaticamente.</span></li><li><span class=\"abf-badge abf-mixto\">Mixto</span><span><strong>Tecnicas de Ki en el golpe:</strong> Las ACTIVAS (mantenidas/sostenidas) aplican su bono solas; las INSTANTANEAS hay que MARCARLAS en la casilla y gastan Ki concentrado al enviar (actor.useTechnique).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Critico automatico:</strong> Si el actor tiene el modificador automaticCrit, el golpe marca critico sin necesidad de superar el umbral de vida (combat.automaticCrit).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Reduccion de armadura (arma + Artes Marciales):</strong> Se suman la reducedArmor del arma, la reduccion general de AM (p.ej. Dumah) y la reduccion de TA blanda (Hakyoukuken). Todo va en el attackData.</span></li><li><span class=\"abf-badge abf-mixto\">Mixto</span><span><strong>Gasto de Cansancio:</strong> Eliges los puntos (manual, +15 c/u, max 2/asalto y limitado por tu fatiga); se descuentan solos tras la tirada (actor.applyFatigue).</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>La tirada en el chat muestra una linea 'Mods:' con cada penalizador/bono aplicado (apuntado, ataques, Cansancio, Ki, maniobra...). Despues sale la tarjeta 'Datos de ataque' con los botones de defensa.</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>Cambiar el arma del desplegable recalcula bien los penalizadores de apuntado y maniobra (se miden contra el arma elegida, no la equipada). En un ataque normal el arma queda fijada a la que pulsaste; en una maniobra puedes elegirla.</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP01ZZZZZZ"
+    },
+    {
+      "sort": 720000,
+      "name": "Dialogo de Defensa: Esquivar / Parar / Escudo y 'Resistir el golpe'",
+      "type": "text",
+      "_id": "abfGuiaP02ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">Como reacciona el defensor y que penalizadores se aplican solos</span></div><p>La ventana 'Defenderse' donde el defensor elige como reacciona: esquivar, parar (con arma o desarmado), usar un escudo sobrenatural o 'resistir el golpe'. Tambien gestiona sola la penalizacion por defensas multiples del asalto.</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>Se abre al pulsar 'Defender' en la tarjeta 'Datos de ataque' del chat. Tiene pestanas Esquivar / Parar / Escudo, un campo de modificador, selector de Cansancio, casillas de tecnicas de Ki y la casilla 'Resistir el golpe'.</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>Pulsa 'Defender' en la tarjeta del atacante (si controlas varios personajes, selecciona antes tu token).</li><li>Elige pestana: Esquivar, Parar o Escudo (ya se abre en la mejor opcion segun tus valores).</li><li>Si te interesa, ajusta el modificador, gasta Cansancio o marca tecnicas de Ki instantaneas.</li><li>Para 'aguantar' un golpe sin gastar una defensa real, marca 'Resistir el golpe' (-80 a la defensa, pero no cuenta como defensa del asalto).</li><li>Pulsa el boton de enviar de la pestana elegida.</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Penalizador por defensas multiples:</strong> Se deriva solo del contador de defensas del actor (-30 acumulativo por defensa, descontando las exentas por Artes Marciales) y se muestra como etiqueta de solo lectura. No hay control manual.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Incremento del contador de defensas:</strong> Tras defender, el contador sube solo (actor.accumulateDefenses); el escudo sobrenatural NO acumula y 'Resistir el golpe' tampoco (DefenseConfigurationDialog.js:628). ABFCombat reinicia el contador al cambiar de turno/asalto.</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Eleccion de pestana de defensa:</strong> Tu decides esquivar/parar/escudo; solo se preselecciona la de mayor valor.</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Resistir el golpe:</strong> Casilla que debes marcar; aplica -80 y evita gastar una defensa del asalto (DefenseConfigurationDialog.js:121-123, 410).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Bono de Esquiva por Artes Marciales (desarmado):</strong> En modo desarmado, el perfil de AM suma su bono a la esquiva solo (martialArtsDodgeBonus).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Desgaste de escudo sobrenatural:</strong> Si defiendes con escudo y bloqueas, se restan puntos de escudo segun el dano base y la penetracion de armadura (tryApplySupernaturalShieldWear, computeCombatResult.js:196).</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>Tirada de defensa en el chat con desglose 'Mods:' (Resistir, Artes Marciales, Cansancio, Ki) y a continuacion la tarjeta 'Resultado de combate'. Si tu defensa iguala o supera al ataque (diferencia &lt;= 0) y procede, apareceran el contraataque y/o el aviso de critico.</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>El escudo sobrenatural es especial: NO sufre el penalizador de defensas multiples, NO acumula contador y filtra el Cansancio y las tecnicas de Ki (no se aplican al tirar con escudo; DefenseConfigurationDialog.js:397, 410, 418, 444).</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP02ZZZZZZ"
+    },
+    {
+      "sort": 730000,
+      "name": "Maniobras de combate: lanzarlas y que automatizan",
+      "type": "text",
+      "_id": "abfGuiaP03ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">Derribo, Presa, Desarme y demas: desde la ficha o con Ctrl+M</span></div><p>Las maniobras (Derribo, Presa, Desarme, Inutilizar, Inconsciencia, Cargar, Montar, Aplastar, Dano retrasado, Lluvia de proyectiles...) son acciones especiales que, segun el tipo, abren el dialogo de ataque con su penalizador ya cargado, aplican un estado, o lanzan un control enfrentado.</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>Dos sitios equivalentes: (1) Ficha -&gt; pestana Combate -&gt; seccion 'Maniobras de combate', boton 'Ejecutar' de cada maniobra. (2) Panel rapido flotante con Ctrl+M (o game.animabf.openManeuvers()), que lista TODAS las maniobras del token sin abrir la ficha.</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>Selecciona en el lienzo tu token (atacante) y el/los objetivo(s).</li><li>Pulsa Ctrl+M (panel rapido) o ve a Combate -&gt; Maniobras y pulsa 'Ejecutar' en la maniobra deseada.</li><li>Si la maniobra pide opciones (zona apuntada, asaltos de retraso, penalizador -80/-50, rebote...), eligelas en su tarjeta.</li><li>La maniobra abrira el dialogo de ataque (con su penalizador ya puesto) o actuara directamente si es de estado o sub-presa.</li><li>Lanza el ataque como siempre; el resto (control enfrentado, efectos) se encadena en el chat.</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Penalizador propio de la maniobra:</strong> Cada maniobra trae su penalizador (Derribo -30, Presa -40, Desarme -40, Engatillar -100, Ropa -150/-100 con Precisa...) y se aplica solo (resolveManeuverAttackPenalty).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Maniobras de estado (Cargar, Montar):</strong> No abren dialogo de ataque: aplican/quitan un Active Effect (toggleStatusManeuver). 'Cargando' da +10 Ataque/-10 Parada/-20 Esquiva; 'Montado' ajusta segun la habilidad Montar.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Requisito de Maestria:</strong> Las maniobras maestras (Dano retrasado, Inmovilizar a distancia, Lluvia de proyectiles, Ropa, Rebote) se bloquean si no tienes Maestria en Ataque (predicate self:mastery:attack).</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Eleccion de zona / asaltos / penalizador en la tarjeta:</strong> Inutilizar (brazo/muslo), Dano retrasado (1-5 asaltos), Inmovilizar a distancia (-80/-50) y Rebote (-20/-40) se eligen en desplegables de la tarjeta de la maniobra.</span></li><li><span class=\"abf-badge abf-mixto\">Mixto</span><span><strong>Ataque en area (Lluvia de proyectiles):</strong> TU colocas el area con el cursor (pickAreaCenter); el sistema calcula el radio por tu Habilidad, auto-targetea los tokens dentro y dobla el Dano Base.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Aplastar (sub-presa):</strong> No tira ataque: va directo al control enfrentado FUE vs FUE, validando que ya tengas una Presa sin armas y el defensor paralizado (runSubGrappleManeuver).</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>Segun la maniobra: el dialogo de ataque con el penalizador ya puesto; o un aviso/chat de estado aplicado (Cargando/Montado); o directamente la tarjeta de 'Control enfrentado'. Si no cumples requisitos sale un aviso (p.ej. 'no cumples los requisitos (Maestria?)').</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>El panel Ctrl+M NO tiene buscador (localizas la maniobra a ojo) y usa el token controlado, o el de tu personaje, si no le pasas uno. Las maniobras maestras aparecen marcadas '(Maestria)' pero el panel te deja pulsarlas igual. Las restricciones de arma NO se imponen (decision de mesa): puedes lanzar Presa con cualquier arma aunque RAW pida desarmado.</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP03ZZZZZZ"
+    },
+    {
+      "sort": 740000,
+      "name": "Maniobras: cuales son directas y cuales piden Control enfrentado",
+      "type": "text",
+      "_id": "abfGuiaP04ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">Tras impactar, el sistema decide solo si aplica el efecto o abre dos tiradas D10</span></div><p>Tras impactar con una maniobra, el sistema decide el camino: algunas aplican su efecto directamente al superar un umbral de dano, otras abren un 'Control enfrentado' (tirada D10 enfrentada de caracteristicas) entre atacante y defensor, y otras solo modifican el critico.</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>Todo ocurre en el chat. Si la maniobra usa control enfrentado, aparece una tarjeta 'Control enfrentado' con dos botones 'Tirar D10' (uno para el atacante, otro para el defensor). El resultado y los efectos se publican solos al tirar ambos.</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>Lanza la maniobra y resuelve el ataque/defensa normal en el chat.</li><li>Si la maniobra causa al menos el % de dano umbral (normalmente 10%), el sistema publica solo la tarjeta de control enfrentado (en las maniobras que lo usan).</li><li>El atacante pulsa su 'Tirar D10' y el defensor el suyo (cada uno desde su cliente; el DJ puede tirar por ambos).</li><li>Cuando ambos han tirado, el sistema resuelve solo quien gana y aplica los efectos (Parálisis, Derribado...).</li><li>En maniobras sin control enfrentado (Engatillar, Inutilizar...), el efecto se aplica solo al impactar; no hay tarjeta de D10.</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Publicar la tarjeta de control enfrentado:</strong> El hook createChatMessage la auto-publica (solo DJ) si la maniobra lo usa y el golpe es critico o alcanza el umbral (animabf.mjs:598+, postManeuverOpposedCheck).</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Tiradas D10 del control enfrentado:</strong> Cada lado pulsa su boton 'Tirar D10' (rollManeuverAttacker/DefenderActionHandler). Hasta que ambos no tiran, no se resuelve.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Resolucion y aplicacion de efectos del control:</strong> Con las dos tiradas, resolveManeuverOpposedCheck calcula el ganador (incluye bonos de Artes Marciales) y aplica los Active Effects del compendio.</span></li><li><span class=\"abf-badge abf-mixto\">Mixto</span><span><strong>Derribo / Presa / Desarme / Inmovilizar:</strong> Control enfrentado: D10 manual por cada lado, resolucion automatica. Derribo-&gt;'Derribado'; Presa-&gt;Parálisis (segun diferencia) + 'Apresando' al atacante; Desarme-&gt;narrativo (el arma la suelta el DJ a mano); Inmovilizar-&gt;Parálisis.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Engatillar / Inutilizar / Inconsciencia / Ropa / Rebote / Lluvia / Dano retrasado:</strong> Sin control enfrentado. Engatillar aplica 'Amenazado' al impactar; Inutilizar/Inconsciencia modifican el critico (la extremidad rota / inconsciencia las da el flujo de critico).</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Aplicar efecto manual desde la tarjeta de maniobra:</strong> En la tarjeta 'Resultado de maniobra' hay botones 'Aplicar efecto' que solo el DJ puede pulsar (applyManeuverEffectActionHandler).</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>Para maniobras con control: tarjeta con dos tiradas D10 y, al final, un texto tipo 'X gana por N' o 'Y resiste' con los efectos aplicados. Para maniobras directas: aparece el Active Effect en la ficha del defensor (Derribado, Amenazado, Parálisis...) sin pasos extra.</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>Si la maniobra no alcanza el % de dano umbral, no hay control ni efecto. Desarme NO aplica un efecto automatico: el sistema avisa pero el arma la suelta el DJ manualmente. El atacante de una Presa queda 'Apresando' (efecto que el DJ/jugador retira para soltar).</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP04ZZZZZZ"
+    },
+    {
+      "sort": 750000,
+      "name": "Critico: resolucion por fases en el chat",
+      "type": "text",
+      "_id": "abfGuiaP05ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">Cuando un golpe quita &gt;=50% de vida, el critico se resuelve a botonazos</span></div><p>Cuando un golpe quita &gt;=50% de la vida del defensor (o 10% si apuntaste a zona vulnerable, o si es critico automatico) se dispara un critico. Se resuelve en el chat por pasos: nivel de critico, Resistencia Fisica del defensor y, si hace falta, localizacion.</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>En la tarjeta 'Resultado de combate' del chat. Aparece en rojo 'Critico: Si' y una secuencia de botones: 'Resolver critico' (DJ), 'Tirar nivel de critico', 'Tirar RF', 'Tirar localizacion'. Si no salto solo, el DJ tiene un boton 'Forzar critico'.</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>Tras aplicar el dano, si supera el umbral, la tarjeta muestra el aviso de critico.</li><li>El DJ pulsa 'Resolver critico' para iniciar la secuencia.</li><li>El atacante (o DJ) pulsa 'Tirar nivel de critico' (d100 + valor base de critico + modificador opcional).</li><li>El defensor (o DJ) pulsa 'Tirar RF'. Si la RF supera el nivel, el critico se anula.</li><li>Si falla y no apuntaste, se pulsa 'Tirar localizacion'; si apuntaste, la zona ya esta fijada. Se muestran los efectos (penalizador, miembro destruido, inconsciencia, muerte).</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Disparo del critico por umbral de vida:</strong> Al aplicar el dano, si quita &gt;=50% (o 10% en zona vulnerable) o es automaticCrit, se marca critico y aparece el boton de resolver (applyDamageActionHandler.js:67-96).</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Tiradas de cada fase (nivel, RF, localizacion):</strong> Cada fase es un boton que hay que pulsar; quien puede tirarla depende del ajuste 'critRoller' (gm/owner) por fase.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Calculo de nivel, anulacion por RF y efectos:</strong> El sistema suma, capa a 200, halvea para acumuladores de dano, compara con la RF y determina los efectos (determineCriticalEffects, resolveCriticalActionHandler).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Localizacion cuando el golpe fue apuntado:</strong> Si apuntaste, la localizacion se mapea sola desde la zona (mapAimedToLocation) y se salta la tirada.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Inmunidad a criticos (masas / critImmune):</strong> Si el defensor es masa o inmune, el critico se marca como anulado sin tiradas (applyDamageActionHandler.js:65-67).</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Forzar un critico que no salto:</strong> Boton 'Forzar critico' solo-DJ en golpes con dano que no alcanzaron el umbral (forceCritical).</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>Tiradas d100 en el chat (con Dice So Nice si lo tienes) y la tarjeta actualizandose por fases. Al final, en rojo: penalizador a la accion y, si procede, 'Miembro destruido', 'Inconsciente', 'Muerte' o cuenta atras. Si el defensor quedo Inconsciente, el sistema le aplica solo el estado.</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>Quien puede pulsar cada tirada depende de los ajustes del mundo (por defecto 'owner' para nivel/RF/localizacion). El nivel de critico se capa a 200 (por encima cuenta a mitad) y los acumuladores de dano reciben el nivel a la mitad.</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP05ZZZZZZ"
+    },
+    {
+      "sort": 760000,
+      "name": "Desangramiento y Dano retrasado (efectos que 'gotean' por asalto)",
+      "type": "text",
+      "_id": "abfGuiaP06ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">Dos efectos que el rastreador de combate aplica solo al pasar de ronda</span></div><p>Dos reglas que el sistema aplica solo al avanzar asaltos: (1) Desangrarse: recibir un critico fisico provoca hemorragia (1 PV cada ~20 asaltos, -10 a la accion por cada 5 PV asi perdidos); (2) Dano retrasado: maniobra maestra que aplaza el dano de un golpe FIL/PEN/CON entre 1 y 5 asaltos, y al vencer lo aplica solo y siempre desangra.</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>Automatico: al crearse la tarjeta de un golpe critico aparece el efecto 'Desangrandose' en la ficha del defensor. El Dano retrasado se programa solo y la tarjeta de resultado muestra en morado 'Dano retrasado programado (N)' (sin botones Mitad/Total/Doble). La perdida de PV ocurre al avanzar de asalto en el Combat Tracker.</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>DESANGRAMIENTO: no haces nada para iniciarlo; si recibes un critico fisico, el efecto 'Desangrandose' se anade solo y va goteando PV al pasar asaltos.</li><li>Para curarlo, abre la ficha del afectado y ELIMINA el efecto 'Desangrandose' (representa el tratamiento de Medicina); el sistema no lo cura solo.</li><li>DANO RETRASADO: ejecuta la maniobra 'Dano retrasado' (requiere Maestria en Ataque) y elige en su tarjeta cuantos asaltos retrasar (1-5).</li><li>Lanza y resuelve la defensa como siempre; NO pulses nada para aplicar: el sistema programa el dano automaticamente.</li><li>Cuando el combate llegue al asalto de vencimiento, el dano se resta solo y empieza el desangramiento.</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Inicio del desangramiento al recibir critico:</strong> El hook createChatMessage llama startBleeding al crear la tarjeta de un critico (animabf.mjs:610-634). 'Resolver critico' tambien lo dispara como red de seguridad (idempotente, no apila).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Filtro de inmunidad / tipo de dano:</strong> No desangran los criticos de energia (Calor/Frio/Electricidad) ni los inmunes (regeneracion &gt;=6, sin sangre, masas). Por defecto un critico sin tipo SE considera fisico y desangra.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Perdida de PV y penalizador por asalto:</strong> ABFCombat.nextRound llama tickBleeding (ABFCombat.js:51): 1 PV cada 20 asaltos y -10 a las acciones por cada 5 PV; al llegar a 0 PV se detiene solo.</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Detener el sangrado (tratamiento):</strong> Hay que eliminar el efecto 'Desangrandose' de la ficha; salvo al llegar a 0 PV, el sistema no lo cura solo.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Programar el Dano retrasado:</strong> Al crearse la tarjeta de resultado con combate activo, el hook usa makeDelayedDamageEntry y lo guarda en flags.scheduledDamages del defensor (animabf.mjs:650-677). No hay boton.</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Eleccion de los asaltos de retraso (1-5):</strong> El jugador lo elige en el desplegable de la tarjeta de la maniobra (hasDelayRoundsOption).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Aplicacion del Dano retrasado al vencer:</strong> ABFCombat.nextRound -&gt; processDueDelayedDamage (ABFCombat.js:54) aplica los PV y dispara el desangramiento (que siempre acompana al dano retrasado).</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>Veras el icono/efecto 'Desangrandose' en el defensor y, en la tarjeta de un dano retrasado, el aviso morado con reloj 'Dano retrasado programado (N)'. Al pasar asaltos en el rastreador, la vida baja sola (sangrado) o cae de golpe en el asalto de vencimiento (dano retrasado).</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>Ambos van ligados a avanzar de asalto en el Combat Tracker: sin un combate activo avanzando rondas, no 'gotean' ni se programa el dano retrasado. El Dano retrasado es la unica maniobra de dano cuya tarjeta NO ofrece botones Mitad/Total/Doble. El desangrado directo (Dumah Arcano) inicia hemorragia con cualquier golpe que cause dano, aunque no sea critico.</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP06ZZZZZZ"
+    },
+    {
+      "sort": 770000,
+      "name": "Contraataque y Rotura (regla opcional)",
+      "type": "text",
+      "_id": "abfGuiaP07ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">Dos botones de la tarjeta de resultado: devolver el golpe y romper equipo</span></div><p>Dos mecanicas que aparecen como botones en la tarjeta de resultado: (1) 'Contraatacar', cuando tu defensa iguala o supera al ataque; (2) 'Control de entereza', la regla OPCIONAL de Rotura (armas/armaduras que se rompen), que solo aparece si el DJ la activa en los ajustes.</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>Tarjeta 'Resultado de combate' del chat. El boton morado 'Contraatacar (+N)' lo ve el propietario del defensor. El boton 'Control de entereza' (icono escudo) solo lo ve el DJ y SOLO si esta activado el ajuste de mundo 'Regla de rotura'.</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>CONTRAATAQUE: si tras defender la tarjeta muestra 'Contraatacar (+N)', pulsalo. Se abre tu dialogo de ataque contra el agresor con el bono ya cargado; lanza tu contraataque (es un ataque normal, defendible).</li><li>Cerrar el dialogo de contraataque sin enviar conserva el boton para reintentarlo (solo se 'consume' al enviar de verdad).</li><li>ROTURA (opcional): el DJ la activa primero en Configuracion del sistema -&gt; 'Regla de rotura'. Entonces la tarjeta muestra 'Control de entereza'.</li><li>El DJ pulsa 'Control de entereza', elige el enfrentamiento (arma vs arma, contra armadura, o parada sin armas) y los modificadores.</li><li>El sistema tira los D10, resuelve y aplica la rotura (baja de calidad o destruccion del arma; degradacion de TA; o dano en parada sin armas).</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Aparicion del boton 'Contraatacar':</strong> computeCombatResult marca hasCounterAttack si la diferencia &lt;=0 y el ataque es contraatacable; el bono (mitad del margen en multiplos de 5, tope +150) se calcula solo (computeCombatResult.js:32-46, calculateCounterAttackBonus).</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Lanzar el contraataque:</strong> Hay que pulsar el boton; abre tu dialogo de ataque (counterAttackActionHandler). Solo se marca 'consumido' al enviar.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Bono de dano de contraataque por Arte Marcial (Aikido):</strong> Si el defensor tiene el arte, se calcula N x mod de FUE del agresor y se carga en el dialogo (counterDamageBonus).</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Regla de Rotura activa/inactiva:</strong> Es OPCIONAL: el DJ la activa en Configuracion del sistema (USE_BREAKAGE_RULE, por defecto desactivada). Sin activarla, el boton no aparece.</span></li><li><span class=\"abf-badge abf-mixto\">Mixto</span><span><strong>Control de entereza (tiradas y rotura):</strong> El DJ abre el dialogo y elige objetivos/mods (manual); el sistema tira los D10, decide la rotura y aplica los cambios al item solos (integrityCheckActionHandler + breakageEffect).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Maestria en parada desarmada:</strong> Si el defensor tiene maestria en parada sin armas, el control de rotura no le hace dano (unarmedParryDamage devuelve 0).</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>Contraataque: al pulsar, tu propio dialogo de ataque con '+N' precargado; al enviarlo, el boton del mensaje original desaparece. Rotura: un mensaje de chat con el resultado ('arma destruida', 'arma baja a calidad +X', 'armadura degradada/inservible', o el dano de la parada sin armas).</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>El contraataque solo aparece si tu defensa iguala o supera al ataque (margen &gt;= 0) y el ataque no es 'no contraatacable'. La Rotura NO funciona si el DJ no ha activado el ajuste, y su boton de Control de entereza es exclusivo del DJ.</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP07ZZZZZZ"
+    },
+    {
+      "sort": 780000,
+      "name": "Artes Marciales: anadir un arte y elegir su grado",
+      "type": "text",
+      "_id": "abfGuiaP08ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">Las disciplinas a mano vacia se aprenden en Domine; sus bonos van solos</span></div><p>Un Arte Marcial (Aikido, Boxeo, Kung Fu, Grappling, Dumah...) es una disciplina de combate sin armas que mejora tu desarmado: sube Ataque/Parada/Esquiva/Turno, cambia el Dano Base, da Conocimiento Marcial (CM) y anade efectos especiales. Se anade como una entrada de conocimiento en la ficha.</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>Pestana 'Domine' -&gt; sub-pestana 'Artes marciales'. Es una lista con un boton '+' en la cabecera del grupo 'Artes Marciales'. Cada arte ocupa una fila con: nombre en negrita, desplegable de Grado y un resumen de bonos a la derecha.</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>Abre la ficha y ve a Domine -&gt; Artes marciales.</li><li>Pulsa el '+' de la cabecera. Se abre el dialogo 'Nueva Arte Marcial' con buscador y lista agrupada en 'Basicas' y 'Avanzadas'.</li><li>Filtra con el cuadro 'Buscar...', selecciona el arte y pulsa 'Continuar'. SIEMPRE se crea en grado Base (solo eliges el arte, nunca el grado).</li><li>En la fila del arte, usa el desplegable 'Grado' para subirlo a Avanzado / Supremo (Basicas) o Arcano (Avanzadas). El resumen de bonos se actualiza solo.</li><li>Si el arte muestra 'Bono variable (+X) a:' (Kung Fu, Asakusen), elige en el segundo desplegable a que stat aplicarlo (Ataque, Parada, Esquiva, Turno o Dano).</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Eleccion del arte y del grado:</strong> El jugador elige el arte y ajusta el grado en la fila. NO hay validacion de requisitos: el texto 'Requisitos' es solo informativo (openMartialArtSelectDialog.js:52; martialArtCatalog.js:31-33).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Bonos numericos del grado (Ataque/Parada/Esquiva/Turno/CM/Dano):</strong> Al guardar, applyMartialArtModifiers acumula los bonos del catalogo (applyMartialArtModifiers.js:43-131). Los valores del catalogo YA son acumulados por grado (Supremo incluye Base+Avanzado): no los sumes a mano.</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Bono variable de Kung Fu / Asakusen:</strong> La CANTIDAD (+10/+20/+40) la pone el sistema; A QUE stat va lo eliges tu en el desplegable (martialArtCatalog.js:135-143). Si va a HA/Parada/Esquiva queda exento del tope +50.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Tope +50 a HA/Parada/Esquiva:</strong> Los bonos innatos por Categoria (combate + AM) comparten un unico tope +50 que el motor aplica solo (INNATE_CAP). Turno, Dano y el bono variable de Kung Fu quedan fuera del tope.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Conocimiento Marcial (CM):</strong> El CM del arte se suma al maximo de Conocimiento Marcial del personaje (mutateMartialArtKnowledgeMax).</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>En la fila veras el grado elegido y un resumen compacto tipo 'HA +10 - Par/Esq +20 - Turno +5 - Dano 20 + 2xFUE - CM +20', con lineas de 'Requisitos:' y 'Especial:' si las hay. El maximo de Conocimiento Marcial sube. Importante: anadir el arte aqui NO te hace golpear: para combatir con el necesitas el arma-perfil 'Artes Marciales' (ver su ficha).</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>El alta SIEMPRE nace en Base; el grado se sube luego en la fila. No hay control de requisitos ni de PDs gastados: es responsabilidad tuya. Si una fila muestra '(sin datos - recrear)' es un arte importado sin correspondencia en el catalogo: borrala y vuelve a anadirla.</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP08ZZZZZZ"
+    },
+    {
+      "sort": 790000,
+      "name": "El arma-perfil 'Artes Marciales' (donde se materializa el combate)",
+      "type": "text",
+      "_id": "abfGuiaP09ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">El 'puno' equipable que canaliza todos los bonos de tus artes</span></div><p>Un arma especial de cuerpo entero llamada 'Artes Marciales' que NO hace dano por si misma: es el 'perfil' por el que se canalizan TODOS los bonos de tus artes (HA, Parada, Turno, Dano y especiales). Es lo que de verdad usas para atacar y parar con Artes Marciales.</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>Pestana 'Combate' -&gt; sub-pestana 'Combate' -&gt; seccion 'Armas'. Aparece como una fila de arma mas, con nombre 'Artes Marciales' e icono de puno, su casilla 'Equipado' y su boton 'Atacar'.</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>Consiguelo: arrastra el arma 'Artes Marciales' desde el compendio de armas a la ficha (en personajes importados del Excel con artes, el importador la anade sola).</li><li>Marca su casilla 'Equipado' en la lista de Armas para combatir desarmado con tus artes (al ser de cuerpo entero no se asigna a una mano).</li><li>Mira sus campos Ataque/Parada/Daño/Iniciativa: ya incluyen los bonos de tus artes sin que toques nada.</li><li>Pulsa 'Atacar' para abrir el dialogo (con selector de tabla si tus artes lo permiten); para defender, en el dialogo de defensa elige Parada o Esquiva.</li><li>Opcional: en los campos editables de la fila puedes escribir un bono MANUAL extra (situacional); no pisa los bonos del arte.</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Inyeccion de los bonos del arte en el perfil:</strong> applyMartialArtsWeaponBonuses y los calculos de arma suman HA/Parada/Turno/Maestro del arte SOLO a este perfil (calculateWeaponAttack/Block/Initiative.js). El campo 'special' editable es tu bono manual y se conserva aparte.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Dano Base del golpe:</strong> Toma el MAYOR Dano Base entre tus artes + el bono de las Avanzadas; el desarmado basico '10+FUE' solo cuenta si NO tienes arte (martialArtsWeapon.js:43-53). Se inyecta por formula custom para no duplicar la FUE.</span></li><li><span class=\"abf-badge abf-mixto\">Mixto</span><span><strong>Tabla de ataque (tipo de critico/TA):</strong> Por defecto golpea por Impacto (CON). Si tus artes lo permiten, en el dialogo aparece un selector de tabla y TU eliges: Dumah anade Filo/Penetracion, Velez (Arcano) anade Energia (AttackConfigurationDialog.js:224-233).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Ataques adicionales (Kempo):</strong> Con el perfil equipado, Kempo reduce el penalizador por ataque adicional (-15/-10) y en Supremo concede un ataque extra como si tuvieras +100 de HA.</span></li><li><span class=\"abf-badge abf-mixto\">Mixto</span><span><strong>Equiparlo / iniciativa:</strong> Equiparlo es manual (casilla). El Turno del arte llega por la iniciativa del propio perfil cuando esta equipado; el motor evita contarlo dos veces (mutateInitiative.js:38-41).</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>Veras el perfil 'Artes Marciales' en tu lista de armas con Ataque/Parada/Daño/Iniciativa ya potenciados. Al pulsar 'Atacar' abre el dialogo normal (con selector de tabla si procede). El mensaje de combate sale como un ataque mas, aplicando reduccion de TA, bonos al critico, desangrado, etc. segun tus artes.</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>Sin este perfil equipado, tener artes en Domine NO te da ataque ni parada de AM (los bonos no tienen por donde aplicarse). No se asigna a mano: se considera 'combate desarmado'. El campo 'special' de la fila es bono manual del jugador y NO se sobrescribe; no metas ahi los bonos del arte (ya van solos).</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP09ZZZZZZ"
+    },
+    {
+      "sort": 800000,
+      "name": "Esquiva y efectos especiales de las Artes Marciales",
+      "type": "text",
+      "_id": "abfGuiaP10ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">Bono de esquiva a mano vacia y los 'especiales' que actuan solos en combate</span></div><p>Reune lo que las artes aportan automaticamente fuera del ataque directo: (1) el bono de Esquiva a mano vacia y (2) los 'especiales' del arte (reduccion de penalizadores de Presa/Derribo/Desarme, contraataque, defensas extra sin penalizador, bono al critico, reduccion de la TA del rival, armadura propia, desangrado directo...).</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>No tienen boton propio. La Esquiva de AM se incorpora al valor que muestra y tira el dialogo de Defensa al elegir 'Esquiva'. Los especiales operan dentro de los dialogos de Ataque y Defensa, en 'Opciones Avanzadas' (defensas extra) y en los controles enfrentados de maniobras. El texto de cada especial se ve en la fila del arte en Domine ('Especial: ...').</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>Aprende el arte y sube su grado en Domine; cuenta el especial del GRADO ACTUAL (no se acumulan los textos de grados).</li><li>Para la esquiva de AM: cuando te ataquen, abre el dialogo de Defensa y elige 'Esquiva'; con las manos vacias el valor ya incluye el bono del arte.</li><li>Para los especiales: combate normalmente con el perfil 'Artes Marciales' o ejecuta la maniobra correspondiente (Presa, Derribo, Desarme, Inconsciencia, apuntado).</li><li>No actives nada: al lanzar el ataque/defensa/control, el sistema aplica el efecto que corresponda segun tus artes.</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Bono de Esquiva del arte (solo desarmado):</strong> martialArtsDodgeBonus suma block+masterDefense del perfil a la esquiva en el dialogo (DefenseConfigurationDialog.js:189, 356-380). SOLO si no llevas un arma real equipada (gate isUnarmedMode); con un arma de verdad, el bono es 0 (RAW).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Maestria en esquiva:</strong> Como el bono entra en la base natural, si esa base llega a 200 el dialogo usa el dado abierto de maestria tambien para la esquiva.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Reduccion de penalizador de maniobras (Grappling, Aikido, Sambo...):</strong> martialArtManeuverPenaltyFactor devuelve el mejor factor (mitad o sin penalizador) para Presa/Derribo/Desarme; algunos solo al contraatacar (counterOnly).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Bonos a controles enfrentados / contraataque:</strong> Kardad/Aikido... suman a los D10 de maniobra; Boxeo +10, Selene x2 y Aikido (dano por FUE enemiga) entran en el flujo de contraataque (martialArtSpecials.js).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Defensas adicionales sin penalizador (Lama, Lama Tsu):</strong> martialArtExtraDefenses calcula cuantas defensas extra no penalizan; se muestran de solo lectura en 'Opciones Avanzadas' del dialogo de defensa.</span></li><li><span class=\"abf-badge abf-mixto\">Mixto</span><span><strong>Bono al critico / reduccion de TA del rival / armadura propia / apuntado / desangrado directo:</strong> El sistema aplica el efecto solo (Moai Thai/Hakyoukuken al critico; Dumah/Hakyoukuken/Rex Frame a la TA; Sambo a apuntados; Dumah Arcano desangra con cualquier dano), pero apuntar o elegir la maniobra es decision tuya (AttackConfigurationDialog.js:534-568).</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>Al esquivar a mano vacia, un numero de esquiva mayor que tu base. En combate veras menos (o ningun) penalizador al hacer/contrarrestar Presa/Derribo/Desarme, controles mas altos, mas defensas sin penalizacion, criticos de mayor nivel, la TA del rival reducida y avisos como desangrado en el mensaje. El texto del especial aparece bajo cada arte en Domine.</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>La Esquiva de AM vive solo en el dialogo de defensa, no es un stat del perfil: si equipas un arma real la pierdes aunque sigas teniendo el arte. Muchos efectos solo se disparan en su contexto exacto (Enuth solo con Inconsciencia, Asakusen solo en apuntado, los counterOnly solo al contraatacar). Cuenta SIEMPRE el especial del grado actual: cambiar el grado cambia el efecto.</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP10ZZZZZZ"
+    },
+    {
+      "sort": 810000,
+      "name": "Ki: Acumulacion, Puntos de Ki y Reserva (se calculan solos)",
+      "type": "text",
+      "_id": "abfGuiaP11ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">Los numeros del Ki salen de tus caracteristicas; tu solo ajustas el Mod.</span></div><p>El bloque de Ki resume, por caracteristica (FUE/AGI/DES/CON/VOL/POD), cuanto Ki acumulas por asalto y cuantos Puntos de Ki tienes; ademas calcula una Reserva total de Ki (lo que realmente gastas al usar tecnicas).</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>Ficha -&gt; pestana 'Domine' -&gt; sub-pestana 'Ki' (la primera). El panel 'Acumulacion / Ki' esta a la derecha: una fila por caracteristica con dos numeros (Acumulacion final y 'Ki acu.' concentrado) y, abajo, la fila 'Reserva' con tres casillas (Actual / Mod. / Max.) y los controles 'Cargar Ki'.</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>Abre Domine -&gt; Ki. No rellenas la Acumulacion ni los Puntos de Ki: salen solos de tus caracteristicas (solo necesitas tener bien puestas FUE/AGI/DES/CON/VOL/POD).</li><li>Mira la fila 'Reserva': 'Max.' es tu Ki total y 'Actual' el que te queda ahora mismo.</li><li>Si un artefacto o ventaja te da (o te resta) Ki, escribe ese ajuste en la casilla 'Mod.'. Editar 'Max.' tambien vale: el sistema lo convierte en Mod. automaticamente.</li><li>Cuando gastes Ki en juego, baja 'Actual'. Para 'descansar' y recuperar Ki, sube 'Actual' a mano hasta el Max.</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Acumulacion de Ki por caracteristica (1-9=1, 10-12=2, 13-15=3, 16+=4):</strong> kiTable.js:10 aplica los tramos canonicos; mutateDomineData.js:47 escribe el valor base. Satura en 4.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Puntos de Ki por caracteristica (ki = car + max(0, car-10)):</strong> kiTable.js:5; mutateDomineData.js:16. La columna 'byPd' (comprados con PD) se suma si la rellenaste.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Reserva Max. = suma de Puntos de Ki de las 6 caracteristicas + Modificador:</strong> mutateDomineData.js:109 (mutateKiReserve): base = suma de kiPoints.final; max = base + reserve.modifier.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Penalizador a la Acumulacion final por penalizacion global:</strong> mutateDomineData.js:73: baja 1 por cada -20 de penalizador de 'todas las acciones' (armadura, heridas); nunca sube de la base ni baja de 0.</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Casilla 'Mod.' de la Reserva:</strong> La editas tu; se suma al total. Editar 'Max.' tambien funciona (la hoja recalcula el Mod. necesario).</span></li><li><span class=\"abf-badge abf-mixto\">Mixto</span><span><strong>Reserva 'Actual':</strong> Arranca llena (= Max.) la primera vez; luego BAJA SOLA al usar/activar/mantener tecnicas, pero NO se rellena sola: recuperar Ki tras descansar es manual.</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>Los numeros de Acumulacion y Puntos de Ki aparecen ya rellenos y en gris (no editables). La Reserva muestra Actual/Mod./Max. La Acumulacion final baja automaticamente si llevas mucha penalizacion. No hay mensajes de chat: es solo informacion en la ficha.</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>NO existe una reserva de Ki tecleable libre: el Max. es derivado (Puntos de Ki + Mod.), asi que para tener mas Ki total ajusta el Mod. La Reserva 'Actual' nunca se recupera sola al pasar los asaltos; el combate solo la GASTA. Un 0 en 'Actual' se respeta y no se autocompleta.</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP11ZZZZZZ"
+    },
+    {
+      "sort": 820000,
+      "name": "Cargar Ki (concentrar Ki por asalto en combate)",
+      "type": "text",
+      "_id": "abfGuiaP12ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">El boton que va reuniendo Ki concentrado para poder usar tecnicas</span></div><p>Antes de usar una tecnica necesitas Ki 'concentrado' en las caracteristicas que esa tecnica pide. 'Cargar Ki' es el boton que va acumulando ese Ki concentrado asalto a asalto mientras dura el combate.</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>Domine -&gt; Ki, abajo del panel 'Acumulacion / Ki'. Boton 'Cargar Ki' (pasa a 'Cargando Ki...' cuando esta activo), contador 'Concentrado: N', casilla 'Acumulacion plena' y checkboxes 'Acumular: FUE AGI DES CON VOL POD'. El concentrado por caracteristica se ve en la columna 'Ki acu.'.</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>Entra en combate (mete el token en el Combat Tracker).</li><li>En Domine -&gt; Ki, marca con los checkboxes 'Acumular' que caracteristicas concentrar (por defecto, todas).</li><li>Pulsa 'Cargar Ki': se concentra de golpe la Acumulacion completa del asalto en curso (sube 'Ki acu.' y 'Concentrado').</li><li>Avanza de asalto en el Combat Tracker: en cada asalto nuevo se suma mas Ki concentrado automaticamente.</li><li>Cuando tengas suficiente, usa o activa la tecnica. Al terminar, vuelve a pulsar el boton para parar (el concentrado se pone a 0).</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Concentrar el Ki del asalto en curso al activar el boton:</strong> toggleChargeKi -&gt; _computeAccumulationStep(true): el primer paso aporta la tasa de Acumulacion COMPLETA de cada caracteristica seleccionada (ABFActor.js:830-848).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Sumar Ki concentrado cada vez que pasa un asalto:</strong> ABFCombat.nextRound llama actor.accumulateKi(); cada asalto suma ceil(tasa/2) (o la tasa entera con 'plena'). Avance incremental, sin tope (kiAccumulation.js:44-67).</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Elegir QUE caracteristicas se concentran:</strong> Checkboxes 'Acumular' (por defecto todas); accumulateKiStep omite la que pongas a false.</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>'Acumulacion plena' (no reducir a la mitad al pasar el asalto):</strong> Checkbox toggleFullKiAccumulation (ABFActor.js:858); con el marcado, cada asalto suma la tasa entera en vez de ceil(tasa/2).</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Avanzar el asalto para que se concentre mas:</strong> Lo dispara el paso de ronda del Combat Tracker; sin avanzar de asalto no se concentra mas (salvo el primer golpe al pulsar el boton).</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Parar la concentracion:</strong> Volver a pulsar el boton pone el Ki concentrado a 0 (ABFActor.js:843-846).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Deshacer un asalto (retroceder ronda):</strong> ABFCombat.previousRound -&gt; revertAccumulateKi() restaura el concentrado al valor previo (un solo nivel de deshacer).</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>Avisos en pantalla ('Concentracion de Ki activada' / 'detenida (concentrado a 0)'). La columna 'Ki acu.' y el contador 'Concentrado' suben en cada asalto. Concentrar Ki NO baja la Reserva (solo gastarlo en tecnicas la baja).</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>Concentrar Ki SOLO avanza al pasar de asalto en el Combat Tracker; fuera de combate el boton solo concentra el primer golpe. Parar 'Cargar Ki' TIRA todo el concentrado (a 0), no lo guarda. El concentrado es por caracteristica: si la tecnica pide POD y solo concentraste FUE, te avisara de que falta. La concentracion no tiene tope; el limite real es la Reserva al gastar.</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP12ZZZZZZ"
+    },
+    {
+      "sort": 830000,
+      "name": "Crear Tecnicas de Ki (constructor en la ficha)",
+      "type": "text",
+      "_id": "abfGuiaP13ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">Monta tus tecnicas eligiendo efectos; el sistema calcula CM y Ki y avisa</span></div><p>Un constructor visual para montar tus propias Tecnicas de Ki eligiendo efectos, opciones y desventajas; el sistema calcula solo el coste en CM (Conocimientos Marciales) y en Ki, y avisa si la tecnica no es legal.</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>Domine -&gt; sub-pestana 'Creacion de Tecnicas de Ki' (la segunda). Boton '+ Anadir tecnica' arriba. Cada tecnica es una tarjeta-formulario con cabecera (nombre, Nivel, Combinable, CM, Ki, Coste), tabla de Efectos, Desventajas, Modificadores de coste y Opciones de los efectos.</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>Pulsa '+ Anadir tecnica' y dale nombre. Elige el Nivel (1, 2 o 3) y marca 'Combinable' solo si debe poder combinarse (sube coste).</li><li>En 'Efectos' pulsa '+ Anadir efecto' y, en cada fila, elige el Efecto y su Rol (debe haber exactamente 1 primario).</li><li>En 'Opciones de los efectos' elige las opciones/grados de cada efecto (cada una suma su CM y su Ki); pon en 'Mant./Sost.' los que se mantienen o sostienen.</li><li>Reparte el Ki por caracteristica en las columnas 'Act' y 'Mnt' hasta cuadrar con el coste calculado.</li><li>Revisa los avisos (lista con triangulos): si no hay ninguno, la tecnica es legal. (Tambien puedes arrastrar un item 'Efecto de Tecnica' del compendio a la tarjeta).</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Coste total en CM y Ki, suelo y techo de CM por nivel:</strong> computeTechniqueCost.js suma CM/Ki de cada opcion, los sobrecostes (Combinable, Mantenido, Sostenido) y aplica suelo/techo (Nv1 20-50, Nv2 40-100, Nv3 60-200). Se recalcula en cada render (TechniqueItemConfig.js:105).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Avisos de validacion:</strong> computeTechniqueCost.js:196 calcula las banderas (CM excesivo, nivel insuficiente, un solo primario, no mezclar Mantenido+Sostenido...). SON AVISOS, no bloqueos: puedes guardar igual.</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Elegir efectos, opciones, rol, modo de mantenimiento y reparto de Ki:</strong> Todo en technique-builder.hbs; los cambios se guardan al instante.</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Cuadrar el reparto de Ki por caracteristica con el coste:</strong> Las columnas Act/Mnt las rellenas tu; si no cuadran salen los avisos 'costeActivo'/'costeMantenimiento'. El sistema NO autocompleta el reparto.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Volcado de CM y caracteristicas a los campos 'oficiales' del item:</strong> Solo cuando la tecnica tiene efectos: prepareItem (TechniqueItemConfig.js:111) copia cmTotal a Conocimientos Marciales y el coste por caracteristica.</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Anadir efecto arrastrando un item del compendio:</strong> onDropTechniqueEffect: arrastrar un 'Efecto de Tecnica' lo anade como efecto o desventaja segun su tipo.</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>Una tarjeta-formulario que recalcula en vivo el CM (en rojo si excede el techo) y el Ki total al tocar cualquier campo. Lista de avisos con triangulo cuando algo no es legal. La tecnica creada aparece tambien como tarjeta jugable en la sub-pestana Ki. Todo el constructor vive en esta pestana (no abre ventana aparte).</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>Las validaciones son avisos, NO impiden guardar una tecnica ilegal. El reparto de Ki por caracteristica (Act/Mnt) hay que cuadrarlo a mano: si no, el coste por caracteristica que se usara al jugar puede no ser el que esperas. Borrar la tecnica es el icono de papelera. Maximo 5 efectos y 3 desventajas por tecnica.</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP13ZZZZZZ"
+    },
+    {
+      "sort": 840000,
+      "name": "Usar y mantener Tecnicas de Ki en juego",
+      "type": "text",
+      "_id": "abfGuiaP14ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">Pulsa 'Usar'/'Activar' o marca la casilla en la tirada: el gasto es manual</span></div><p>Cada tecnica creada aparece como una tarjeta jugable con un boton para usarla. Segun sea instantanea o mantenida/sostenida, el boton es 'Usar' o 'Activar/Desactivar', y al pulsarlo se gasta el Ki concentrado y la Reserva.</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>Domine -&gt; sub-pestana 'Ki', panel 'Tecnicas' (tarjetas). Cada tarjeta muestra nombre, CM, coste de Ki y un boton: 'Usar' (instantaneas) o 'Activar'/'Desactivar' (mantenidas/sostenidas). Ademas, al atacar o defender, las tecnicas instantaneas aparecen como casillas en el dialogo bajo 'Tecnica de Ki (instantaneas)'.</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>Asegurate de haber concentrado Ki suficiente (boton 'Cargar Ki') en las caracteristicas que pide la tecnica.</li><li>En el panel 'Tecnicas', si es instantanea pulsa 'Usar' (se gasta el Ki y marca 'Usando...').</li><li>Si es mantenida/sostenida pulsa 'Activar' (gasta el Ki de activacion; pasa a 'Activa', las sostenidas muestran los asaltos restantes). Para terminarla pulsa 'Desactivar'.</li><li>Alternativa en combate: al lanzar un ataque o defensa, marca la casilla de la tecnica instantanea en el dialogo; aplica su bono y gasta el Ki en ese momento.</li><li>Avanza de asalto normalmente: las mantenidas descuentan su Ki de mantenimiento solas y las sostenidas restan duracion hasta agotarse.</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Gasto de Ki concentrado y de la Reserva al Usar/Activar:</strong> Lo dispara el boton: useTechnique/activateTechnique -&gt; _consumeConcentratedForTechnique resta el coste por caracteristica del concentrado y el kiActiveTotal de la Reserva 'Actual' (ABFActor.js:638-685).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Ki de mantenimiento de tecnicas activas, cada asalto:</strong> ABFCombat.nextRound -&gt; consumeActiveTechniquesKi descuenta kiMaintTotal de la Reserva cada asalto mientras este activa (ABFCombat.js:46). No hay que pulsar nada.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Duracion de las sostenidas y autodesactivacion:</strong> activateTechnique fija remaining (Menor 5 asaltos, Mayor ~20); cada asalto baja 1 y al llegar a 0 se desactiva sola (ABFActor.js:668-670; kiAccumulation.js:107-115).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Bono de combate de tecnicas ACTIVAS en ataque/defensa:</strong> activeTechniqueCombatBonuses suma el bono solo a la tirada mientras la tecnica este activa.</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Usar una tecnica INSTANTANEA en una tirada concreta:</strong> Casilla en el dialogo de ataque/defensa. Al marcarla y tirar, el dialogo llama a useTechnique y gasta el Ki.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Aviso si falta Ki concentrado o Reserva:</strong> Es PERMISIVO: avisa del deficit pero NO bloquea; descuenta hasta 0 (_spendKiReserve, ABFActor.js:617-635).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Reaplicar la misma tecnica el mismo asalto:</strong> Si ya se uso este asalto (freshTurn), volver a aplicarla es gratis hasta que pase el asalto (ABFActor.js:644).</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>Avisos al usar/activar ('Tecnica X usada (Ki N)', 'activada ... dura N asaltos', 'desactivada'). La Reserva 'Actual' y el 'Ki acu.' bajan. La tarjeta cambia de estado (Activa / Usando...). En combate, las casillas del dialogo muestran el bono (+At/+Dano o +bloqueo/+esquiva) y el Ki que costaran, con triangulo si no llega.</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>El gasto de Ki es SIEMPRE manual: el sistema no usa tus tecnicas solo. Solo el mantenimiento por asalto y la duracion de las sostenidas son automaticos. El gasto es permisivo: sin Ki suficiente te avisa pero aplica igual y deja Reserva/concentrado en 0. 'Desactivar' NO devuelve el Ki. Si una tecnica no tiene coste calculado (recien importada sin abrir el constructor), 'Usar' la rechaza. Retroceder un asalto reembolsa el mantenimiento de ese asalto.</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP14ZZZZZZ"
+    },
+    {
+      "sort": 850000,
+      "name": "Mistica: vision general y el grimorio por via",
+      "type": "text",
+      "_id": "abfGuiaP15ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">El centro de mando del lanzador y donde estan sus conjuros</span></div><p>La pestana Mistica reune todo lo magico: tu Zeon (energia magica), tus capacidades (ACT, Magia Innata, Proyeccion Magica), tu grimorio de conjuros y las listas de mantenidos y preparados. El grimorio organiza los conjuros en secciones plegables por via.</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>Ficha -&gt; pestana 'Mistica', con dos sub-pestanas: 'Principal' (ACT, Magia Innata, Proyeccion, Zeon, Regeneracion, Esferas, conjuros mantenidos/preparados) y 'Conjuros' (el grimorio completo, una seccion plegable por via con su recuento, p.ej. 'Fuego (7)').</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>Abre la pestana 'Mistica'. En 'Principal' revisa de un vistazo tu Zeon total/maximo, tu Zeon Acumulado, tu ACT y tu Magia Innata.</li><li>Pasa a 'Conjuros': pulsa la cabecera de una via para plegar/desplegar y el nombre de un conjuro para ver sus cuatro grados.</li><li>Edita en linea el nivel, la via, el tipo (ataque/defensa) y los costes de Zeon por grado.</li><li>Anade conjuros con el boton '+' del grimorio o arrastrandolos desde el compendio de magia del sistema.</li><li>Antes de jugar, deja preparado/mantenido lo que vayas a usar desde la columna derecha de 'Principal'.</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Calculo de Magia Innata a partir del ACT:</strong> Se deriva del ACT Final por tramos (ACT&lt;10=0; &lt;55=10; &lt;75=20; ...; 201+=90). No se edita la parte derivada (calculateInnateMagic.js; mutateMysticData.js:48).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Valores 'Final' (ACT, Proyeccion, Innata, Regeneracion):</strong> Las casillas 'Final' (gris) son de solo lectura: el sistema las recalcula aplicando penalizadores de 'toda accion'. Tu solo editas la casilla base.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Agrupacion del grimorio por via y orden por nivel:</strong> groupSpellsByVia reparte los conjuros por su campo 'via' (alfabetico, 'Sin via' al final) y los ordena por nivel dentro de cada via. El '(N)' de la cabecera se calcula solo.</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Rellenar las casillas base:</strong> El valor base de ACT, Magia Innata por via, Proyeccion, Zeon total y Regeneracion los introduces tu (o los importa el Excel al crear el personaje).</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Asignar la via de un conjuro:</strong> Eliges la via en su desplegable; al cambiarla, el conjuro salta de seccion. Sin via va al grupo 'Sin via'.</span></li><li><span class=\"abf-badge abf-mixto\">Mixto</span><span><strong>Sincronizacion con Esferas:</strong> Si usas el recuadro 'Esferas' y cambias el nivel de una via, el grimorio anade/quita en masa los conjuros de esa via segun el nivel (ABFActorSheet.js:317).</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>Una pantalla con muchos valores; los de dos casillas muestran 'base' (editable) y 'Final' (calculado, gris). Cambiar el ACT base actualiza al instante la Magia Innata y los Finales. El grimorio se ve como acordeones por via, cada conjuro con sus cuatro filas de grado y casillas editables de coste/Int/dano.</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>Distingue 'Zeon' (tu deposito total/reserva) de 'Acumulado' (lo concentrado y listo para gastar este turno): lanzar gasta del Acumulado. Si un conjuro no aparece donde esperas, revisa su via (los sin via caen en 'Sin via'). Cambiar el nivel de Esferas puede anadir o borrar conjuros del grimorio en masa.</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP15ZZZZZZ"
+    },
+    {
+      "sort": 860000,
+      "name": "Acumular Zeon (concentracion magica por asalto)",
+      "type": "text",
+      "_id": "abfGuiaP16ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">Reune energia turno a turno; parar la concentracion cuesta 10</span></div><p>Acumular Zeon es concentrar energia turno a turno para reunir lo suficiente y lanzar un conjuro. Cada asalto transfiere tu ACT desde la reserva total al 'Zeon Acumulado'.</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>Pestana Mistica -&gt; sub-pestana 'Principal' -&gt; recuadro 'Zeon'. Bajo el valor 'Acumulado' hay un boton 'Acumular zeon' (pasa a 'Acumulando zeon...' cuando esta activo).</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>Asegurate de estar en un combate activo (la concentracion avanza al pasar de asalto).</li><li>Pulsa 'Acumular zeon': aviso de activacion y, si tienes reserva, se concentra ya el primer ACT.</li><li>Avanza el combate al siguiente asalto (boton 'Siguiente ronda'): cada ronda el sistema suma tu ACT al Acumulado, restandolo de la reserva.</li><li>Cuando el Acumulado llegue al coste del conjuro, lanzalo desde el grimorio.</li><li>Cuando dejes de concentrar, vuelve a pulsar el boton para detener la acumulacion.</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Avance de la concentracion por asalto:</strong> Mientras esta activo, al pasar de ronda el sistema ejecuta accumulateZeon() y mueve ACT Final de reserva -&gt; acumulado (ABFActor.js:875-891; ABFCombat.js:48). Solo dentro de un combate.</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Activar/parar la acumulacion:</strong> Es un boton que tu pulsas. Al activarlo concentra el primer asalto inmediatamente (toggleAccumulateZeon, ABFActor.js:916).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Cantidad que se concentra cada asalto:</strong> Exactamente tu ACT Final, nunca mas de lo que quede en la reserva (drawn = min(ACT, reserva); ABFActor.js:883). El ACT Final ya lleva los penalizadores situacionales.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Penalizacion por dejar de acumular:</strong> Al PARAR, lo concentrado vuelve a la reserva PERDIENDO 10 puntos (RAW Core Exxet). Si tenias 0 acumulado no pierdes nada (ABFActor.js:934-945).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Retroceder ronda:</strong> Si el DJ pulsa 'Ronda anterior', el ultimo paso de acumulacion se deshace (revertAccumulateZeon, ABFActor.js:894).</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>Avisos: 'Acumulacion de zeon activada (+X concentrado)' al empezar; el boton cambia a 'Acumulando zeon...'. Cada ronda sube 'Acumulado' y baja 'Zeon'. Al parar: 'Acumulacion de zeon detenida (devueltos X a reserva, -10)'.</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>La acumulacion automatica SOLO progresa dentro de un combate al pasar de ronda; fuera de combate el boton solo hace el primer paso. Ojo a la penalizacion: parar la concentracion cuesta 10 puntos de zeon, asi que no la actives y desactives a la ligera.</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP16ZZZZZZ"
+    },
+    {
+      "sort": 870000,
+      "name": "Lanzar un conjuro (botones de grado)",
+      "type": "text",
+      "_id": "abfGuiaP17ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">Pulsa el grado para lanzar; con Shift se abre el dialogo completo</span></div><p>Cada conjuro tiene cuatro grados (Base, Intermedio, Avanzado, Arcano). Pulsar el grado LANZA el conjuro a ese nivel: si es ofensivo genera una tirada de ataque magico; si es defensivo crea un escudo sobrenatural. El sistema elige y gasta el zeon solo.</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>Pestana Mistica -&gt; sub-pestana 'Conjuros'. Cada conjuro es una fila desplegable; dentro, cada grado tiene un boton con su nombre ('Base', 'Intermedio'...) a la izquierda de sus datos (coste de Zeon, Int. requerida...).</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>Despliega la via y el conjuro que quieras lanzar y comprueba el coste de Zeon del grado.</li><li>Pulsa el boton del grado (p.ej. 'Base') para un lanzamiento rapido.</li><li>Ofensivo rapido: aparece una ventanita de modificador; escribe el modificador (o 0) y acepta. El sistema tira el ataque y genera la tarjeta de combate.</li><li>Defensivo: al pulsar el grado se crea el escudo sobrenatural con los puntos del grado, tras gastar el zeon.</li><li>Si mantienes Shift al pulsar el grado, se abre el dialogo completo (ataque: elegir objetivos y bonos de dano; defensa: bono a la formula del escudo).</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Eleccion de fuente de Zeon (innato &gt; preparado &gt; acumulado):</strong> tryCastSpell aplica la prioridad RAW sin preguntar: si tu Magia Innata de la via cubre el coste sale GRATIS; si no, si lo tienes Preparado a ese grado consume la preparacion; si no, descuenta del Zeon Acumulado (ABFActor.js:555-583).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Gasto del Zeon al lanzar:</strong> Ocurre solo al pulsar el grado, dentro de tryCastSpell -&gt; mysticCast (ABFActor.js:511-524). No restas nada a mano.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Tirada de ataque magico:</strong> En ofensivos tira 1d100 abierto + Proyeccion ofensiva Final + tu modificador, con dado de maestria si la Proyeccion base es &gt;=200 (castSpellGrade.js:101-109).</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Modificador de la tirada:</strong> En el lanzamiento rapido ofensivo se pide en una ventanita (openModDialog). Puedes dejarlo en 0.</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Abrir el dialogo avanzado:</strong> Solo si pulsas el grado con Shift. Sin Shift es lanzamiento rapido (castSpellGrade.js:40, 76).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Crear el escudo (conjuros defensivos):</strong> Si el conjuro es de defensa, al pulsar el grado se crea un Escudo Sobrenatural con los puntos del grado, tras gastar el zeon (castSpellGrade.js:47-72).</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>Un aviso tipo 'Conjuro «X»: N zeon (acumulado/preparado/innato)' indicando cuanto y de donde se pago. En ofensivo, una tirada en el chat y una tarjeta de ataque con botones para que el objetivo se defienda/resista. En defensivo, un aviso 'Escudo «X» creado (N puntos)'.</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>El boton de grado es a la vez 'lanzar' y la etiqueta del grado: cuidado al pulsar dentro del grimorio. El lanzamiento rapido (sin Shift) ofensivo NO te deja elegir objetivos en una ventana: usa los que tengas seleccionados (targeted) en la escena. Para elegir objetivos comodamente, lanza con Shift.</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP17ZZZZZZ"
+    },
+    {
+      "sort": 880000,
+      "name": "Conjuros Mantenidos y Preparados",
+      "type": "text",
+      "_id": "abfGuiaP18ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">Dos listas: lo que sostienes (cuesta cada turno) y lo que dejas cargado</span></div><p>Mantenidos son conjuros que sostienes activos y cuestan Zeon cada turno; Preparados son conjuros que ya dejaste 'cargados' para lanzarlos sin acumular en el momento. Dos listas distintas con propositos distintos.</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>Pestana Mistica -&gt; 'Principal', columna derecha: recuadro 'Conjuros mantenidos' (con su 'Total por turno') y recuadro 'Conjuros preparados' (con casilla 'Zeon Acm' y casilla 'Prep?'). Cada uno tiene su boton '+' para anadir.</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>Para mantener: pulsa el '+' de 'Conjuros mantenidos', elige conjuro y grado, y acepta. Aparece con su coste por turno.</li><li>Mira la linea 'Total por turno': es el Zeon que se te ira cada asalto por todo lo mantenido.</li><li>Para preparar: pulsa el '+' de 'Conjuros preparados', elige conjuro y grado.</li><li>Marca la casilla 'Prep?' del conjuro preparado cuando este realmente listo: eso fija su Zeon acumulado al maximo.</li><li>En combate, lanzar ese conjuro consumira la preparacion en vez de tu Zeon Acumulado.</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Gasto de Zeon por mantenimiento, cada asalto:</strong> Al pasar de ronda en combate, consumeMaintainedZeon() resta del Zeon total la suma de lo mantenido (ABFActor.js:592-605; ABFCombat.js:43).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Suma 'Total por turno':</strong> Se calcula sumando el coste de todos los conjuros mantenidos (mutateMysticData.js:157-162). Solo lectura.</span></li><li><span class=\"abf-badge abf-mixto\">Mixto</span><span><strong>Carga del Zeon del conjuro preparado:</strong> Tu marcas 'Prep?'; al marcarla el sistema pone su Zeon acumulado al maximo automaticamente (mutatePreparedSpells, mutateMysticData.js:214-224).</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Anadir/quitar de las listas:</strong> Anades con el '+' (eligiendo conjuro y grado) y quitas con el menu contextual de la fila.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Consumo del conjuro preparado al lanzar:</strong> Si lanzas un conjuro que tienes preparado a ese grado, la preparacion se gasta (deletePreparedSpell) en vez del zeon acumulado (ABFActor.js:519-520).</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>En 'Mantenidos', cada conjuro con su coste y un 'Total por turno: N Zeon'; en combate tu Zeon total baja solo cada ronda. En 'Preparados', al marcar 'Prep?' la casilla de Zeon acumulado se llena sola; al lanzar el preparado desaparece de la lista.</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>El mantenimiento solo se cobra dentro de un combate al pasar de ronda, no por tiempo de juego libre. La Regeneracion de Zeon (recuadro aparte) ya descuenta el mantenimiento diario y por eso puede salir en negativo. Un conjuro preparado solo cuenta como tal si 'Prep?' esta marcada.</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP18ZZZZZZ"
+    },
+    {
+      "sort": 890000,
+      "name": "Resistencia Magica (boton Resistir) y lanzamiento permisivo",
+      "type": "text",
+      "_id": "abfGuiaP19ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">La defensa del blanco frente a la magia, y por que el sistema nunca te frena</span></div><p>Dos cosas del flujo magico: (1) Resistencia: cuando un conjuro obliga a una Resistencia (RM/RF/RV/RE/RP), el objetivo intenta resistir tirando su Resistencia contra la dificultad; (2) Lanzamiento permisivo: el sistema NUNCA te impide lanzar aunque falte zeon, no lo tengas preparado o te falte Inteligencia: avisa pero deja decidir.</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>RESISTIR: en la tarjeta de chat del ataque magico aparece el boton 'Resistir' (solo si el conjuro fuerza resistencia) y una linea 'Fuerza Resistencia: RM N' (attack-data.hbs:57-66). PERMISIVO: no es un boton, son las notificaciones amarillas que salen al lanzar.</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>RESISTIR: cuando recibas un ataque magico, si su tarjeta pide resistencia veras 'Resistir' y la linea 'Fuerza Resistencia'.</li><li>Selecciona en la escena el token de tu personaje (o ten un solo objetivo asignado) y pulsa 'Resistir'.</li><li>Escribe un bono/penalizador si procede (o deja 0), acepta y lee el resultado en el chat.</li><li>PERMISIVO: lanza un conjuro como siempre; si algo no cuadra leeras un aviso amarillo, pero el lanzamiento se realiza igual.</li><li>Decide con el DJ si ese lanzamiento es valido en la ficcion: el sistema no lo frena por ti.</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Tipo y dificultad de la resistencia:</strong> Se leen del conjuro (campo resistanceEffect o, si falta, parseando la descripcion en busca de '120 RM'...). El boton solo sale si hay resistencia (resistanceEffectCheck.js).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Tirada de resistencia:</strong> Tira 1d100 PLANO (sin tirada abierta) + tu Resistencia del tipo + tu modificador y compara con la dificultad (resistActionHandler.js:62-67).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>100 natural = exito automatico:</strong> Si el dado saca 100 natural, resistes si o si (resistActionHandler.js:67).</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Pulsar Resistir y elegir token + modificador:</strong> Tu pulsas el boton, seleccionas el token y, en una ventana, pones el modificador (cerrarla cancela).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Bloqueo del lanzamiento por falta de recursos:</strong> NO bloquea NUNCA: evaluateCast() devuelve siempre false a proposito (modo permisivo). El Zeon Acumulado puede quedar en 0 pero nunca negativo (ABFActor.js:485-502, 531-543).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Avisos (zeon insuficiente / Inteligencia insuficiente):</strong> Si pagas con acumulado y no llega, o tu INT no alcanza la requerida del grado, avisa pero igualmente lanza (ABFActor.js:498, 561-569).</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Decision final sobre si el lanzamiento 'cuenta':</strong> Eres tu (o el DJ) quien decide a la vista del aviso; el sistema solo informa.</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>RESISTIR: una tirada 'Control de RM (dificultad N)' y un resultado 'Resistido (RM)...' o 'Resistencia fallada (RM)... (nivel de fracaso X)'. PERMISIVO: notificaciones amarillas ('No cuentas con suficiente Zeon Acumulado', 'No tienes este Conjuro Preparado', 'Inteligencia insuficiente...') seguidas del lanzamiento normal y su aviso azul de gasto.</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>La tirada de resistencia NO es abierta (no explota con 90+): solo el 100 natural garantiza exito. El boton 'Resistir' solo aparece si el conjuro fuerza una resistencia (muchos de mejora o utilidad no lo muestran). Como el lanzamiento nunca bloquea, es facil 'lanzar' sin recursos sin darte cuenta: acostumbrate a leer los avisos amarillos.</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP19ZZZZZZ"
+    },
+    {
+      "sort": 900000,
+      "name": "Pifia y Abierta: coloreado del chat y boton 'Tirar pifia'",
+      "type": "text",
+      "_id": "abfGuiaP20ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">El chat te avisa en rojo/verde; el grado de pifia solo informa</span></div><p>Cuando tiras, el mensaje de chat te avisa de un vistazo si has sacado una Pifia (tirada muy baja, borde rojo) o una Abierta (tirada alta que 'explota' y se vuelve a tirar, borde verde). Si pifias en una tirada donde importa el grado (ataque, defensa, habilidad, magia, psiquica), aparece ademas un boton 'Tirar pifia' que solo INFORMA de lo grave que fue (el efecto lo decide el DJ).</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>En el log de chat, sobre el propio mensaje: el sistema le pone borde de color (rojo=pifia, verde=abierta) y colorea el total. El boton 'Tirar pifia' aparece debajo de ese mensaje. Los rangos se editan en la FICHA -&gt; pestana de Ajustes (engranaje) -&gt; 'Opciones avanzadas'.</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>Tira normalmente desde la ficha (una habilidad, un ataque, una defensa, un conjuro, un poder).</li><li>Mira el mensaje: borde ROJO y total en rojo = pifia; borde VERDE y total en verde = Abierta (ha explotado y sumado tiradas extra).</li><li>Si ves un boton rojo 'Tirar pifia', pulsalo cuando quieras saber cuanto de mal salio: tira 1d100 y publica 'Nivel de Pifia: X' para todos.</li><li>Espera a que el DJ interprete ese nivel (el sistema no aplica el efecto solo).</li><li>Para cambiar los rangos: ficha -&gt; Ajustes (engranaje) -&gt; 'Opciones avanzadas' -&gt; edita 'Rango de Abierta' y 'Rango de Pifia' (y, si quieres, marca 'Abierta con dobles').</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Colorear el mensaje (rojo pifia / verde abierta):</strong> El hook preCreateChatMessage recorre los dados: r.failure -&gt; 'fumble', r.exploded -&gt; 'open' (animabf.mjs:911-922); luego anade la clase CSS al renderizar (animabf.mjs:418-420).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Detectar la Abierta y volver a tirar (la explosion):</strong> Las tiradas de habilidad/ataque/defensa/magia/psiquica usan el motor 'exploder': al igualar/superar el Rango de Abierta tira un 1d100 extra y lo encadena (ABFExploderRoll.js:64-98). Sale ya con el total sumado.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Mostrar el boton 'Tirar pifia':</strong> Aparece solo y solo cuando procede (pifia en un tipo donde aplica el grado, no en turno). Marca fumble.pending (animabf.mjs:923-925). Solo lo ve el DJ o el propietario que pifio (animabf.mjs:428-432).</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Tirar el Nivel de Pifia (pulsar el boton):</strong> Decision deliberada: tira un 1d100 plano y publica 'Nivel de Pifia: X' para todos. El boton no se reutiliza (fumbleRollActionHandler.js:37-44).</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Aplicar el efecto de la pifia:</strong> El sistema NO aplica nada: solo informa del numero. La interpretacion (tabla de pifias del manual) la hace el DJ.</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Rangos de Pifia / Abierta y 'Abierta con dobles':</strong> Editables POR PERSONAJE en la ficha (Rango de Abierta por defecto 90, Rango de Pifia 3). 'Abierta con dobles' es una casilla opcional por personaje (advancedSettings.hbs). NO hay ajuste global de mundo para esto.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Penalizador de pifia en la Iniciativa/Turno:</strong> El turno es la excepcion: si la iniciativa pifia, el sistema aplica el penalizador numerico solo (-126 con un 1, -102 con un 2...) sin boton ni tirada aparte (ABFInitiativeRoll.js:30-39).</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>La tirada en el chat con borde de color y total resaltado (rojo pifia, verde abierta). En las tiradas que lo permiten, ademas un boton rojo 'Tirar pifia'; al pulsarlo se publica un segundo mensaje para toda la mesa 'Pifia — Nivel de Pifia: X'. Ese mensaje no cambia tu ficha ni resta vida: es informativo. El boton desaparece tras usarse.</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>Las RESISTENCIAS (RF/RE/RV/RM/RP) usan un 1d100 plano sin motor de abierta/pifia: nunca se colorean ni ofrecen boton. El TURNO se colorea de rojo si pifia pero NUNCA muestra el boton (el penalizador se aplica solo). La MAESTRIA reduce el Rango de Pifia en 1 (de 3 a 2): es mas dificil pifiar. El 'Nivel de Pifia' es un 1d100 plano (nunca puede pifiar ni abrir). Solo el propietario que pifio (o el DJ) ve el boton.</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP20ZZZZZZ"
+    },
+    {
+      "sort": 910000,
+      "name": "Atajos de teclado y paneles rapidos (Ctrl+1, Ctrl+M, Ctrl+2)",
+      "type": "text",
+      "_id": "abfGuiaP21ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">Calculadora de dano, Maniobras y Habilidades secundarias sin abrir la ficha</span></div><p>Tres combinaciones de teclas que abren utilidades sin abrir la ficha: Ctrl+1 la Calculadora de dano, Ctrl+M el panel de Maniobras del token y Ctrl+2 el panel de Habilidades secundarias (con buscador). Son los UNICOS tres atajos que registra el sistema.</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>Funcionan sobre el lienzo (atajos globales de Foundry), no dentro de una ventana. Ctrl+M abre 'Maniobras - &lt;tu token&gt;' (rejilla de botones, sin buscador); Ctrl+2 abre 'Habilidades secundarias - &lt;tu token&gt;' (con caja 'Buscar habilidad...'). Puedes reasignarlos en Configuracion -&gt; Configurar controles -&gt; seccion Anima Beyond Fantasy.</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>Haz un clic en el mapa primero (para que el navegador no robe el Ctrl+1/Ctrl+2) y selecciona tu token.</li><li>Pulsa Ctrl+1 para la Calculadora de dano (no necesita token seleccionado).</li><li>Pulsa Ctrl+M para las Maniobras: si la maniobra necesita objetivo, selecciona antes el token enemigo; luego haz clic en la maniobra (la ventana se cierra y arranca el flujo).</li><li>Pulsa Ctrl+2 para las Habilidades secundarias: el cursor ya esta en el buscador; escribe para filtrar y pulsa Intro para tirar la primera coincidencia, o haz clic en la que quieras.</li><li>Si no tienes token seleccionado, el sistema usa el de tu personaje asignado; si tampoco lo encuentra, te avisa.</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Ctrl+1 = Calculadora de dano:</strong> Atajo 'Digit1'+Control que lanza ABFMacros.damageCalculator() (registerKeyBindings.js:4-19). No depende del token.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Ctrl+M = Panel de maniobras / Ctrl+2 = Habilidades secundarias:</strong> 'KeyM'+Control y 'Digit2'+Control llaman a game.animabf.openManeuvers() / openSecondaryAbilities() (registerKeyBindings.js:21-53).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>A que token afecta el atajo:</strong> Resuelve en cascada: token pasado &gt; token controlado &gt; primer token activo de tu personaje asignado (openManeuversPanel.js:16-22; openSecondaryAbilitiesPanel.js:16-22).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Lista de maniobras del panel y marca '(Maestria)':</strong> Combina las canonicas con las personalizadas del actor sin duplicar (alfabetico); marca '(Maestria)' las que la exigen, pero te deja pulsarlas igual (openManeuversPanel.js:32-68).</span></li><li><span class=\"abf-badge abf-mixto\">Mixto</span><span><strong>Buscador del panel de habilidades (filtrado + Intro):</strong> Tu escribes; el filtrado oculta grupos sin coincidencias y el foco se pone solo en la caja; Intro tira la primera visible (openSecondaryAbilitiesPanel.js:130-153). El panel de Maniobras NO tiene buscador.</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Lanzar la maniobra / tirar la habilidad:</strong> Tu eliges con un clic (o Intro); reutiliza el mismo flujo que la ficha (executeCombatManeuver / actor.sheet._onRoll), que abre el dialogo de modificador antes de tirar.</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Reasignar las teclas:</strong> Las tres son 'editable' y no estan restringidas a GM: cualquier jugador puede cambiarlas en Configurar controles.</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>Ctrl+1 abre la calculadora. Ctrl+M abre una rejilla de ~460px con botones de maniobras (icono+nombre) y 'Cerrar'. Ctrl+2 abre ~500px con buscador y habilidades por categoria (nombre a la izquierda, valor a la derecha). Si no hay token valido, aviso amarillo. Si el actor no tiene maniobras/habilidades, lo indica.</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>Son atajos con Ctrl: en muchos navegadores Ctrl+1/Ctrl+2 cambian de pestana, asi que pon el foco en Foundry antes. El panel de Maniobras NO tiene buscador (te desplazas a ojo) y, si la maniobra necesita objetivo, lanzarla sin seleccionarlo arranca el flujo igual pero sin diana. El buscador de habilidades compara en minusculas: escribe en minusculas para mas seguridad.</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP21ZZZZZZ"
+    },
+    {
+      "sort": 920000,
+      "name": "Macros: paneles en la hotbar y arrastrar un arma para atacar",
+      "type": "text",
+      "_id": "abfGuiaP22ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">Botones en la barra para abrir paneles o atacar directamente con un arma</span></div><p>Dos formas de tener combate a un clic en la barra de macros: (1) las macros de compendio 'Maniobras rapidas' y 'Habilidades secundarias' (hacen lo mismo que Ctrl+M y Ctrl+2); (2) arrastrar un arma de la ficha a la barra crea una macro 'Atacar: &lt;arma&gt;' que abre directamente el dialogo de ataque con esa arma.</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>Las macros de panel estan en el compendio de Macros del sistema ('Maniobras rapidas', icono de puno; 'Habilidades secundarias', pergamino azul). La macro de ataque se genera al soltar un arma desde la pestana Combate/Equipo de la ficha en un hueco de la barra de macros inferior.</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>PANELES: abre el compendio de Macros del sistema y arrastra 'Maniobras rapidas' y/o 'Habilidades secundarias' a la barra; selecciona tu token y pulsa el boton.</li><li>ATAQUE: abre la ficha del personaje y arrastra el arma a un hueco libre de la barra de macros.</li><li>Se crea sola la macro 'Atacar: &lt;arma&gt;' con el icono del arma.</li><li>Para atacar: selecciona el token atacante en el mapa, marca los objetivos (target) si quieres y pulsa la macro.</li><li>Se abre el dialogo de ataque con esa arma ya elegida; ajustas y lanzas.</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Que hacen las macros de panel:</strong> Scripts de una linea que llaman a game.animabf.openManeuvers()/openSecondaryAbilities(); si el sistema no esta listo avisan (maniobras-rapidas.json:7, habilidades-secundarias.json:7).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Crear la macro de ataque al soltar el arma:</strong> El hook hotbarDrop detecta que es un arma y fuerza el creador 'weapon.attack' aunque el item no traiga el campo, evitando que Foundry cree una macro que solo abre la ficha (animabf.mjs:1094-1117). Solo aplica a armas que pertenecen a un actor.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Reutilizar macro existente / nombre e icono:</strong> Si ya existe una macro de ataque para ese actor+arma la reaprovecha; se nombra 'Atacar: &lt;arma&gt;' y toma su icono (weaponAttack.js:18-38).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Token atacante al ejecutar:</strong> Usa el token controlado de ese actor o, si no, su primer token activo; si no hay ninguno avisa 'No attacker token found.' (weaponAttack.js:48-54).</span></li><li><span class=\"abf-badge abf-mixto\">Mixto</span><span><strong>Objetivos del ataque:</strong> El ataque toma una 'foto' de tus objetivos seleccionados en ese momento (getSnapshotTargets); marcarlos lo haces tu antes de pulsar la macro.</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Colocar las macros / lanzar el ataque:</strong> Tu arrastras las macros a la hotbar y pulsas la macro y confirmas en el dialogo; el sistema solo prepara y abre.</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>Botones en la barra: los de panel abren el mismo panel flotante que los atajos; 'Atacar: &lt;arma&gt;' abre el dialogo de ataque de esa arma (no la ficha del arma). Si pulsas una macro de panel antes de que cargue el sistema, aviso 'Sistema Anima Beyond Fantasy no inicializado.'; si no hay token atacante, 'No attacker token found.'</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>La macro de ataque solo funciona con armas que pertenecen a un actor: arrastrar un arma 'suelta' del compendio no la genera. Queda ligada a ESE actor y ESA arma (por UUID): si la usa otro jugador con otro personaje, seguira atacando con el arma del actor original. Selecciona el token correcto antes de pulsar.</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP22ZZZZZZ"
+    },
+    {
+      "sort": 930000,
+      "name": "Armas en mano (mano habil/torpe, desarmado, rodela) y el Turno",
+      "type": "text",
+      "_id": "abfGuiaP23ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">Dile al sistema con que mano empunas cada arma: de ahi sale tu Iniciativa</span></div><p>Panel que muestra todas tus armas y escudos equipados y te deja decir con que mano empunas cada uno (habil o torpe). Es lo que el sistema usa para calcular tu Turno (Iniciativa) de combate.</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>Ficha -&gt; pestana 'Combate' -&gt; sub-pestana 'Combate' (la primera, frente a 'Maniobras'). El panel 'Armas en mano' aparece arriba del bloque de combate.</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>Primero equipa el arma/escudo: en la lista de Armas marca su casilla 'Equipada' (solo lo equipado entra en este panel).</li><li>Abre Combate -&gt; Combate y localiza 'Armas en mano' (columnas 'Mano habil' y 'Mano torpe').</li><li>Para cada arma usa su desplegable y elige 'Mano habil', 'Mano torpe' o 'Sin asignar'. Esa eleccion es la que cuenta para el Turno.</li><li>Un arma a dos manos asignala a una sola mano: el sistema ya entiende que ocupa las dos.</li><li>Para pelear sin armas (o con el perfil de Artes Marciales) deja ambas manos vacias: el bloque 'Combate desarmado' marcara 'en uso'. La rodela va en 'Se lleva sin ocupar mano' con su propia casilla.</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Asignar cada arma a mano habil/torpe:</strong> Lo eliges tu en el desplegable (Sin asignar / Mano habil / Mano torpe). El sistema NO reparte las manos solo; el handSlot es la 'fuente unica' del calculo (getCombatHandWeapons.js:34-45).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Contador 'Manos usadas: X / 2':</strong> Se recalcula solo; un arma a dos manos cuenta como 2 (ABFActorSheet.js:81). Pasar de 2 se resalta como aviso pero NO se bloquea.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Arma a dos manos ocupa ambas manos:</strong> Si la mano habil lleva un arma a dos manos, el sistema la cuenta sola e ignora la otra mano para el Turno (getCombatHandWeapons.js:41-42).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Calculo del Turno (Iniciativa) segun las armas en mano:</strong> mutateInitiative.js: sin armas usa el Turno del Desarmado/Artes Marciales; con 1 arma suma su iniciativa; con 2 usa la menor y resta -10 (o -20 si una tiene iniciativa base negativa) cuando son del mismo tamano (mutateInitiative.js:73-104).</span></li><li><span class=\"abf-badge abf-mixto\">Mixto</span><span><strong>Penalizador de Turno por escudo:</strong> Automatico en el calculo, pero depende de como lo lleves: la rodela penaliza solo por estar EQUIPADA aunque no la asignes; cualquier otro escudo penaliza solo si lo asignas a una mano (getCombatHandWeapons.js:53-59).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Aviso y 'desarmado en uso':</strong> Al marcar/desmarcar 'Equipada' sale una notificacion; el desarmado se marca 'en uso' cuando no hay arma en mano habil ni torpe y tienes un arma de cuerpo entero equipada (ABFActorSheet.js:90-91, 516-525).</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>El panel se reorganiza al instante en columnas Mano habil / Mano torpe, mas 'Sin asignar', 'Combate desarmado' y 'Se lleva sin ocupar mano' (rodela). Cada arma muestra su iniciativa y etiquetas (2 manos / Escudo / A distancia). El contador 'Manos usadas: X / 2' se actualiza y tu Turno cambia en la ficha al cambiar las asignaciones.</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>El arma debe estar EQUIPADA para aparecer y contar; algo equipado pero 'Sin asignar' NO influye en el Turno. El perfil 'Artes Marciales' y el 'Desarmado' no se asignan a mano (van al bloque desarmado). La rodela penaliza el Turno solo por equiparla; el resto de escudos solo si los pones en una mano. Pasar de 2 manos se resalta pero no se bloquea: es responsabilidad tuya.</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP23ZZZZZZ"
+    },
+    {
+      "sort": 940000,
+      "name": "Limite de caracteristicas por Inhumanidad / Zen",
+      "type": "text",
+      "_id": "abfGuiaP24ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">Suben el tope de tus fisicas: el VALOR se capa pero el BONO es siempre real</span></div><p>Dos casillas que elevan el tope de tus caracteristicas fisicas (Fuerza, Agilidad, Destreza, Constitucion). Sin nada el valor maximo es 10; con Inhumanidad sube a 13; con Zen llega a 20.</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>Ficha -&gt; pestana 'Ajustes' (icono de engranaje, arriba a la derecha) -&gt; grupo 'Caracteristicas avanzadas'. Ahi estan las casillas 'Zen' e 'Inhumano' (advancedCharacteristics.hbs:11-26).</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>Abre la ficha y entra en la pestana de Ajustes (engranaje).</li><li>En 'Caracteristicas avanzadas' marca 'Inhumano' o 'Zen' segun tu personaje.</li><li>Vuelve a la pestana principal: el valor mostrado de tus fisicas ya respeta el nuevo tope (10 / 13 / 20).</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Marcar Inhumano / Zen:</strong> Casillas que pulsas tu (o que rellena la importacion de Excel desde sus columnas, parseExcelToActor.js:313-319). No se activan solas.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Tope del VALOR de la caracteristica fisica:</strong> El sistema capa el 'final' a 10/13/20 al cambiar la casilla (characteristicLimits.js:17-22; Characteristic.js _computeFinal). Si tienes ambas, Zen prevalece. Solo afecta a FUE/AGI/DES/CON; las psiquicas siempre llegan a 20.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Bonificador (modificador) de la caracteristica:</strong> El BONO usa SIEMPRE tu valor real (base+especial, hasta 20), no el capado: aunque tu Fuerza se muestre como 10, si realmente es 16 pegas como un 16 (Characteristic.js _computeMod).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Recalculo al cambiar la casilla o por efecto 'El Despertar':</strong> El valor se reajusta al activar/desactivar la casilla, incluso si la cambia un Active Effect (Characteristic.js declara inhuman/zen como dependencias del 'final').</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>El numero de la caracteristica deja de poder subir mas alla del tope (10/13/20), lo que limita lo derivado de ese VALOR: peso que cargas, tipo de movimiento, regeneracion, requisito de fuerza del arma, Puntos/Acumulacion de Ki... En cambio el bono al dano, resistencias y habilidades sigue calculandose con tu valor real.</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>Clave: el VALOR se capa pero el BONO es siempre real, asi que un personaje legal (con su casilla correcta) no nota diferencia. Solo se ve en buffs que pasan del tope o en fichas mal configuradas (una fisica base &gt;10 sin marcar Inhumano se MOSTRARA como 10 pero seguira dando el bono de su valor real). Hay Active Effects de muestra antiguos (effect_Mod_DES/AGI/CON/FUE) desactivados: NO los actives, recortarian el bono.</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP24ZZZZZZ"
+    },
+    {
+      "sort": 950000,
+      "name": "Importar personaje desde Excel",
+      "type": "text",
+      "_id": "abfGuiaP25ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">Vuelca la hoja oficial de Anima al actor (OJO: reemplaza TODO)</span></div><p>Opcion para volcar una ficha hecha en la hoja de calculo oficial de Anima directamente al actor: caracteristicas, habilidades, combate, magia, psiquica, Ki, artes marciales, equipo y conjuros.</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>Barra lateral de Foundry, pestana 'Actores'. Clic derecho sobre el actor -&gt; 'Import from Excel' (icono de archivo). Solo aparece si eres dueno (OWNER) del actor.</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>En la barra de Actores, clic derecho sobre el personaje -&gt; 'Import from Excel'.</li><li>En el dialogo 'Importar Datos', pulsa el selector y elige tu hoja (.xlsm/.xls/.xlsx).</li><li>Lee el aviso: la operacion REEMPLAZA todo el contenido actual del actor (incluido lo anadido a mano) y no se puede deshacer.</li><li>Pulsa 'Import' para confirmar (o 'Cancel' para salir).</li><li>Espera unos segundos: la ficha se rellena y se vuelve a abrir ya actualizada.</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Lanzar la importacion y elegir el archivo:</strong> Tu abres el menu, seleccionas el .xlsm y confirmas con 'Import' (ABFActorDirectory.js:50-89). El archivo debe contener la hoja interna 'NamedRangesList'.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Borrado previo del actor (RE-IMPORTAR REEMPLAZA TODO):</strong> Antes de volcar, borra TODOS los objetos y vacia las listas internas para no duplicar: clearForReimport (ABFActor.js:1133-1148). Re-importar pisa tambien lo que hubieras anadido a mano.</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Volcado de caracteristicas, habilidades, combate, magia, psiquica:</strong> Todo el mapeo y la creacion de objetos lo hace el sistema (parseExcelToActor.js): primarias/secundarias, resistencias, conjuros, disciplinas, sellos, dinero...</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Casillas Inhumanidad / Zen y perfil Artes Marciales:</strong> Las casillas se rellenan desde el Excel (parseExcelToActor.js:313-319); se anade siempre 'Desarmado' y, si el PJ tiene artes, el perfil 'Artes Marciales' con sus bonos (parseExcelToActor.js:992-1024).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Comprobacion de version del Excel:</strong> Solo acepta versiones compatibles (8.6.4 y 8.7.0); si no coincide, avisa y aborta sin tocar el actor (parseExcelToActor.js:28-43).</span></li><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Asignacion de armas a mano habil/torpe tras importar:</strong> La importacion equipa/crea las armas pero NO decide con que mano las empunas; eso lo ajustas tu en 'Armas en mano'.</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>Tras confirmar, la ficha queda completamente rellena desde el Excel y se reabre sola. Veras notificaciones de error si el archivo no es valido o la version no es compatible. Lo que tuvieras a mano en el actor habra desaparecido, sustituido por lo del Excel.</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>RE-IMPORTAR es destructivo: reemplaza TODO el contenido del actor, incluido lo anadido manualmente, y no se puede deshacer (es el texto literal del aviso). Conserva el actor en si (id, token, permisos): solo cambia su contenido. Necesitas ser dueno del actor. El Excel debe ser version 8.6.4 u 8.7.0 y conservar su hoja 'NamedRangesList'.</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP25ZZZZZZ"
+    },
+    {
+      "sort": 960000,
+      "name": "Tema de color: Claro (Pergamino) / Oscuro (Carbon)",
+      "type": "text",
+      "_id": "abfGuiaP26ZZZZZZ",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<div class=\"abf-changelog\"><div class=\"abf-cl-head\"><span class=\"abf-cl-tag\">Preferencia visual de cada jugador; no cambia reglas ni datos</span></div><p>Ajuste de aspecto de las fichas y ventanas del sistema: un tema claro tipo pergamino o uno oscuro tipo carbon. Es una preferencia personal de cada usuario.</p><p class=\"abf-cl-sub\">Dónde se usa</p><p>Menu de Foundry 'Configuracion' -&gt; 'Configurar ajustes' -&gt; seccion del sistema 'Anima Beyond Fantasy' -&gt; opcion 'Tema de color' (registerSettings.js:15-29, ajuste de cliente).</p><p class=\"abf-cl-sub\">Cómo se usa</p><ol class=\"abf-cl-steps\"><li>Abre la rueda de Configuracion de Foundry y entra en 'Configurar ajustes'.</li><li>Ve a la seccion del sistema Anima Beyond Fantasy.</li><li>Busca 'Tema de color' y elige 'Claro (Pergamino)' u 'Oscuro (Carbon)'.</li><li>El cambio se aplica al momento, sin recargar.</li></ol><p class=\"abf-cl-sub\">Automático o manual</p><ul class=\"abf-auto-list\"><li><span class=\"abf-badge abf-manual\">Manual</span><span><strong>Elegir claro u oscuro:</strong> Lo seleccionas tu en el desplegable. Por defecto es 'Claro (Pergamino)' (registerSettings.js:25).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Aplicar el tema a la interfaz:</strong> Al cambiarlo, el sistema anade/quita la clase 'abf-theme-dark' en el cuerpo de la pagina y recolorea al instante; al iniciar la partida se aplica solo segun tu preferencia guardada (registerSettings.js:26-28; animabf.mjs:106-110).</span></li><li><span class=\"abf-badge abf-auto\">Automático</span><span><strong>Alcance por usuario:</strong> Es un ajuste de cliente (scope 'client'): cada jugador tiene el suyo y no afecta a los demas ni a la partida (registerSettings.js:18).</span></li></ul><div class=\"abf-cl-note\"><strong>Qué verás &mdash; </strong>Las fichas, dialogos y ventanas del sistema cambian de paleta inmediatamente: pergamino claro o carbon oscuro. En el tema oscuro algunos elementos se reajustan para mantener el contraste (p.ej. el icono de Ajustes se invierte a blanco).</div><div class=\"abf-cl-note\"><strong>Ojo &mdash; </strong>Es preferencia personal y se guarda por usuario, asi que tu DJ y tu podeis verlo distinto sin problema. No requiere recargar. No cambia reglas ni datos, solo el aspecto.</div></div>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!abfNovedadesV300.abfGuiaP26ZZZZZZ"
+    }
+  ],
+  "folder": null,
+  "flags": {},
+  "ownership": {
+    "default": 0
+  },
+  "_id": "abfNovedadesV300",
+  "sort": 100000,
+  "_key": "!journal!abfNovedadesV300"
+}

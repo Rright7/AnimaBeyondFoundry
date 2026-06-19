@@ -305,7 +305,7 @@
   "anima.ui.inventoryItemsSection.title": "Inventario",
   "anima.ui.inventoryItemsSection.weight.title": "Peso (kg)",
   "anima.ui.importDataFromExcelHint1": "Puede importar los datos de este {documentType} desde un archivo de Excel.",
-  "anima.ui.importDataFromExcelHint2": "Esta operación actualizará los datos de {name} y no podrá deshacerse.",
+  "anima.ui.importDataFromExcelHint2": "Esta operación REEMPLAZA todo el contenido actual de {name} (incluidos los objetos añadidos a mano) por los datos del Excel, y no podrá deshacerse.",
   "anima.ui.importDataFromExcelTitle": "Importar Datos: {name}",
   "anima.ui.importDataFromExcelWarning": "Versión del Excel no compatible, por favor, intente usar una de las siguientes: ",
   "anima.ui.excelImporter.combatEquipment.notifSummary": "Equipo importado: {weapons} armas, {ammo} munición, {armors} armaduras.",

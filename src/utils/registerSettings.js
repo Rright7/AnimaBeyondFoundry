@@ -183,6 +183,14 @@ export const registerSettings = systemId => {
     default: null
   });
 
+  game.settings.register(systemId, ABFSettingsKeys.CHANGELOG_LAST_VERSION, {
+    name: 'Changelog Last Shown Version',
+    scope: 'world',
+    config: false,
+    type: String,
+    default: ''
+  });
+
   game.settings.register(systemId, ABFSettingsKeys.MODIFY_DICE_FORMULAS_PERMISSION, {
     name: 'modifyDiceFormulasPermission',
     scope: 'world',
