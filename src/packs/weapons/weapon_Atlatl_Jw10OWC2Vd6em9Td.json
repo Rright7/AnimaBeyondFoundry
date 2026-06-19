@@ -194,7 +194,9 @@
             "value": false
         },
         "qualities": {
-            "value": []
+            "value": [
+                "oneHand"
+            ]
         },
         "notes": {
             "value": ""

@@ -4,7 +4,11 @@ import {
   isRodela,
   isTwoHandedGrip,
   hasWeaponQuality,
-  manageabilityFromQualities
+  manageabilityFromQualities,
+  GRIP_QUALITY_SLUGS,
+  gripQualityForManageability,
+  manageabilityForGripQuality,
+  computeWeaponGripSync
 } from './getCombatHandWeapons.js';
 
 const w = ({
@@ -117,5 +121,78 @@ describe('hasWeaponQuality', () => {
   test('detecta la cualidad (case-insensitive)', () => {
     expect(hasWeaponQuality(w({ quals: ['noStrengthDouble'] }), 'nostrengthdouble')).toBe(true);
     expect(hasWeaponQuality(w({ quals: ['twoHanded'] }), 'noStrengthDouble')).toBe(false);
+  });
+});
+
+describe('mapeo agarre <-> manageabilityType', () => {
+  test('las tres cualidades de agarre', () => {
+    expect(GRIP_QUALITY_SLUGS).toEqual(['oneHand', 'twoHanded', 'oneOrTwoHanded']);
+  });
+  test('manageabilityType -> cualidad', () => {
+    expect(gripQualityForManageability('one_hand')).toBe('oneHand');
+    expect(gripQualityForManageability('two_hands')).toBe('twoHanded');
+    expect(gripQualityForManageability('one_or_two_hands')).toBe('oneOrTwoHanded');
+    expect(gripQualityForManageability('zzz')).toBeNull();
+  });
+  test('cualidad -> manageabilityType', () => {
+    expect(manageabilityForGripQuality('oneHand')).toBe('one_hand');
+    expect(manageabilityForGripQuality('twoHanded')).toBe('two_hands');
+    expect(manageabilityForGripQuality('oneOrTwoHanded')).toBe('one_or_two_hands');
+    expect(manageabilityForGripQuality('grappling')).toBeNull();
+  });
+});
+
+describe('computeWeaponGripSync', () => {
+  test('sin cambios -> parche vacio', () => {
+    expect(computeWeaponGripSync({ currentManage: 'one_hand', currentQualities: ['oneHand'] })).toEqual(
+      {}
+    );
+  });
+
+  test('cambia el selector -> sustituye la cualidad de agarre (quita la anterior)', () => {
+    expect(
+      computeWeaponGripSync({
+        currentManage: 'one_hand',
+        currentQualities: ['oneHand', 'grappling'],
+        changedManage: 'two_hands'
+      })
+    ).toEqual({ qualities: ['grappling', 'twoHanded'] });
+  });
+
+  test('cambia el selector en arma sin agarre previo -> añade la cualidad', () => {
+    expect(
+      computeWeaponGripSync({
+        currentManage: 'one_hand',
+        currentQualities: [],
+        changedManage: 'one_or_two_hands'
+      })
+    ).toEqual({ qualities: ['oneOrTwoHanded'] });
+  });
+
+  test('arrastrar una cualidad de agarre nueva -> exclusividad (deja la ultima) + sincroniza selector', () => {
+    expect(
+      computeWeaponGripSync({
+        currentManage: 'one_hand',
+        changedQualities: ['oneHand', 'grappling', 'twoHanded']
+      })
+    ).toEqual({ qualities: ['grappling', 'twoHanded'], manageabilityType: 'two_hands' });
+  });
+
+  test('qualities con un solo agarre que no cuadra con el selector -> sincroniza selector', () => {
+    expect(
+      computeWeaponGripSync({
+        currentManage: 'one_or_two_hands',
+        changedQualities: ['twoHanded']
+      })
+    ).toEqual({ manageabilityType: 'two_hands' });
+  });
+
+  test('qualities ya consistentes -> no toca el selector', () => {
+    expect(
+      computeWeaponGripSync({
+        currentManage: 'one_hand',
+        changedQualities: ['oneHand', 'throwable']
+      })
+    ).toEqual({});
   });
 });

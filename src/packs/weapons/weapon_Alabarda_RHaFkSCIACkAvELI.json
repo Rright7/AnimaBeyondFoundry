@@ -194,7 +194,7 @@
         },
         "qualities": {
             "value": [
-                "twoHanded"
+                "oneOrTwoHanded"
             ]
         },
         "notes": {

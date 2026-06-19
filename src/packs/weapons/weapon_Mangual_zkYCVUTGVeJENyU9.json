@@ -194,7 +194,8 @@
         },
         "qualities": {
             "value": [
-                "complex"
+                "complex",
+                "oneOrTwoHanded"
             ]
         },
         "notes": {

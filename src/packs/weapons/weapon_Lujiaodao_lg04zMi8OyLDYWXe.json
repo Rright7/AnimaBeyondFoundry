@@ -194,7 +194,8 @@
         },
         "qualities": {
             "value": [
-                "locksWeapon"
+                "locksWeapon",
+                "oneHand"
             ]
         },
         "notes": {

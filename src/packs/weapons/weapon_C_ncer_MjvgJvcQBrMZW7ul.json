@@ -210,7 +210,8 @@
     },
     "qualities": {
       "value": [
-        "grappling"
+        "grappling",
+        "twoHanded"
       ]
     },
     "notes": {

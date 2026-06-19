@@ -195,7 +195,8 @@
         "qualities": {
             "value": [
                 "complex",
-                "precise"
+                "precise",
+                "oneHand"
             ]
         },
         "notes": {

@@ -1,0 +1,24 @@
+{
+    "name": "No dobla la Fuerza a dos manos",
+    "type": "weaponQuality",
+    "img": "icons/svg/downgrade.svg",
+    "system": {
+        "slug": {
+            "value": "noStrengthDouble"
+        },
+        "description": {
+            "value": "Aunque el arma se utilice a dos manos, no duplica el bono de Fuerza al calcular su daño final. Propia de armas especiales como el Kusari-Gama o la Katana de doble hoja."
+        },
+        "appliesTo": {
+            "value": ["weapon"]
+        },
+        "visible": false
+    },
+    "effects": [],
+    "ownership": {
+        "default": 0
+    },
+    "flags": {},
+    "_id": "aBfNoStrDbl00001",
+    "_key": "!items!aBfNoStrDbl00001"
+}

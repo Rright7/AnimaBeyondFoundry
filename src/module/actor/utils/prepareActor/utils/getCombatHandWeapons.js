@@ -87,3 +87,62 @@ export const manageabilityFromQualities = weapon => {
   if (hasWeaponQuality(weapon, 'oneHand')) return 'one_hand';
   return null;
 };
+
+/** Cualidades de agarre (manejabilidad). EXCLUSIVAS: solo una por arma. */
+export const GRIP_QUALITY_SLUGS = ['oneHand', 'twoHanded', 'oneOrTwoHanded'];
+
+const GRIP_BY_MANAGEABILITY = {
+  one_hand: 'oneHand',
+  two_hands: 'twoHanded',
+  one_or_two_hands: 'oneOrTwoHanded'
+};
+
+/** manageabilityType -> slug de cualidad de agarre (o null si el valor no mapea). */
+export const gripQualityForManageability = value =>
+  GRIP_BY_MANAGEABILITY[value] ?? null;
+
+/** slug de cualidad de agarre -> manageabilityType (o null). */
+export const manageabilityForGripQuality = slug =>
+  Object.keys(GRIP_BY_MANAGEABILITY).find(k => GRIP_BY_MANAGEABILITY[k] === slug) ?? null;
+
+/**
+ * Mantiene el invariante de agarre de un arma: EXACTAMENTE una cualidad de agarre y
+ * manageabilityType reflejándola. La cualidad MANDA. Devuelve el parche
+ * {qualities?, manageabilityType?} a aplicar al update (vacío si no hay que tocar
+ * nada). Puro y testeable. `changed*` = undefined cuando ese campo no va en el update.
+ */
+export const computeWeaponGripSync = ({
+  currentManage,
+  currentQualities = [],
+  changedManage,
+  changedQualities
+}) => {
+  const hasManage = changedManage !== undefined;
+  const hasQualities = changedQualities !== undefined;
+  if (!hasManage && !hasQualities) return {};
+
+  let qualities = (hasQualities ? changedQualities : currentQualities).slice();
+
+  // Cambió el selector (sin tocar qualities): deriva la cualidad de agarre.
+  if (hasManage && !hasQualities) {
+    const desired = gripQualityForManageability(changedManage);
+    const next = qualities.filter(s => !GRIP_QUALITY_SLUGS.includes(s));
+    if (desired) next.push(desired);
+    return { qualities: next };
+  }
+
+  // Cambiaron las qualities: exclusividad (deja la ÚLTIMA de agarre) + sincroniza selector.
+  const out = {};
+  const grips = qualities.filter(s => GRIP_QUALITY_SLUGS.includes(s));
+  if (grips.length > 1) {
+    const keep = grips[grips.length - 1];
+    qualities = qualities.filter(s => !GRIP_QUALITY_SLUGS.includes(s) || s === keep);
+    out.qualities = qualities;
+  }
+  const grip = qualities.find(s => GRIP_QUALITY_SLUGS.includes(s));
+  if (grip && !hasManage) {
+    const manage = manageabilityForGripQuality(grip);
+    if (manage && manage !== currentManage) out.manageabilityType = manage;
+  }
+  return out;
+};

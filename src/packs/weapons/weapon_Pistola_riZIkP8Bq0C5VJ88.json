@@ -198,7 +198,8 @@
         },
         "qualities": {
             "value": [
-                "complex"
+                "complex",
+                "oneHand"
             ]
         },
         "notes": {

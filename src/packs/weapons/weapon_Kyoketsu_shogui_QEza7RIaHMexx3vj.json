@@ -194,7 +194,8 @@
     },
     "qualities": {
       "value": [
-        "grappling"
+        "grappling",
+        "oneHand"
       ]
     },
     "notes": {

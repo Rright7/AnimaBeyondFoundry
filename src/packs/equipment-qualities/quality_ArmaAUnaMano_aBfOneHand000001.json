@@ -1,0 +1,24 @@
+{
+    "name": "Arma a una mano",
+    "type": "weaponQuality",
+    "img": "icons/weapons/swords/shortsword-guard-brass.webp",
+    "system": {
+        "slug": {
+            "value": "oneHand"
+        },
+        "description": {
+            "value": "Son las que se usan con una sola mano. A diferencia de las armas a dos manos, no permiten doblar el bono de Fuerza para calcular su daño final."
+        },
+        "appliesTo": {
+            "value": ["weapon"]
+        },
+        "visible": false
+    },
+    "effects": [],
+    "ownership": {
+        "default": 0
+    },
+    "flags": {},
+    "_id": "aBfOneHand000001",
+    "_key": "!items!aBfOneHand000001"
+}

@@ -195,7 +195,8 @@
     "qualities": {
       "value": [
         "throwable",
-        "grappling"
+        "grappling",
+        "oneHand"
       ]
     },
     "notes": {
