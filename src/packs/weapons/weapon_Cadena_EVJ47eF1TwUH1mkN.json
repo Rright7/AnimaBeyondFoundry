@@ -195,7 +195,8 @@
     "qualities": {
       "value": [
         "complex",
-        "grappling"
+        "grappling",
+        "oneHand"
       ]
     },
     "notes": {

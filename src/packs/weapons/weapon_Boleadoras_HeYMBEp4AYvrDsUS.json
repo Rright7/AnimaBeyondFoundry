@@ -196,7 +196,8 @@
       "value": [
         "grappling",
         "complex",
-        "throwable"
+        "throwable",
+        "oneHand"
       ]
     },
     "notes": {

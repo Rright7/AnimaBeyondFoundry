@@ -194,7 +194,8 @@
         },
         "qualities": {
             "value": [
-                "noStrengthDouble"
+                "noStrengthDouble",
+                "twoHanded"
             ]
         },
         "notes": {

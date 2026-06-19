@@ -196,7 +196,8 @@
             "value": [
                 "throwable",
                 "precise",
-                "locksWeapon"
+                "locksWeapon",
+                "oneHand"
             ]
         },
         "notes": {

@@ -193,7 +193,9 @@
             "value": false
         },
         "qualities": {
-            "value": []
+            "value": [
+                "twoHanded"
+            ]
         },
         "notes": {
             "value": ""

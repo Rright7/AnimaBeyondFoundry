@@ -223,7 +223,8 @@
         },
         "qualities": {
             "value": [
-                "throwable"
+                "throwable",
+                "oneHand"
             ]
         },
         "notes": {

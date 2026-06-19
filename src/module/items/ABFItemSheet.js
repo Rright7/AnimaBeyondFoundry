@@ -1,6 +1,7 @@
 import { ABFItems } from './ABFItems';
 import { ITEM_CONFIGURATIONS } from '../actor/utils/prepareItems/constants';
 import { ensureLinkedEffectForItem } from '../actor/utils/ensureLinkedEffectForItem.js';
+import { GRIP_QUALITY_SLUGS } from '../actor/utils/prepareActor/utils/getCombatHandWeapons';
 import {
   buildTechniqueViewModel,
   techAddEffect,
@@ -258,6 +259,14 @@ export default class ABFItemSheet extends ItemSheetV1 {
   }
 
   async _removeWeaponQuality(slug) {
+    // El agarre es obligatorio (exactamente uno) y lo gobierna la cualidad: no se
+    // quita desde el chip; se cambia con el selector de Manejabilidad o arrastrando
+    // otra cualidad de agarre.
+    if (GRIP_QUALITY_SLUGS.includes(slug)) {
+      return ui.notifications?.info(
+        'El agarre no se quita: cámbialo con el selector de Manejabilidad o arrastrando otra cualidad de agarre.'
+      );
+    }
     const current = Array.isArray(this.item.system?.qualities?.value)
       ? this.item.system.qualities.value.slice()
       : [];
