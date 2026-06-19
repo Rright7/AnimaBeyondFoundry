@@ -433,6 +433,11 @@
       box-shadow: inset 0 0 0 1px var(--abf-accent);
     }
 
+    // De este asalto: se puede deshacer con click derecho (reembolsa el Ki).
+    &--undoable {
+      cursor: context-menu;
+    }
+
     .technique-card-head {
       display: flex;
       justify-content: space-between;
@@ -514,9 +519,13 @@
         color: var(--abf-danger);
       }
 
-      // Instantánea "en efecto este asalto": relleno acento para que se note que
-      // está aplicando ahora; vuelve a «Usar» normal cuando pasa el asalto.
-      .technique-use--used {
+      // Indicador "Usando…" (instantánea en efecto este asalto): relleno acento para
+      // que se vea claramente que la técnica SÍ se aplicó. No es un botón.
+      .technique-status--used {
+        flex: 0 0 auto;
+        border-radius: 4px;
+        padding: 1px 10px;
+        font-weight: 600;
         background: var(--abf-accent);
         color: var(--abf-on-accent);
       }

@@ -10,7 +10,7 @@
   }}
     <div class="technique-cards">
       {{#each @root.kiTechniques}}
-        <div class="technique-card{{#if active}} technique-card--active{{/if}}{{#unless computed.isValid}} technique-card--invalid{{/unless}}" data-technique-id="{{id}}">
+        <div class="technique-card{{#if active}} technique-card--active{{/if}}{{#if freshTurn}} technique-card--undoable{{/if}}{{#unless computed.isValid}} technique-card--invalid{{/unless}}" data-technique-id="{{id}}"{{#if freshTurn}} title="Click derecho: Deshacer este asalto y recuperar el Ki"{{/if}}>
           <div class="technique-card-head">
             <span class="technique-card-name">{{name}}{{#if active}} <span class="technique-card-badge">Activa{{#if isSostenida}} · {{remaining}} asaltos{{/if}}</span>{{else}}{{#if freshTurn}} <span class="technique-card-badge">Este asalto</span>{{/if}}{{/if}}</span>
             <span class="technique-card-cm">CM {{computed.cmTotal}}</span>
@@ -29,12 +29,13 @@
             <span class="technique-card-ki">Coste total de Ki: {{kiActiveTotal}}{{#if isMantenida}} · mant {{kiMaintTotal}}/asalto{{/if}}</span>
             {{#if isInstant}}
               {{#if freshTurn}}
-                <button type="button" class="technique-use technique-use--used" data-action="tech-use">Usando…</button>
+                <span class="technique-status technique-status--used">Usando…</span>
               {{else}}
                 <button type="button" class="technique-use" data-action="tech-use">Usar</button>
               {{/if}}
             {{else}}
               {{#if active}}
+                <span class="technique-status technique-status--used">Usando…</span>
                 <button type="button" class="technique-deactivate" data-action="tech-deactivate">Desactivar</button>
               {{else}}
                 <button type="button" class="technique-activate" data-action="tech-activate">Activar</button>

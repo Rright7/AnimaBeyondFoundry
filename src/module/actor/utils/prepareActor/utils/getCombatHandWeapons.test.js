@@ -2,7 +2,9 @@ import {
   getCombatHandWeapons,
   getActiveTurnShield,
   isRodela,
-  isTwoHandedGrip
+  isTwoHandedGrip,
+  hasWeaponQuality,
+  manageabilityFromQualities
 } from './getCombatHandWeapons.js';
 
 const w = ({
@@ -11,7 +13,8 @@ const w = ({
   size = 'medium',
   manage = 'one_hand',
   grip = 'one-handed',
-  hand = 'none'
+  hand = 'none',
+  quals = []
 } = {}) => ({
   system: {
     isShield: { value: shield },
@@ -19,7 +22,8 @@ const w = ({
     size: { value: size },
     manageabilityType: { value: manage },
     oneOrTwoHanded: { value: grip },
-    handSlot: { value: hand }
+    handSlot: { value: hand },
+    qualities: { value: quals }
   }
 });
 
@@ -45,8 +49,8 @@ describe('getCombatHandWeapons', () => {
     expect(getCombatHandWeapons([a, b])).toEqual([a]);
   });
 
-  test('one_or_two_hands elegida a dos manos tambien cuenta sola', () => {
-    const a = w({ hand: 'main', manage: 'one_or_two_hands', grip: 'two-handed' });
+  test('arma asignada a dos manos (both) ocupa ambas -> cuenta sola', () => {
+    const a = w({ hand: 'both', manage: 'one_or_two_hands' });
     const b = w({ hand: 'off' });
     expect(getCombatHandWeapons([a, b])).toEqual([a]);
   });
@@ -81,11 +85,37 @@ describe('isTwoHandedGrip', () => {
   test('two_hands puro', () => {
     expect(isTwoHandedGrip(w({ manage: 'two_hands' }))).toBe(true);
   });
-  test('one_or_two_hands segun eleccion', () => {
-    expect(isTwoHandedGrip(w({ manage: 'one_or_two_hands', grip: 'two-handed' }))).toBe(true);
-    expect(isTwoHandedGrip(w({ manage: 'one_or_two_hands', grip: 'one-handed' }))).toBe(false);
+  test('one_or_two_hands: dos manos solo si handSlot both', () => {
+    expect(isTwoHandedGrip(w({ manage: 'one_or_two_hands', hand: 'both' }))).toBe(true);
+    expect(isTwoHandedGrip(w({ manage: 'one_or_two_hands', hand: 'main' }))).toBe(false);
+    expect(isTwoHandedGrip(w({ manage: 'one_or_two_hands', hand: 'none' }))).toBe(false);
   });
   test('one_hand nunca', () => {
     expect(isTwoHandedGrip(w({ manage: 'one_hand' }))).toBe(false);
+  });
+});
+
+describe('manageabilityFromQualities', () => {
+  test('twoHanded -> two_hands', () => {
+    expect(manageabilityFromQualities(w({ quals: ['twoHanded'] }))).toBe('two_hands');
+  });
+  test('oneOrTwoHanded gana en prioridad', () => {
+    expect(
+      manageabilityFromQualities(w({ quals: ['twoHanded', 'oneOrTwoHanded'] }))
+    ).toBe('one_or_two_hands');
+  });
+  test('oneHand -> one_hand', () => {
+    expect(manageabilityFromQualities(w({ quals: ['oneHand'] }))).toBe('one_hand');
+  });
+  test('sin cualidad de manejabilidad -> null (respeta el selector)', () => {
+    expect(manageabilityFromQualities(w({ quals: ['grappling'] }))).toBeNull();
+    expect(manageabilityFromQualities(w())).toBeNull();
+  });
+});
+
+describe('hasWeaponQuality', () => {
+  test('detecta la cualidad (case-insensitive)', () => {
+    expect(hasWeaponQuality(w({ quals: ['noStrengthDouble'] }), 'nostrengthdouble')).toBe(true);
+    expect(hasWeaponQuality(w({ quals: ['twoHanded'] }), 'noStrengthDouble')).toBe(false);
   });
 });

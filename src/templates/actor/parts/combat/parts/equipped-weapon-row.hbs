@@ -1,4 +1,4 @@
-<div class='equipped-weapon-row{{#if worn}}{{#unless weapon.equipped}} ew-unequipped{{/unless}}{{/if}}' data-item-id='{{weapon.id}}'>
+<div class='equipped-weapon-row{{#if worn}}{{#unless weapon.equipped}} ew-unequipped{{/unless}}{{else}} ew-hand-draggable{{/if}}' data-item-id='{{weapon.id}}'>
   <div class='ew-info'>
     <span class='ew-name'>{{weapon.name}}</span>
     <span class='ew-sub'>
@@ -17,12 +17,6 @@
       />
     </label>
   {{else}}
-    {{>
-    'systems/animabf/templates/common/domain/weapon/select-hand.hbs'
-      class="hand-slot"
-      hideTitle=true
-      inputName=(concat "system.dynamic.weapons." weapon.id ".system.handSlot.value")
-      inputValue=weapon.handSlot
-    }}
+    <i class='ew-drag-handle fas fa-grip-vertical' title='{{localize "anima.ui.combat.equippedWeapons.dragHint"}}'></i>
   {{/if}}
 </div>

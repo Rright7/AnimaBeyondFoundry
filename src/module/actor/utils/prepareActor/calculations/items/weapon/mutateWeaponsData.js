@@ -11,6 +11,7 @@ import { calculateWeaponInitiative } from './calculations/calculateWeaponInitiat
 import { calculateWeaponArmorReduction } from './calculations/calculateWeaponArmorReduction';
 import { calculateArmorReductionFromQuality } from './util/calculateArmorReductionFromQuality';
 import { applyMartialArtsWeaponBonuses } from '../../../../../../combat/martialArts/martialArtsWeapon.js';
+import { manageabilityFromQualities } from '../../../utils/getCombatHandWeapons';
 
 /**
  *
@@ -21,6 +22,14 @@ export const mutateWeaponsData = data => {
   const combat = data.combat;
 
   combat.weapons = combat.weapons.map(weapon => {
+    // La cualidad de manejabilidad (oneHand/twoHanded/oneOrTwoHanded) MANDA sobre el
+    // campo: si el arma la lleva, deriva su manageabilityType (sin migración). De aquí
+    // salen el agarre, el ×2 de Fuerza, la FUE requerida y "Armas en mano".
+    const fromQuality = manageabilityFromQualities(weapon);
+    if (fromQuality && weapon.system.manageabilityType) {
+      weapon.system.manageabilityType.value = fromQuality;
+    }
+
     // Arma-perfil "Artes Marciales": inyecta los bonos de AM en sus `special`
     // antes de calcular los finales (no-op en el resto de armas).
     applyMartialArtsWeaponBonuses(weapon, data);

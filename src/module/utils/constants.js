@@ -76,10 +76,8 @@ export const Templates = {
 
   Domain: {
     Weapon: {
-      OneOrTwoHanded: T('common/domain/weapon/one-or-two-handed.hbs'),
       KnowledgeType: T('common/domain/weapon/knowledge-type.hbs'),
-      SelectAmmo: T('common/domain/weapon/select-ammo.hbs'),
-      SelectHand: T('common/domain/weapon/select-hand.hbs')
+      SelectAmmo: T('common/domain/weapon/select-ammo.hbs')
     },
     Armor: {
       SelectArmorType: T('common/domain/armor/select-armor-type.hbs'),

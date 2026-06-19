@@ -195,7 +195,8 @@
     "qualities": {
       "value": [
         "twoHanded",
-        "grappling"
+        "grappling",
+        "noStrengthDouble"
       ]
     },
     "notes": {

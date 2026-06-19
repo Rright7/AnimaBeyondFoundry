@@ -577,8 +577,26 @@
 
     .hands-columns {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 0.75rem;
+    }
+
+    // Zonas de soltar (arrastrar arma -> mano hábil/torpe/dos manos/sin asignar).
+    .hand-col,
+    .unassigned-list {
+      min-height: 2.2rem;
+    }
+
+    .hand-drop-zone {
+      border-radius: var(--abf-radius-sm);
+      outline: 2px dashed transparent;
+      outline-offset: 2px;
+      transition: outline-color 0.12s ease, background 0.12s ease;
+
+      &.hand-drop-zone--drag-over {
+        outline-color: var(--abf-accent);
+        background: var(--abf-accent-soft);
+      }
     }
 
     .hand-col-label {
@@ -614,6 +632,10 @@
         opacity: 0.5;
       }
 
+      &.ew-hand-draggable {
+        cursor: grab;
+      }
+
       .ew-equip {
         flex: 0 0 auto;
         display: flex;
@@ -644,16 +666,10 @@
         color: var(--abf-text-muted);
       }
 
-      .hand-slot {
+      .ew-drag-handle {
         flex: 0 0 auto;
-        margin: 0;
-        width: auto;
-
-        .input {
-          width: 6rem;
-          height: 1.5rem;
-          font-size: 0.8rem;
-        }
+        color: var(--abf-text-muted);
+        font-size: 0.8rem;
       }
     }
 

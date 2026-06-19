@@ -697,6 +697,46 @@ export class ABFActor extends Actor {
     return true;
   }
 
+  /**
+   * Deshace un uso/activación de ESTE asalto (p.ej. pulsado por error): reembolsa
+   * EXACTAMENTE el Ki gastado (concentrado por característica + reserva) y limpia el
+   * estado. Solo aplica si la técnica es de este asalto (freshTurn); al pasar la
+   * ronda deja de poder deshacerse.
+   */
+  async undoTechnique(techniqueId) {
+    const technique = this.items.get(techniqueId);
+    if (technique?.type !== 'technique') return false;
+    if (!technique.flags?.animabf?.freshTurn) {
+      ui.notifications?.warn(
+        `«${technique.name}» ya no se puede deshacer (no es de este asalto).`
+      );
+      return false;
+    }
+    const spent = technique.flags?.animabf?.spentKi;
+    if (spent) {
+      const ka = this.system?.domine?.kiAccumulation ?? {};
+      const update = {};
+      for (const c of KI_CHAR_KEYS) {
+        const back = Number(spent.perChar?.[c]) || 0;
+        if (back <= 0) continue;
+        const cur = Number(ka[c]?.accumulated?.value) || 0;
+        update[`system.domine.kiAccumulation.${c}.accumulated.value`] = cur + back;
+      }
+      if (Object.keys(update).length) await this.update(update);
+      const reserveBack = Number(spent.reserve) || 0;
+      // negativo = reembolso a la reserva (se acota al máximo dentro de _spendKiReserve).
+      if (reserveBack > 0) await this._spendKiReserve(-reserveBack, technique.name);
+    }
+    await technique.update({
+      'flags.animabf.active': false,
+      'flags.animabf.remaining': 0,
+      'flags.animabf.freshTurn': false,
+      'flags.animabf.spentKi': null
+    });
+    ui.notifications?.info(`«${technique.name}» deshecha. Ki recuperado.`);
+    return true;
+  }
+
   // ============================
   // Concentración de Ki (Cargar Ki) — F6
   // ============================
@@ -737,21 +777,26 @@ export class ABFActor extends Actor {
     }
 
     const update = {};
+    const spentPerChar = {};
     for (const c of KI_CHAR_KEYS) {
       const need = Number(cost?.[c]?.active) || 0;
       if (need <= 0) continue;
-      update[`system.domine.kiAccumulation.${c}.accumulated.value`] = Math.max(
-        0,
-        accumulated[c] - need
-      );
+      const next = Math.max(0, accumulated[c] - need);
+      spentPerChar[c] = accumulated[c] - next; // lo REALMENTE gastado (suelo 0)
+      update[`system.domine.kiAccumulation.${c}.accumulated.value`] = next;
     }
     const total = Number(computed.kiActiveTotal) || 0;
     const reserveCurrent = Number(ka.reserve?.current?.value) || 0;
-    update['system.domine.kiAccumulation.reserve.current.value'] = Math.max(
-      0,
-      reserveCurrent - total
-    );
+    const reserveNext = Math.max(0, reserveCurrent - total);
+    update['system.domine.kiAccumulation.reserve.current.value'] = reserveNext;
     await this.update(update);
+    // Guarda lo gastado para poder DESHACER (reembolso exacto) este mismo asalto.
+    await technique.update({
+      'flags.animabf.spentKi': {
+        perChar: spentPerChar,
+        reserve: reserveCurrent - reserveNext
+      }
+    });
     return true;
   }
 
@@ -994,7 +1039,8 @@ export class ABFActor extends Actor {
       if (!technique.flags?.animabf?.active) {
         await technique.update({
           'flags.animabf.prevRound': { active: false, remaining: 0, maint: 0, freshTurn: wasFresh },
-          'flags.animabf.freshTurn': false
+          'flags.animabf.freshTurn': false,
+          'flags.animabf.spentKi': null
         });
         continue;
       }

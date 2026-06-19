@@ -1,18 +1,13 @@
-import {
-  WeaponEquippedHandType,
-  WeaponManageabilityType
-} from '../../../../../../../types/combat/WeaponItemConfig';
+import { WeaponEquippedHandType } from '../../../../../../../types/combat/WeaponItemConfig';
+import { isTwoHandedGrip } from '../../../../utils/getCombatHandWeapons';
 
 /**
+ * Agarre actual del arma. Se DERIVA de la asignación de mano (handSlot) y la
+ * manejabilidad mediante isTwoHandedGrip — fuente única para no divergir con el
+ * panel "Armas en mano" ni con la FUE requerida.
  * @param {import('../../../../../../../types/Items').WeaponDataSource} weapon
  */
-export const getCurrentEquippedHand = weapon => {
-  switch (weapon.system.manageabilityType.value) {
-    case WeaponManageabilityType.ONE_HAND:
-      return WeaponEquippedHandType.ONE_HANDED;
-    case WeaponManageabilityType.TWO_HAND:
-      return WeaponEquippedHandType.TWO_HANDED;
-    default:
-      return weapon.system.oneOrTwoHanded.value;
-  }
-};
+export const getCurrentEquippedHand = weapon =>
+  isTwoHandedGrip(weapon)
+    ? WeaponEquippedHandType.TWO_HANDED
+    : WeaponEquippedHandType.ONE_HANDED;
