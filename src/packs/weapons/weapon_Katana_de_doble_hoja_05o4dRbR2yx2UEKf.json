@@ -193,7 +193,9 @@
             "value": false
         },
         "qualities": {
-            "value": []
+            "value": [
+                "noStrengthDouble"
+            ]
         },
         "notes": {
             "value": ""

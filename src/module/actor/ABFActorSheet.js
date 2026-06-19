@@ -55,6 +55,7 @@ function computeCombatHands(system) {
     isShield: !!w.system?.isShield?.value,
     isRanged: !!w.system?.isRanged?.value,
     twoHanded: isTwoHandedGrip(w),
+    manageability: w.system?.manageabilityType?.value ?? 'one_hand',
     handSlot: w.system?.handSlot?.value ?? 'none',
     equipped: !!w.system?.equipped?.value
   });
@@ -71,24 +72,33 @@ function computeCombatHands(system) {
   );
   const main = assignable.filter(w => w.system?.handSlot?.value === 'main').map(vm);
   const off = assignable.filter(w => w.system?.handSlot?.value === 'off').map(vm);
+  const both = assignable.filter(w => w.system?.handSlot?.value === 'both').map(vm);
   const unassigned = assignable
     .filter(w => {
       const h = w.system?.handSlot?.value;
-      return h !== 'main' && h !== 'off';
+      return h !== 'main' && h !== 'off' && h !== 'both';
     })
     .map(vm);
 
-  const handsUsed = [...main, ...off].reduce((n, w) => n + (w.twoHanded ? 2 : 1), 0);
+  // Un arma a dos manos cuenta 2; 'both' es siempre a dos manos.
+  const handsUsed = [...main, ...off, ...both].reduce(
+    (n, w) => n + (w.twoHanded ? 2 : 1),
+    0
+  );
 
   return {
     main,
     off,
+    both,
     unassigned,
     worn,
     unarmed,
-    // "En uso": no hay armas en mano y hay un arma de cuerpo entero equipada.
+    // "En uso": no hay armas en mano (ni 1 ni 2 manos) y hay un arma de cuerpo entero equipada.
     unarmedActive:
-      main.length === 0 && off.length === 0 && unarmed.some(u => u.equipped),
+      main.length === 0 &&
+      off.length === 0 &&
+      both.length === 0 &&
+      unarmed.some(u => u.equipped),
     handsUsed,
     overLimit: handsUsed > 2,
     hasEquipped: assignable.length > 0 || unarmed.length > 0 || worn.length > 0
@@ -310,6 +320,7 @@ export default class ABFActorSheet extends ActorSheetV1 {
     this._activateCombatManeuverSearch(html);
     this._activateKiTechniquesListeners(html);
     this._activateSphereSpellSync(html);
+    this._activateWeaponHandDropZones(html);
   }
 
   // Esferas de Magia: al cambiar el nivel de una vía, sincroniza el grimorio
@@ -399,6 +410,30 @@ export default class ABFActorSheet extends ActorSheetV1 {
       const item = techniqueOf(e.currentTarget);
       if (item) this.actor.deactivateTechnique(item.id);
     });
+    // Deshacer (revertir uso/activacion de ESTE asalto y reembolsar el Ki): click
+    // derecho sobre la tarjeta + confirmacion, para no confundirlo con «Desactivar»
+    // (que termina una mantenida SIN reembolso).
+    on('.technique-card', 'contextmenu', async e => {
+      e.preventDefault();
+      const item = techniqueOf(e.currentTarget);
+      if (!item) return;
+      if (!item.flags?.animabf?.freshTurn) {
+        ui.notifications?.info(`«${item.name}»: nada que deshacer este asalto.`);
+        return;
+      }
+      const confirmed = await foundry.applications.api.DialogV2.confirm({
+        window: { title: 'Deshacer tecnica' },
+        content:
+          `<p><strong>${item.name}</strong></p>` +
+          '<p>«Deshacer» revierte la activacion o el uso de ESTE asalto y te devuelve ' +
+          'el Ki gastado (por si pulsaste por error). No es lo mismo que «Desactivar», ' +
+          'que termina una tecnica mantenida sin reembolsar Ki.</p>' +
+          '<p>Deshacer y recuperar el Ki?</p>',
+        rejectClose: false,
+        modal: true
+      }).catch(() => false);
+      if (confirmed) this.actor.undoTechnique(item.id);
+    });
 
     // Cargar Ki (concentración por asalto) y acumulación plena.
     on('[data-action="ki-charge"]', 'click', e => {
@@ -438,6 +473,92 @@ export default class ABFActorSheet extends ActorSheetV1 {
         const id = zone.dataset.techniqueId;
         const item = id ? this.actor.items.get(id) : null;
         if (item) await onDropTechniqueEffect(item, e);
+      });
+    });
+  }
+
+  // "Armas en mano": arrastrar el perfil del arma a una zona (Mano hábil / Mano
+  // torpe / A dos manos / Sin asignar) fija su handSlot. El agarre (1/2 manos) se
+  // deriva de ahí. Validación por manejabilidad; "dos manos" libera la otra mano.
+  _activateWeaponHandDropZones(html) {
+    const root = html[0] ?? html;
+    if (!root) return;
+
+    const MIME = 'application/x-abf-hand-weapon';
+
+    root.querySelectorAll('.equipped-weapon-row.ew-hand-draggable[data-item-id]').forEach(row => {
+      row.setAttribute('draggable', 'true');
+      row.addEventListener('dragstart', ev => {
+        const id = row.dataset.itemId;
+        if (!id) return;
+        ev.dataTransfer?.setData(MIME, id);
+        ev.dataTransfer?.setData('text/plain', id);
+        ev.stopPropagation();
+      });
+    });
+
+    // ¿Es válido ese slot para un arma de esa manejabilidad? 'none' siempre vale.
+    const slotAllowed = (manage, slot) => {
+      if (slot === 'none') return true;
+      if (manage === 'one_hand') return slot === 'main' || slot === 'off';
+      if (manage === 'two_hands') return slot === 'both';
+      return slot === 'main' || slot === 'off' || slot === 'both';
+    };
+
+    root.querySelectorAll('[data-hand-slot]').forEach(zone => {
+      const slot = zone.dataset.handSlot;
+      zone.addEventListener('dragover', e => {
+        e.preventDefault();
+        zone.classList.add('hand-drop-zone--drag-over');
+      });
+      zone.addEventListener('dragleave', () =>
+        zone.classList.remove('hand-drop-zone--drag-over')
+      );
+      zone.addEventListener('drop', e => {
+        e.preventDefault();
+        e.stopPropagation(); // evita el _onDropItem global (clonaría el arma)
+        zone.classList.remove('hand-drop-zone--drag-over');
+
+        const id = e.dataTransfer?.getData(MIME) || e.dataTransfer?.getData('text/plain');
+        const item = id ? this.actor.items.get(id) : null;
+        if (!item) return;
+
+        const manage = item.system?.manageabilityType?.value ?? 'one_hand';
+        const weapons = this.actor.system?.combat?.weapons ?? [];
+        const handOf = w => w.system?.handSlot?.value;
+
+        // Corrige el destino según la manejabilidad del arma:
+        let target = slot;
+        // Solo dos manos: siempre "A dos manos" aunque se suelte en una mano.
+        if (manage === 'two_hands' && (target === 'main' || target === 'off')) {
+          target = 'both';
+        }
+        // Solo una mano: nunca "A dos manos" -> mano hábil si está libre, torpe si no.
+        if (manage === 'one_hand' && target === 'both') {
+          const mainOccupied = weapons.some(w => w._id !== id && handOf(w) === 'main');
+          target = mainOccupied ? 'off' : 'main';
+        }
+        if (!slotAllowed(manage, target)) return; // drop inválido: solo visual, no persiste
+
+        const setSlot = (wid, s) => {
+          this._pendingUpdate[`system.dynamic.weapons.${wid}.system.handSlot.value`] = s;
+        };
+
+        setSlot(id, target);
+
+        // Liberar manos en conflicto.
+        if (target === 'both') {
+          weapons.forEach(w => {
+            if (w._id !== id && (handOf(w) === 'main' || handOf(w) === 'off')) setSlot(w._id, 'none');
+          });
+        } else if (target === 'main' || target === 'off') {
+          // Swap en la misma mano + liberar cualquier arma a dos manos (ocupaba ambas).
+          weapons.forEach(w => {
+            if (w._id !== id && (handOf(w) === target || handOf(w) === 'both')) setSlot(w._id, 'none');
+          });
+        }
+
+        this._flushPendingUpdate();
       });
     });
   }

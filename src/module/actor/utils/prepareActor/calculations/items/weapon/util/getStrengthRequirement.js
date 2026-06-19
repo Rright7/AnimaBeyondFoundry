@@ -1,22 +1,11 @@
-import {
-  WeaponEquippedHandType,
-  WeaponManageabilityType
-} from '../../../../../../../types/combat/WeaponItemConfig';
+import { isTwoHandedGrip } from '../../../../utils/getCombatHandWeapons';
 
 /**
+ * FUE requerida según el agarre actual (derivado de handSlot/manejabilidad):
+ * a dos manos usa strRequired.twoHands; a una mano, strRequired.oneHand.
  * @param {import('../../../../../../../types/Items').WeaponDataSource} weapon
  */
-export const getStrengthRequirement = weapon => {
-  switch (weapon.system.manageabilityType.value) {
-    case WeaponManageabilityType.ONE_HAND:
-      return weapon.system.strRequired.oneHand.final.value;
-    case WeaponManageabilityType.TWO_HAND:
-      return weapon.system.strRequired.twoHands.final.value;
-    default:
-      if (weapon.system.oneOrTwoHanded.value === WeaponEquippedHandType.ONE_HANDED) {
-        return weapon.system.strRequired.oneHand.final.value;
-      }
-
-      return weapon.system.strRequired.twoHands.final.value;
-  }
-};
+export const getStrengthRequirement = weapon =>
+  isTwoHandedGrip(weapon)
+    ? weapon.system.strRequired.twoHands.final.value
+    : weapon.system.strRequired.oneHand.final.value;

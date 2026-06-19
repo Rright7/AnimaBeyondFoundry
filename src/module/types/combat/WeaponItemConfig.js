@@ -13,15 +13,18 @@ export const WeaponEquippedHandType = /** @type {const} */ ({
 });
 
 /**
- * Mano en la que se empuña un arma equipada (hábil / torpe / sin asignar). Es un
- * concepto DISTINTO de WeaponEquippedHandType (que es el agarre a una o dos manos).
+ * Asignación del arma en "Armas en mano": sin asignar / mano hábil / mano torpe /
+ * a dos manos. Desde el rediseño, este campo CODIFICA el agarre: 'both' => dos manos
+ * (x2 Fuerza, FUE req. 2M, ocupa ambas manos). El agarre (WeaponEquippedHandType) se
+ * DERIVA de aquí (ver isTwoHandedGrip / getCurrentEquippedHand).
  * @readonly
  * @enum {string}
  */
 export const WeaponHandSlot = /** @type {const} */ ({
   NONE: 'none',
   MAIN: 'main',
-  OFF: 'off'
+  OFF: 'off',
+  BOTH: 'both'
 });
 
 /**

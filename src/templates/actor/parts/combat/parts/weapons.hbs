@@ -112,15 +112,6 @@
               inputName=(concat "system.dynamic.weapons." weapon._id ".system.knowledgeType.value")
               inputValue=weapon.system.knowledgeType.value
             }}
-            {{#if (is 'eq' weapon.system.manageabilityType.value 'one_or_two_hands')}}
-              {{>
-              "systems/animabf/templates/common/domain/weapon/one-or-two-handed.hbs"
-                class="one-or-two-handed"
-                title=(localize "anima.ui.combat.weapons.oneOrTwoHanded.title")
-                inputName=(concat "system.dynamic.weapons." weapon._id ".system.oneOrTwoHanded.value")
-                inputValue=weapon.system.oneOrTwoHanded.value
-              }}
-            {{/if}}
             {{>
             "systems/animabf/templates/common/ui/vertical-titled-input.hbs"
               class="reduced-armor"
