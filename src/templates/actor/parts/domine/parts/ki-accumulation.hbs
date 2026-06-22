@@ -5,6 +5,7 @@
   "systems/animabf/templates/common/ui/group-header.hbs"
   }}
     <p class='label accumulation'>{{localize "anima.ui.domine.kiAccumulation.accumulation.title"}}</p>
+    <p class='label bonus' title="Bono de Acumulacion (ventaja 'Aumento de la Acumulacion de Ki' o regla de la casa): se suma a la de tabla">Bono</p>
     <p class='label title'>{{localize "anima.ui.domine.kiAccumulation.title"}}</p>
   {{/"systems/animabf/templates/common/ui/group-header.hbs"}}
   {{#> "systems/animabf/templates/common/ui/group-body.hbs"
@@ -21,6 +22,14 @@
         disabled=true
         inputName="system.domine.kiAccumulation.strength.final.value"
         inputValue=system.domine.kiAccumulation.strength.final.value
+      }}
+
+      {{>
+      "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
+        class="strength-bonus accumulation-row-bonus"
+        hideTitle=true
+        inputName="system.domine.kiAccumulation.strength.bonus.value"
+        inputValue=system.domine.kiAccumulation.strength.bonus.value
       }}
 
       {{>
@@ -45,6 +54,14 @@
 
       {{>
       "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
+        class="agility-bonus accumulation-row-bonus"
+        hideTitle=true
+        inputName="system.domine.kiAccumulation.agility.bonus.value"
+        inputValue=system.domine.kiAccumulation.agility.bonus.value
+      }}
+
+      {{>
+      "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
         class="current-agility-reserve accumulation-row-reserve"
         hideTitle=true
         inputName="system.domine.kiAccumulation.agility.accumulated.value"
@@ -61,6 +78,14 @@
         disabled=true
         inputName="system.domine.kiAccumulation.dexterity.final.value"
         inputValue=system.domine.kiAccumulation.dexterity.final.value
+      }}
+
+      {{>
+      "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
+        class="dexterity-bonus accumulation-row-bonus"
+        hideTitle=true
+        inputName="system.domine.kiAccumulation.dexterity.bonus.value"
+        inputValue=system.domine.kiAccumulation.dexterity.bonus.value
       }}
 
       {{>
@@ -85,6 +110,14 @@
 
       {{>
       "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
+        class="constitution-bonus accumulation-row-bonus"
+        hideTitle=true
+        inputName="system.domine.kiAccumulation.constitution.bonus.value"
+        inputValue=system.domine.kiAccumulation.constitution.bonus.value
+      }}
+
+      {{>
+      "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
         class="current-constitution-reserve accumulation-row-reserve"
         hideTitle=true
         inputName="system.domine.kiAccumulation.constitution.accumulated.value"
@@ -105,6 +138,14 @@
 
       {{>
       "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
+        class="willPower-bonus accumulation-row-bonus"
+        hideTitle=true
+        inputName="system.domine.kiAccumulation.willPower.bonus.value"
+        inputValue=system.domine.kiAccumulation.willPower.bonus.value
+      }}
+
+      {{>
+      "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
         class="current-willPower-reserve accumulation-row-reserve"
         hideTitle=true
         inputName="system.domine.kiAccumulation.willPower.accumulated.value"
@@ -121,6 +162,14 @@
         disabled=true
         inputName="system.domine.kiAccumulation.power.final.value"
         inputValue=system.domine.kiAccumulation.power.final.value
+      }}
+
+      {{>
+      "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
+        class="power-bonus accumulation-row-bonus"
+        hideTitle=true
+        inputName="system.domine.kiAccumulation.power.bonus.value"
+        inputValue=system.domine.kiAccumulation.power.bonus.value
       }}
 
       {{>

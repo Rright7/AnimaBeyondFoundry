@@ -347,6 +347,7 @@
               "byPd": { "value": 0 },              "final": { "value": 0 }
             },
             "base": { "value": 0 },
+            "bonus": { "value": 0 },
             "half": { "value": 0 },            "final": { "value": 0 },
             "accumulated": { "value": 0 },
             "accumulating": { "value": true }
@@ -357,6 +358,7 @@
               "byPd": { "value": 0 },              "final": { "value": 0 }
             },
             "base": { "value": 0 },
+            "bonus": { "value": 0 },
             "half": { "value": 0 },            "final": { "value": 0 },
             "accumulated": { "value": 0 },
             "accumulating": { "value": true }
@@ -367,6 +369,7 @@
               "byPd": { "value": 0 },              "final": { "value": 0 }
             },
             "base": { "value": 0 },
+            "bonus": { "value": 0 },
             "half": { "value": 0 },            "final": { "value": 0 },
             "accumulated": { "value": 0 },
             "accumulating": { "value": true }
@@ -377,6 +380,7 @@
               "byPd": { "value": 0 },              "final": { "value": 0 }
             },
             "base": { "value": 0 },
+            "bonus": { "value": 0 },
             "half": { "value": 0 },            "final": { "value": 0 },
             "accumulated": { "value": 0 },
             "accumulating": { "value": true }
@@ -387,6 +391,7 @@
               "byPd": { "value": 0 },              "final": { "value": 0 }
             },
             "base": { "value": 0 },
+            "bonus": { "value": 0 },
             "half": { "value": 0 },            "final": { "value": 0 },
             "accumulated": { "value": 0 },
             "accumulating": { "value": true }
@@ -397,6 +402,7 @@
               "byPd": { "value": 0 },              "final": { "value": 0 }
             },
             "base": { "value": 0 },
+            "bonus": { "value": 0 },
             "half": { "value": 0 },            "final": { "value": 0 },
             "accumulated": { "value": 0 },
             "accumulating": { "value": true }

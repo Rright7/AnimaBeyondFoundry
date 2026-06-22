@@ -211,7 +211,7 @@
 
     .group-header {
       display: grid !important;
-      grid-template-columns: 3rem 1fr 1fr;
+      grid-template-columns: 3rem 1fr 0.8fr 1fr;
       align-items: center;
       column-gap: 0.5rem;
 
@@ -226,8 +226,12 @@
         grid-column: 2;
       }
 
-      .title {
+      .bonus {
         grid-column: 3;
+      }
+
+      .title {
+        grid-column: 4;
       }
     }
 
@@ -240,7 +244,7 @@
 
       .accumulation-row {
         display: grid;
-        grid-template-columns: 3rem 1fr 1fr;
+        grid-template-columns: 3rem 1fr 0.8fr 1fr;
         align-items: stretch;
         column-gap: 0.5rem;
         margin-bottom: 0;

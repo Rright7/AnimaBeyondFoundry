@@ -69,13 +69,15 @@ export const mutateKiAccumulationBaseConstitution = makeKiAccumulationBaseMutato
 export const mutateKiAccumulationBaseWillPower = makeKiAccumulationBaseMutator('willPower');
 export const mutateKiAccumulationBasePower = makeKiAccumulationBaseMutator('power');
 
-// Acumulación final: base ajustado por penalizador de todas las acciones + su mitad.
+// Acumulación final: base (tabla) + bono manual (ventaja "Aumento de la Acumulación de
+// Ki" o regla de la casa), ajustado por el penalizador de todas las acciones; suelo 0.
 const makeKiAccumulationMutator = accum => {
   const fn = data => {
     const allActionsPenalty = data.general.modifiers.allActions.final.value;
     const acc = data.domine.kiAccumulation[accum];
+    const bonus = Number(acc.bonus?.value) || 0;
     acc.final.value = Math.max(
-      acc.base.value + Math.min(Math.ceil(allActionsPenalty / 20), 0),
+      acc.base.value + bonus + Math.min(Math.ceil(allActionsPenalty / 20), 0),
       0
     );
     acc.half.value = Math.floor(acc.final.value / 2);
@@ -84,7 +86,8 @@ const makeKiAccumulationMutator = accum => {
   fn.abfFlow = {
     deps: [
       'system.general.modifiers.allActions.final.value',
-      `system.domine.kiAccumulation.${accum}.base.value`
+      `system.domine.kiAccumulation.${accum}.base.value`,
+      `system.domine.kiAccumulation.${accum}.bonus.value`
     ],
     mods: [
       `system.domine.kiAccumulation.${accum}.final.value`,
