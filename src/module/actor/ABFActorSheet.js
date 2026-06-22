@@ -919,19 +919,35 @@ export default class ABFActorSheet extends ActorSheetV1 {
     if (actorValue !== undefined) return actorValue;
 
     const dynamicItemMatch = String(path).match(
-      /^system\.dynamic\.[^.]+\.(?<itemId>[^.]+)\.(?<itemPath>.+)$/
+      /^system\.dynamic\.(?<collection>[^.]+)\.(?<itemId>[^.]+)\.(?<itemPath>.+)$/
     );
 
     if (dynamicItemMatch?.groups) {
-      const { itemId, itemPath } = dynamicItemMatch.groups;
+      const { collection, itemId, itemPath } = dynamicItemMatch.groups;
+
+      // Items reales de Foundry (armas, etc.).
       const itemValue = foundry.utils.getProperty(this.actor.items.get(itemId), itemPath);
       if (itemValue !== undefined) return itemValue;
+
+      // Inner items: NO son Items de Foundry; viven en un array de actor.system
+      // (p.ej. secondarySpecialSkills personalizadas). Se localizan por id en su
+      // coleccion (ultimo segmento del fieldPath del config).
+      const cfg = Object.values(ALL_ITEM_CONFIGURATIONS).find(
+        c => c?.isInternal && c?.fieldPath?.[c.fieldPath.length - 1] === collection
+      );
+      if (cfg) {
+        const innerValue = foundry.utils.getProperty(
+          this.actor.getInnerItem(cfg.type, itemId),
+          itemPath
+        );
+        if (innerValue !== undefined) return innerValue;
+      }
     }
 
-    const itemId = element?.closest?.('[data-item-id]')?.dataset?.itemId;
-    if (!itemId) return undefined;
+    const fallbackItemId = element?.closest?.('[data-item-id]')?.dataset?.itemId;
+    if (!fallbackItemId) return undefined;
 
-    return foundry.utils.getProperty(this.actor.items.get(itemId), path);
+    return foundry.utils.getProperty(this.actor.items.get(fallbackItemId), path);
   }
 
   protected;
