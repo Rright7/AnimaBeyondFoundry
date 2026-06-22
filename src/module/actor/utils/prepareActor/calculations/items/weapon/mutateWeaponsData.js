@@ -136,7 +136,11 @@ mutateWeaponsData.abfFlow = {
     'system.general.modifiers.martialArtBonus.masterDefense.value',
 
     // Common primary stats typically used in weapon calcs
+    // strength.final.value: VALOR capado (rotura, tabla Fuerza->rotura).
+    // strength.mod.value: BONO REAL (modificador de Fuerza al dano); se depende de
+    // ambos para que el dano recalcule aunque el valor capado no cambie.
     'system.characteristics.primaries.strength.final.value',
+    'system.characteristics.primaries.strength.mod.value',
     'system.characteristics.primaries.dexterity.final.value',
     'system.characteristics.primaries.agility.final.value',
 

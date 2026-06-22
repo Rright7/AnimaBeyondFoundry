@@ -81,8 +81,8 @@ export class Ability extends AffectedByCharacteristicValue {
    * El bono de caracteristica de una habilidad usa SIEMPRE el modificador REAL
    * (mod.value, calculado del valor real base+special), no el final topado por
    * Inhumanidad/Zen. Asi Ataque/Parada (DES) y Esquiva (AGI) aprovechan la
-   * caracteristica real aunque su valor este capado. wearArmor (capacidad de
-   * carga) se queda con el final topado via la clase base.
+   * caracteristica real aunque su valor este capado. La clase base ya usa el bono
+   * real, asi que wearArmor (capacidad de carga) tambien lo aprovecha.
    */
   _computeCharacteristicDelta() {
     if (!this.computeCharacteristicMod || !this.attribute) return 0;

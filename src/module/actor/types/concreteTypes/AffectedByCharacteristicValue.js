@@ -86,9 +86,13 @@ export class AffectedByCharacteristicValue extends NumericalValue {
     if (!ch) return 0;
 
     const chBase = Number(ch.base?.value ?? ch.base ?? 0);
-    const chFinal = Number(ch.final?.value ?? ch.final ?? 0);
+    // Regla de oro: lo que aprovecha el BONO usa el modificador del valor REAL
+    // (mod.value, derivado de base+special), NO el 'final' topado por Inhumanidad/Zen.
+    // Asi "llevar armadura" (capacidad de carga) usa la Fuerza real aunque su valor
+    // se cape. Para las psiquicas, real == final (techo 20), sin cambio.
+    const chMod = Number(ch.mod?.value ?? 0);
 
-    return calculateAttributeModifier(chFinal) - calculateAttributeModifier(chBase);
+    return chMod - calculateAttributeModifier(chBase);
   }
 
   _computeFinal({ base = 0, special = 0 }) {
@@ -114,7 +118,9 @@ export class AffectedByCharacteristicValue extends NumericalValue {
 
       if (this.computeCharacteristicMod && this.attribute) {
         const chPath = `system.characteristics.primaries.${this.attribute}`;
-        this.setInstanceDeps('final', [`${chPath}.base.value`, `${chPath}.final.value`]);
+        // Dep al modificador REAL (mod.value), no al 'final' topado: recalcula aunque
+        // el valor capado no cambie (p.ej. Fuerza real 10 -> 11 con tope 10).
+        this.setInstanceDeps('final', [`${chPath}.base.value`, `${chPath}.mod.value`]);
       } else {
         this.clearInstanceDeps('final');
       }

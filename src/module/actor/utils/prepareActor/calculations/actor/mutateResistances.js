@@ -17,7 +17,9 @@ const makeResistanceMutator = (key, attrKey) => {
   fnBase.abfFlow = {
     deps: [
       'system.general.presence.final.value',
-      `system.characteristics.primaries.${attrKey}.final.value`
+      // El calculo usa attr.mod.value (bono REAL); depender de mod.value (no del
+      // 'final' capado) hace que recalcule aunque el valor capado no cambie.
+      `system.characteristics.primaries.${attrKey}.mod.value`
     ],
     mods: [`system.characteristics.secondaries.resistances.${key}.base.value`]
   };

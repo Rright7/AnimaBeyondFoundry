@@ -1,5 +1,6 @@
 import {
   characteristicCap,
+  realCharacteristicValue,
   PHYSICAL_CHARACTERISTIC_KEYS,
   SYSTEM_CHARACTERISTIC_CEILING
 } from './characteristicLimits.js';
@@ -42,5 +43,24 @@ describe('characteristicCap', () => {
 
   it('defaults missing flags to the human cap', () => {
     expect(characteristicCap('strength')).toBe(10);
+  });
+});
+
+describe('realCharacteristicValue', () => {
+  it('devuelve base+special SIN el tope de Inhumanidad/Zen', () => {
+    // CON 11 (real) aunque el valor mostrado se cape a 10 sin Inhumanidad.
+    expect(realCharacteristicValue({ base: { value: 11 }, special: { value: 0 } })).toBe(11);
+    expect(realCharacteristicValue({ base: { value: 8 }, special: { value: 3 } })).toBe(11);
+  });
+
+  it('acota al techo del sistema (20) y a 0 por abajo', () => {
+    expect(realCharacteristicValue({ base: { value: 18 }, special: { value: 5 } })).toBe(20);
+    expect(realCharacteristicValue({ base: { value: 2 }, special: { value: -10 } })).toBe(0);
+  });
+
+  it('trata valores ausentes como 0', () => {
+    expect(realCharacteristicValue({})).toBe(0);
+    expect(realCharacteristicValue(undefined)).toBe(0);
+    expect(realCharacteristicValue({ base: { value: 10 } })).toBe(10);
   });
 });
