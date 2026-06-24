@@ -166,6 +166,7 @@ export class ABFActor extends Actor {
     const abilityValue = this.system.secondaries[groupPath][ability].final.value;
     const label = name ? `Rolling ${name}` : '';
     const mod = await openModDialog();
+    if (mod === undefined || mod === null) return; // cancelar (X / Escape): no tirar
     let formula = `${
       this.system.general.diceSettings.abilityDie.value
     } + ${abilityValue} + ${mod ?? 0}`;

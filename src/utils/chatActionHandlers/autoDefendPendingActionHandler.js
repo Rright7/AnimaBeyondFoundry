@@ -23,6 +23,7 @@ export default async function autoDefendPendingActionHandler(message, _html, ds)
     if (!pendings.length) return ui.notifications?.info('No hay objetivos pendientes.');
 
     const mod = await openModDialog();
+    if (mod === undefined || mod === null) return; // cancelar (X / Escape): no defender
 
     const entries = [];
     for (const t of pendings) {

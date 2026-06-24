@@ -94,6 +94,7 @@ export const SupernaturalShieldItemConfig = ABFItemConfigFactory({
       if (powerDifficulty == 'roll') {
         const { i18n } = game;
         const mod = await openModDialog();
+        if (mod === undefined || mod === null) return; // cancelar (X / Escape): no tirar
         const psychicPotential = actor.system.psychic.psychicPotential.final.value;
         const psychicPotentialRoll = new ABFFoundryRoll(
           `1d100PsychicRoll + ${psychicPotential} + ${mod}`,

@@ -857,6 +857,9 @@ export default class ABFActorSheet extends ActorSheetV1 {
     if (dataset.roll) {
       const label = dataset.label ? `Rolling ${dataset.label}` : '';
       const mod = await openModDialog();
+      // Cancelar el dialogo (X / Escape) devuelve null/undefined: NO se tira.
+      // Solo se tira al pulsar Continuar (devuelve '' o el modificador escrito).
+      if (mod === null || mod === undefined) return;
       const rollValue = this._getRollValueFromDataset(element, dataset);
       let formula = dataset.rollPath
         ? `${this._getRollDieFormula(dataset.roll)} + ${rollValue} + ${mod ?? 0}`

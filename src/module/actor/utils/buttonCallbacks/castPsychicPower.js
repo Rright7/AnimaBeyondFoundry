@@ -31,7 +31,9 @@ function _parseFatigueFromText(text) {
 async function _rollPsychicPotential(actor, power) {
   const baseFinal = Number(actor.system?.psychic?.psychicPotential?.final?.value ?? 0);
   const mentalPatternImbalance = false; // TO-DO: add mentalPatterns logic
-  const mod = Number(await openModDialog({ title: 'Modificador de Potencial' })) || 0;
+  const modRaw = await openModDialog({ title: 'Modificador de Potencial' });
+  if (modRaw === undefined || modRaw === null) return; // cancelar (X / Escape): no tirar
+  const mod = Number(modRaw) || 0;
   const roll = new ABFFoundryRoll(`1d100PsychicRoll + ${baseFinal} + ${mod}`, {
     ...actor.system,
     power,
@@ -86,7 +88,9 @@ async function _sendPsychicAttackToChat({
   targets
 }) {
   // Quick attack like spells: ask mod, roll offensive projection, post roll, then attack data to chat
-  const mod = Number(await openModDialog({ title: 'Modificador de Proyección' })) || 0;
+  const modRaw = await openModDialog({ title: 'Modificador de Proyección' });
+  if (modRaw === undefined || modRaw === null) return; // cancelar (X / Escape): no tirar
+  const mod = Number(modRaw) || 0;
 
   const offensiveProjectionBase = Number(
     actor.system?.psychic?.psychicProjection?.imbalance?.offensive?.base?.value ?? 0

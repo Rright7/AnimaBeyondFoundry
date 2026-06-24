@@ -88,10 +88,11 @@ export default class ABFCombat extends Combat {
    * @param {{updateTurn?: boolean, messageOptions?: any}} [options]
    */
   async rollInitiative(ids, { updateTurn = false, messageOptions } = {}) {
-    // Number(...) || 0: cubre cancelar el dialogo (undefined), dejarlo vacio ('') y
-    // entradas no numericas. Sin esto la formula quedaba "... + undefined" y la tirada
-    // de iniciativa fallaba. Mismo patron que los lanzamientos de hechizos/poderes.
-    const mod = Number(await openModDialog()) || 0;
+    // Cancelar el dialogo (X / Escape) aborta la tirada de iniciativa; pulsar
+    // Continuar con el campo vacio o un valor no numerico cuenta como modificador 0.
+    const modRaw = await openModDialog();
+    if (modRaw === undefined || modRaw === null) return this;
+    const mod = Number(modRaw) || 0;
 
     if (typeof ids === 'string') {
       ids = [ids];
