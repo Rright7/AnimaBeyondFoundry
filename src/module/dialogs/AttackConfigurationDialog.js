@@ -422,15 +422,20 @@ export class AttackConfigurationDialog extends FormApplication {
       const fatigueUsed = Math.max(0, Math.min(Number(combat.fatigueUsed) || 0, maxFatiguePerAction(actor), fatiguePool));
       const fatigueBonus = fatigueUsed * 15;
 
-      const mod =
-        Number(combat.modifier ?? 0)
-        + Number(combat.counterBonus ?? 0)
-        + maneuverPenalty
-        + aimedPenalty
-        + secondaryCritPenalty
-        + kiAttackBonus
-        + additionalAttacksPenalty
-        + fatigueBonus;
+      const editableMod = Number(combat.modifier ?? 0);
+      const counterBonusValue = Number(combat.counterBonus ?? 0);
+      // Cada termino por separado para que la formula del chat se vea DESGLOSADA (no un
+      // neto), incluido el "Modificador" editable. La suma (= total tirado) es identica.
+      const rollTerms = [
+        editableMod,
+        counterBonusValue,
+        maneuverPenalty,
+        aimedPenalty,
+        secondaryCritPenalty,
+        kiAttackBonus,
+        additionalAttacksPenalty,
+        fatigueBonus
+      ];
       // Umbral de maestria (>=200): para el arma-perfil "Artes Marciales" la
       // "habilidad" efectiva es la HA del actor MAS el bono de AM inyectado en su
       // special; para el resto de armas es la HA del actor.
@@ -443,7 +448,7 @@ export class AttackConfigurationDialog extends FormApplication {
           ? actor.system.general.diceSettings.abilityMasteryDie.value
           : actor.system.general.diceSettings.abilityDie.value;
 
-      const formula = buildRollFormula(die, [baseAttack, mod]);
+      const formula = buildRollFormula(die, [baseAttack, ...rollTerms]);
       const roll = new ABFFoundryRoll(formula, actor.system);
       await roll.evaluate({ async: true });
 
@@ -460,6 +465,11 @@ export class AttackConfigurationDialog extends FormApplication {
       // chat message shows where each modifier came from (similar to the AE
       // breakdown line in the actor flow).
       const dialogContribs = [];
+      // Modificador editable del dialogo: era el unico termino aplicado que no se
+      // listaba, lo que hacia parecer que los penalizadores "no iban".
+      if (editableMod !== 0) {
+        dialogContribs.push(`Modificador (${editableMod > 0 ? '+' : ''}${editableMod})`);
+      }
       if (Number(combat.counterBonus) > 0) {
         dialogContribs.push(
           `${game.i18n.localize('macros.combat.dialog.counterBonus.title')} (+${Number(combat.counterBonus)})`
