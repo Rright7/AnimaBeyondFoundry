@@ -3,6 +3,7 @@ import ABFFoundryRoll from '../rolls/ABFFoundryRoll';
 import { splitAsActorAndItemChanges } from './utils/splitAsActorAndItemChanges';
 import { unflat } from './utils/unflat';
 import { ALL_ITEM_CONFIGURATIONS } from './utils/prepareItems/constants';
+import { resistPain } from './utils/buttonCallbacks/resistPain.js';
 import { INITIAL_EFFECT_DATA } from '../types/effects/EffectItemConfig';
 import { getFieldValueFromPath } from './utils/prepareItems/util/getFieldValueFromPath';
 import { getUpdateObjectFromPath } from './utils/prepareItems/util/getUpdateObjectFromPath';
@@ -321,6 +322,12 @@ export default class ABFActorSheet extends ActorSheetV1 {
     this._activateKiTechniquesListeners(html);
     this._activateSphereSpellSync(html);
     this._activateWeaponHandDropZones(html);
+
+    // Resistir el dolor (reduce el penalizador por dolor/cansancio): boton del header.
+    html.find('[data-action="resist-pain"]').on('click', async e => {
+      e.preventDefault();
+      await resistPain(this.actor);
+    });
   }
 
   // Esferas de Magia: al cambiar el nivel de una vía, sincroniza el grimorio
@@ -857,6 +864,9 @@ export default class ABFActorSheet extends ActorSheetV1 {
     if (dataset.roll) {
       const label = dataset.label ? `Rolling ${dataset.label}` : '';
       const mod = await openModDialog();
+      // Cancelar el dialogo (X / Escape) devuelve null/undefined: NO se tira.
+      // Solo se tira al pulsar Continuar (devuelve '' o el modificador escrito).
+      if (mod === null || mod === undefined) return;
       const rollValue = this._getRollValueFromDataset(element, dataset);
       let formula = dataset.rollPath
         ? `${this._getRollDieFormula(dataset.roll)} + ${rollValue} + ${mod ?? 0}`

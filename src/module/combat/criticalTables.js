@@ -121,8 +121,9 @@ export function determineCriticalEffects(failureLevel, location) {
     return base;
   }
 
-  // 51+: half pain, half physical
-  base.painPenalty = Math.ceil(failureLevel / 2);
+  // 51+: mitad dolor, mitad fisico. Las DOS mitades se redondean hacia ABAJO (un
+  // failureLevel impar pierde 1 punto en favor del defensor): 75 -> 37 y 37, no 38/37.
+  base.painPenalty = Math.floor(failureLevel / 2);
   base.physicalPenalty = Math.floor(failureLevel / 2);
 
   if (location?.zone === 'head') {

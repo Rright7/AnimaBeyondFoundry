@@ -88,7 +88,9 @@ export async function castSpellGrade(sheet, event) {
   }
 
   // Quick attack
-  const mod = Number(await openModDialog()) || 0;
+  const modRaw = await openModDialog();
+  if (modRaw === undefined || modRaw === null) return; // cancelar (X / Escape): no tirar ni gastar zeon
+  const mod = Number(modRaw) || 0;
 
   // Economia de zeon: gasta (innato/preparado/acumulado) o bloquea si no llega.
   if (!actor.tryCastSpell(spell, grade)) return;
@@ -120,6 +122,7 @@ export async function castSpellGrade(sheet, event) {
     .damageType(game.animabf.combat.DamageType.NONE)
     .presence(0)
     .isProjectile(true)
+    .projectileType('shot') // hechizos = proyectil disparado (Tabla 49)
     .automaticCrit(!!(actor.system.general.modifiers.automaticCrit?.value))
     .critBonus(0)
     .critDamageBonus(actor.system.general.modifiers.critDamageBonus?.final?.value ?? 0)

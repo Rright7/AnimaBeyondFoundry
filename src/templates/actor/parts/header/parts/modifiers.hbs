@@ -30,8 +30,8 @@
         hasSecondaryInput=true
         disableSecondaryInput=true
         addTooltips=true
-        secondaryInputName="system.general.modifiers.allActions.final.value"
-        secondaryInputValue=system.general.modifiers.allActions.final.value
+        secondaryInputName="system.general.modifiers.allActions.otherFinal.value"
+        secondaryInputValue=system.general.modifiers.allActions.otherFinal.value
       }}
       {{>
       "systems/animabf/templates/common/ui/vertical-titled-input.hbs"
@@ -57,6 +57,42 @@
         secondaryInputName="system.general.modifiers.perceptionPenalty.final.value"
         secondaryInputValue=system.general.modifiers.perceptionPenalty.final.value
       }}
+      {{>
+      "systems/animabf/templates/common/ui/vertical-titled-input.hbs"
+        class="pain-penalty"
+        title="Dolor/Cansancio"
+        inputName="system.general.modifiers.allActions.painPenalty.base.value"
+        inputValue=system.general.modifiers.allActions.painPenalty.base.value
+        hasSecondaryInput=true
+        disableSecondaryInput=true
+        addTooltips=true
+        secondaryInputName="system.general.modifiers.allActions.painPenalty.final.value"
+        secondaryInputValue=system.general.modifiers.allActions.painPenalty.final.value
+      }}
+      {{>
+      "systems/animabf/templates/common/ui/vertical-titled-input.hbs"
+        class="physical-lack"
+        title="Carencias físicas"
+        inputName="system.general.modifiers.allActions.physicalLack.base.value"
+        inputValue=system.general.modifiers.allActions.physicalLack.base.value
+        hasSecondaryInput=true
+        disableSecondaryInput=true
+        addTooltips=true
+        secondaryInputName="system.general.modifiers.allActions.physicalLack.final.value"
+        secondaryInputValue=system.general.modifiers.allActions.physicalLack.final.value
+      }}
+    </div>
+    <div class='resist-pain-row'>
+      <label class='resist-pain-field' title='Reduccion activa de Resistir el dolor (Tabla 15). Cuenta como magnitud (da igual el signo: 20 y -20 reducen 20). Ponlo a 0 cuando ya no aplique.'>
+        <span>Reducción</span>
+        <input type='number' data-dtype='Number'
+          name='system.general.modifiers.allActions.painReduction.value'
+          value='{{system.general.modifiers.allActions.painReduction.value}}'>
+      </label>
+      <button type='button' class='resist-pain-btn' data-action='resist-pain'
+        title='Tira Resistir el dolor (sin sufrir el penalizador por dolor/cansancio) y fija la reduccion segun la Tabla 15'>
+        Resistir el dolor
+      </button>
     </div>
   {{/"systems/animabf/templates/common/ui/group-body.hbs"}}
 {{/"systems/animabf/templates/common/ui/group.hbs"}}

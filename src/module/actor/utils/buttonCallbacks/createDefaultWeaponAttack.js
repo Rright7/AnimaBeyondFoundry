@@ -13,6 +13,7 @@ export async function createDefaultWeaponAttack(sheet, e) {
   // Datos del ataque
   const label = `Rolling attack`;
   const mod = await openModDialog();
+  if (mod === undefined || mod === null) return; // cancelar (X / Escape): no tirar
 
   const actor = sheet.actor;
 

@@ -24,6 +24,7 @@ export default async function autoDefendActionHandler(message, _html, ds) {
       return ui.notifications?.warn('No hay tokens seleccionados válidos.');
 
     const mod = await openModDialog();
+    if (mod === undefined || mod === null) return; // cancelar (X / Escape): no defender
 
     const entries = [];
     for (const tok of tokens) {

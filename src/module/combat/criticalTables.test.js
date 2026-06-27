@@ -56,6 +56,13 @@ describe('determineCriticalEffects', () => {
     expect(e.unconscious).toBe(false);
   });
 
+  test('failureLevel 75 (impar) → ambas mitades hacia abajo: 37 y 37', () => {
+    const e = determineCriticalEffects(75, { zone: 'chest', group: 'torso' });
+    expect(e.actionPenalty).toBe(75); // total crudo (referencia)
+    expect(e.painPenalty).toBe(37); // floor(37.5)
+    expect(e.physicalPenalty).toBe(37); // floor(37.5), no 38
+  });
+
   test('failureLevel 70 on head → unconscious', () => {
     const e = determineCriticalEffects(70, { zone: 'head', group: 'head' });
     expect(e.unconscious).toBe(true);

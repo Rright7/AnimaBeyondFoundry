@@ -1,7 +1,11 @@
 import { ABFDefenseData } from './ABFDefenseData.js';
 import ABFFoundryRoll from '../rolls/ABFFoundryRoll.js';
 import { computeCombatResult } from './computeCombatResult.js';
-import { pickBestDefenseCandidate } from './DefenseStrategies.js';
+import {
+  pickBestDefenseCandidate,
+  projectilePenaltyFor,
+  isProjectileAttack
+} from './DefenseStrategies.js';
 import { getMessageMode } from '../utils/chatVisibility.js';
 import { defensesCounterCheck, freeDefensesFor } from './utils/defensesCounterCheck.js';
 import { buildRollFormula } from './utils/buildRollFormula.js';
@@ -9,17 +13,6 @@ import { buildRollFormula } from './utils/buildRollFormula.js';
 function toSafeNumber(v) {
   const n = Number(v);
   return Number.isFinite(n) ? n : 0;
-}
-
-function isProjectileAttack(attackData) {
-  const projectileType =
-    attackData?.projectile?.type ?? attackData?.projectileType ?? null;
-  if (attackData?.isProjectile === true) return true;
-  return (
-    projectileType === 'shot' ||
-    projectileType === 'throw' ||
-    projectileType === 'projectile'
-  );
 }
 
 function multipleDefensePenaltyFromAccumulated(accumulated, opts) {
@@ -107,7 +100,10 @@ export async function autoRollDefenseAgainstAttack({
     : 0;
 
   const projectilePenalty = isProjectileAttack(attackData)
-    ? candidate.projectilePenalty
+    ? projectilePenaltyFor(
+        candidate,
+        attackData?.projectileType ?? attackData?.projectile?.type
+      )
     : 0;
 
   const die =

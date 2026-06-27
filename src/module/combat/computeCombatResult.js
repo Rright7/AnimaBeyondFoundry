@@ -4,6 +4,7 @@ import { ABFCombatResultData } from './ABFCombatResultData.js';
 import { resolveActorForRoll } from '../actor/utils/resolveActorForRoll.js';
 import { calculateCounterAttackBonus } from './utils/calculateCounterAttackBonus.js';
 import { martialArtSpecialEffects } from './martialArts/martialArtSpecials.js';
+import { computeAimedArmor } from './utils/armorCoverage.js';
 
 /**
  * Computes a base combat result from the given attack and defense data.
@@ -46,7 +47,14 @@ export function computeCombatResult(attackData, defenseData) {
     : 0;
 
   let baseDamage = getFinalBaseDamage(attackData, defenseData);
-  let finalArmor = getFinalArmor(attackData, defenseData);
+  // Ataque APUNTADO: la TA solo cuenta si la zona golpeada esta cubierta por la
+  // armadura (un peto no protege las piernas; un yelmo cerrado si la cara...). Se
+  // recalcula con las armaduras que cubren la zona; null = no apuntado -> TA normal.
+  const aimedArmor =
+    attackData.aimed && attackData.aimedWhere
+      ? computeAimedArmor(defenderActor, attackData.aimedWhere, attackData.armorType)
+      : null;
+  let finalArmor = getFinalArmor(attackData, defenseData, aimedArmor);
 
   // Full (pre-halving) base damage, kept for the critical calculation: aimed
   // maneuvers (Inutilizar/Inconsciencia) deal half damage to HP but the crit is
@@ -168,6 +176,9 @@ export function computeCombatResult(attackData, defenseData) {
     .softReducedArmor(softArmorNullified ? 0 : softTaReduction)
     .softArmorNullified(softArmorNullified)
     .directBleeding(attackData.directBleeding)
+    .aimedZone(attackData.aimed && attackData.aimedWhere ? attackData.aimedWhere : '')
+    .aimedZoneArmor(aimedArmor ? aimedArmor.armor : 0)
+    .fullArmor(defenseData.armor ?? 0)
     .build();
 
   // Attach maneuver context (consumed by the chat hook that auto-posts the
@@ -253,24 +264,32 @@ function getFinalBaseDamage(attackData, defenseData) {
   return Math.max(0, roundedFinalBaseDamage);
 }
 
-/** Final armor after ignore/reduced logic */
-function getFinalArmor(attackData, defenseData) {
+/**
+ * Final armor after ignore/reduced logic.
+ * @param {ABFAttackData} attackData
+ * @param {ABFDefenseData} defenseData
+ * @param {{armor:number, hardArmor:number}|null} [aimedArmor] TA ya filtrada por
+ *   cobertura cuando el ataque es apuntado; si es null se usa la TA total normal.
+ */
+function getFinalArmor(attackData, defenseData, aimedArmor = null) {
+  const baseArmor = aimedArmor ? aimedArmor.armor : defenseData.armor ?? 0;
+  const baseHardArmor = aimedArmor ? aimedArmor.hardArmor : defenseData.hardArmor ?? 0;
   let armor = 0;
 
   if (attackData.ignoreArmor && defenseData.inmodifiableArmor) {
-    armor = Math.ceil((defenseData.armor ?? 0) / 2);
+    armor = Math.ceil(baseArmor / 2);
   } else if (attackData.ignoreArmor) {
     armor = 0;
   } else if (defenseData.inmodifiableArmor) {
-    armor = defenseData.armor ?? 0;
+    armor = baseArmor;
   } else {
     const reduced = Number(attackData.reducedArmor) || 0;
-    armor = (defenseData.armor ?? 0) - reduced;
+    armor = baseArmor - reduced;
     // Hakyoukuken: reduce SOLO la porcion blanda de la TA; no puede bajar de la TA
     // dura (que ya sufrio la reduccion general). 999 = anula la blanda del todo.
     const softReduction = Number(attackData.softArmorReduction) || 0;
     if (softReduction > 0) {
-      const hardFloor = Math.max(0, (Number(defenseData.hardArmor) || 0) - reduced);
+      const hardFloor = Math.max(0, baseHardArmor - reduced);
       armor = Math.max(hardFloor, armor - softReduction);
     }
   }

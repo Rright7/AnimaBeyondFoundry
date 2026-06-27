@@ -9,6 +9,7 @@ import ABFFoundryRoll from '../rolls/ABFFoundryRoll.js';
 import { FormulaEvaluator } from '../../utils/formulaEvaluator.js';
 import { defensesCounterCheck, freeDefensesFor } from '../combat/utils/defensesCounterCheck.js';
 import { buildRollFormula } from '../combat/utils/buildRollFormula.js';
+import { projectilePenaltyFor, isProjectileAttack } from '../combat/DefenseStrategies.js';
 import {
   activeTechniqueCombatBonuses,
   usableInstantCombatTechniques
@@ -446,6 +447,21 @@ export class DefenseConfigurationDialog extends FormApplication {
         : Math.max(0, Math.min(Number(combat?.fatigueUsed) || 0, maxFatiguePerAction(actor), fatiguePool));
       const fatigueBonus = fatigueUsed * 15;
 
+      // Penalizador por defenderse de un PROYECTIL (Tabla 49). Escudos sobrenaturales
+      // exentos (projectilePenaltyFor -> 0 para 'supernaturalShield'). El tipo (disparo/
+      // lanzamiento) sale del ataque; hechizos/psiquica/Ki a distancia cuentan como disparo.
+      const projDefenseType = type === 'shield' ? 'supernaturalShield' : type;
+      const projectilePenalty = isProjectileAttack(attackData)
+        ? projectilePenaltyFor(
+            {
+              type: projDefenseType,
+              isShieldWeapon: type === 'block' && !!weapon?.system?.isShield?.value,
+              hasMastery: (defenseAbility.naturalBase ?? 0) >= 200
+            },
+            attackData?.projectileType ?? attackData?.projectile?.type
+          )
+        : 0;
+
       // Split each contribution into its own term so the Foundry roll tooltip
       // shows the breakdown: defense ability, situational modifier, the
       // multiple-defenses penalty, the resist-the-hit penalty and fatigue.
@@ -455,6 +471,7 @@ export class DefenseConfigurationDialog extends FormApplication {
         mod,
         effectiveMultiPenalty,
         resistPenalty,
+        -projectilePenalty,
         kiDefenseBonus,
         fatigueBonus
       ]);
@@ -479,6 +496,9 @@ export class DefenseConfigurationDialog extends FormApplication {
       // breakdown). Active Effect contributions are appended by the
       // separate AE traceability hook on top of this.
       const defenseContribs = [];
+      if (projectilePenalty > 0) {
+        defenseContribs.push(`Proyectil (-${projectilePenalty})`);
+      }
       if (resistPenalty !== 0) {
         defenseContribs.push(`Resiste el golpe (${resistPenalty})`);
       }
@@ -536,6 +556,7 @@ export class DefenseConfigurationDialog extends FormApplication {
         .weaponId(weapon?._id ?? weapon?.id ?? '')
         .shieldId(shieldItemId)
         .resistTheHit(resistTheHit)
+        .projectilePenalty(projectilePenalty)
         .build();
 
       const combatResult = computeCombatResult(attackData, defenseData);
@@ -577,7 +598,10 @@ export class DefenseConfigurationDialog extends FormApplication {
               aimedWhere: attackData?.aimedWhere ?? '',
               maneuverSlug: attackData?.maneuverSlug ?? '',
               maneuverWasUnarmed: !!attackData?.maneuverWasUnarmed,
-              delayRounds: Number(attackData?.delayRounds ?? 0) || 0
+              delayRounds: Number(attackData?.delayRounds ?? 0) || 0,
+              // Para la animación de combate: distancia (proyectil) y subtipo.
+              isProjectile: !!attackData?.isProjectile,
+              projectileType: attackData?.projectileType ?? ''
             },
             attacker: {
               actorId: attackData?.attackerId ?? '',

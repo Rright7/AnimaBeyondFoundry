@@ -28,6 +28,13 @@
     {{/if}}
 
     <p data-requires-permission="gm"><strong>{{localize "chat.combatResult.armor"}}:</strong> {{combatResult.finalArmor}}{{#if combatResult.reducedArmor}} (−{{combatResult.reducedArmor}} {{localize "chat.combatResult.reduced"}}){{/if}}{{#if combatResult.softArmorNullified}} ({{localize "chat.combatResult.softNullified"}}){{/if}}{{#if combatResult.softReducedArmor}} (−{{combatResult.softReducedArmor}} {{localize "chat.combatResult.softReduced"}}){{/if}}</p>
+    {{#if combatResult.aimedZone}}
+      <p data-requires-permission="gm" style="opacity:.85; margin:.1rem 0 .3rem; font-size:.92em;">
+        🎯 {{localize "chat.combatResult.aimedAt"}}
+        <strong>{{localize (concat "anima.combat.aimedZone." combatResult.aimedZone)}}</strong>
+        — {{localize "chat.combatResult.aimedTAIsZone"}}{{#if (gt combatResult.fullArmor combatResult.aimedZoneArmor)}} ({{localize "chat.combatResult.aimedBody"}}: {{combatResult.fullArmor}}){{/if}}
+      </p>
+    {{/if}}
     {{#if combatResult.appliedDamage}}
       <p><strong>{{localize "chat.combatResult.finalDamage"}}:</strong> {{combatResult.appliedDamage}}<span data-requires-permission="gm"> ({{localize "chat.combatResult.baseDamage"}}: {{combatResult.damageFinal}}, {{combatResult.damagePercentage}}% of {{combatResult.finalBaseDamage}})</span></p>
     {{else}}
@@ -132,6 +139,25 @@
 
             {{#if combatResult.critEffects.deathTimer}}
               <p data-requires-permission="owner" style="color:#c03050;">{{localize "chat.combatResult.deathTimer"}}</p>
+            {{/if}}
+
+            {{#if (gt combatResult.critEffects.actionPenalty 0)}}
+              {{#if combatResult.critPenaltyApplied}}
+                <p data-requires-permission="owner" style="margin-top:.4rem;color:#20a060;font-weight:bold;">
+                  <i class="fas fa-check"></i> {{localize "chat.combatResult.penaltiesApplied"}}
+                </p>
+              {{else}}
+                <div data-requires-permission="owner" style="margin-top:.4rem;">
+                  <button type="button"
+                          class="chat-action-button"
+                          style="background:#c03050; color:white; width:100%;"
+                          data-action="animabf-apply-crit-penalties"
+                          data-def-actor="{{defenderId}}"
+                          data-def-token="{{defenderTokenId}}">
+                    {{localize "chat.combatResult.applyPenaltiesButton"}}
+                  </button>
+                </div>
+              {{/if}}
             {{/if}}
           {{/if}}
         {{/unless}}

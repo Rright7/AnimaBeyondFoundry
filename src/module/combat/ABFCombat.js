@@ -1,5 +1,7 @@
 import { openModDialog } from '../utils/dialogs/openSimpleInputDialog';
 import { tickBleeding } from './bleedingEffect.js';
+import { tickPainRecovery } from './painRecovery.js';
+import { prepareActor } from '../actor/utils/prepareActor/prepareActor.js';
 import { processDueDelayedDamage } from './delayedDamageEffect.js';
 
 export default class ABFCombat extends Combat {
@@ -49,6 +51,11 @@ export default class ABFCombat extends Combat {
       await actor.psychicShieldsMaintenance();
       // Desangramiento: 1 PV cada 20 asaltos mientras dure el sangrado.
       await tickBleeding(actor, 1);
+      // Dolor: el penalizador por dolor se recupera 5 hacia 0 cada asalto. prepareActor
+      // antes porque la reduccion (kiBonus) es derivada async: tras los updates de arriba
+      // estaria sin preparar y saldria divisor 1 (bajaria 5 en vez de 10 con la mitad).
+      await prepareActor(actor);
+      await tickPainRecovery(actor, 5);
       // Daño retrasado: aplica los daños que vencen en la ronda que se entra
       // (this.round aún es la anterior; super.nextRound la incrementa).
       await processDueDelayedDamage(actor, (this.round ?? 0) + 1);
@@ -88,10 +95,11 @@ export default class ABFCombat extends Combat {
    * @param {{updateTurn?: boolean, messageOptions?: any}} [options]
    */
   async rollInitiative(ids, { updateTurn = false, messageOptions } = {}) {
-    // Number(...) || 0: cubre cancelar el dialogo (undefined), dejarlo vacio ('') y
-    // entradas no numericas. Sin esto la formula quedaba "... + undefined" y la tirada
-    // de iniciativa fallaba. Mismo patron que los lanzamientos de hechizos/poderes.
-    const mod = Number(await openModDialog()) || 0;
+    // Cancelar el dialogo (X / Escape) aborta la tirada de iniciativa; pulsar
+    // Continuar con el campo vacio o un valor no numerico cuenta como modificador 0.
+    const modRaw = await openModDialog();
+    if (modRaw === undefined || modRaw === null) return this;
+    const mod = Number(modRaw) || 0;
 
     if (typeof ids === 'string') {
       ids = [ids];

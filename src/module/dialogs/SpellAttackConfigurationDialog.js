@@ -142,6 +142,7 @@ export class SpellAttackConfigurationDialog extends FormApplication {
         .damageType(game.animabf.combat.DamageType.NONE)
         .presence(0)
         .isProjectile(true)
+        .projectileType('shot') // hechizos = proyectil disparado (Tabla 49)
         .automaticCrit(!!attacker.combat?.automaticCrit)
         .critBonus(0)
         .critDamageBonus(Number(attacker.combat?.critDamageBonus ?? 0))

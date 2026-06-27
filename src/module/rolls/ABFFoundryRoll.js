@@ -31,7 +31,24 @@ export default class ABFFoundryRoll extends Roll {
       formula = formula.substr(0, formula.length - 1);
     }
 
-    super(formula, data, options);
+    // Marcadores propios (Initiative/ControlRoll/PsychicRoll): eligen la subclase
+    // ABFRoll pero NO son sintaxis de dados de Foundry. Hay que detectarlos ahora
+    // y QUITARLOS antes de pasar la formula a super(), porque en V13+ el parser de
+    // dados interpreta letras del marcador como modificadores (p.ej. la 'r' de
+    // 'ControlRoll' -> repetir tirada al sacar el minimo), generando tiradas
+    // fantasma. 'xa'/'xamastery' se conservan: la 'x' es la explosion real de
+    // Foundry (maximo) y ABFRoll lee 'mastery'.
+    const isInitiative = formula.includes('Initiative');
+    const isControlRoll = formula.includes('ControlRoll');
+    const isPsychicRoll = formula.includes('PsychicRoll');
+
+    const foundryFormula = formula
+      .replace(/Initiative/g, '')
+      .replace(/ControlRoll/g, '')
+      .replace(/PsychicRoll/g, '')
+      .trim();
+
+    super(foundryFormula, data, options);
 
     if (data) {
       this.data = data;
@@ -41,15 +58,15 @@ export default class ABFFoundryRoll extends Roll {
       this.animabfRoll = new ABFExploderRoll(this);
     }
 
-    if (this.formula.includes('Initiative')) {
+    if (isInitiative) {
       this.animabfRoll = new ABFInitiativeRoll(this);
     }
 
-    if (this.formula.includes('ControlRoll')) {
+    if (isControlRoll) {
       this.animabfRoll = new ABFControlRoll(this);
     }
 
-    if (this.formula.includes('PsychicRoll')) {
+    if (isPsychicRoll) {
       this.animabfRoll = new ABFPsychicRoll(this);
     }
   }

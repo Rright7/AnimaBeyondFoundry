@@ -1,6 +1,7 @@
 import { FormulaEvaluator } from '../../utils/formulaEvaluator.js';
 import { martialArtsDodgeBonus } from './martialArts/martialArtsDodge.js';
 import { defensesCounterCheck, freeDefensesFor } from './utils/defensesCounterCheck.js';
+import { projectileDefensePenalty } from './projectileDefensePenalty.js';
 
 const toSafeNumber = v => {
   const n = Number(v);
@@ -11,22 +12,16 @@ const RULES = {
   block: {
     stackDefense: true,
     applyMultipleDefensePenalty: true,
-    projectilePenalty: c => {
-      if (c.isShieldWeapon) return c.hasMastery ? 0 : 30;
-      return c.hasMastery ? 20 : 80;
-    },
     flavorSuffix: c => (c.weaponName ? ` (${c.weaponName})` : '')
   },
   dodge: {
     stackDefense: true,
     applyMultipleDefensePenalty: true,
-    projectilePenalty: c => (c.hasMastery ? 0 : 30),
     flavorSuffix: () => ''
   },
   supernaturalShield: {
     stackDefense: false,
     applyMultipleDefensePenalty: false,
-    projectilePenalty: () => 0,
     flavorSuffix: c => (c.shieldName ? ` (${c.shieldName})` : '')
   }
 };
@@ -37,12 +32,21 @@ function withRules(candidate) {
     ...candidate,
     stackDefense: r.stackDefense,
     applyMultipleDefensePenalty: r.applyMultipleDefensePenalty,
-    projectilePenalty: r.projectilePenalty(candidate),
     flavorSuffix: r.flavorSuffix(candidate)
   };
 }
 
-function isProjectileAttack(attackData) {
+/**
+ * Penalizador por proyectil (Tabla 49) para un candidato de defensa segun el tipo del
+ * ataque ('throw' lanzamiento; cualquier otro = disparo). Depende del tipo, por eso se
+ * calcula al aplicar y no se precomputa en el candidato.
+ * @returns {number} positivo (se resta de la defensa)
+ */
+export function projectilePenaltyFor(candidate, projectileType) {
+  return projectileDefensePenalty(candidate?.type, candidate ?? {}, projectileType);
+}
+
+export function isProjectileAttack(attackData) {
   const projectileType =
     attackData?.projectile?.type ?? attackData?.projectileType ?? null;
   if (attackData?.isProjectile === true) return true;
@@ -162,7 +166,10 @@ function computeEffectiveScore(candidate, attackData, defensesCounter, freeDef) 
     : 0;
 
   const projPenalty = isProjectileAttack(attackData)
-    ? Number(candidate.projectilePenalty) || 0
+    ? projectilePenaltyFor(
+        candidate,
+        attackData?.projectileType ?? attackData?.projectile?.type
+      )
     : 0;
 
   return {
