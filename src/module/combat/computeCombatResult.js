@@ -176,6 +176,9 @@ export function computeCombatResult(attackData, defenseData) {
     .softReducedArmor(softArmorNullified ? 0 : softTaReduction)
     .softArmorNullified(softArmorNullified)
     .directBleeding(attackData.directBleeding)
+    .aimedZone(attackData.aimed && attackData.aimedWhere ? attackData.aimedWhere : '')
+    .aimedZoneArmor(aimedArmor ? aimedArmor.armor : 0)
+    .fullArmor(defenseData.armor ?? 0)
     .build();
 
   // Attach maneuver context (consumed by the chat hook that auto-posts the

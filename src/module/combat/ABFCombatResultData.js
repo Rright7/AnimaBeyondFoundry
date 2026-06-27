@@ -24,6 +24,13 @@ export class ABFCombatResultData {
     // con dano aunque no haya critico.
     this.directBleeding = p.directBleeding ?? false;
 
+    // Ataque APUNTADO: zona golpeada + TA por cobertura de la zona vs TA total, para
+    // que la tarjeta aclare por que la TA contabilizada puede ser 0 (la armadura no
+    // cubre esa zona) y no la TA del cuerpo. '' / 0 cuando el ataque no es apuntado.
+    this.aimedZone = p.aimedZone ?? '';
+    this.aimedZoneArmor = p.aimedZoneArmor ?? 0;
+    this.fullArmor = p.fullArmor ?? 0;
+
     // Critical resolution (populated by resolveCriticalHit)
     this.critResolved = p.critResolved ?? false;
     this.critImmune = p.critImmune ?? false;
@@ -122,6 +129,18 @@ export class ABFCombatResultDataBuilder {
   }
   directBleeding(v) {
     this._p.directBleeding = !!v;
+    return this;
+  }
+  aimedZone(v) {
+    this._p.aimedZone = v ?? '';
+    return this;
+  }
+  aimedZoneArmor(v) {
+    this._p.aimedZoneArmor = Number(v) || 0;
+    return this;
+  }
+  fullArmor(v) {
+    this._p.fullArmor = Number(v) || 0;
     return this;
   }
 
