@@ -31,11 +31,22 @@ function accumulateEffect(totals, eff) {
       RESISTANCE_KEYS.forEach(k => (totals.resistances[k] += value));
     else if (RESISTANCE_TARGET[target])
       totals.resistances[RESISTANCE_TARGET[target]] += value;
+    // 'painHalf' = numero de "mitades" del penalizador por dolor/cansancio: SUMA, asi
+    // dos fuentes (mitad + mitad) se componen en un cuarto. Lo consume
+    // painReductionDivisor (2^painHalf) en mutateAllActionsModifier.
+    else if (target === 'painHalf') totals.painHalf += value;
   } else if (eff.operation === 'set') {
     if (target === 'energyArmor')
       totals.energyArmor = Math.max(totals.energyArmor, value);
     else if (target === 'damageReduction')
       totals.damageReduction = Math.max(totals.damageReduction, value);
+    // Flags binarios (1 = activa), NO apilan: 'painImmune' (Esencia de Vacio elimina el
+    // dolor/cansancio) y 'physicalLackImmune' (Uno con la Nada anula las carencias
+    // fisicas del critico). Se consumen en mutateAllActionsModifier.
+    else if (target === 'painImmune')
+      totals.painImmune = Math.max(totals.painImmune, value);
+    else if (target === 'physicalLackImmune')
+      totals.physicalLackImmune = Math.max(totals.physicalLackImmune, value);
   }
 }
 
@@ -69,6 +80,9 @@ export const applyKiSkillsModifiers = (data, actor) => {
     initiative: 0,
     energyArmor: 0,
     damageReduction: 0,
+    painImmune: 0,
+    painHalf: 0,
+    physicalLackImmune: 0,
     resistances: { physical: 0, disease: 0, poison: 0, magic: 0, psychic: 0 }
   };
   enrichListFromCanonical(kiSkills, totals, actor);
@@ -113,6 +127,9 @@ export const applyKiSkillsModifiers = (data, actor) => {
   m.kiBonus.initiative = { value: totals.initiative };
   m.kiBonus.energyArmor = { value: totals.energyArmor };
   m.kiBonus.damageReduction = { value: totals.damageReduction };
+  m.kiBonus.painImmune = { value: totals.painImmune };
+  m.kiBonus.painHalf = { value: totals.painHalf };
+  m.kiBonus.physicalLackImmune = { value: totals.physicalLackImmune };
   m.kiBonus.resistances = {
     physical: { value: totals.resistances.physical },
     disease: { value: totals.resistances.disease },
@@ -297,6 +314,9 @@ applyKiSkillsModifiers.abfFlow = {
     'system.general.modifiers.kiBonus.initiative.value',
     'system.general.modifiers.kiBonus.energyArmor.value',
     'system.general.modifiers.kiBonus.damageReduction.value',
+    'system.general.modifiers.kiBonus.painImmune.value',
+    'system.general.modifiers.kiBonus.painHalf.value',
+    'system.general.modifiers.kiBonus.physicalLackImmune.value',
     'system.general.modifiers.kiBonus.resistances.physical.value',
     'system.general.modifiers.kiBonus.resistances.disease.value',
     'system.general.modifiers.kiBonus.resistances.poison.value',

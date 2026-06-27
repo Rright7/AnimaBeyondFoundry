@@ -146,8 +146,58 @@
   .modifiers {
     .first-row {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr 1fr;
+      // 6 modificadores en 2 filas de 3 (las celdas fluyen solas) para no estirar tanto
+      // la seccion y dar mas aire a los titulos largos (Carencias fisicas, Pen. Percep.).
+      grid-template-columns: repeat(3, 1fr);
       grid-column-gap: 0.25rem;
+      grid-row-gap: 0.4rem;
+    }
+
+    .resist-pain-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.4rem;
+      width: 100%;
+      box-sizing: border-box;
+
+      .resist-pain-field {
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+
+        span {
+          font-size: 0.6rem;
+          line-height: 1;
+          color: var(--abf-text-muted);
+          text-transform: uppercase;
+        }
+
+        input {
+          width: 3rem;
+          height: 1.25rem;
+          text-align: center;
+        }
+      }
+
+      .resist-pain-btn {
+        flex: 1 1 auto;
+        min-width: 0;
+        border: 1px solid var(--abf-accent);
+        border-radius: 999px;
+        background: var(--abf-surface);
+        color: var(--abf-accent-text);
+        font-weight: bold;
+        font-size: 0.8rem;
+        padding: 0.2rem 0.8rem;
+        cursor: pointer;
+        transition: background 0.15s ease, color 0.15s ease;
+
+        &:hover {
+          background: var(--abf-accent-soft);
+        }
+      }
     }
   }
   // Modifiers

@@ -61,6 +61,31 @@ export const INITIAL_ACTOR_DATA = {
         special: {
           value: 0
         },
+        painPenalty: {
+          base: {
+            value: 0
+          },
+          fatigue: {
+            value: 0
+          },
+          final: {
+            value: 0
+          }
+        },
+        painReduction: {
+          value: 0
+        },
+        physicalLack: {
+          base: {
+            value: 0
+          },
+          final: {
+            value: 0
+          }
+        },
+        otherFinal: {
+          value: 0
+        },
         final: {
           value: 0
         }

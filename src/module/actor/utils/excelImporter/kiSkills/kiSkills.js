@@ -471,7 +471,9 @@ export const KI_SKILLS = [
     martialKnowledge: 20,
     tree: { parent: 'necessaryEnergyUse', depth: 1 },
     aliases: { es: ['Eliminación de penalizadores'] },
-    effects: []
+    // Reduce a la mitad los penalizadores por dolor/cansancio. 'add' (no 'set'): dos
+    // fuentes de mitad se componen en un cuarto (painReductionDivisor = 2^painHalf).
+    effects: [{ target: 'painHalf', operation: 'add', value: 1 }]
   },
   {
     id: 'recovery',
@@ -680,7 +682,8 @@ export const KI_SKILLS = [
     martialKnowledge: 20,
     tree: { parent: 'voidBody', depth: 1 },
     aliases: { es: ['Esencia de Vacío'] },
-    effects: []
+    // Deja de sufrir penalizadores por dolor/cansancio (los elimina por completo).
+    effects: [{ target: 'painImmune', operation: 'set', value: 1 }]
   },
   {
     id: 'oneWithNothingness',
@@ -689,7 +692,8 @@ export const KI_SKILLS = [
     martialKnowledge: 40,
     tree: { parent: 'voidEssence', depth: 2 },
     aliases: { es: ['Uno con la nada'] },
-    effects: []
+    // Inmune a las carencias fisicas (la mitad "fisica" del penalizador de critico).
+    effects: [{ target: 'physicalLackImmune', operation: 'set', value: 1 }]
   },
   {
     id: 'voidAura',

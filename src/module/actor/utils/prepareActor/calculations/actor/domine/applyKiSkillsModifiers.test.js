@@ -38,6 +38,35 @@ describe('applyKiSkillsModifiers — passive effects', () => {
     applyKiSkillsModifiers(data);
     expect(data.general.modifiers.kiBonus.energyArmor.value).toBe(0);
   });
+
+  test('Eliminación de penalizadores (Ki) sets kiBonus.painHalf', () => {
+    const data = makeData({ kiSkills: [inner('penaltyElimination')] });
+    applyKiSkillsModifiers(data);
+    expect(data.general.modifiers.kiBonus.painHalf.value).toBe(1);
+    expect(data.general.modifiers.kiBonus.painImmune.value).toBe(0);
+  });
+
+  test('dos fuentes de "mitad" SUMAN painHalf=2 (se componen en un cuarto)', () => {
+    // 'add': cada reduccion a la mitad apila; painReductionDivisor -> 2^2 = 4 (cuarto).
+    const data = makeData({
+      kiSkills: [inner('penaltyElimination'), inner('penaltyElimination')]
+    });
+    applyKiSkillsModifiers(data);
+    expect(data.general.modifiers.kiBonus.painHalf.value).toBe(2);
+  });
+
+  test('Esencia de Vacío (Nemesis) sets kiBonus.painImmune', () => {
+    const data = makeData({ nemesisSkills: [inner('voidEssence')] });
+    applyKiSkillsModifiers(data);
+    expect(data.general.modifiers.kiBonus.painImmune.value).toBe(1);
+  });
+
+  test('Uno con la Nada (Nemesis) sets kiBonus.physicalLackImmune', () => {
+    const data = makeData({ nemesisSkills: [inner('oneWithNothingness')] });
+    applyKiSkillsModifiers(data);
+    expect(data.general.modifiers.kiBonus.physicalLackImmune.value).toBe(1);
+    expect(data.general.modifiers.kiBonus.painImmune.value).toBe(0);
+  });
 });
 
 describe('applyKiSkillsModifiers — resistances, barrier and dynamic values', () => {
