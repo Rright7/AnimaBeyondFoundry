@@ -122,6 +122,7 @@ export async function castSpellGrade(sheet, event) {
     .damageType(game.animabf.combat.DamageType.NONE)
     .presence(0)
     .isProjectile(true)
+    .projectileType('shot') // hechizos = proyectil disparado (Tabla 49)
     .automaticCrit(!!(actor.system.general.modifiers.automaticCrit?.value))
     .critBonus(0)
     .critDamageBonus(actor.system.general.modifiers.critDamageBonus?.final?.value ?? 0)

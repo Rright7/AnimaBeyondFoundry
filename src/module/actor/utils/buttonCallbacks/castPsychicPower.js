@@ -117,6 +117,7 @@ async function _sendPsychicAttackToChat({
     .damageType(game.animabf.combat.DamageType.NONE)
     .presence(0)
     .isProjectile(true)
+    .projectileType('shot') // poderes psiquicos = proyectil disparado (Tabla 49)
     .damagesEnergy(effectData?.affectsInmaterial?.value)
     .automaticCrit(!!(actor.system.general.modifiers.automaticCrit?.value))
     .critBonus(0)
