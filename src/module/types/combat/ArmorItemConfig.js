@@ -10,7 +10,9 @@ export const ArmorLocation = {
   COMPLETE: 'complete',
   NIGHTDRESS: 'nightdress',
   BREASTPLATE: 'breastplate',
-  HEAD: 'head'
+  HEAD: 'head',
+  // Yelmo cerrado: unico yelmo que protege ojo y cuello (el resto solo la cabeza).
+  HEAD_CLOSED: 'headClosed'
 };
 
 /**

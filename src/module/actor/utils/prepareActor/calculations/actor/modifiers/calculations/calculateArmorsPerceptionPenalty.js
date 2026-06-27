@@ -11,7 +11,8 @@ export const calculateArmorsPerceptionPenalty = data => {
   const equippedArmors = combat.armors.filter(
     armor =>
       armor.system.equipped.value &&
-      armor.system.localization.value === ArmorLocation.HEAD
+      (armor.system.localization.value === ArmorLocation.HEAD ||
+        armor.system.localization.value === ArmorLocation.HEAD_CLOSED)
   );
 
   return equippedArmors.reduce(

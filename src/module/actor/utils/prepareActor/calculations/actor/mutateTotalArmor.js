@@ -42,7 +42,8 @@ export const mutateTotalArmor = data => {
   const equippedArmors = data.combat.armors.filter(
     armor =>
       armor.system.equipped.value &&
-      armor.system.localization.value !== ArmorLocation.HEAD
+      armor.system.localization.value !== ArmorLocation.HEAD &&
+      armor.system.localization.value !== ArmorLocation.HEAD_CLOSED
   );
   // Armadura DURA = type 'hard'. Cualquier otra (cuero, tela, natural, magica/
   // sobrenatural, o sin tipo) es BLANDA (definicion de mesa). hardAt es el suelo

@@ -15,7 +15,8 @@ export const calculateEquippedArmorsNaturalPenalty = data => {
     armor =>
       armor.system.equipped.value &&
       armor.system.type.value !== ArmorType.NATURAL &&
-      armor.system.localization.value !== ArmorLocation.HEAD
+      armor.system.localization.value !== ArmorLocation.HEAD &&
+      armor.system.localization.value !== ArmorLocation.HEAD_CLOSED
   );
 
   return Math.min(0, (equippedArmorsNonNatural.length - 1) * -20);
