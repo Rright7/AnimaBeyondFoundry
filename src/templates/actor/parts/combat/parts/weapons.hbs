@@ -205,9 +205,30 @@
                 {{!-- <button class='attack-button' data-on-click="createDefaultWeaponAttack" data-weapon-id="{{weapon._id}}">
                   {{localize "anima.ui.combat.weapons.defaultAttackButton.title"}}
                 </button> --}}
-                <button class='attack-button' data-on-click="createWeaponAttack" data-weapon-id="{{weapon._id}}">
-                  {{localize "anima.ui.combat.weapons.attackButton.title"}}
-                </button>
+                {{!-- Botones segun el tipo de arma (lanzable = cualidad throwable; el
+                      shotType es basura en muchas armas melee del compendio):
+                      - lanzable: Atacar (melee) + Lanzar (doble uso)
+                      - disparada (isRanged): SOLO Disparar (un arco/pistola no va a melee)
+                      - melee: SOLO Atacar
+                      El boton decide el modo (mode 'ranged'/'melee'); sin checkbox. --}}
+                {{#if weapon.system.isThrowable}}
+                  <button class='attack-button' data-on-click="createWeaponAttack" data-weapon-id="{{weapon._id}}">
+                    {{localize "anima.ui.combat.weapons.attackButton.title"}}
+                  </button>
+                  <button class='attack-button attack-button--ranged' data-on-click="createWeaponAttack" data-weapon-id="{{weapon._id}}" data-attack-mode="ranged">
+                    {{localize "anima.ui.combat.weapons.throwButton.title"}}
+                  </button>
+                {{else}}
+                  {{#if weapon.system.isRanged.value}}
+                    <button class='attack-button attack-button--ranged' data-on-click="createWeaponAttack" data-weapon-id="{{weapon._id}}" data-attack-mode="ranged">
+                      {{localize "anima.ui.combat.weapons.shootButton.title"}}
+                    </button>
+                  {{else}}
+                    <button class='attack-button' data-on-click="createWeaponAttack" data-weapon-id="{{weapon._id}}">
+                      {{localize "anima.ui.combat.weapons.attackButton.title"}}
+                    </button>
+                  {{/if}}
+                {{/if}}
               {{!-- {{/if}} --}}
               
             </div>

@@ -22,6 +22,8 @@ export class ABFAttackData {
     this.aimedWhere = p.aimedWhere ?? '';
     this.isProjectile = !!p.isProjectile;
     this.projectileType = p.projectileType ?? '';
+    // A bocajarro (<1 m / adyacente): anula el penalizador de defensa contra proyectiles.
+    this.pointBlank = !!p.pointBlank;
     this.isArea = !!p.isArea;
     this.areaDesc = p.areaDesc ?? '';
 
@@ -283,6 +285,10 @@ export class ABFAttackDataBuilder {
   }
   projectileType(s) {
     this._p.projectileType = String(s ?? '');
+    return this;
+  }
+  pointBlank(b = true) {
+    this._p.pointBlank = !!b;
     return this;
   }
   isArea(b = true) {

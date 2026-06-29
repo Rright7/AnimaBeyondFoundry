@@ -671,6 +671,36 @@
         color: var(--abf-text-muted);
         font-size: 0.8rem;
       }
+
+      // Iconos de accion rapida (Atacar / Lanzar / Disparar) del arma en mano.
+      .ew-actions {
+        flex: 0 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+
+      .ew-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.7rem;
+        height: 1.7rem;
+        padding: 0;
+        border: 1px solid var(--abf-border);
+        border-radius: var(--abf-radius-sm);
+        background: transparent;
+        color: var(--abf-text-muted);
+        cursor: pointer;
+        font-size: 0.8rem;
+        line-height: 1;
+        transition: background 0.12s ease, color 0.12s ease;
+
+        &:hover {
+          background: var(--abf-accent);
+          color: #fff;
+        }
+      }
     }
 
     .hand-empty {

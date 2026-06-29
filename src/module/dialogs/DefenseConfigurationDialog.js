@@ -451,7 +451,7 @@ export class DefenseConfigurationDialog extends FormApplication {
       // exentos (projectilePenaltyFor -> 0 para 'supernaturalShield'). El tipo (disparo/
       // lanzamiento) sale del ataque; hechizos/psiquica/Ki a distancia cuentan como disparo.
       const projDefenseType = type === 'shield' ? 'supernaturalShield' : type;
-      const projectilePenalty = isProjectileAttack(attackData)
+      const projectilePenalty = isProjectileAttack(attackData) && !attackData?.pointBlank
         ? projectilePenaltyFor(
             {
               type: projDefenseType,

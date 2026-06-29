@@ -11,7 +11,10 @@ import { calculateWeaponInitiative } from './calculations/calculateWeaponInitiat
 import { calculateWeaponArmorReduction } from './calculations/calculateWeaponArmorReduction';
 import { calculateArmorReductionFromQuality } from './util/calculateArmorReductionFromQuality';
 import { applyMartialArtsWeaponBonuses } from '../../../../../../combat/martialArts/martialArtsWeapon.js';
-import { manageabilityFromQualities } from '../../../utils/getCombatHandWeapons';
+import {
+  manageabilityFromQualities,
+  hasWeaponQuality
+} from '../../../utils/getCombatHandWeapons';
 
 /**
  *
@@ -29,6 +32,10 @@ export const mutateWeaponsData = data => {
     if (fromQuality && weapon.system.manageabilityType) {
       weapon.system.manageabilityType.value = fromQuality;
     }
+
+    // Lanzable: la cualidad `throwable` es el indicador FIABLE (el shotType es basura en
+    // muchas armas melee del compendio). Flag derivado para los botones/iconos de "Lanzar".
+    weapon.system.isThrowable = hasWeaponQuality(weapon, 'throwable');
 
     // Arma-perfil "Artes Marciales": inyecta los bonos de AM en sus `special`
     // antes de calcular los finales (no-op en el resto de armas).

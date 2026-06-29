@@ -188,6 +188,14 @@
         {{/unless}}
       {{/if}}
 
+      {{!-- Proyectil (a distancia/lanzado) ya NO es checkbox aqui: lo decide el boton
+            "Lanzar"/"Disparar" de la fila del arma (mode 'ranged'); "Atacar" = melee.
+            Aplica el penalizador de defensa contra proyectiles (Tabla 49). --}}
+
+      {{!-- A bocajarro es AUTOCALCULADO en el envio del ataque (adyacencia por canvas.grid):
+            anula el penalizador de defensa del proyectil y da +30 si es disparado. Sin
+            casilla; se ve en el chat (+30 / sin penalizador). --}}
+
       {{!-- {{#if this.attacker.combat.projectile.value}}
 
         <div class='columns'>

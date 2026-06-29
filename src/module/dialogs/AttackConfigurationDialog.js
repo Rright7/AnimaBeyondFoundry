@@ -22,6 +22,7 @@ import {
 } from '../combat/martialArts/martialArtSpecials.js';
 import { maxFatiguePerAction } from '../combat/utils/fatigue.js';
 import { buildRollFormula } from '../combat/utils/buildRollFormula.js';
+import { arePointBlank, pointBlankAttackBonus } from '../combat/pointBlank.js';
 ///dialogs/AttackConfigurationDialog.js
 ///actor/utils/getSnapshotTargets.js
 
@@ -208,10 +209,19 @@ export class AttackConfigurationDialog extends FormApplication {
     } else {
       combat.weapon = weapon;
       combat.weaponUsed = weapon._id;
-      // Preserva el valor existente del checkbox; solo resetea si es undefined
-      if (!combat.projectile || combat.projectile.value === undefined) {
-        combat.projectile = { value: false, type: '' };
-      }
+      // Modo del ataque (proyectil o melee): lo decide el boton de lanzamiento
+      // (mode 'ranged' = Lanzar/Disparar, 'melee' = Atacar). Sin modo (macro/contraataque/
+      // maniobra) cae al default por isRanged del arma. Ya no hay checkbox: el modo manda.
+      const attackMode = this.modalData?.mode;
+      combat.projectile = {
+        value:
+          attackMode === 'ranged'
+            ? true
+            : attackMode === 'melee'
+              ? false
+              : !!weapon.system?.isRanged?.value,
+        type: ''
+      };
 
       if (!combat.criticSelected) {
         combat.criticSelected = weapon.system.critic.primary.value;
@@ -424,6 +434,15 @@ export class AttackConfigurationDialog extends FormApplication {
 
       const editableMod = Number(combat.modifier ?? 0);
       const counterBonusValue = Number(combat.counterBonus ?? 0);
+      // A bocajarro: <1 m / adyacente, AUTOCALCULADO con la metrica de la escena
+      // (canvas.grid). +30 al ataque SOLO si es disparado; el lanzado no recibe bono.
+      const pointBlank = arePointBlank(
+        this.modalData?.attacker?.token,
+        Array.from(game.user?.targets ?? [])[0]
+      );
+      const pointBlankBonus = combat.projectile?.value
+        ? pointBlankAttackBonus(weapon.system?.shotType?.value, pointBlank)
+        : 0;
       // Cada termino por separado para que la formula del chat se vea DESGLOSADA (no un
       // neto), incluido el "Modificador" editable. La suma (= total tirado) es identica.
       const rollTerms = [
@@ -434,7 +453,8 @@ export class AttackConfigurationDialog extends FormApplication {
         secondaryCritPenalty,
         kiAttackBonus,
         additionalAttacksPenalty,
-        fatigueBonus
+        fatigueBonus,
+        pointBlankBonus
       ];
       // Umbral de maestria (>=200): para el arma-perfil "Artes Marciales" la
       // "habilidad" efectiva es la HA del actor MAS el bono de AM inyectado en su
@@ -506,6 +526,9 @@ export class AttackConfigurationDialog extends FormApplication {
       if (fatigueBonus !== 0) {
         dialogContribs.push(`Cansancio (+${fatigueBonus})`);
       }
+      if (pointBlankBonus !== 0) {
+        dialogContribs.push(`A bocajarro (+${pointBlankBonus})`);
+      }
       if (kiAttackBonus !== 0 || kiDamageBonus !== 0) {
         const label = game.i18n.localize('macros.combat.dialog.combatMod.kiTechnique.title');
         const tag = kiAppliedBy.length ? ` [${kiAppliedBy.join(', ')}]` : '';
@@ -552,6 +575,7 @@ export class AttackConfigurationDialog extends FormApplication {
         .presence(Number(weapon.system.presence?.final?.value ?? 0))
         .isProjectile(!!combat.projectile?.value)
         .projectileType(weapon.system.shotType?.value ?? '')
+        .pointBlank(!!combat.projectile?.value && pointBlank)
         .automaticCrit(!!combat.automaticCrit)
         // Bono al nivel del critico por Artes Marciales (Moai Thai/Hakyoukuken siempre;
         // Asakusen solo apuntado; Enuth solo con Inconsciencia).
@@ -616,13 +640,6 @@ export class AttackConfigurationDialog extends FormApplication {
     // Prevent weapon changes if locked
     if (this.modalData.ui.lockedWeapon) {
       delete formData['attacker.combat.weaponUsed'];
-    }
-
-    // Convierte checkbox a booleano
-    if (formData['attacker.combat.projectile.value'] !== undefined) {
-      formData['attacker.combat.projectile.value'] =
-        formData['attacker.combat.projectile.value'] === 'on' ||
-        formData['attacker.combat.projectile.value'] === true;
     }
 
     this.modalData = foundry.utils.mergeObject(this.modalData, formData);

@@ -99,7 +99,8 @@ export async function autoRollDefenseAgainstAttack({
     ? multipleDefensePenaltyFromAccumulated(accumulated, freeDefensesFor(actor))
     : 0;
 
-  const projectilePenalty = isProjectileAttack(attackData)
+  // A bocajarro anula el penalizador de proyectil (Tabla 49).
+  const projectilePenalty = isProjectileAttack(attackData) && !attackData?.pointBlank
     ? projectilePenaltyFor(
         candidate,
         attackData?.projectileType ?? attackData?.projectile?.type

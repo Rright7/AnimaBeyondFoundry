@@ -16,8 +16,12 @@ export function createWeaponAttack(sheet, e) {
 
   const snapshotTargets = getSnapshotTargets();
 
+  // Modo del boton: 'ranged' (Lanzar/Disparar) abre el ataque como proyectil; cualquier
+  // otro (boton Atacar) = melee. El dialogo ya no tiene checkbox de proyectil.
+  const mode = e.currentTarget.dataset.attackMode === 'ranged' ? 'ranged' : 'melee';
+
   new AttackConfigurationDialog(
-    { attacker: attackerToken, weaponId, targets: snapshotTargets },
+    { attacker: attackerToken, weaponId, targets: snapshotTargets, mode },
     { allowed: true }
   );
 }

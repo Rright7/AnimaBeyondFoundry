@@ -8,6 +8,24 @@
       {{#if weapon.isRanged}} · {{localize "anima.ui.combat.equippedWeapons.ranged"}}{{/if}}
     </span>
   </div>
+  {{#if inHand}}
+    {{!-- Acciones rapidas del arma en mano: Atacar / Lanzar / Disparar segun el tipo
+          (mismo flujo que los botones de la lista de armas). Los escudos no atacan. --}}
+    {{#unless weapon.isShield}}
+      <span class='ew-actions'>
+        {{#if weapon.isThrowable}}
+          <button type='button' class='ew-action' data-on-click="createWeaponAttack" data-weapon-id="{{weapon.id}}" title="{{localize 'anima.ui.combat.weapons.attackButton.title'}}"><i class='fas fa-swords'></i></button>
+          <button type='button' class='ew-action ew-action--ranged' data-on-click="createWeaponAttack" data-weapon-id="{{weapon.id}}" data-attack-mode="ranged" title="{{localize 'anima.ui.combat.weapons.throwButton.title'}}"><i class='fas fa-bullseye'></i></button>
+        {{else}}
+          {{#if weapon.isRanged}}
+            <button type='button' class='ew-action ew-action--ranged' data-on-click="createWeaponAttack" data-weapon-id="{{weapon.id}}" data-attack-mode="ranged" title="{{localize 'anima.ui.combat.weapons.shootButton.title'}}"><i class='fas fa-crosshairs'></i></button>
+          {{else}}
+            <button type='button' class='ew-action' data-on-click="createWeaponAttack" data-weapon-id="{{weapon.id}}" title="{{localize 'anima.ui.combat.weapons.attackButton.title'}}"><i class='fas fa-swords'></i></button>
+          {{/if}}
+        {{/if}}
+      </span>
+    {{/unless}}
+  {{/if}}
   {{#if worn}}
     <label class='ew-equip' title='{{localize "anima.ui.combat.weapons.equipped.title"}}'>
       <input

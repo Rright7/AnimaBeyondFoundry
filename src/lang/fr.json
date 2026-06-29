@@ -118,6 +118,8 @@
   "anima.ui.combat.weapons.attack.roll.message": "Attaque avec ",
   "anima.ui.combat.weapons.attack.title": "Attaque",
   "anima.ui.combat.weapons.attackButton.title": "Attaquer",
+  "anima.ui.combat.weapons.throwButton.title": "Lancer",
+  "anima.ui.combat.weapons.shootButton.title": "Tirer",
   "anima.ui.combat.weapons.block.roll.message": "Parade avec ",
   "anima.ui.combat.weapons.block.title": "Parade",
   "anima.ui.combat.weapons.breaking.base.title": "Base Fracassement",

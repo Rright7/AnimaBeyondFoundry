@@ -1,4 +1,4 @@
-import { projectileDefensePenalty } from './projectileDefensePenalty';
+import { projectileDefensePenalty, isProjectileAttack } from './projectileDefensePenalty';
 
 const caps = ({ shield = false, mastery = false } = {}) => ({
   isShieldWeapon: shield,
@@ -51,5 +51,24 @@ describe('projectileDefensePenalty (Tabla 49: defensa contra proyectiles)', () =
   it('otros tipos de defensa -> 0; tipo desconocido cuenta como disparo', () => {
     expect(projectileDefensePenalty('supernaturalShield', caps(), 'shot')).toBe(0);
     expect(projectileDefensePenalty('block', caps(), 'projectile')).toBe(80);
+  });
+});
+
+describe('isProjectileAttack (solo cuenta la declaracion del ataque, no el arma)', () => {
+  it('true solo si isProjectile === true', () => {
+    expect(isProjectileAttack({ isProjectile: true })).toBe(true);
+    expect(isProjectileAttack({ isProjectile: false })).toBe(false);
+  });
+
+  it('NO infiere del tipo del arma: jabalina (throw) a melee NO es proyectil', () => {
+    // casilla sin marcar (isProjectile false) aunque el arma sea lanzable
+    expect(isProjectileAttack({ isProjectile: false, projectileType: 'throw' })).toBe(false);
+    expect(isProjectileAttack({ projectileType: 'shot' })).toBe(false);
+  });
+
+  it('robusto ante null/undefined/objeto vacio', () => {
+    expect(isProjectileAttack(null)).toBe(false);
+    expect(isProjectileAttack(undefined)).toBe(false);
+    expect(isProjectileAttack({})).toBe(false);
   });
 });

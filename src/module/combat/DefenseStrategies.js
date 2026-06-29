@@ -1,7 +1,13 @@
 import { FormulaEvaluator } from '../../utils/formulaEvaluator.js';
 import { martialArtsDodgeBonus } from './martialArts/martialArtsDodge.js';
 import { defensesCounterCheck, freeDefensesFor } from './utils/defensesCounterCheck.js';
-import { projectileDefensePenalty } from './projectileDefensePenalty.js';
+import {
+  projectileDefensePenalty,
+  isProjectileAttack
+} from './projectileDefensePenalty.js';
+
+// Re-export para que autoRoll y el dialogo de defensa lo sigan importando desde aqui.
+export { isProjectileAttack };
 
 const toSafeNumber = v => {
   const n = Number(v);
@@ -46,16 +52,9 @@ export function projectilePenaltyFor(candidate, projectileType) {
   return projectileDefensePenalty(candidate?.type, candidate ?? {}, projectileType);
 }
 
-export function isProjectileAttack(attackData) {
-  const projectileType =
-    attackData?.projectile?.type ?? attackData?.projectileType ?? null;
-  if (attackData?.isProjectile === true) return true;
-  return (
-    projectileType === 'shot' ||
-    projectileType === 'throw' ||
-    projectileType === 'projectile'
-  );
-}
+// isProjectileAttack vive en projectileDefensePenalty.js (puro/testeable) y se re-exporta
+// arriba: un ataque es proyectil SOLO si se declaro (isProjectile), nunca por el shotType
+// del arma (una jabalina a melee no es lanzamiento).
 
 function multipleDefensePenaltyFromAccumulated(accumulated, opts) {
   // Positivo (se RESTA en las formulas de defensa). Reusa la funcion canonica
@@ -165,7 +164,8 @@ function computeEffectiveScore(candidate, attackData, defensesCounter, freeDef) 
     ? multipleDefensePenaltyFromAccumulated(accumulated, freeDef)
     : 0;
 
-  const projPenalty = isProjectileAttack(attackData)
+  // A bocajarro anula el penalizador de proyectil (Tabla 49), lanzado y disparado.
+  const projPenalty = isProjectileAttack(attackData) && !attackData?.pointBlank
     ? projectilePenaltyFor(
         candidate,
         attackData?.projectileType ?? attackData?.projectile?.type

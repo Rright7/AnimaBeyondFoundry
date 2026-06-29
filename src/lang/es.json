@@ -194,6 +194,8 @@
   "anima.ui.combat.weapons.unarmedProfile.martialArts": "Artes Marciales",
   "anima.ui.combat.weapons.weaponStrength.title": "FUE Arma",
   "anima.ui.combat.weapons.attackButton.title": "Atacar",
+  "anima.ui.combat.weapons.throwButton.title": "Lanzar",
+  "anima.ui.combat.weapons.shootButton.title": "Disparar",
   "anima.ui.combat.weapons.defaultAttackButton.title": "Mandar Ataque sin configurar",
   "anima.ui.combat.supernaturalShields.origin.title": "Origen",
   "anima.ui.combat.supernaturalShields.shieldPoints.title": "Puntos de vida",

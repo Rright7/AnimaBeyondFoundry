@@ -55,6 +55,7 @@ function computeCombatHands(system) {
     ini: w.system?.initiative?.final?.value ?? 0,
     isShield: !!w.system?.isShield?.value,
     isRanged: !!w.system?.isRanged?.value,
+    isThrowable: !!w.system?.isThrowable,
     twoHanded: isTwoHandedGrip(w),
     manageability: w.system?.manageabilityType?.value ?? 'one_hand',
     handSlot: w.system?.handSlot?.value ?? 'none',

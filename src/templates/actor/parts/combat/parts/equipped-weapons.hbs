@@ -17,21 +17,21 @@
         <div class='hand-col hand-drop-zone' data-hand-slot='main'>
           <div class='hand-col-label'>{{localize "anima.ui.combat.weapons.handSlot.main"}}</div>
           {{#each @root.combatHands.main as |weapon|}}
-            {{> "systems/animabf/templates/actor/parts/combat/parts/equipped-weapon-row.hbs" weapon=weapon}}
+            {{> "systems/animabf/templates/actor/parts/combat/parts/equipped-weapon-row.hbs" weapon=weapon inHand=true}}
           {{/each}}
           {{#unless @root.combatHands.main.length}}<div class='hand-empty'>—</div>{{/unless}}
         </div>
         <div class='hand-col hand-drop-zone' data-hand-slot='off'>
           <div class='hand-col-label'>{{localize "anima.ui.combat.weapons.handSlot.off"}}</div>
           {{#each @root.combatHands.off as |weapon|}}
-            {{> "systems/animabf/templates/actor/parts/combat/parts/equipped-weapon-row.hbs" weapon=weapon}}
+            {{> "systems/animabf/templates/actor/parts/combat/parts/equipped-weapon-row.hbs" weapon=weapon inHand=true}}
           {{/each}}
           {{#unless @root.combatHands.off.length}}<div class='hand-empty'>—</div>{{/unless}}
         </div>
         <div class='hand-col hand-drop-zone' data-hand-slot='both'>
           <div class='hand-col-label'>{{localize "anima.ui.combat.weapons.handSlot.both"}}</div>
           {{#each @root.combatHands.both as |weapon|}}
-            {{> "systems/animabf/templates/actor/parts/combat/parts/equipped-weapon-row.hbs" weapon=weapon}}
+            {{> "systems/animabf/templates/actor/parts/combat/parts/equipped-weapon-row.hbs" weapon=weapon inHand=true}}
           {{/each}}
           {{#unless @root.combatHands.both.length}}<div class='hand-empty'>—</div>{{/unless}}
         </div>

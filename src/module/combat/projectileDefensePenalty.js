@@ -36,3 +36,16 @@ export function projectileDefensePenalty(defenseType, caps = {}, projectileType 
 
   return 0; // escudo sobrenatural u otros
 }
+
+/**
+ * Si un ataque cuenta como proyectil a efectos de defensa. Es proyectil SOLO si el
+ * ataque se declaro como tal (casilla "proyectil" del dialogo, o hechizo/psiquica que
+ * fijan isProjectile=true). NO se infiere del arma: `projectileType` es el `shotType`
+ * del arma (su capacidad shot/throw), no si ESTE ataque es a distancia. Asi una jabalina
+ * usada a cuerpo a cuerpo (casilla sin marcar) NO sufre el penalizador de lanzamiento.
+ * @param {{isProjectile?:boolean}} attackData
+ * @returns {boolean}
+ */
+export function isProjectileAttack(attackData) {
+  return attackData?.isProjectile === true;
+}
