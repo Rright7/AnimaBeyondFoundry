@@ -1,5 +1,6 @@
 import ABFFoundryRoll from '../../../rolls/ABFFoundryRoll.js';
 import { ABFAttackData } from '../../../combat/ABFAttackData.js';
+import { pointBlankAgainstTarget } from '../../../combat/pointBlank.js';
 import { ABFSupernaturalShieldData } from '../../../combat/ABFSupernaturalShieldData.js';
 import { shieldValueCheck } from '../../../combat/utils/shieldValueCheck.js';
 import { Templates } from '../../../utils/constants';
@@ -123,6 +124,9 @@ export async function castSpellGrade(sheet, event) {
     .presence(0)
     .isProjectile(true)
     .projectileType('shot') // hechizos = proyectil disparado (Tabla 49)
+    // Sobrenatural: NO recibe el +30 de a bocajarro (eso es solo arma de disparo), pero a
+    // melee/pegado el defensor NO sufre el penalizador de proyectil (waiver) -> pointBlank.
+    .pointBlank(pointBlankAgainstTarget(actor.getActiveTokens?.()[0]?.document))
     .automaticCrit(!!(actor.system.general.modifiers.automaticCrit?.value))
     .critBonus(0)
     .critDamageBonus(actor.system.general.modifiers.critDamageBonus?.final?.value ?? 0)

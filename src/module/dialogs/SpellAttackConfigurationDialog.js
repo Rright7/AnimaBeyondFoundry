@@ -1,5 +1,6 @@
 import { Templates } from '../utils/constants';
 import { ABFAttackData } from '../combat/ABFAttackData';
+import { pointBlankAgainstTarget } from '../combat/pointBlank.js';
 import { resistanceEffectCheck } from '../combat/utils/resistanceEffectCheck.js';
 import ABFFoundryRoll from '../rolls/ABFFoundryRoll.js';
 import { ABFConfig } from '../ABFConfig';
@@ -143,6 +144,9 @@ export class SpellAttackConfigurationDialog extends FormApplication {
         .presence(0)
         .isProjectile(true)
         .projectileType('shot') // hechizos = proyectil disparado (Tabla 49)
+        // Sobrenatural: sin +30 de a bocajarro, pero a melee/pegado el defensor NO sufre
+        // el penalizador de proyectil (waiver) -> pointBlank.
+        .pointBlank(pointBlankAgainstTarget(attacker.token))
         .automaticCrit(!!attacker.combat?.automaticCrit)
         .critBonus(0)
         .critDamageBonus(Number(attacker.combat?.critDamageBonus ?? 0))

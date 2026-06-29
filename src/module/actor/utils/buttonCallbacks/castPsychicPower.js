@@ -1,5 +1,6 @@
 import ABFFoundryRoll from '../../../rolls/ABFFoundryRoll.js';
 import { ABFAttackData } from '../../../combat/ABFAttackData.js';
+import { pointBlankAgainstTarget } from '../../../combat/pointBlank.js';
 import { ABFSupernaturalShieldData } from '../../../combat/ABFSupernaturalShieldData.js';
 import { shieldValueCheck } from '../../../combat/utils/shieldValueCheck.js';
 import { openModDialog } from '../../../utils/dialogs/openSimpleInputDialog.js';
@@ -118,6 +119,9 @@ async function _sendPsychicAttackToChat({
     .presence(0)
     .isProjectile(true)
     .projectileType('shot') // poderes psiquicos = proyectil disparado (Tabla 49)
+    // Sobrenatural: NO recibe el +30 de a bocajarro, pero a melee/pegado el defensor NO
+    // sufre el penalizador de proyectil (waiver) -> pointBlank.
+    .pointBlank(pointBlankAgainstTarget(actor.getActiveTokens?.()[0]?.document))
     .damagesEnergy(effectData?.affectsInmaterial?.value)
     .automaticCrit(!!(actor.system.general.modifiers.automaticCrit?.value))
     .critBonus(0)

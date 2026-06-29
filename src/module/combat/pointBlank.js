@@ -54,3 +54,16 @@ export function arePointBlank(attackerToken, targetToken) {
     return false;
   }
 }
+
+/**
+ * ¿A bocajarro contra el objetivo apuntado por el usuario (su primer target)? Helper para
+ * builders de ataque que tienen el token atacante pero no calculan la distancia a mano
+ * (hechizos, psiquica). Usa game.user.targets (objetivo vivo).
+ * @param {TokenDocument|Token} attackerToken
+ * @returns {boolean}
+ */
+export function pointBlankAgainstTarget(attackerToken) {
+  const target =
+    typeof game !== 'undefined' ? Array.from(game.user?.targets ?? [])[0] : undefined;
+  return arePointBlank(attackerToken, target);
+}
