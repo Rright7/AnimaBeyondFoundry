@@ -131,6 +131,9 @@ export class SpellAttackConfigurationDialog extends FormApplication {
         flavor: `${spell.name} (${gradeLabel})`
       });
 
+      // Solo los hechizos de tipo ATAQUE son proyectil disparado (regla especial de la
+      // magia; animicos/defensa/efecto/etc. NO -> el defensor no sufre la Tabla 49).
+      const isAttackSpell = spell.system?.spellType?.value === 'attack';
       const attackData = ABFAttackData.builder()
         .attackAbility(roll.total)
         .damage(finalDamage)
@@ -142,11 +145,11 @@ export class SpellAttackConfigurationDialog extends FormApplication {
         )
         .damageType(game.animabf.combat.DamageType.NONE)
         .presence(0)
-        .isProjectile(true)
-        .projectileType('shot') // hechizos = proyectil disparado (Tabla 49)
+        .isProjectile(isAttackSpell)
+        .projectileType(isAttackSpell ? 'shot' : '') // solo ATAQUE = proyectil disparado
         // Sobrenatural: sin +30 de a bocajarro, pero a melee/pegado el defensor NO sufre
-        // el penalizador de proyectil (waiver) -> pointBlank.
-        .pointBlank(pointBlankAgainstTarget(attacker.token))
+        // el penalizador (waiver) -> pointBlank solo si es proyectil.
+        .pointBlank(isAttackSpell && pointBlankAgainstTarget(attacker.token))
         .automaticCrit(!!attacker.combat?.automaticCrit)
         .critBonus(0)
         .critDamageBonus(Number(attacker.combat?.critDamageBonus ?? 0))

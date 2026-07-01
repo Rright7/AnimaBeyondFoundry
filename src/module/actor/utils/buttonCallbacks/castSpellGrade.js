@@ -112,6 +112,9 @@ export async function castSpellGrade(sheet, event) {
   });
 
   const baseDamage = Number(spell.system.grades[grade]?.damage?.value ?? 0);
+  // Solo los hechizos de tipo ATAQUE son proyectil disparado (regla especial de la magia;
+  // animicos/defensa/efecto/automatico/deteccion NO -> el defensor no sufre la Tabla 49).
+  const isAttackSpell = spell.system?.spellType?.value === 'attack';
 
   await ABFAttackData.builder()
     .attackAbility(roll.total)
@@ -122,11 +125,11 @@ export async function castSpellGrade(sheet, event) {
     .armorType(spell.system.critic?.value ?? game.animabf.weapon.NoneWeaponCritic.NONE)
     .damageType(game.animabf.combat.DamageType.NONE)
     .presence(0)
-    .isProjectile(true)
-    .projectileType('shot') // hechizos = proyectil disparado (Tabla 49)
+    .isProjectile(isAttackSpell)
+    .projectileType(isAttackSpell ? 'shot' : '') // solo ATAQUE = proyectil disparado (Tabla 49)
     // Sobrenatural: NO recibe el +30 de a bocajarro (eso es solo arma de disparo), pero a
-    // melee/pegado el defensor NO sufre el penalizador de proyectil (waiver) -> pointBlank.
-    .pointBlank(pointBlankAgainstTarget(actor.getActiveTokens?.()[0]?.document))
+    // melee/pegado el defensor NO sufre el penalizador (waiver) -> pointBlank si es proyectil.
+    .pointBlank(isAttackSpell && pointBlankAgainstTarget(actor.getActiveTokens?.()[0]?.document))
     .automaticCrit(!!(actor.system.general.modifiers.automaticCrit?.value))
     .critBonus(0)
     .critDamageBonus(actor.system.general.modifiers.critDamageBonus?.final?.value ?? 0)
