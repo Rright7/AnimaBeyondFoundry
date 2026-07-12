@@ -16,6 +16,7 @@ import {
 } from '../domine/techniques/techniqueCombatBonuses.js';
 import { martialArtsDodgeBonus } from '../combat/martialArts/martialArtsDodge.js';
 import { maxFatiguePerAction } from '../combat/utils/fatigue.js';
+import { ABFItems } from '../items/ABFItems.js';
 
 export class DefenseConfigurationDialog extends FormApplication {
   constructor(object = {}, options = {}) {
@@ -42,10 +43,56 @@ export class DefenseConfigurationDialog extends FormApplication {
     }
 
     this.render(true);
+
+    this._maybeRemindNoSupernaturalShield();
+  }
+
+  // Recordatorio (susurro al dueno) cuando un LANZADOR va a defenderse sin ningun escudo
+  // sobrenatural activo: puede crear uno desde la ficha (Mistica/Psiquica). No aplica a no
+  // lanzadores (no tendria sentido) ni si ya tiene un escudo levantado.
+  _maybeRemindNoSupernaturalShield() {
+    try {
+      const actor = this.modalData?.defender?.actor;
+      if (!actor) return;
+
+      const shields = DefenseConfigurationDialog._resolveShields(actor);
+      if (shields.length > 0) return;
+
+      const isCaster = actor.items?.some(
+        i =>
+          i.type === ABFItems.SPELL ||
+          i.type === ABFItems.PSYCHIC_POWER ||
+          i.type === ABFItems.INNATE_PSYCHIC_POWER
+      );
+      if (!isCaster) return;
+
+      const owners = (game.users?.filter?.(u =>
+        actor.testUserPermission?.(u, CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER)
+      ) ?? []).map(u => u.id);
+
+      ChatMessage.create({
+        speaker: ChatMessage.getSpeaker({ actor }),
+        whisper: owners,
+        content:
+          `<div class="animabf-chat-message"><p>🛡️ <strong>${actor.name}</strong> no tiene ningún escudo sobrenatural activo. ` +
+          `Puedes crear uno desde la ficha (Mística o Psíquica) antes de defenderte.</p></div>`
+      });
+    } catch (err) {
+      console.warn('animabf | recordatorio de escudo sobrenatural fallo', err);
+    }
   }
 
   static _getDocId(docLike) {
     return docLike?._id ?? docLike?.id ?? '';
+  }
+
+  // Escudos sobrenaturales del actor: la lista calculada (system.combat.supernaturalShields)
+  // y, si por lo que sea no se pobló, los items de tipo escudo directamente. Red de
+  // seguridad para que el tab de Escudos no salga vacío teniendo uno puesto.
+  static _resolveShields(actor) {
+    const computed = actor?.system?.combat?.supernaturalShields ?? [];
+    if (computed.length) return computed;
+    return actor?.items?.filter?.(i => i.type === ABFItems.SUPERNATURAL_SHIELD) ?? [];
   }
 
   static _buildInitialData({
@@ -82,7 +129,7 @@ export class DefenseConfigurationDialog extends FormApplication {
       firstWeapon ??
       undefined;
 
-    const supernaturalShields = defenderActor.system?.combat?.supernaturalShields ?? [];
+    const supernaturalShields = DefenseConfigurationDialog._resolveShields(defenderActor);
     const firstShield = supernaturalShields[0];
     const firstShieldId = DefenseConfigurationDialog._getDocId(firstShield);
 
@@ -194,7 +241,7 @@ export class DefenseConfigurationDialog extends FormApplication {
       : Number(defender.combat.weapon?.system?.block?.final?.value ?? 0) || 0;
 
     // Shields list + evaluated value from abilityFormula using FormulaEvaluator
-    const shields = this.defenderActor.system?.combat?.supernaturalShields ?? [];
+    const shields = DefenseConfigurationDialog._resolveShields(this.defenderActor);
 
     ui.supernaturalShields = shields.map(sh => {
       const _id = DefenseConfigurationDialog._getDocId(sh);
@@ -277,7 +324,7 @@ export class DefenseConfigurationDialog extends FormApplication {
       ? Number(weapon.system?.block?.final?.value ?? 0) || 0
       : Number(actor.system?.combat?.block?.final?.value ?? 0) || 0;
 
-    const shields = actor.system?.combat?.supernaturalShields ?? [];
+    const shields = DefenseConfigurationDialog._resolveShields(actor);
     let bestShield = 0;
 
     for (const sh of shields) {

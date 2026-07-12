@@ -137,7 +137,7 @@
 
         <div class="tab shield" data-group="primary" data-tab="shield">
           {{#if (isArrayEmpty this.ui.supernaturalShields)}}
-            <p class="label">{{localize "macros.combat.dialog.weapon.notFound"}}</p>
+            <p class="label">No tienes ningún escudo sobrenatural activo. Créalo desde la ficha (pestaña Mística o Psíquica).</p>
           {{else}}
             {{#> 'systems/animabf/templates/common/ui/custom-select.hbs'
               title=(localize 'anima.ui.combat.supernaturalShields.title')
