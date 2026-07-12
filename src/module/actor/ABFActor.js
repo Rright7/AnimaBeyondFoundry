@@ -1436,7 +1436,13 @@ export class ABFActor extends Actor {
       return this.getInnerItems(type);
     }
 
-    return this.items.filter(i => i.type === type);
+    const items = this.items.filter(i => i.type === type);
+    // Armas y armaduras: orden manual arrastrando la fila (campo `sort` de Foundry, que
+    // actualiza _onSortItem al soltar). El resto conserva el orden de la coleccion.
+    if (type === ABFItems.WEAPON || type === ABFItems.ARMOR) {
+      return items.sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0));
+    }
+    return items;
   }
 
   /**
