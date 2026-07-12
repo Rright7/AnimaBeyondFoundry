@@ -28,7 +28,13 @@
           "inhuman": { "value": false },
           "zen": { "value": false },
           "defenseType": { "value": "" },
-          "extraDefensesBonus": { "value": 0 }
+          "extraDefensesBonus": { "value": 0 },
+          "mass": {
+            "count": { "value": 0 },
+            "baseLife": { "value": 0 },
+            "accumulates": { "value": false },
+            "disorganized": { "value": false }
+          }
         },
         "diceSettings": {
           "characteristicDie": { "value": "1d10ControlRoll" },

@@ -9,7 +9,10 @@ export async function sendAccumulationZeroDefense({
   attackerToken,
   attackData,
   messageId,
-  storedTokenKey = ''
+  storedTokenKey = '',
+  // Si viene, se usa tal cual (masas: Defensa Final FIJA). Si no, defensa 0 (seres de
+  // acumulacion/resistencia). En ambos casos: sin dialogo, sin tirada, la TA aplica.
+  defenseData = null
 }) {
   const actor = defenderToken?.actor;
   if (!actor) return;
@@ -38,18 +41,20 @@ export async function sendAccumulationZeroDefense({
   const taFinal =
     armorType != null ? actor.system?.combat?.totalArmor?.at?.[armorType]?.value ?? 0 : 0;
 
-  const defenseData = ABFDefenseData.builder()
-    .defenseAbility(0)
-    .armor(taFinal)
-    .inmodifiableArmor(false)
-    .defenseType('resistance')
-    .defenderId(actor.id)
-    .defenderTokenId(defenderToken?.id ?? '')
-    .weaponId('')
-    .shieldId('')
-    .build();
+  const finalDefenseData =
+    defenseData ??
+    ABFDefenseData.builder()
+      .defenseAbility(0)
+      .armor(taFinal)
+      .inmodifiableArmor(false)
+      .defenseType('resistance')
+      .defenderId(actor.id)
+      .defenderTokenId(defenderToken?.id ?? '')
+      .weaponId('')
+      .shieldId('')
+      .build();
 
-  const combatResult = computeCombatResult(attackData, defenseData);
+  const combatResult = computeCombatResult(attackData, finalDefenseData);
 
   const damageFinal = Number(
     combatResult?.damageFinal ??
@@ -111,7 +116,7 @@ export async function sendAccumulationZeroDefense({
       tokenUuid,
       state: 'done',
       rolledBy: game.user.id,
-      defenseResult: defenseData.toJSON?.() ?? defenseData,
+      defenseResult: finalDefenseData.toJSON?.() ?? finalDefenseData,
       updatedAt: Date.now()
     });
   }

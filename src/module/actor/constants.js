@@ -33,7 +33,13 @@ export const INITIAL_ACTOR_DATA = {
       inhuman: { value: false },
       zen: { value: false },
       perceivePsychic: { value: false },
-      defenseType: { value: '' }
+      defenseType: { value: '' },
+      mass: {
+        count: { value: 0 },
+        baseLife: { value: 0 },
+        accumulates: { value: false },
+        disorganized: { value: false }
+      }
     },
     diceSettings: {
       characteristicDie: { value: '1d10ControlRoll' },

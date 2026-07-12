@@ -40,6 +40,13 @@
             {{/if}}
           </div>
 
+          {{!-- Fila detalle (GM): TA, daño base y %, área, crítico, % de vida --}}
+          {{#unless hasCounter}}
+            <div class="mdr-row mdr-detail" data-requires-permission="gm" style="opacity:.85; font-size:.9em; margin-top:.25rem;">
+              {{#if (gt damageFinal 0)}}TA {{finalArmor}} · Daño base {{finalBaseDamage}} ({{damagePercentage}}%){{else}}Sin daño ({{damagePercentage}}%){{/if}}{{#if (gt areaMultiplier 1)}} · <span style="color:#b06000;">Área ×{{areaMultiplier}}</span>{{/if}}{{#if isCritical}} · <span style="color:#c03050;font-weight:bold;">¡Crítico!</span>{{/if}}{{#if (gt lifePercentRemoved 0)}} · −{{lifePercentRemoved}}% vida{{/if}}
+            </div>
+          {{/unless}}
+
           {{!-- Fila 2: botones (solo si hay daño posible) --}}
           {{#unless hasCounter}}
             {{#if (gt damageFinal 0)}}

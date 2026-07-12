@@ -1,6 +1,7 @@
 import { DefenseConfigurationDialog } from '../../module/dialogs/DefenseConfigurationDialog';
 import { ABFAttackData } from '../../module/combat/ABFAttackData';
 import { sendAccumulationZeroDefense } from '../sendAccumulationZeroDefense.js';
+import { buildMassDefenseData, promptMassAreaHits } from '../../module/combat/massDefense.js';
 
 async function defendTargetActionHandler(message, _html, dataset) {
   try {
@@ -78,17 +79,26 @@ async function defendTargetActionHandler(message, _html, dataset) {
     // Use the stored token key when present, so the flag update hits the correct entry
     const storedTokenKey = targetEntry?.tokenUuid ?? '';
 
-    // Both 'resistance' (damage-resistance defenders) and 'mass' (mass-of-enemies
-    // rule defenders) skip the regular defense dialog: no roll, no multi-defense
-    // counter increment, armor still applies. They funnel through the zero-roll
-    // defense helper instead.
+    // 'resistance' (seres de acumulacion) y 'mass' (masas de enemigos) se saltan el dialogo
+    // de defensa: sin tirada, sin contador de defensas multiples, la TA sigue aplicando.
+    // La resistencia defiende con 0; la masa con su Defensa Final FIJA (buildMassDefenseData).
     if (defenseMode === 'resistance' || defenseMode === 'mass') {
+      let massDefenseData;
+      if (defenseMode === 'mass') {
+        // Multiplicador de area (Tabla 2): preguntar a cuantos enemigos alcanza el ataque.
+        const hits = await promptMassAreaHits();
+        if (hits === null) return; // cancelado
+        atk.areaEnemiesHit = hits;
+        massDefenseData = buildMassDefenseData(defenderToken.actor, atk, defenderToken)
+          .defenseData;
+      }
       await sendAccumulationZeroDefense({
         defenderToken,
         attackerToken,
         attackData: atk,
         messageId,
-        storedTokenKey
+        storedTokenKey,
+        defenseData: massDefenseData
       });
       return;
     }

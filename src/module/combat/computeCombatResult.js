@@ -5,6 +5,7 @@ import { resolveActorForRoll } from '../actor/utils/resolveActorForRoll.js';
 import { calculateCounterAttackBonus } from './utils/calculateCounterAttackBonus.js';
 import { martialArtSpecialEffects } from './martialArts/martialArtSpecials.js';
 import { computeAimedArmor } from './utils/armorCoverage.js';
+import { isMassActor, massComponentCount, areaDamageMultiplier } from './massCombat.js';
 
 /**
  * Computes a base combat result from the given attack and defense data.
@@ -46,7 +47,20 @@ export function computeCombatResult(attackData, defenseData) {
       })
     : 0;
 
+  // Masa de enemigos como defensor: inmune a criticos + multiplicador de area (Tabla 2).
+  const defenderIsMass = isMassActor(defenderActor?.system);
+
   let baseDamage = getFinalBaseDamage(attackData, defenseData);
+  // Multiplicador de AREA (Tabla 2) al Dano Base segun enemigos alcanzados, con tope en el
+  // nº de componentes de la masa. areaEnemiesHit=1 -> x1 (impacto normal, sin cambio).
+  let areaMultiplier = 1;
+  if (defenderIsMass) {
+    const massCount = massComponentCount(defenderActor?.system);
+    const hitsRaw = Math.max(1, Math.floor(Number(attackData.areaEnemiesHit) || 1));
+    const hits = massCount > 0 ? Math.min(hitsRaw, massCount) : hitsRaw;
+    areaMultiplier = areaDamageMultiplier(hits);
+    baseDamage = baseDamage * areaMultiplier;
+  }
   // Ataque APUNTADO: la TA solo cuenta si la zona golpeada esta cubierta por la
   // armadura (un peto no protege las piernas; un yelmo cerrado si la cara...). Se
   // recalcula con las armaduras que cubren la zona; null = no apuntado -> TA normal.
@@ -151,7 +165,10 @@ export function computeCombatResult(attackData, defenseData) {
     lifeBeforeAttack > 0 ? (critDamage / lifeBeforeAttack) * 100 : 100;
 
   const criticThreshold = isAimedAtVulnerableZone(attackData) ? 10 : 50;
-  const isCritical = critLifePercent >= criticThreshold || attackData.automaticCrit; //TO-DO: Add crit inmunity
+  // Masa de enemigos: inmune a criticos (no tiene un cuerpo unico) -> se anula el critico
+  // aunque supere el umbral o el ataque sea critico automatico.
+  const isCritical =
+    !defenderIsMass && (critLifePercent >= criticThreshold || attackData.automaticCrit);
   const critValue = critDamage + attackData.critBonus + (attackData.critDamageBonus ?? 0);
 
   // Reduccion de TA BLANDA (Hakyoukuken) para mostrarla en la tarjeta: cantidad plana (-2
@@ -166,6 +183,7 @@ export function computeCombatResult(attackData, defenseData) {
     .damageFinal(finalDamage)
     .finalBaseDamage(baseDamage)
     .damagePercentage(damagePercentage)
+    .areaMultiplier(areaMultiplier)
     .finalArmor(finalArmor)
     .reducedArmor(attackData.reducedArmor ?? 0)
     .lifePercentRemoved(Math.floor(Math.min(100, Math.max(lifePercentRemoved, 0))))

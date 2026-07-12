@@ -3,6 +3,9 @@ import { Templates } from '../../module/utils/constants';
 import { updateAttackTargetsFlag } from '../../utils/updateAttackTargetsFlag.js';
 import { resolveTokenName } from '../tokenName.js';
 import { openModDialog } from '../../module/utils/dialogs/openSimpleInputDialog.js';
+import { resolveTokenForTarget } from './resolveTokenForTarget.js';
+import { isMassActor } from '../../module/combat/massCombat.js';
+import { promptMassAreaHits } from '../../module/combat/massDefense.js';
 
 export default async function autoDefendPendingActionHandler(message, _html, ds) {
   try {
@@ -36,6 +39,13 @@ export default async function autoDefendPendingActionHandler(message, _html, ds)
         !actor.testUserPermission?.(game.user, CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER)
       ) {
         continue;
+      }
+
+      // Masa: preguntar enemigos alcanzados (multiplicador de area, Tabla 2) por objetivo.
+      if (isMassActor(actor.system)) {
+        const hits = await promptMassAreaHits();
+        if (hits === null) continue; // cancelado: saltar este objetivo
+        attackData.areaEnemiesHit = hits;
       }
 
       const r = await autoRollDefenseAgainstAttack({
@@ -111,37 +121,6 @@ export default async function autoDefendPendingActionHandler(message, _html, ds)
 }
 export const action = 'auto-defend-pending';
 
-/** Resolve token from target entry supporting UUID (Scene.X.Token.Y) or raw id */
-function resolveTokenForTarget(t, message) {
-  const id = t?.tokenUuid ?? '';
-  // UUID path
-  if (id && id.includes('.')) {
-    try {
-      const doc = fromUuidSync(id); // TokenDocument
-      return doc?.object ?? null; // Token on canvas if present
-    } catch {
-      /* noop */
-    }
-  }
-  // Raw canvas id
-  if (id) {
-    const onCanvas = canvas.tokens?.get?.(id);
-    if (onCanvas) return onCanvas;
-  }
-  // Fallback by actor id (same scene first)
-  const actorId = t?.actorUuid ?? '';
-  if (actorId) {
-    const sceneId = message?.speaker?.scene;
-    if (sceneId) {
-      const tok = game.scenes?.get(sceneId)?.tokens?.find(tt => tt.actorId === actorId);
-      const live = tok ? canvas.tokens?.get?.(tok.id) : null;
-      if (live) return live;
-    }
-    return canvas.tokens?.placeables?.find(tt => tt.actor?.id === actorId) ?? null;
-  }
-  return null;
-}
-
 function safeParseJSON(s) {
   try {
     return JSON.parse(s);
@@ -188,6 +167,11 @@ function entryFromAuto(r, tok) {
         0
     ),
     damagePercentage: Number(r.combatResult?.damagePercentage ?? 0),
+    finalArmor: Number(r.combatResult?.finalArmor ?? 0),
+    finalBaseDamage: Number(r.combatResult?.finalBaseDamage ?? 0),
+    areaMultiplier: Number(r.combatResult?.areaMultiplier ?? 1),
+    isCritical: !!r.combatResult?.isCritical,
+    lifePercentRemoved: Number(r.combatResult?.lifePercentRemoved ?? 0),
     hasCounter: !!r.combatResult?.hasCounterAttack,
     counterAttackValue: Number(r.combatResult?.counterAttackValue ?? 0),
     applied: false

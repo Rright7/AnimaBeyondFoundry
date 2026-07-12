@@ -2,6 +2,9 @@ import { autoRollDefenseAgainstAttack } from '../../module/combat/autoRollDefens
 import { Templates } from '../../module/utils/constants';
 import { updateAttackTargetsFlag } from '../../utils/updateAttackTargetsFlag.js';
 import { openModDialog } from '../../module/utils/dialogs/openSimpleInputDialog.js';
+import { resolveTokenForTarget } from './resolveTokenForTarget.js';
+import { isMassActor } from '../../module/combat/massCombat.js';
+import { promptMassAreaHits } from '../../module/combat/massDefense.js';
 
 export default async function autoDefendActionHandler(message, _html, ds) {
   try {
@@ -18,16 +21,40 @@ export default async function autoDefendActionHandler(message, _html, ds) {
 
     if (!attackData) return ui.notifications?.warn('Datos de ataque no disponibles.');
 
-    // Selected tokens the user can control
-    const tokens = (canvas.tokens?.controlled ?? []).filter(t => canDefendWithToken(t));
+    // "Defensa automatica" defiende a QUIEN RECIBE el ataque (los objetivos del ataque), NO
+    // al token seleccionado en el canvas. Solo si el ataque no registro objetivos (legacy)
+    // se usa la seleccion como respaldo.
+    const targetEntries = msg?.getFlag(game.animabf.id, 'targets') ?? [];
+    let tokens;
+    if (targetEntries.length) {
+      const seen = new Set();
+      tokens = targetEntries
+        .map(t => resolveTokenForTarget(t, message))
+        .filter(tok => {
+          if (!tok || !canDefendWithToken(tok)) return false;
+          const id = tok.id ?? tok.document?.id ?? '';
+          if (seen.has(id)) return false;
+          seen.add(id);
+          return true;
+        });
+    } else {
+      tokens = (canvas.tokens?.controlled ?? []).filter(t => canDefendWithToken(t));
+    }
     if (!tokens.length)
-      return ui.notifications?.warn('No hay tokens seleccionados válidos.');
+      return ui.notifications?.warn('No hay objetivos válidos para defender.');
 
     const mod = await openModDialog();
     if (mod === undefined || mod === null) return; // cancelar (X / Escape): no defender
 
     const entries = [];
     for (const tok of tokens) {
+      // Masa: preguntar enemigos alcanzados (multiplicador de area, Tabla 2) por objetivo.
+      if (isMassActor(tok.actor?.system)) {
+        const hits = await promptMassAreaHits();
+        if (hits === null) continue; // cancelado: saltar este objetivo
+        attackData.areaEnemiesHit = hits;
+      }
+
       // Do the auto roll (uses token if provided)
       const r = await autoRollDefenseAgainstAttack({
         defenderToken: tok,
@@ -157,6 +184,11 @@ function entryFromAuto(r, tok) {
         0
     ),
     damagePercentage: Number(r.combatResult?.damagePercentage ?? 0),
+    finalArmor: Number(r.combatResult?.finalArmor ?? 0),
+    finalBaseDamage: Number(r.combatResult?.finalBaseDamage ?? 0),
+    areaMultiplier: Number(r.combatResult?.areaMultiplier ?? 1),
+    isCritical: !!r.combatResult?.isCritical,
+    lifePercentRemoved: Number(r.combatResult?.lifePercentRemoved ?? 0),
     hasCounter: !!r.combatResult?.hasCounterAttack,
     counterAttackValue: Number(r.combatResult?.counterAttackValue ?? 0),
     applied: false

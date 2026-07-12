@@ -35,10 +35,40 @@ import {
   isRodela,
   isTwoHandedGrip
 } from './utils/prepareActor/utils/getCombatHandWeapons.js';
+import { massLifePool, massAttackBonus, massSurvivingCount } from '../combat/massCombat.js';
 
 /** @typedef {import('./constants').TActorData} TData */
 /** @typedef {typeof FormApplication<FormApplicationOptions, TData, TData>} TFormApplication */
 const ActorSheetV1 = foundry.appv1?.sheets?.ActorSheet ?? ActorSheet;
+
+/**
+ * Stats derivadas de una "Masa de enemigos" (defenseType='mass') desde los parametros
+ * por criatura, via el nucleo puro massCombat.js. Para mostrar en Opciones avanzadas
+ * (el combate las usara en el Incremento 2).
+ * @param {object} system actor.system
+ */
+function computeMassDerived(system) {
+  const s = system?.general?.settings?.mass ?? {};
+  const count = Number(s.count?.value) || 0;
+  const accumulates = !!s.accumulates?.value;
+  const disorganized = !!s.disorganized?.value;
+  // Vida base por criatura = campo de la masa (rellena la vida del actor). Ataque base =
+  // el del actor. El resto (TA, iniciativa, defensa, dano de armas/conjuros) sale de la ficha.
+  const baseLife = Number(s.baseLife?.value) || 0;
+  const baseAttack = Number(system?.combat?.attack?.base?.value) || 0;
+  // Componentes vivos segun la vida actual: el bono de Tabla 1 (sin dividir entre atacados)
+  // se calcula con ellos, asi baja al perder PV.
+  const aliveCount = massSurvivingCount(system);
+  const attackBonus = massAttackBonus({ count: aliveCount, disorganized });
+  return {
+    active: system?.general?.settings?.defenseType?.value === 'mass',
+    lifePool: massLifePool({ count, pv: baseLife, accumulates }),
+    count,
+    aliveCount,
+    attackBonus,
+    offensiveAbility: baseAttack + attackBonus
+  };
+}
 
 /**
  * View-model (solo lectura) para el panel "Armas en mano" de Combate>Combate:
@@ -264,6 +294,8 @@ export default class ABFActorSheet extends ActorSheetV1 {
 
     // Panel "Armas en mano" (Combate>Combate): grupos por mano + manos usadas.
     sheet.combatHands = computeCombatHands(actor?.system);
+    // Masa de enemigos (Opciones avanzadas): stats derivadas para mostrar.
+    sheet.massDerived = computeMassDerived(actor?.system);
 
     sheet.config = CONFIG.config;
 
@@ -274,7 +306,10 @@ export default class ABFActorSheet extends ActorSheetV1 {
     sheet.canModifyDice = permissions?.[game.user.role] === true;
 
     // Use embedded item collection directly
-    const effectItems = actor.items.filter(i => i && i.type === ABFItems.EFFECT);
+    // Orden manual arrastrando la fila (campo `sort`); igual que armas/armaduras.
+    const effectItems = actor.items
+      .filter(i => i && i.type === ABFItems.EFFECT)
+      .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0));
     sheet.effects = effectItems;
 
     // Técnicas de Ki: un view-model por técnica para el constructor (pestaña) y

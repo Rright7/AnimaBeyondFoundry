@@ -4,9 +4,26 @@
 // un 100 natural en el dado siempre es éxito; nivel de fracaso = dif - total.
 
 import { openModDialog } from '../../module/utils/dialogs/openSimpleInputDialog.js';
+import {
+  isMassActor,
+  massComponentCount,
+  massResistanceOutcome,
+  massResistanceDifficultyBonus
+} from '../../module/combat/massCombat.js';
 
 const RES_PATH = type =>
   `system.characteristics.secondaries.resistances.${type}.final.value`;
+
+// Efecto sobre una masa segun el tramo del control de Resistencia (margen = total - dif).
+// Solo aplica a efectos de AREA; los de 1 solo objetivo no afectan a la masa.
+const MASS_RES_DESC = {
+  passClean: 'La masa NO se ve afectada.',
+  passPartial:
+    'Penalizadores a la MITAD (redondeo abajo); los efectos no numéricos (muerte, parálisis…) afectan a ~1/3 de los componentes alcanzados.',
+  failPartial:
+    'Penalizadores a la MITAD (redondeo arriba); los efectos no numéricos afectan a ~2/3 de los componentes alcanzados.',
+  failFull: 'Efecto PLENO: afecta a todos los componentes alcanzados.'
+};
 
 export default async function resistActionHandler(message, _html, dataset) {
   try {
@@ -52,6 +69,16 @@ export default async function resistActionHandler(message, _html, dataset) {
     const resistance = Number(foundry.utils.getProperty(actor, RES_PATH(res.type))) || 0;
     const difficulty = Number(res.value) || 0;
 
+    // Si el ATACANTE es una masa que obliga a resistir, sube la dificultad del rival
+    // (+20 si <=10 componentes, +50 si mas).
+    const attackerActor = attackData?.attackerId
+      ? game.actors?.get?.(attackData.attackerId)
+      : null;
+    const massDifficultyBonus = isMassActor(attackerActor?.system)
+      ? massResistanceDifficultyBonus(massComponentCount(attackerActor.system))
+      : 0;
+    const difficultyFinal = difficulty + massDifficultyBonus;
+
     // Ventana de modificador manual antes de tirar (cerrar = cancelar).
     const modStr = await openModDialog({
       title: game.i18n.localize('chat.attackData.resistButton')
@@ -64,24 +91,40 @@ export default async function resistActionHandler(message, _html, dataset) {
     await roll.evaluate();
     const die = roll.dice[0].total;
     const total = die + resistance + mod;
-    const success = die === 100 || total >= difficulty;
-    const failBy = success ? 0 : difficulty - total;
+    const success = die === 100 || total >= difficultyFinal;
+    const failBy = success ? 0 : difficultyFinal - total;
 
     const typeLabel = game.i18n.localize(`chat.attackData.resistanceType.${res.type}`);
     const speaker = ChatMessage.getSpeaker({ token, actor });
 
     await roll.toMessage({
       speaker,
-      flavor: game.i18n.format('chat.resist.flavor', { type: typeLabel, difficulty })
+      flavor:
+        game.i18n.format('chat.resist.flavor', { type: typeLabel, difficulty: difficultyFinal }) +
+        (massDifficultyBonus ? ` (+${massDifficultyBonus} masa)` : '')
     });
 
-    await ChatMessage.create({
-      speaker,
-      content: `<div class="resist-result"><p>${game.i18n.format(
-        success ? 'chat.resist.resultSuccess' : 'chat.resist.resultFail',
-        { type: typeLabel, total, difficulty, failBy }
-      )}</p></div>`
-    });
+    // Masa como DEFENSORA: en vez de exito/fallo binario, 4 tramos por margen (±40).
+    if (isMassActor(actor.system)) {
+      const margin = total - difficultyFinal;
+      const outcome = massResistanceOutcome(margin);
+      await ChatMessage.create({
+        speaker,
+        content:
+          `<div class="resist-result"><p><strong>Resistencia de la masa</strong> (${typeLabel}): ` +
+          `${total} vs ${difficultyFinal} — margen ${margin >= 0 ? '+' : ''}${margin}</p>` +
+          `<p>${MASS_RES_DESC[outcome.tier]}</p>` +
+          `<p style="opacity:.7;font-size:.9em;">(solo para efectos de área; los de 1 objetivo no afectan a la masa)</p></div>`
+      });
+    } else {
+      await ChatMessage.create({
+        speaker,
+        content: `<div class="resist-result"><p>${game.i18n.format(
+          success ? 'chat.resist.resultSuccess' : 'chat.resist.resultFail',
+          { type: typeLabel, total, difficulty: difficultyFinal, failBy }
+        )}</p></div>`
+      });
+    }
   } catch (err) {
     console.error('[ABF] resistActionHandler error:', err);
     ui.notifications?.error(game.i18n.localize('chat.resist.openFailed'));

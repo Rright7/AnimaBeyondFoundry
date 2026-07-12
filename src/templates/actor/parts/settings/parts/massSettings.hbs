@@ -1,0 +1,33 @@
+{{!-- Seccion "Masa de enemigos": solo visible cuando el Tipo de defensa es "Masa de
+      enemigos". Campos propios de la masa: nº, vida base por criatura, ¿acumulan?,
+      ¿desorganizados?. La VIDA del actor (Puntos de Vida) se autorrellena = pool (vida
+      base x nº) al guardar (ver _updateObject). Ataque base sale de la ficha; TA,
+      iniciativa, defensa y dano de armas/conjuros tambien. Bono al ataque (Tabla 1) y
+      +50% arma / x2 conjuro al dano los anade la masa. Derivadas -> @root.massDerived. --}}
+{{#if (is "eq" system.general.settings.defenseType.value 'mass')}}
+{{#> "systems/animabf/templates/common/ui/group.hbs"
+  class="massSettings"
+}}
+  {{>
+  "systems/animabf/templates/common/ui/group-header.hbs"
+    title="Masa de enemigos"
+  }}
+  {{#> "systems/animabf/templates/common/ui/group-body.hbs"
+    class="massSettings"
+  }}
+    <p class="hint" style="opacity:.7;font-size:.85em;">Los PV totales (vida base × nº) rellenan solos la Vida del actor. Ataque, TA e iniciativa salen de la ficha; la defensa, la que elijas al defender.</p>
+    {{> "systems/animabf/templates/common/ui/horizontal-titled-input.hbs" class="mass-field" inputType="number" min="0" step="1" title="Nº de enemigos" inputName="system.general.settings.mass.count.value" inputValue=system.general.settings.mass.count.value }}
+    {{> "systems/animabf/templates/common/ui/horizontal-titled-input.hbs" class="mass-field" inputType="number" min="0" step="1" title="Vida base (por criatura)" inputName="system.general.settings.mass.baseLife.value" inputValue=system.general.settings.mass.baseLife.value }}
+    {{> "systems/animabf/templates/common/ui/horizontal-titled-input.hbs" class="mass-field" inputType="checkbox" title="¿Acumulan daño?" inputName="system.general.settings.mass.accumulates.value" inputValue=system.general.settings.mass.accumulates.value }}
+    {{> "systems/animabf/templates/common/ui/horizontal-titled-input.hbs" class="mass-field" inputType="checkbox" title="¿Desorganizados?" inputName="system.general.settings.mass.disorganized.value" inputValue=system.general.settings.mass.disorganized.value }}
+    <button type="button" class="mass-calc-life" data-on-click="calcMassLife" style="margin-top:.4rem;width:100%;">Calcular / fijar vida de la masa</button>
+    <div class="mass-derived">
+      <p><strong>PV totales de la masa:</strong> {{@root.massDerived.lifePool}}</p>
+      <p><strong>Componentes vivos:</strong> {{@root.massDerived.aliveCount}} / {{@root.massDerived.count}} <span style="opacity:.7;">(según la vida actual)</span></p>
+      <p><strong>Bono al ataque (Tabla 1):</strong> +{{@root.massDerived.attackBonus}} <span style="opacity:.7;">(se aplica solo a todos sus ataques)</span></p>
+      <p><strong>Habilidad Ofensiva total:</strong> {{@root.massDerived.offensiveAbility}}</p>
+      <p><strong>Bono al daño:</strong> +50% con arma / ×2 con conjuro (a todos sus ataques)</p>
+    </div>
+  {{/"systems/animabf/templates/common/ui/group-body.hbs"}}
+{{/"systems/animabf/templates/common/ui/group.hbs"}}
+{{/if}}

@@ -26,6 +26,9 @@ export class ABFAttackData {
     this.pointBlank = !!p.pointBlank;
     this.isArea = !!p.isArea;
     this.areaDesc = p.areaDesc ?? '';
+    // Enemigos de una MASA alcanzados por este ataque (multiplicador de area, Tabla 2). 1 =
+    // impacto normal (x1). Se pregunta al resolver el ataque contra una masa.
+    this.areaEnemiesHit = Math.max(1, Math.floor(Number(p.areaEnemiesHit) || 1));
 
     // Crit / opposed / misc combat bonuses
     this.automaticCrit = !!p.automaticCrit;
@@ -297,6 +300,10 @@ export class ABFAttackDataBuilder {
   }
   areaDesc(s) {
     this._p.areaDesc = String(s ?? '');
+    return this;
+  }
+  areaEnemiesHit(n) {
+    this._p.areaEnemiesHit = Math.max(1, Math.floor(Number(n) || 1));
     return this;
   }
 

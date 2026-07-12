@@ -40,6 +40,9 @@
     {{else}}
       <p data-requires-permission="gm"><strong>{{localize "chat.combatResult.baseDamage"}}:</strong> {{combatResult.damageFinal}} ({{combatResult.damagePercentage}}% of {{combatResult.finalBaseDamage}})</p>
     {{/if}}
+    {{#if (gt combatResult.areaMultiplier 1)}}
+      <p data-requires-permission="gm" style="color:#b06000;"><strong>Área (Tabla 2):</strong> ×{{combatResult.areaMultiplier}} al Daño Base (ataque a la masa)</p>
+    {{/if}}
     <p data-requires-permission="owner"><strong>{{localize "chat.combatResult.lifePercentRemoved"}}:</strong> {{combatResult.lifePercentRemoved}}%</p>
 
     {{#if combatResult.isCritical}}

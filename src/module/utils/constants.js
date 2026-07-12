@@ -215,7 +215,8 @@ export const Templates = {
       TabVisibility: T('actor/parts/settings/parts/tabVisibility.hbs'),
       AutomationOptions: T('actor/parts/settings/parts/automationOptions.hbs'),
       AdvancedSettings: T('actor/parts/settings/parts/advancedSettings.hbs'),
-      AdvancedCharacteristics: T('actor/parts/settings/parts/advancedCharacteristics.hbs')
+      AdvancedCharacteristics: T('actor/parts/settings/parts/advancedCharacteristics.hbs'),
+      MassSettings: T('actor/parts/settings/parts/massSettings.hbs')
     }
   }
 };

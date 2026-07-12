@@ -23,6 +23,7 @@ import {
 import { maxFatiguePerAction } from '../combat/utils/fatigue.js';
 import { buildRollFormula } from '../combat/utils/buildRollFormula.js';
 import { arePointBlank, pointBlankAttackBonus } from '../combat/pointBlank.js';
+import { massActorAttackBonus, isMassActor, massAdjustedDamage } from '../combat/massCombat.js';
 ///dialogs/AttackConfigurationDialog.js
 ///actor/utils/getSnapshotTargets.js
 
@@ -443,6 +444,14 @@ export class AttackConfigurationDialog extends FormApplication {
       const pointBlankBonus = combat.projectile?.value
         ? pointBlankAttackBonus(weapon.system?.shotType?.value, pointBlank)
         : 0;
+      // Masa de enemigos: si el atacante es una masa, su bono de HA (Tabla 1 por nº total,
+      // mitad si desorganizada) se aplica a TODOS sus ataques, y su Dano Base sube +50%.
+      const isMass = isMassActor(actor.system);
+      const massBonus = massActorAttackBonus(actor.system);
+      const rawBaseDamage = Number(combat.damage?.final ?? weapon.system.damage?.final?.value ?? 0);
+      const massedBaseDamage = isMass
+        ? massAdjustedDamage(rawBaseDamage, { magic: false })
+        : rawBaseDamage;
       // Cada termino por separado para que la formula del chat se vea DESGLOSADA (no un
       // neto), incluido el "Modificador" editable. La suma (= total tirado) es identica.
       const rollTerms = [
@@ -454,7 +463,8 @@ export class AttackConfigurationDialog extends FormApplication {
         kiAttackBonus,
         additionalAttacksPenalty,
         fatigueBonus,
-        pointBlankBonus
+        pointBlankBonus,
+        massBonus
       ];
       // Umbral de maestria (>=200): para el arma-perfil "Artes Marciales" la
       // "habilidad" efectiva es la HA del actor MAS el bono de AM inyectado en su
@@ -529,6 +539,12 @@ export class AttackConfigurationDialog extends FormApplication {
       if (pointBlankBonus !== 0) {
         dialogContribs.push(`A bocajarro (+${pointBlankBonus})`);
       }
+      if (massBonus !== 0) {
+        dialogContribs.push(`Masa de enemigos (+${massBonus})`);
+      }
+      if (massedBaseDamage !== rawBaseDamage) {
+        dialogContribs.push(`Masa daño (+${massedBaseDamage - rawBaseDamage})`);
+      }
       if (kiAttackBonus !== 0 || kiDamageBonus !== 0) {
         const label = game.i18n.localize('macros.combat.dialog.combatMod.kiTechnique.title');
         const tag = kiAppliedBy.length ? ` [${kiAppliedBy.join(', ')}]` : '';
@@ -556,7 +572,7 @@ export class AttackConfigurationDialog extends FormApplication {
         .damage(
           Math.max(
             0,
-            Number(combat.damage?.final ?? weapon.system.damage?.final?.value ?? 0) +
+            massedBaseDamage +
               (this.modalData.maneuver?.damageDelta ?? 0) +
               kiDamageBonus +
               (Number(combat.counterDamageBonus) || 0)

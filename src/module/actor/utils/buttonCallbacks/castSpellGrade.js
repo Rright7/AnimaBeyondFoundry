@@ -1,6 +1,7 @@
 import ABFFoundryRoll from '../../../rolls/ABFFoundryRoll.js';
 import { ABFAttackData } from '../../../combat/ABFAttackData.js';
 import { pointBlankAgainstTarget } from '../../../combat/pointBlank.js';
+import { massActorAttackBonus, isMassActor, massAdjustedDamage } from '../../../combat/massCombat.js';
 import { ABFSupernaturalShieldData } from '../../../combat/ABFSupernaturalShieldData.js';
 import { shieldValueCheck } from '../../../combat/utils/shieldValueCheck.js';
 import { Templates } from '../../../utils/constants';
@@ -103,15 +104,23 @@ export async function castSpellGrade(sheet, event) {
   // acciones multiples; ese no forma parte de allActions.
   const die = offensive.base.value >= 200 ? '1d100xamastery' : '1d100xa';
 
-  const roll = new ABFFoundryRoll(`${die} + ${offensive.final.value} + ${mod}`, actor.system);
+  // Masa de enemigos: +Tabla 1 a la Proyeccion Magica y x2 al Dano Base (sobrenatural).
+  const massBon = massActorAttackBonus(actor.system);
+  const isMass = isMassActor(actor.system);
+
+  const roll = new ABFFoundryRoll(
+    `${die} + ${offensive.final.value} + ${mod}${massBon ? ` + ${massBon}` : ''}`,
+    actor.system
+  );
   await roll.evaluate({ async: true });
 
   await roll.toMessage({
     speaker: ChatMessage.getSpeaker({ actor }),
-    flavor: `${spell.name} (${localizeGrade(grade)})`
+    flavor: `${spell.name} (${localizeGrade(grade)})${massBon ? ` — Masa (+${massBon})` : ''}`
   });
 
-  const baseDamage = Number(spell.system.grades[grade]?.damage?.value ?? 0);
+  const rawSpellDamage = Number(spell.system.grades[grade]?.damage?.value ?? 0);
+  const baseDamage = isMass ? massAdjustedDamage(rawSpellDamage, { magic: true }) : rawSpellDamage;
   // Solo los hechizos de tipo ATAQUE son proyectil disparado (regla especial de la magia;
   // animicos/defensa/efecto/automatico/deteccion NO -> el defensor no sufre la Tabla 49).
   const isAttackSpell = spell.system?.spellType?.value === 'attack';

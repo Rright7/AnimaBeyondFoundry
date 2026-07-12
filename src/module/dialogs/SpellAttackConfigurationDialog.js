@@ -1,6 +1,7 @@
 import { Templates } from '../utils/constants';
 import { ABFAttackData } from '../combat/ABFAttackData';
 import { pointBlankAgainstTarget } from '../combat/pointBlank.js';
+import { massActorAttackBonus, isMassActor, massAdjustedDamage } from '../combat/massCombat.js';
 import { resistanceEffectCheck } from '../combat/utils/resistanceEffectCheck.js';
 import ABFFoundryRoll from '../rolls/ABFFoundryRoll.js';
 import { ABFConfig } from '../ABFConfig';
@@ -116,7 +117,14 @@ export class SpellAttackConfigurationDialog extends FormApplication {
           ? actor.system?.general?.diceSettings?.abilityMasteryDie?.value
           : actor.system?.general?.diceSettings?.abilityDie?.value;
 
-      const roll = new ABFFoundryRoll(`${die} + ${mpFinal} + ${mod}`, actor.system);
+      // Masa de enemigos: +Tabla 1 a la Proyeccion Magica y x2 al Dano Base (sobrenatural).
+      const massBon = massActorAttackBonus(actor.system);
+      const isMass = isMassActor(actor.system);
+
+      const roll = new ABFFoundryRoll(
+        `${die} + ${mpFinal} + ${mod}${massBon ? ` + ${massBon}` : ''}`,
+        actor.system
+      );
       await roll.evaluate({ async: true });
 
       const token = attacker.token?.object ?? attacker.token ?? null;
@@ -128,7 +136,7 @@ export class SpellAttackConfigurationDialog extends FormApplication {
 
       await roll.toMessage({
         speaker,
-        flavor: `${spell.name} (${gradeLabel})`
+        flavor: `${spell.name} (${gradeLabel})${massBon ? ` — Masa (+${massBon})` : ''}`
       });
 
       // Solo los hechizos de tipo ATAQUE son proyectil disparado (regla especial de la
@@ -136,7 +144,7 @@ export class SpellAttackConfigurationDialog extends FormApplication {
       const isAttackSpell = spell.system?.spellType?.value === 'attack';
       const attackData = ABFAttackData.builder()
         .attackAbility(roll.total)
-        .damage(finalDamage)
+        .damage(isMass ? massAdjustedDamage(finalDamage, { magic: true }) : finalDamage)
         .resistanceEffect(resistanceEffectCheck(gradeData))
         .ignoreArmor(false)
         .reducedArmor(0)

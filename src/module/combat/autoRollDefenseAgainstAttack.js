@@ -9,6 +9,7 @@ import {
 import { getMessageMode } from '../utils/chatVisibility.js';
 import { defensesCounterCheck, freeDefensesFor } from './utils/defensesCounterCheck.js';
 import { buildRollFormula } from './utils/buildRollFormula.js';
+import { buildMassDefenseData } from './massDefense.js';
 
 function toSafeNumber(v) {
   const n = Number(v);
@@ -67,6 +68,25 @@ function buildZeroDefenseResult({ actor, defenderToken, attackData }) {
   };
 }
 
+function buildMassFixedDefenseResult({ actor, defenderToken, attackData }) {
+  const { defenseData, type, defenseAbility, weaponId, shieldId, projectilePenalty } =
+    buildMassDefenseData(actor, attackData, defenderToken);
+
+  const combatResult = computeCombatResult(attackData, defenseData);
+
+  return {
+    actor,
+    token: defenderToken ?? null,
+    defenseType: type,
+    defenseTotal: defenseAbility,
+    weaponId,
+    shieldId,
+    defenseData,
+    combatResult,
+    appliedPenalties: { projectilePenalty, multipleDefensePenalty: 0 }
+  };
+}
+
 export async function autoRollDefenseAgainstAttack({
   defenderToken = null,
   defenderActor = null,
@@ -83,6 +103,12 @@ export async function autoRollDefenseAgainstAttack({
   // Accumulation/resistance defenders: base defense 0, no roll, no penalties.
   if (defenseMode === 'resistance') {
     return buildZeroDefenseResult({ actor, defenderToken, attackData });
+  }
+
+  // Masa de enemigos: defensa FIJA = su Defensa Final (mejor parada/esquiva/escudo), sin
+  // tirada ni penalizador por defensas multiples. La TA y la Tabla 49 siguen aplicando.
+  if (defenseMode === 'mass') {
+    return buildMassFixedDefenseResult({ actor, defenderToken, attackData });
   }
 
   const defensesCounter = getDefensesCounter(actor);

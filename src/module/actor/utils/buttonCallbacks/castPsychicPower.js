@@ -1,6 +1,7 @@
 import ABFFoundryRoll from '../../../rolls/ABFFoundryRoll.js';
 import { ABFAttackData } from '../../../combat/ABFAttackData.js';
 import { pointBlankAgainstTarget } from '../../../combat/pointBlank.js';
+import { massActorAttackBonus, isMassActor, massAdjustedDamage } from '../../../combat/massCombat.js';
 import { ABFSupernaturalShieldData } from '../../../combat/ABFSupernaturalShieldData.js';
 import { shieldValueCheck } from '../../../combat/utils/shieldValueCheck.js';
 import { openModDialog } from '../../../utils/dialogs/openSimpleInputDialog.js';
@@ -97,21 +98,25 @@ async function _sendPsychicAttackToChat({
     actor.system?.psychic?.psychicProjection?.imbalance?.offensive?.base?.value ?? 0
   );
 
+  // Masa de enemigos: +Tabla 1 a la Proyeccion Psiquica y x2 al Dano Base (sobrenatural).
+  const massBon = massActorAttackBonus(actor.system);
+  const isMass = isMassActor(actor.system);
+
   const die = offensiveProjectionBase >= 200 ? '1d100xamastery' : '1d100xa';
   const roll = new ABFFoundryRoll(
-    `${die} + ${offensiveProjectionBase} + ${mod}`,
+    `${die} + ${offensiveProjectionBase} + ${mod}${massBon ? ` + ${massBon}` : ''}`,
     actor.system
   );
   await roll.evaluate({ async: true });
 
   await roll.toMessage({
     speaker: ChatMessage.getSpeaker({ actor }),
-    flavor: `${power.name} (${difficultyKey ?? '-'})`
+    flavor: `${power.name} (${difficultyKey ?? '-'})${massBon ? ` — Masa (+${massBon})` : ''}`
   });
 
   await ABFAttackData.builder()
     .attackAbility(roll.total)
-    .damage(Number(baseDamage) || 0)
+    .damage(isMass ? massAdjustedDamage(Number(baseDamage) || 0, { magic: true }) : Number(baseDamage) || 0)
     .ignoreArmor(false)
     .reducedArmor(0)
     .armorType(power.system?.critic?.value ?? game.animabf.weapon.NoneWeaponCritic.NONE)

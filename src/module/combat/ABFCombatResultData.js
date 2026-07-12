@@ -7,6 +7,9 @@ export class ABFCombatResultData {
     this.damageFinal = p.damageFinal ?? 0;
     this.finalBaseDamage = p.finalBaseDamage ?? 0;
     this.damagePercentage = p.damagePercentage ?? 0;
+    // Multiplicador de area aplicado al Dano Base cuando el defensor es una masa (Tabla 2).
+    // 1 = impacto normal (sin cambio).
+    this.areaMultiplier = p.areaMultiplier ?? 1;
     this.finalArmor = p.finalArmor ?? 0;
     this.reducedArmor = p.reducedArmor ?? 0;
     this.lifePercentRemoved = p.lifePercentRemoved ?? 0;
@@ -89,6 +92,10 @@ export class ABFCombatResultDataBuilder {
   }
   damagePercentage(v) {
     this._p.damagePercentage = Number(v) || 0;
+    return this;
+  }
+  areaMultiplier(v) {
+    this._p.areaMultiplier = Number(v) || 1;
     return this;
   }
   finalArmor(v) {
