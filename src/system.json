@@ -2,7 +2,7 @@
   "id": "animabf",
   "title": "Anima Beyond Fantasy",
   "description": "Unofficial Anima Beyond Fantasy system for Foundry VTT",
-  "version": "3.4.12",
+  "version": "3.4.13",
   "compatibility": {
     "minimum": "13",
     "verified": "14.363"
