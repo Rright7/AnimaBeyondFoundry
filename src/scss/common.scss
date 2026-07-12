@@ -309,6 +309,11 @@ body.abf-theme-dark .spheres-container {
 
       .input {
         height: 1.25rem;
+        // El footer usa fondo de acento oscuro; sin esto el valor del input hereda un color
+        // oscuro y se pierde sobre ese fondo (p. ej. tema Carbon). Caja legible con los
+        // tokens de tema, igual que los inputs del cuerpo.
+        background: var(--abf-surface);
+        color: var(--abf-text);
       }
     }
   }
