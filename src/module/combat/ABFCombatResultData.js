@@ -10,6 +10,12 @@ export class ABFCombatResultData {
     // Multiplicador de area aplicado al Dano Base cuando el defensor es una masa (Tabla 2).
     // 1 = impacto normal (sin cambio).
     this.areaMultiplier = p.areaMultiplier ?? 1;
+    // Desgaste de escudo sobrenatural: se calcula al parar con exito pero se aplica a mano
+    // desde el chat (boton). usedShield = ofrecer el boton; shieldWearApplied = ya aplicado.
+    this.usedShield = !!p.usedShield;
+    this.shieldId = p.shieldId ?? '';
+    this.shieldWearDamage = p.shieldWearDamage ?? 0;
+    this.shieldWearApplied = !!p.shieldWearApplied;
     this.finalArmor = p.finalArmor ?? 0;
     this.reducedArmor = p.reducedArmor ?? 0;
     this.lifePercentRemoved = p.lifePercentRemoved ?? 0;
@@ -96,6 +102,22 @@ export class ABFCombatResultDataBuilder {
   }
   areaMultiplier(v) {
     this._p.areaMultiplier = Number(v) || 1;
+    return this;
+  }
+  usedShield(v) {
+    this._p.usedShield = !!v;
+    return this;
+  }
+  shieldId(v) {
+    this._p.shieldId = String(v ?? '');
+    return this;
+  }
+  shieldWearDamage(v) {
+    this._p.shieldWearDamage = Number(v) || 0;
+    return this;
+  }
+  shieldWearApplied(v) {
+    this._p.shieldWearApplied = !!v;
     return this;
   }
   finalArmor(v) {

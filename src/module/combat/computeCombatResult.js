@@ -139,8 +139,10 @@ export function computeCombatResult(attackData, defenseData) {
   let finalDamage = Math.ceil((baseDamage * damagePercentage) / 100);
   if (suppressDamage) finalDamage = 0;
 
-  // Apply supernatural shield wear centrally (works from any combat resolution)
-  tryApplySupernaturalShieldWear(defenderActor, attackData, defenseData, difference);
+  // Desgaste del escudo sobrenatural: se CALCULA aqui pero NO se aplica. Se ofrece un boton
+  // en el chat para aplicarlo a mano, porque hay casos en los que el escudo no debe recibir
+  // dano aunque pare con exito (decision del DJ).
+  const shieldWear = computeShieldWear(attackData, defenseData, difference);
 
   const lifeBeforeAttack =
     defenderActor.system.characteristics.secondaries.lifePoints.value;
@@ -184,6 +186,9 @@ export function computeCombatResult(attackData, defenseData) {
     .finalBaseDamage(baseDamage)
     .damagePercentage(damagePercentage)
     .areaMultiplier(areaMultiplier)
+    .usedShield(shieldWear.usedShield)
+    .shieldId(shieldWear.shieldId)
+    .shieldWearDamage(shieldWear.damage)
     .finalArmor(finalArmor)
     .reducedArmor(attackData.reducedArmor ?? 0)
     .lifePercentRemoved(Math.floor(Math.min(100, Math.max(lifePercentRemoved, 0))))
@@ -214,62 +219,56 @@ export function computeCombatResult(attackData, defenseData) {
 }
 
 /**
- * If defense used a supernatural shield and successfully blocked the attack,
- * reduce shieldPoints by the attack base damage (attackData.damage).
- * This is best-effort and non-blocking.
- * @param {Actor|null} defenderActor
- * @param {ABFAttackData} attackData
- * @param {ABFDefenseData} defenseData
- * @param {number} difference
+ * Calcula el desgaste que un escudo sobrenatural sufriria al PARAR con exito (diferencia
+ * <= 0): **dano base del arma + 10 por cada punto de TA que reduce el arma** (reducedArmor).
+ * NO lo aplica: se ofrece un boton en el chat, porque hay casos en los que el escudo no
+ * debe recibir dano aunque pare (decision del DJ).
+ * @returns {{ usedShield: boolean, shieldId: string, damage: number }}
  */
-function tryApplySupernaturalShieldWear(
-  defenderActor,
-  attackData,
-  defenseData,
-  difference
-) {
-  if (!defenderActor) return;
+function computeShieldWear(attackData, defenseData, difference) {
+  const none = { usedShield: false, shieldId: '', damage: 0 };
 
   const defenseType = defenseData?.defenseType;
   const usedShield = defenseType === 'shield' || defenseType === 'supernaturalShield';
   const blockedSuccessfully = (difference ?? 0) <= 0;
-
-  if (!usedShield || !blockedSuccessfully) return;
-
-  const shieldId = defenseData?.shieldId;
-  if (!shieldId) return;
+  const shieldId = defenseData?.shieldId ?? '';
+  if (!usedShield || !blockedSuccessfully || !shieldId) return none;
 
   const baseAttackDamage = Number(attackData?.damage ?? 0) || 0;
-  let shieldDamageFromArmorPenetration = Number(attackData?.reducedArmor * 10);
-  if (attackData?.ignoreArmor) {
-    shieldDamageFromArmorPenetration = 200;
-  }
-  if (baseAttackDamage <= 0) return;
+  if (baseAttackDamage <= 0) return none;
 
-  const totalShieldDamage = baseAttackDamage + shieldDamageFromArmorPenetration;
+  // Dano al escudo = dano base del arma + 10 por cada punto de TA que reduce el arma.
+  const reducedArmor = Math.max(0, Number(attackData?.reducedArmor) || 0);
+  return { usedShield: true, shieldId, damage: baseAttackDamage + reducedArmor * 10 };
+}
+
+/**
+ * Aplica el desgaste a un escudo sobrenatural (item propio o escudo dinamico): resta
+ * `damage` de sus shieldPoints con suelo 0. Lo llama el boton "Aplicar desgaste" del chat.
+ * @returns {Promise|null} la promesa del update, o null si no hay nada que hacer.
+ */
+export function applyShieldWear(defenderActor, shieldId, damage) {
+  const amount = Number(damage) || 0;
+  if (!defenderActor || !shieldId || amount <= 0) return null;
 
   const shieldItem = defenderActor.items?.get?.(shieldId);
   if (shieldItem) {
     const current = Number(shieldItem.system?.shieldPoints ?? 0) || 0;
-    const next = Math.max(0, current - totalShieldDamage);
-    if (next !== current) {
-      shieldItem.update({ 'system.shieldPoints': next }).catch(() => {});
-    }
-    return;
+    const next = Math.max(0, current - amount);
+    if (next === current) return null;
+    return shieldItem.update({ 'system.shieldPoints': next });
   }
 
   const dyn = defenderActor.system?.dynamic?.supernaturalShields?.[shieldId];
   if (dyn?.system) {
     const current = Number(dyn.system.shieldPoints ?? 0) || 0;
-    const next = Math.max(0, current - totalShieldDamage);
-    if (next !== current) {
-      defenderActor
-        .update({
-          [`system.dynamic.supernaturalShields.${shieldId}.system.shieldPoints`]: next
-        })
-        .catch(() => {});
-    }
+    const next = Math.max(0, current - amount);
+    if (next === current) return null;
+    return defenderActor.update({
+      [`system.dynamic.supernaturalShields.${shieldId}.system.shieldPoints`]: next
+    });
   }
+  return null;
 }
 
 /** Final base damage after flat reductions (rounded to nearest 10) */
