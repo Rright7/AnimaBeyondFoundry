@@ -6,6 +6,7 @@ import { resistanceEffectCheck } from '../combat/utils/resistanceEffectCheck.js'
 import ABFFoundryRoll from '../rolls/ABFFoundryRoll.js';
 import { ABFConfig } from '../ABFConfig';
 import { getSnapshotTargets } from '../actor/utils/getSnapshotTargets.js';
+import { playSpellCastAnimation } from '../animations/combatAnimations.js';
 
 export class SpellAttackConfigurationDialog extends FormApplication {
   constructor(object = {}, options = {}) {
@@ -147,6 +148,8 @@ export class SpellAttackConfigurationDialog extends FormApplication {
         .damage(isMass ? massAdjustedDamage(finalDamage, { magic: true }) : finalDamage)
         .resistanceEffect(resistanceEffectCheck(gradeData))
         .areaRadius(Number(gradeData?.area?.value) || 0)
+        .isSpell(true)
+        .spellVia(spell.system?.via?.value ?? '')
         .ignoreArmor(false)
         .reducedArmor(0)
         .armorType(
@@ -168,6 +171,11 @@ export class SpellAttackConfigurationDialog extends FormApplication {
         .build();
 
       await attackData.toChatMessage({ actor, weapon: spell });
+      playSpellCastAnimation(token, {
+        via: spell.system?.via?.value,
+        damageType: spell.system?.critic?.value,
+        combatType: spell.system?.combatType?.value
+      });
       await this.close();
     } catch (err) {
       console.error(err);

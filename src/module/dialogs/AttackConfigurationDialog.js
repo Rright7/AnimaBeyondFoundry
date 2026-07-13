@@ -5,6 +5,7 @@ import { composeAimedPenalty } from '../equipment/qualities/composeWeaponEffects
 import { resolveManeuverAttackPenalty } from '../combat/maneuvers/resolveManeuverPenalty.js';
 import { ABFAttackData } from '../combat/ABFAttackData';
 import { getSnapshotTargets } from '../actor/utils/getSnapshotTargets.js';
+import { playWeaponAttackAnimation } from '../animations/combatAnimations.js';
 import {
   activeTechniqueCombatBonuses,
   usableInstantCombatTechniques
@@ -604,6 +605,7 @@ export class AttackConfigurationDialog extends FormApplication {
         .critDamageBonus(Number(combat.critDamageBonus ?? 0))
         .attackerId(actor.id)
         .weaponId(weapon.id)
+        .weaponName(weapon.name)
         .maneuverSlug(this.modalData.maneuver?.slug ?? '')
         .maneuverItemName(this.modalData.maneuver?.itemName ?? '')
         .maneuverWasUnarmed(!combat.weapon || !!combat.weapon.system?.isUnarmed?.value)
@@ -622,6 +624,14 @@ export class AttackConfigurationDialog extends FormApplication {
         .build();
 
       const attackMsg = await attackData.toChatMessage({ actor, weapon });
+
+      // Animacion del arma AL ATACAR: swing melee del atacante hacia el/los objetivo(s).
+      playWeaponAttackAnimation(
+        actor.getActiveTokens?.()[0],
+        Array.from(game.user?.targets ?? []),
+        weapon
+      );
+
       if (attackMsg && this.modalData.maneuver?.slug) {
         await attackMsg.setFlag('animabf', 'maneuverSlug', this.modalData.maneuver.slug);
         await attackMsg.setFlag('animabf', 'maneuverItemName', this.modalData.maneuver.itemName);

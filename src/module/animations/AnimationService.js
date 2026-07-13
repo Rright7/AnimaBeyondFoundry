@@ -68,6 +68,7 @@ export async function playEffect({ file, source, target, opts = {} } = {}) {
       else fx.atLocation(source);
     }
     if (target) fx.stretchTo(target, opts.stretchOpts ?? {});
+    if (opts.rotateTowards) fx.rotateTowards(opts.rotateTowards); // swing melee orientado al objetivo
     if (opts.missed) fx.missed();
     if (opts.persist) fx.persist();
     if (opts.name) fx.name(opts.name);

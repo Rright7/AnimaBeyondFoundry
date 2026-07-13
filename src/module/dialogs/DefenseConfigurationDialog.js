@@ -648,8 +648,17 @@ export class DefenseConfigurationDialog extends FormApplication {
               delayRounds: Number(attackData?.delayRounds ?? 0) || 0,
               // Para la animación de combate: distancia (proyectil) y subtipo.
               isProjectile: !!attackData?.isProjectile,
-              projectileType: attackData?.projectileType ?? ''
+              projectileType: attackData?.projectileType ?? '',
+              // Contexto magico/psiquico para el impacto elemental.
+              isSpell: !!attackData?.isSpell,
+              spellVia: attackData?.spellVia ?? '',
+              areaRadius: Number(attackData?.areaRadius) || 0,
+              psychicDiscipline: attackData?.psychicDiscipline ?? '',
+              // Nombre del arma para la animacion por tipo (espada, hacha, lanza...).
+              weaponName: attackData?.weaponName ?? ''
             },
+            // Tipo de defensa (dodge/block/shield) para la reaccion cuando la defensa tiene exito.
+            defenseType: type,
             attacker: {
               actorId: attackData?.attackerId ?? '',
               // Token del atacante (uuid preferido): el control enfrentado de maniobras debe

@@ -33,6 +33,15 @@ export class ABFAttackData {
     // boton "Colocar area" que dibuja una plantilla circular en el mapa.
     this.areaRadius = Number(p.areaRadius) || 0;
 
+    // Contexto magico/psiquico para elegir la animacion ELEMENTAL (fuego, hielo, rayo...).
+    // isSpell = ataque de conjuro; spellVia = via magica; psychicDiscipline = disciplina
+    // psiquica. El resolver de animaciones prioriza disciplina > tipo de dano > via.
+    this.isSpell = !!p.isSpell;
+    this.spellVia = p.spellVia ?? '';
+    this.psychicDiscipline = p.psychicDiscipline ?? '';
+    // Nombre del arma: para elegir la animacion por TIPO (espada, hacha, lanza, arco...).
+    this.weaponName = p.weaponName ?? '';
+
     // Crit / opposed / misc combat bonuses
     this.automaticCrit = !!p.automaticCrit;
     this.critBonus = p.critBonus ?? 0;
@@ -311,6 +320,22 @@ export class ABFAttackDataBuilder {
   }
   areaRadius(v) {
     this._p.areaRadius = Number(v) || 0;
+    return this;
+  }
+  isSpell(b = true) {
+    this._p.isSpell = !!b;
+    return this;
+  }
+  spellVia(v) {
+    this._p.spellVia = String(v ?? '');
+    return this;
+  }
+  psychicDiscipline(v) {
+    this._p.psychicDiscipline = String(v ?? '');
+    return this;
+  }
+  weaponName(v) {
+    this._p.weaponName = String(v ?? '');
     return this;
   }
 

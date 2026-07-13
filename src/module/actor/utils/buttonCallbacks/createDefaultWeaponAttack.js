@@ -1,6 +1,7 @@
 import { Templates } from '../../../utils/constants';
 import { ABFAttackData } from '../../../combat/ABFAttackData';
 import { openModDialog } from '../../../utils/dialogs/openSimpleInputDialog.js';
+import { playWeaponAttackAnimation } from '../../../animations/combatAnimations.js';
 
 export async function createDefaultWeaponAttack(sheet, e) {
   const weaponId = e.currentTarget.dataset.weaponId;
@@ -51,6 +52,7 @@ export async function createDefaultWeaponAttack(sheet, e) {
     //   .onHitEffects(["Aturdido 1 asalto"])
     .attackerId(sheet.actor.id)
     .weaponId(weapon.id)
+    .weaponName(weapon.name)
     .build();
 
   //   const attackData = {
@@ -74,4 +76,11 @@ export async function createDefaultWeaponAttack(sheet, e) {
     content,
     speaker: ChatMessage.getSpeaker({ actor: sheet.actor })
   });
+
+  // Animacion del arma AL ATACAR: swing melee del atacante hacia el/los objetivo(s).
+  playWeaponAttackAnimation(
+    sheet.actor.getActiveTokens?.()[0],
+    Array.from(game.user?.targets ?? []),
+    weapon
+  );
 }

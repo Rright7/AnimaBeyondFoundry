@@ -643,7 +643,6 @@ Hooks.on('createChatMessage', async message => {
     // daño retrasado (el golpe se manifiesta rondas después, no al crear la tarjeta).
     if (
       flags.kind === 'combatResult' &&
-      Number(flags.result?.damageFinal ?? 0) > 0 &&
       flags.result?.maneuverSlug !== 'dano-retrasado'
     ) {
       const { playCombatResultAnimation } =

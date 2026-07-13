@@ -6,6 +6,7 @@ import { ABFSupernaturalShieldData } from '../../../combat/ABFSupernaturalShield
 import { shieldValueCheck } from '../../../combat/utils/shieldValueCheck.js';
 import { openModDialog } from '../../../utils/dialogs/openSimpleInputDialog.js';
 import { getSnapshotTargets } from '../getSnapshotTargets.js';
+import { playSpellCastAnimation } from '../../../animations/combatAnimations.js';
 
 export function getBestEffectKey(effects, rolledValue) {
   if (!effects) return null;
@@ -94,6 +95,12 @@ async function _sendPsychicAttackToChat({
   if (modRaw === undefined || modRaw === null) return; // cancelar (X / Escape): no tirar
   const mod = Number(modRaw) || 0;
 
+  playSpellCastAnimation(actor.getActiveTokens?.()[0], {
+    psychicDiscipline: power.system?.discipline?.value,
+    damageType: power.system?.critic?.value,
+    combatType: 'attack'
+  });
+
   const offensiveProjectionBase = Number(
     actor.system?.psychic?.psychicProjection?.imbalance?.offensive?.base?.value ?? 0
   );
@@ -120,6 +127,7 @@ async function _sendPsychicAttackToChat({
     .ignoreArmor(false)
     .reducedArmor(0)
     .armorType(power.system?.critic?.value ?? game.animabf.weapon.NoneWeaponCritic.NONE)
+    .psychicDiscipline(power.system?.discipline?.value ?? '')
     .damageType(game.animabf.combat.DamageType.NONE)
     .presence(0)
     .isProjectile(true)

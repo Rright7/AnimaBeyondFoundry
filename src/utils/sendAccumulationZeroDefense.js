@@ -95,8 +95,15 @@ export async function sendAccumulationZeroDefense({
           delayRounds: Number(attackData?.delayRounds ?? 0) || 0,
           // Para la animación de combate: distancia (proyectil) y subtipo.
           isProjectile: !!attackData?.isProjectile,
-          projectileType: attackData?.projectileType ?? ''
+          projectileType: attackData?.projectileType ?? '',
+          // Contexto magico/psiquico para el impacto elemental.
+          isSpell: !!attackData?.isSpell,
+          spellVia: attackData?.spellVia ?? '',
+          areaRadius: Number(attackData?.areaRadius) || 0,
+          psychicDiscipline: attackData?.psychicDiscipline ?? '',
+          weaponName: attackData?.weaponName ?? ''
         },
+        defenseType: '',
         attacker: {
           actorId: attackData?.attackerId ?? '',
           // Token del atacante (uuid preferido): el control enfrentado resuelve el token

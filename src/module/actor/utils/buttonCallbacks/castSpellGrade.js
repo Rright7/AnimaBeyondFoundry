@@ -9,6 +9,7 @@ import { openModDialog } from '../../../utils/dialogs/openSimpleInputDialog.js';
 import { SpellAttackConfigurationDialog } from '../../../dialogs/SpellAttackConfigurationDialog.js';
 import { getSnapshotTargets } from '../getSnapshotTargets.js';
 import { resistanceEffectCheck } from '../../../combat/utils/resistanceEffectCheck.js';
+import { playSpellCastAnimation } from '../../../animations/combatAnimations.js';
 
 function localizeGrade(grade) {
   return game.i18n.localize(`anima.ui.mystic.spell.grade.${grade}.title`);
@@ -71,6 +72,12 @@ export async function castSpellGrade(sheet, event) {
         .build()
     );
 
+    playSpellCastAnimation(actor.getActiveTokens?.()[0], {
+      via: spell.system?.via?.value,
+      damageType: spell.system?.critic?.value,
+      combatType
+    });
+
     return;
   }
 
@@ -96,6 +103,12 @@ export async function castSpellGrade(sheet, event) {
 
   // Economia de zeon: gasta (innato/preparado/acumulado) o bloquea si no llega.
   if (!actor.tryCastSpell(spell, grade)) return;
+
+  playSpellCastAnimation(actor.getActiveTokens?.()[0], {
+    via: spell.system?.via?.value,
+    damageType: spell.system?.critic?.value,
+    combatType
+  });
 
   const offensive = actor.system.mystic.magicProjection.imbalance.offensive;
   // El umbral de maestria mira la base (>=200); la tirada usa el FINAL = base +
@@ -130,6 +143,8 @@ export async function castSpellGrade(sheet, event) {
     .damage(baseDamage)
     .resistanceEffect(resistanceEffectCheck(spell.system.grades[grade]))
     .areaRadius(Number(spell.system.grades[grade]?.area?.value) || 0)
+    .isSpell(true)
+    .spellVia(spell.system?.via?.value ?? '')
     .ignoreArmor(false)
     .reducedArmor(0)
     .armorType(spell.system.critic?.value ?? game.animabf.weapon.NoneWeaponCritic.NONE)

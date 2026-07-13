@@ -54,18 +54,21 @@
         {{localize "chat.attackData.autoDefendPendingButton"}}
       </button>
 
-      {{#if attackData.resistanceEffect.check}}
+    </div>
+
+    {{#if attackData.resistanceEffect.check}}
+      <div class="attack-resist-row">
         <button
           type="button"
-          class="chat-action-button"
+          class="chat-action-button resist-button"
           data-action="resist"
           data-message-id="{{xRoot.messageId}}"
           data-attack-data='{{json attackData}}'>
-          {{localize "chat.attackData.resistButton"}}
+          <i class="fas fa-shield-halved"></i>
+          <span>{{localize "chat.attackData.resistButton"}}</span>
         </button>
-      {{/if}}
-
-    </div>
+      </div>
+    {{/if}}
 
     {{#if attackData.areaRadius}}
       <div class="attack-area-row">
