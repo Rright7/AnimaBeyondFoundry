@@ -1121,7 +1121,7 @@ export const parseExcelToActor = async (excelData, actor, options = {}) => {
     await importTechniques(actor, options.workbook);
   }
 
-  await importSpells(actor, excelData.VíasDeMagiaSeleccionadas);
+  await importSpells(actor, excelData.VíasDeMagiaSeleccionadas, options.workbook);
 
   actor.prepareData();
   actor.sheet.render(false);

@@ -51,6 +51,9 @@
         },
         "description": {
           "value": "50 metros de radio."
+        },
+        "area": {
+          "value": 50
         }
       },
       "intermediate": {
@@ -68,6 +71,9 @@
         },
         "description": {
           "value": "250 metros de radio."
+        },
+        "area": {
+          "value": 250
         }
       },
       "advanced": {
@@ -85,6 +91,9 @@
         },
         "description": {
           "value": "1 km radio / El conjuro además borra las acciones de un individuo ante habilidades que permiten ver el pasado de objetos o lugares."
+        },
+        "area": {
+          "value": 1000
         }
       },
       "arcane": {
@@ -102,6 +111,9 @@
         },
         "description": {
           "value": "5 km radio / Como en grado Avanzado, salvo que el hechicero puede borrar todo rastro de cuanto aconteció en el pasado en la zona afectada."
+        },
+        "area": {
+          "value": 5000
         }
       }
     }

@@ -51,6 +51,9 @@
         },
         "description": {
           "value": "5 metros de radio / 50 metros de succión / 120 de RM y RF."
+        },
+        "area": {
+          "value": 5
         }
       },
       "intermediate": {
@@ -68,6 +71,9 @@
         },
         "description": {
           "value": "15 metros de radio / 500 metros de succión / 160 de RM y RF"
+        },
+        "area": {
+          "value": 15
         }
       },
       "advanced": {
@@ -85,6 +91,9 @@
         },
         "description": {
           "value": "25 metros de radio / 1 kilómetro de succión / 200 de RM y RF."
+        },
+        "area": {
+          "value": 25
         }
       },
       "arcane": {
@@ -102,6 +111,9 @@
         },
         "description": {
           "value": "50 metros de radio / 3 kilómetros de succión / 240 de RM y RF."
+        },
+        "area": {
+          "value": 50
         }
       }
     }

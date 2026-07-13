@@ -54,10 +54,14 @@ const normalize = s =>
     .toLowerCase()
     .trim();
 
+// Devuelve { key, custom }: una vía ESTÁNDAR (custom:false) o, si no la reconoce, la trata
+// como FANDOM (custom:true) con el nombre limpio (sin el número de nivel) como clave.
 const matchVia = text => {
   const norm = normalize(text);
   const name = VIA_NAMES_BY_LENGTH.find(n => norm.includes(n));
-  return name ? VIA_NAME_TO_KEY[name] : null;
+  if (name) return { key: VIA_NAME_TO_KEY[name], custom: false };
+  const raw = String(text).replace(/^[\s,]*\d+\s*/, '').trim();
+  return raw ? { key: raw, custom: true } : null;
 };
 
 const extractLevel = text => {
@@ -82,10 +86,12 @@ export function parseViaLevels(viasString) {
   }
 
   const byKey = new Map();
-  const add = (viaKey, level) => {
-    if (!viaKey) return;
-    const prev = byKey.get(viaKey);
-    if (prev == null || level > prev) byKey.set(viaKey, level);
+  const add = (match, level) => {
+    if (!match) return;
+    const prev = byKey.get(match.key);
+    if (prev == null || level > prev.level) {
+      byKey.set(match.key, { level, custom: match.custom });
+    }
   };
 
   for (const entry of entries) {
@@ -102,5 +108,9 @@ export function parseViaLevels(viasString) {
     if (parenContent) add(matchVia(parenContent.split(',')[0]), level);
   }
 
-  return [...byKey.entries()].map(([viaKey, level]) => ({ viaKey, level }));
+  // Las estándar salen como { viaKey, level }; las FANDOM añaden custom:true (el llamador
+  // las registra como vías custom y lee su hoja de grimorio).
+  return [...byKey.entries()].map(([viaKey, v]) =>
+    v.custom ? { viaKey, level: v.level, custom: true } : { viaKey, level: v.level }
+  );
 }

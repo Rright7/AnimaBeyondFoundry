@@ -52,6 +52,9 @@
         },
         "description": {
           "value": "50 m radio / Zeon 100 / Potencial Psíquico 140 / Coste de Ki 8 / Convocación inferior a 180"
+        },
+        "area": {
+          "value": 50
         }
       },
       "intermediate": {
@@ -69,6 +72,9 @@
         },
         "description": {
           "value": "150 m radio / Zeon 150 / Potencial Psíquico 180 / Coste de Ki 14 / Convocación inferior a 240"
+        },
+        "area": {
+          "value": 150
         }
       },
       "advanced": {
@@ -86,6 +92,9 @@
         },
         "description": {
           "value": "300 m radio / Zeon 200 / Potencial Psíquico 240 / Coste de Ki 22 / Convocación inferior a 280"
+        },
+        "area": {
+          "value": 300
         }
       },
       "arcane": {
@@ -103,6 +112,9 @@
         },
         "description": {
           "value": "500 m radio / Zeon 250 / Potencial Psíquico 280 / Coste de Ki 30 / Convocación inferior a 320"
+        },
+        "area": {
+          "value": 500
         }
       }
     }

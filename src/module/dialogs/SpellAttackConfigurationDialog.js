@@ -146,6 +146,7 @@ export class SpellAttackConfigurationDialog extends FormApplication {
         .attackAbility(roll.total)
         .damage(isMass ? massAdjustedDamage(finalDamage, { magic: true }) : finalDamage)
         .resistanceEffect(resistanceEffectCheck(gradeData))
+        .areaRadius(Number(gradeData?.area?.value) || 0)
         .ignoreArmor(false)
         .reducedArmor(0)
         .armorType(

@@ -1,10 +1,6 @@
-const VIA_LABEL_PREFIX = 'anima.ui.mystic.spell.via.';
-const UNASSIGNED_KEY = 'unassigned';
+import { resolveViaLabel } from '../../../module/mystic/customVias.js';
 
-const localizeVia = key => {
-  const fallback = key === UNASSIGNED_KEY ? 'Sin via' : key;
-  return game?.i18n?.localize(`${VIA_LABEL_PREFIX}${key}.title`) ?? fallback;
-};
+const UNASSIGNED_KEY = 'unassigned';
 
 // Groups the flat spell list by `system.via.value` so the grimoire renders one
 // collapsible section per via. Spells are ordered by level; vias alphabetically
@@ -27,7 +23,7 @@ export const groupSpellsByVia = {
           (Number(a?.system?.level?.value) || 0) -
           (Number(b?.system?.level?.value) || 0)
       );
-      const label = localizeVia(viaKey);
+      const label = resolveViaLabel(viaKey);
       return {
         viaKey,
         label,

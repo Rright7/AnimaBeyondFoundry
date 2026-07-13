@@ -54,6 +54,9 @@
         },
         "shieldPoints": {
           "value": 500
+        },
+        "area": {
+          "value": 5
         }
       },
       "intermediate": {
@@ -74,6 +77,9 @@
         },
         "shieldPoints": {
           "value": 1200
+        },
+        "area": {
+          "value": 15
         }
       },
       "advanced": {
@@ -94,6 +100,9 @@
         },
         "shieldPoints": {
           "value": 2500
+        },
+        "area": {
+          "value": 25
         }
       },
       "arcane": {
@@ -114,6 +123,9 @@
         },
         "shieldPoints": {
           "value": 5000
+        },
+        "area": {
+          "value": 50
         }
       }
     }

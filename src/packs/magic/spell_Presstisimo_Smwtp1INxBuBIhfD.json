@@ -51,6 +51,9 @@
         },
         "description": {
           "value": "10 metros de radio / +1 al Tipo de Movimiento / +30 al Turno."
+        },
+        "area": {
+          "value": 10
         }
       },
       "intermediate": {
@@ -68,6 +71,9 @@
         },
         "description": {
           "value": "20 metros de radio / +2 al Tipo de Movimiento / +30 al  Turno."
+        },
+        "area": {
+          "value": 20
         }
       },
       "advanced": {
@@ -85,6 +91,9 @@
         },
         "description": {
           "value": "30 metros de radio / +2 al Tipo de Movimiento / +40 al  Turno."
+        },
+        "area": {
+          "value": 30
         }
       },
       "arcane": {
@@ -102,6 +111,9 @@
         },
         "description": {
           "value": "40 metros de radio / +3 al Tipo de Movimiento / +50 al Turno."
+        },
+        "area": {
+          "value": 40
         }
       }
     }

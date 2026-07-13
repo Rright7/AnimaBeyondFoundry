@@ -51,6 +51,9 @@
         },
         "description": {
           "value": "Las habilidades descritas / 20 metros de radio."
+        },
+        "area": {
+          "value": 20
         }
       },
       "intermediate": {
@@ -68,6 +71,9 @@
         },
         "description": {
           "value": "Incremente un grado la dif alcanzada por Estilo / 30 metros radio."
+        },
+        "area": {
+          "value": 30
         }
       },
       "advanced": {
@@ -85,6 +91,9 @@
         },
         "description": {
           "value": "Incrementa un grado el nivel de dificultad alcanzado / 40 m radio."
+        },
+        "area": {
+          "value": 40
         }
       },
       "arcane": {
@@ -106,6 +115,9 @@
         "resistanceEffect": {
           "value": 100,
           "type": "magic"
+        },
+        "area": {
+          "value": 50
         }
       }
     }

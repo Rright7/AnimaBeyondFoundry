@@ -51,6 +51,9 @@
         },
         "description": {
           "value": "25 metros de radio."
+        },
+        "area": {
+          "value": 25
         }
       },
       "intermediate": {
@@ -68,6 +71,9 @@
         },
         "description": {
           "value": "150 metros de radio."
+        },
+        "area": {
+          "value": 150
         }
       },
       "advanced": {
@@ -85,6 +91,9 @@
         },
         "description": {
           "value": "300 metros de radio."
+        },
+        "area": {
+          "value": 300
         }
       },
       "arcane": {
@@ -102,6 +111,9 @@
         },
         "description": {
           "value": "500 metros de radio / Si se usa para apresar, tiene Fuerza 16."
+        },
+        "area": {
+          "value": 500
         }
       }
     }

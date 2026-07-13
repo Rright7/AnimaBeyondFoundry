@@ -51,6 +51,9 @@
         },
         "description": {
           "value": "Radio de 20 metros."
+        },
+        "area": {
+          "value": 20
         }
       },
       "intermediate": {
@@ -68,6 +71,9 @@
         },
         "description": {
           "value": "Radio de 250 metros."
+        },
+        "area": {
+          "value": 250
         }
       },
       "advanced": {
@@ -85,6 +91,9 @@
         },
         "description": {
           "value": "Radio de 500 metros."
+        },
+        "area": {
+          "value": 500
         }
       },
       "arcane": {
@@ -102,6 +111,9 @@
         },
         "description": {
           "value": "Radio de 1 kilómetro."
+        },
+        "area": {
+          "value": 1000
         }
       }
     }

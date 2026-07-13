@@ -52,6 +52,9 @@
         },
         "description": {
           "value": "25 metros de radio / +10 al valor zeónico de la magia innata."
+        },
+        "area": {
+          "value": 25
         }
       },
       "intermediate": {
@@ -69,6 +72,9 @@
         },
         "description": {
           "value": "100 metros de radio / +20 al valor zeónico de la magia innata."
+        },
+        "area": {
+          "value": 100
         }
       },
       "advanced": {
@@ -86,6 +92,9 @@
         },
         "description": {
           "value": "250 metros de radio / +30 al valor zeónico de la magia innata."
+        },
+        "area": {
+          "value": 250
         }
       },
       "arcane": {
@@ -103,6 +112,9 @@
         },
         "description": {
           "value": "500 metros de radio / +40 al valor zeónico de la magia innata."
+        },
+        "area": {
+          "value": 500
         }
       }
     }

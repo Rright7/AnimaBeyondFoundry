@@ -1,4 +1,6 @@
 import ModifyDicePermissionsConfig from '../module/dialogs/ModifyDicePermissionsConfig';
+import CustomViasConfig from '../module/dialogs/CustomViasConfig';
+import { mergeCustomViasIntoConfig } from '../module/mystic/customVias.js';
 export { ABFSettingsKeys } from './settingKeys.js';
 import { ABFSettingsKeys } from './settingKeys.js';
 
@@ -210,6 +212,28 @@ export const registerSettings = systemId => {
     hint: 'anima.permissions.modifyDiceFormulasPermission.hint',
     icon: 'fas fa-dice',
     type: ModifyDicePermissionsConfig,
+    restricted: true
+  });
+
+  // Vias magicas personalizadas (complementos fanmade). Se editan desde el menu; al cambiar
+  // se fusionan en la config y se re-renderizan las hojas abiertas.
+  game.settings.register(systemId, ABFSettingsKeys.CUSTOM_VIAS, {
+    scope: 'world',
+    config: false,
+    type: Array,
+    default: [],
+    onChange: () => {
+      mergeCustomViasIntoConfig();
+      Object.values(ui.windows ?? {}).forEach(w => w?.render?.(false));
+    }
+  });
+
+  game.settings.registerMenu(systemId, 'customViasMenu', {
+    name: 'Vías personalizadas',
+    label: 'Configurar vías',
+    hint: 'Añade vías mágicas personalizadas (fanmade) que aparecerán en los conjuros, en las vías del personaje y en el grimorio.',
+    icon: 'fas fa-wand-magic-sparkles',
+    type: CustomViasConfig,
     restricted: true
   });
 };

@@ -51,6 +51,9 @@
         },
         "description": {
           "value": "50 metros de radio."
+        },
+        "area": {
+          "value": 50
         }
       },
       "intermediate": {
@@ -68,6 +71,9 @@
         },
         "description": {
           "value": "500 metros de radio."
+        },
+        "area": {
+          "value": 500
         }
       },
       "advanced": {
@@ -85,6 +91,9 @@
         },
         "description": {
           "value": "1 kilómetro de radio."
+        },
+        "area": {
+          "value": 1000
         }
       },
       "arcane": {
@@ -102,6 +111,9 @@
         },
         "description": {
           "value": "1 kilómetros de radio / +30 al ACT al lanzar conjuros oscuros."
+        },
+        "area": {
+          "value": 1000
         }
       }
     }

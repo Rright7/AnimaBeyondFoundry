@@ -51,6 +51,9 @@
         },
         "description": {
           "value": "100 kilómetros de radio / Afecta hasta Gnosis 10."
+        },
+        "area": {
+          "value": 100000
         }
       },
       "intermediate": {
@@ -68,6 +71,9 @@
         },
         "description": {
           "value": "1.000 kilómetros de radio / Afecta hasta Gnosis 20."
+        },
+        "area": {
+          "value": 1000000
         }
       },
       "advanced": {
@@ -85,6 +91,9 @@
         },
         "description": {
           "value": "10.000 kilómetros de radio / Afecta hasta Gnosis 30."
+        },
+        "area": {
+          "value": 10000000
         }
       },
       "arcane": {

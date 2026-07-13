@@ -5,6 +5,7 @@ import ABFFoundryRoll from './module/rolls/ABFFoundryRoll';
 import ABFCombat from './module/combat/ABFCombat';
 import { ABFActor } from './module/actor/ABFActor';
 import { registerHelpers } from './utils/handlebars-helpers/registerHelpers';
+import { mergeCustomViasIntoConfig } from './module/mystic/customVias.js';
 import ABFItemSheet from './module/items/ABFItemSheet';
 import { ABFConfig } from './module/ABFConfig';
 import ABFItem from './module/items/ABFItem';
@@ -108,6 +109,9 @@ Hooks.once('ready', async () => {
     'abf-theme-dark',
     game.settings.get(System.id, ABFSettingsKeys.COLOR_THEME) === 'dark'
   );
+
+  // Fusionar las vias magicas personalizadas del mundo en la lista global de vias.
+  mergeCustomViasIntoConfig();
 
   if (game.user.isGM) {
     const creationVersion = game.settings.get(

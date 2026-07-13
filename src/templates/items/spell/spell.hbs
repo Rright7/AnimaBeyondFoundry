@@ -26,14 +26,6 @@
               inputValue=system.level.value
             }}
             {{>
-            'systems/animabf/templates/common/ui/horizontal-titled-input.hbs'
-              class="visible"
-              title=(localize "anima.ui.mystic.spell.visible.title")
-              inputType="checkbox"
-              inputName="system.visible"
-              inputValue=(is 'eq' system.visible true)
-            }}
-            {{>
             'systems/animabf/templates/common/ui/custom-select-choices.hbs'
               class="combat-type"
               choices=config.iterables.mystic.combatTypes
@@ -102,6 +94,41 @@
           gradeName='arcane'
           grade=system.grades.arcane
         }}
+        {{!-- Área y Resistencia por grado (editables aquí, en la hoja del conjuro). La
+              resistencia alimenta el botón "Resistir" del chat. --}}
+        <div class="spell-resistance-area" style="margin:.5rem 0;">
+          <p class="label" style="font-weight:600; margin:.2rem 0;">Área y Resistencia (por grado)</p>
+          <table style="width:100%; border-collapse:collapse;">
+            <thead>
+              <tr style="text-align:left; opacity:.85;">
+                <th style="width:26%;"></th>
+                <th style="width:22%;">Área</th>
+                <th style="width:30%;">Resistencia</th>
+                <th style="width:22%;">Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each system.grades as |grade key|}}
+                <tr>
+                  <td>{{localize (concat 'anima.ui.mystic.spell.grade.' key '.title')}}</td>
+                  <td><input class="input" type="number" name="system.grades.{{key}}.area.value" value="{{grade.area.value}}"/></td>
+                  <td>
+                    <select class="input" name="system.grades.{{key}}.resistanceEffect.type">
+                      <option value="" {{#unless grade.resistanceEffect.type}}selected{{/unless}}>—</option>
+                      <option value="physical" {{#if (is 'eq' grade.resistanceEffect.type 'physical')}}selected{{/if}}>RF (Física)</option>
+                      <option value="disease" {{#if (is 'eq' grade.resistanceEffect.type 'disease')}}selected{{/if}}>RE (Enfermedad)</option>
+                      <option value="poison" {{#if (is 'eq' grade.resistanceEffect.type 'poison')}}selected{{/if}}>RV (Veneno)</option>
+                      <option value="magic" {{#if (is 'eq' grade.resistanceEffect.type 'magic')}}selected{{/if}}>RM (Mágica)</option>
+                      <option value="psychic" {{#if (is 'eq' grade.resistanceEffect.type 'psychic')}}selected{{/if}}>RP (Psíquica)</option>
+                    </select>
+                  </td>
+                  <td><input class="input" type="number" name="system.grades.{{key}}.resistanceEffect.value" value="{{grade.resistanceEffect.value}}"/></td>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+
         {{>
         "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
           class="macro"
@@ -148,6 +175,14 @@
             inputType="checkbox"
             inputName="system.hasDailyMaintenance.value"
             inputValue=(is 'eq' system.hasDailyMaintenance.value true)
+          }}
+          {{>
+          'systems/animabf/templates/common/ui/horizontal-titled-input.hbs'
+            class="visible"
+            title=(localize "anima.ui.mystic.spell.visible.title")
+            inputType="checkbox"
+            inputName="system.visible"
+            inputValue=(is 'eq' system.visible true)
           }}
         </div>
       {{/"systems/animabf/templates/common/ui/group-footer.hbs"}}

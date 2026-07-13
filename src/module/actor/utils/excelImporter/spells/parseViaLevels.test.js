@@ -51,9 +51,22 @@ describe('parseViaLevels', () => {
     ]);
   });
 
-  it('ignores unknown via names', () => {
+  it('conserva las vías FANDOM (desconocidas) marcándolas custom', () => {
     expect(parseViaLevels('40 Inventada, 30 Guerra')).toEqual([
+      { viaKey: 'Inventada', level: 40, custom: true },
       { viaKey: 'war', level: 30 }
+    ]);
+  });
+
+  it('detecta la vía fandom real (AdAstra) junto a las estándar', () => {
+    expect(
+      parseViaLevels(', 40 Luz (Literae), 30 Creación (Tiempo), 40 AdAstra')
+    ).toEqual([
+      { viaKey: 'light', level: 40 },
+      { viaKey: 'literae', level: 40 },
+      { viaKey: 'creation', level: 30 },
+      { viaKey: 'time', level: 30 },
+      { viaKey: 'AdAstra', level: 40, custom: true }
     ]);
   });
 

@@ -51,6 +51,9 @@
         },
         "description": {
           "value": "1 Kilómetro de radio"
+        },
+        "area": {
+          "value": 1000
         }
       },
       "intermediate": {
@@ -68,6 +71,9 @@
         },
         "description": {
           "value": "10 Kilómetro de radio"
+        },
+        "area": {
+          "value": 10000
         }
       },
       "advanced": {
@@ -85,6 +91,9 @@
         },
         "description": {
           "value": "100 Kilómetro de radio"
+        },
+        "area": {
+          "value": 100000
         }
       },
       "arcane": {
@@ -102,6 +111,9 @@
         },
         "description": {
           "value": "1000 Kilómetro de radio"
+        },
+        "area": {
+          "value": 1000000
         }
       }
     }

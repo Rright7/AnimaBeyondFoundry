@@ -129,6 +129,7 @@ export async function castSpellGrade(sheet, event) {
     .attackAbility(roll.total)
     .damage(baseDamage)
     .resistanceEffect(resistanceEffectCheck(spell.system.grades[grade]))
+    .areaRadius(Number(spell.system.grades[grade]?.area?.value) || 0)
     .ignoreArmor(false)
     .reducedArmor(0)
     .armorType(spell.system.critic?.value ?? game.animabf.weapon.NoneWeaponCritic.NONE)

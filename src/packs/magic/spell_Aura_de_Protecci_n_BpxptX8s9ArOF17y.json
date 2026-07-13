@@ -51,6 +51,9 @@
         },
         "description": {
           "value": "+20 a las Resistencias / 100 metros de radio."
+        },
+        "area": {
+          "value": 100
         }
       },
       "intermediate": {
@@ -68,6 +71,9 @@
         },
         "description": {
           "value": "+50 a las Resistencias / 500 metros de radio."
+        },
+        "area": {
+          "value": 500
         }
       },
       "advanced": {
@@ -85,6 +91,9 @@
         },
         "description": {
           "value": "+80 a las Resistencias / 1 kilómetro de radio."
+        },
+        "area": {
+          "value": 1000
         }
       },
       "arcane": {
@@ -102,6 +111,9 @@
         },
         "description": {
           "value": "+120 a las Resistencias / 10 kilómetros de radio."
+        },
+        "area": {
+          "value": 10000
         }
       }
     }

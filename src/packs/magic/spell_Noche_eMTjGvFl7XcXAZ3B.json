@@ -51,6 +51,9 @@
         },
         "description": {
           "value": "Radio 25 metros."
+        },
+        "area": {
+          "value": 25
         }
       },
       "intermediate": {
@@ -68,6 +71,9 @@
         },
         "description": {
           "value": "Radio 250 metros."
+        },
+        "area": {
+          "value": 250
         }
       },
       "advanced": {
@@ -85,6 +91,9 @@
         },
         "description": {
           "value": "Radio 500 metros/ La oscuridad se considera sobrenatural."
+        },
+        "area": {
+          "value": 500
         }
       },
       "arcane": {
@@ -102,6 +111,9 @@
         },
         "description": {
           "value": "Radio 1 kilómetro / La oscuridad se considera sobrenatural."
+        },
+        "area": {
+          "value": 1000
         }
       }
     }

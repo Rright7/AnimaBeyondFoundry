@@ -51,6 +51,9 @@
         },
         "description": {
           "value": "+10 al Turno / 10 metros de radio."
+        },
+        "area": {
+          "value": 10
         }
       },
       "intermediate": {
@@ -68,6 +71,9 @@
         },
         "description": {
           "value": "+10 al Turno / 50 metros de radio."
+        },
+        "area": {
+          "value": 50
         }
       },
       "advanced": {
@@ -85,6 +91,9 @@
         },
         "description": {
           "value": "+20 al Turno / 250 metros de radio."
+        },
+        "area": {
+          "value": 250
         }
       },
       "arcane": {
@@ -102,6 +111,9 @@
         },
         "description": {
           "value": "+20 al Turno / 500 metros de radio."
+        },
+        "area": {
+          "value": 500
         }
       }
     }

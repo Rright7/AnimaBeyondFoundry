@@ -52,6 +52,9 @@
         },
         "description": {
           "value": "Valor zeónico máximo 60 / 10 metros de radio."
+        },
+        "area": {
+          "value": 10
         }
       },
       "intermediate": {
@@ -69,6 +72,9 @@
         },
         "description": {
           "value": "Valor zeónico máximo 100 / 25 metros de radio."
+        },
+        "area": {
+          "value": 25
         }
       },
       "advanced": {
@@ -86,6 +92,9 @@
         },
         "description": {
           "value": "Valor zeónico máximo 140 / 50 metros de radio."
+        },
+        "area": {
+          "value": 50
         }
       },
       "arcane": {
@@ -103,6 +112,9 @@
         },
         "description": {
           "value": "Valor zeónico máximo 180 / 100 metros de radio."
+        },
+        "area": {
+          "value": 100
         }
       }
     }

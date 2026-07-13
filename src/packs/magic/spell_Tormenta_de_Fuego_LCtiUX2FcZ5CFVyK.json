@@ -54,6 +54,9 @@
         },
         "damage": {
           "value": 100
+        },
+        "area": {
+          "value": 25
         }
       },
       "intermediate": {
@@ -74,6 +77,9 @@
         },
         "damage": {
           "value": 100
+        },
+        "area": {
+          "value": 150
         }
       },
       "advanced": {
@@ -94,6 +100,9 @@
         },
         "damage": {
           "value": 100
+        },
+        "area": {
+          "value": 200
         }
       },
       "arcane": {
@@ -114,6 +123,9 @@
         },
         "damage": {
           "value": 100
+        },
+        "area": {
+          "value": 250
         }
       }
     }

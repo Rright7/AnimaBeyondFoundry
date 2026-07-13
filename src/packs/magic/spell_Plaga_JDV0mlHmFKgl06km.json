@@ -52,6 +52,9 @@
         },
         "description": {
           "value": "1 Kilómetro de radio / Nivel máximo de enfermedad 20."
+        },
+        "area": {
+          "value": 1000
         }
       },
       "intermediate": {
@@ -69,6 +72,9 @@
         },
         "description": {
           "value": "5 Kilómetros de radio / Nivel máximo de enfermedad 40."
+        },
+        "area": {
+          "value": 5000
         }
       },
       "advanced": {
@@ -86,6 +92,9 @@
         },
         "description": {
           "value": "10 Kilómetros de radio / Nivel máximo de enfermedad 60."
+        },
+        "area": {
+          "value": 10000
         }
       },
       "arcane": {
@@ -103,6 +112,9 @@
         },
         "description": {
           "value": "25 Kilómetros de radio / Nivel máximo de enfermedad 80 / +10 a la dificultad."
+        },
+        "area": {
+          "value": 25000
         }
       }
     }

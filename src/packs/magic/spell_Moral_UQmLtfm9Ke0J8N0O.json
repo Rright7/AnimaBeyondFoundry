@@ -51,6 +51,9 @@
         },
         "description": {
           "value": "+40 a Frialdad / 10 metros de radio."
+        },
+        "area": {
+          "value": 10
         }
       },
       "intermediate": {
@@ -68,6 +71,9 @@
         },
         "description": {
           "value": "+80 a Frialdad / 50 metros de radio."
+        },
+        "area": {
+          "value": 50
         }
       },
       "advanced": {
@@ -85,6 +91,9 @@
         },
         "description": {
           "value": "+120 a Frialdad / 250 metros de radio."
+        },
+        "area": {
+          "value": 250
         }
       },
       "arcane": {
@@ -102,6 +111,9 @@
         },
         "description": {
           "value": "+180 a Frialdad / 500 metros de radio."
+        },
+        "area": {
+          "value": 500
         }
       }
     }

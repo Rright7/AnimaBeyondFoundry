@@ -51,6 +51,9 @@
         },
         "description": {
           "value": "+5 grados / 1 kilómetro de radio."
+        },
+        "area": {
+          "value": 1000
         }
       },
       "intermediate": {
@@ -68,6 +71,9 @@
         },
         "description": {
           "value": "+10 grados / 5 kilómetros de radio."
+        },
+        "area": {
+          "value": 5000
         }
       },
       "advanced": {
@@ -85,6 +91,9 @@
         },
         "description": {
           "value": "+20 grados / 10 kilómetros de radio."
+        },
+        "area": {
+          "value": 10000
         }
       },
       "arcane": {
@@ -102,6 +111,9 @@
         },
         "description": {
           "value": "+30 grados / 15 kilómetros de radio."
+        },
+        "area": {
+          "value": 15000
         }
       }
     }

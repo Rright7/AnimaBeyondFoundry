@@ -51,6 +51,9 @@
         },
         "description": {
           "value": "Dobla el peso / 100 metros de radio."
+        },
+        "area": {
+          "value": 100
         }
       },
       "intermediate": {
@@ -68,6 +71,9 @@
         },
         "description": {
           "value": "Triplica el peso / 200 metros de radio."
+        },
+        "area": {
+          "value": 200
         }
       },
       "advanced": {
@@ -85,6 +91,9 @@
         },
         "description": {
           "value": "Quintuplica el peso / 300 metros de radio."
+        },
+        "area": {
+          "value": 300
         }
       },
       "arcane": {
@@ -102,6 +111,9 @@
         },
         "description": {
           "value": "Deduplica el peso / 400 metros de radio."
+        },
+        "area": {
+          "value": 400
         }
       }
     }

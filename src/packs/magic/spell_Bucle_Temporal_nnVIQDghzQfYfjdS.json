@@ -51,6 +51,9 @@
         },
         "description": {
           "value": "250 metros de radio / Hasta un día."
+        },
+        "area": {
+          "value": 250
         }
       },
       "intermediate": {
@@ -68,6 +71,9 @@
         },
         "description": {
           "value": "500 metros de radio / Hasta una semana."
+        },
+        "area": {
+          "value": 500
         }
       },
       "advanced": {
@@ -85,6 +91,9 @@
         },
         "description": {
           "value": "1 kilómetro de radio / Hasta un mes."
+        },
+        "area": {
+          "value": 1000
         }
       },
       "arcane": {
@@ -102,6 +111,9 @@
         },
         "description": {
           "value": "5 kilómetros de radio / Hasta un año."
+        },
+        "area": {
+          "value": 5000
         }
       }
     }

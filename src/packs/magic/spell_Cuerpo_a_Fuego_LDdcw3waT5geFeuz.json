@@ -55,6 +55,9 @@
         "resistanceEffect": {
           "value": 80,
           "type": "physical"
+        },
+        "area": {
+          "value": 10
         }
       },
       "intermediate": {

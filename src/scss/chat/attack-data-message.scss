@@ -107,3 +107,37 @@
   text-align: center;
   line-height: 1.15;
 }
+
+/* [Attack Data] "Colocar área": fila propia, look dorado/mágico con icono (tipo D&D) */
+.animabf-chat-message.attack-data-message .attack-area-row{
+  margin-top: .5rem;
+}
+.animabf-chat-message.attack-data-message .attack-area-row .place-area-button{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .45rem;
+  width: 100%;
+  padding: .42rem .6rem;
+  border: 1px solid var(--abf-gold-border);
+  border-radius: var(--abf-radius-sm);
+  background: var(--abf-gold-soft);
+  color: var(--abf-text);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .12s ease, box-shadow .12s ease, transform .04s ease;
+
+  i{
+    color: var(--abf-gold);
+    font-size: 1.05em;
+  }
+
+  &:hover{
+    background: var(--abf-gold);
+    color: var(--abf-on-accent);
+    box-shadow: var(--abf-shadow);
+    i{ color: var(--abf-on-accent); }
+  }
+  &:active{ transform: translateY(1px); }
+}

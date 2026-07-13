@@ -51,6 +51,9 @@
         },
         "description": {
           "value": "5 metros de radio / Hasta un año en el pasado."
+        },
+        "area": {
+          "value": 5
         }
       },
       "intermediate": {
@@ -68,6 +71,9 @@
         },
         "description": {
           "value": "25 metros de radio / Hasta una década en el pasado."
+        },
+        "area": {
+          "value": 25
         }
       },
       "advanced": {
@@ -85,6 +91,9 @@
         },
         "description": {
           "value": "500 metros de radio / Hasta un siglo en el pasado."
+        },
+        "area": {
+          "value": 500
         }
       },
       "arcane": {
@@ -102,6 +111,9 @@
         },
         "description": {
           "value": "1 kilómetro de radio / Hasta mil años en el pasado."
+        },
+        "area": {
+          "value": 1000
         }
       }
     }

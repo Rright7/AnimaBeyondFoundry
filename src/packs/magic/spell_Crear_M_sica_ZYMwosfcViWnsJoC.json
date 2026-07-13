@@ -52,6 +52,9 @@
         },
         "description": {
           "value": "10 metros de radio / 80 en Música"
+        },
+        "area": {
+          "value": 10
         }
       },
       "intermediate": {
@@ -69,6 +72,9 @@
         },
         "description": {
           "value": "50 metros de radio / 120 en Música"
+        },
+        "area": {
+          "value": 50
         }
       },
       "advanced": {
@@ -86,6 +92,9 @@
         },
         "description": {
           "value": "150 metros de radio / 180 en Música"
+        },
+        "area": {
+          "value": 150
         }
       },
       "arcane": {
@@ -103,6 +112,9 @@
         },
         "description": {
           "value": "250 metros de radio / 240 en Música"
+        },
+        "area": {
+          "value": 250
         }
       }
     }

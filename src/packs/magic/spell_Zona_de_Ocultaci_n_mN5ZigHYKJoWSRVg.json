@@ -51,6 +51,9 @@
         },
         "description": {
           "value": "20 metros de radio, RM +100, -140 a Habilidades de detección."
+        },
+        "area": {
+          "value": 20
         }
       },
       "intermediate": {
@@ -68,6 +71,9 @@
         },
         "description": {
           "value": "50 metros de radio, RM +150, -180 a Habilidades de detección."
+        },
+        "area": {
+          "value": 50
         }
       },
       "advanced": {
@@ -85,6 +91,9 @@
         },
         "description": {
           "value": "250 metros de radio, RM +200, -240 a Habilidades de detección."
+        },
+        "area": {
+          "value": 250
         }
       },
       "arcane": {
@@ -102,6 +111,9 @@
         },
         "description": {
           "value": "500 metros de radio, RM +300, -320 a Habilidades de detección."
+        },
+        "area": {
+          "value": 500
         }
       }
     }

@@ -30,7 +30,8 @@ export const Templates = {
       Cancel: T('dialog/parts/cancel-icon.hbs')
     },
     Config: {
-      ModifyDiceFormulas: T('dialog/config/modify-dice-formulas.hbs')
+      ModifyDiceFormulas: T('dialog/config/modify-dice-formulas.hbs'),
+      CustomVias: T('dialog/config/custom-vias-config.hbs')
     },
     SpellShieldConfigDialog: T('dialog/spell-shield-config-dialog.hbs'),
     SpellAttackConfigDialog: T('dialog/spell-attack-config-dialog.hbs')

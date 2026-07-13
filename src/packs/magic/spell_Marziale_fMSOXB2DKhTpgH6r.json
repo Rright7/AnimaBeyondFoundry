@@ -55,6 +55,9 @@
         "resistanceEffect": {
           "value": 20,
           "type": "magic"
+        },
+        "area": {
+          "value": 10
         }
       },
       "intermediate": {
@@ -76,6 +79,9 @@
         "resistanceEffect": {
           "value": 20,
           "type": "magic"
+        },
+        "area": {
+          "value": 25
         }
       },
       "advanced": {
@@ -100,6 +106,9 @@
         "resistanceEffect": {
           "value": 20,
           "type": "magic"
+        },
+        "area": {
+          "value": 50
         }
       },
       "arcane": {
@@ -124,6 +133,9 @@
         "resistanceEffect": {
           "value": 30,
           "type": "magic"
+        },
+        "area": {
+          "value": 100
         }
       }
     }

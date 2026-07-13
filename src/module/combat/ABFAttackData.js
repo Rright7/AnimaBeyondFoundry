@@ -29,6 +29,9 @@ export class ABFAttackData {
     // Enemigos de una MASA alcanzados por este ataque (multiplicador de area, Tabla 2). 1 =
     // impacto normal (x1). Se pregunta al resolver el ataque contra una masa.
     this.areaEnemiesHit = Math.max(1, Math.floor(Number(p.areaEnemiesHit) || 1));
+    // Radio del area (metros, RAW Anima) del grado lanzado; 0 = sin area. Alimenta el
+    // boton "Colocar area" que dibuja una plantilla circular en el mapa.
+    this.areaRadius = Number(p.areaRadius) || 0;
 
     // Crit / opposed / misc combat bonuses
     this.automaticCrit = !!p.automaticCrit;
@@ -304,6 +307,10 @@ export class ABFAttackDataBuilder {
   }
   areaEnemiesHit(n) {
     this._p.areaEnemiesHit = Math.max(1, Math.floor(Number(n) || 1));
+    return this;
+  }
+  areaRadius(v) {
+    this._p.areaRadius = Number(v) || 0;
     return this;
   }
 

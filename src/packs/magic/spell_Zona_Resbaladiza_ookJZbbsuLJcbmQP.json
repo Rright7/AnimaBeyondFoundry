@@ -52,6 +52,9 @@
         },
         "description": {
           "value": "5 metros de radio"
+        },
+        "area": {
+          "value": 5
         }
       },
       "intermediate": {
@@ -69,6 +72,9 @@
         },
         "description": {
           "value": "25 metros de radio"
+        },
+        "area": {
+          "value": 25
         }
       },
       "advanced": {
@@ -86,6 +92,9 @@
         },
         "description": {
           "value": "50 metros de radio"
+        },
+        "area": {
+          "value": 50
         }
       },
       "arcane": {
@@ -103,6 +112,9 @@
         },
         "description": {
           "value": "100 metros de radio / Pasar lentamente control de 140 y corriendo de 280"
+        },
+        "area": {
+          "value": 100
         }
       }
     }

@@ -51,6 +51,9 @@
         },
         "description": {
           "value": "+10 a todas las Resistencias / +1 TA / 10 metros de radio."
+        },
+        "area": {
+          "value": 10
         }
       },
       "intermediate": {
@@ -68,6 +71,9 @@
         },
         "description": {
           "value": "+10 a todas las Resistencias / +2 TA / 50 metros de radio."
+        },
+        "area": {
+          "value": 50
         }
       },
       "advanced": {
@@ -85,6 +91,9 @@
         },
         "description": {
           "value": "+20 a todas las Resistencias / +2 TA / 250 metros de radio."
+        },
+        "area": {
+          "value": 250
         }
       },
       "arcane": {
@@ -102,6 +111,9 @@
         },
         "description": {
           "value": "+30 a todas las Resistencias / +3 TA / 500 metros de radio."
+        },
+        "area": {
+          "value": 500
         }
       }
     }

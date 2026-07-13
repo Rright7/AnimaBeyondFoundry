@@ -26,7 +26,7 @@
         {{>
         "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
           class="via"
-          title=(localize (concat 'anima.ui.mystic.spell.via.' this.name '.title'))
+          title=(viaLabel this.name)
           inputName=(concat "system.dynamic.via." this._id ".system.base.value")
           inputValue=this.system.base.value
           hasSecondaryInput=true

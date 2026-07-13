@@ -1,0 +1,24 @@
+<form autocomplete="off" style="padding:.5rem;">
+  <p class="notes" style="margin:0 0 .6rem; opacity:.8;">
+    Añade vías mágicas personalizadas (complementos fanmade, p. ej. «Vía de Adastra»).
+    Aparecerán en el desplegable de vía de los conjuros, en el diálogo de vías del
+    personaje y como sección propia en el grimorio.
+  </p>
+
+  <div class="cv-list">
+    {{#each vias as |via|}}
+      <div class="cv-row" data-key="{{via.key}}" style="display:flex; gap:.4rem; align-items:center; margin-bottom:.35rem;">
+        <input type="text" class="cv-label" value="{{via.label}}" placeholder="Nombre de la vía" style="flex:1 1 auto;"/>
+        <button type="button" class="cv-del" title="Quitar"><i class="fas fa-trash"></i></button>
+      </div>
+    {{/each}}
+  </div>
+
+  <button type="button" class="cv-add" style="width:100%; margin-top:.2rem;">
+    <i class="fas fa-plus"></i> Añadir vía
+  </button>
+
+  <footer style="margin-top:.7rem; display:flex; justify-content:flex-end;">
+    <button type="submit"><i class="fas fa-save"></i> Guardar</button>
+  </footer>
+</form>

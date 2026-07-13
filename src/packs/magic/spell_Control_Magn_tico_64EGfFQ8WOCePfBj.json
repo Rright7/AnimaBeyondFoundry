@@ -51,6 +51,9 @@
         },
         "description": {
           "value": "25 metros de radio / Fuerza 10"
+        },
+        "area": {
+          "value": 25
         }
       },
       "intermediate": {
@@ -68,6 +71,9 @@
         },
         "description": {
           "value": "150 metros de radio / Fuerza 12"
+        },
+        "area": {
+          "value": 150
         }
       },
       "advanced": {
@@ -85,6 +91,9 @@
         },
         "description": {
           "value": "350 metros de radio / Fuerza 13."
+        },
+        "area": {
+          "value": 350
         }
       },
       "arcane": {
@@ -102,6 +111,9 @@
         },
         "description": {
           "value": "500 metros de radio / Fuerza 14."
+        },
+        "area": {
+          "value": 500
         }
       }
     }

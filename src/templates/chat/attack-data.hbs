@@ -64,7 +64,23 @@
           {{localize "chat.attackData.resistButton"}}
         </button>
       {{/if}}
+
     </div>
+
+    {{#if attackData.areaRadius}}
+      <div class="attack-area-row">
+        <button
+          type="button"
+          class="chat-action-button place-area-button"
+          data-action="place-area-template"
+          data-message-id="{{xRoot.messageId}}"
+          data-radius="{{attackData.areaRadius}}"
+          data-attacker-id="{{attackData.attackerId}}">
+          <i class="fas fa-bullseye"></i>
+          <span>{{localize "chat.attackData.placeAreaButton"}} ({{attackData.areaRadius}} m)</span>
+        </button>
+      </div>
+    {{/if}}
     <div id="animabf-defense-row-{{xRoot.messageId}}"
        class="animabf-defense-row"
        style="margin-top:.5rem; display:flex; gap:.25rem; flex-wrap:wrap;">
