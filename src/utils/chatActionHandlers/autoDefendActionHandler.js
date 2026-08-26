@@ -113,6 +113,8 @@ export default async function autoDefendActionHandler(message, _html, ds) {
           maneuverSlug: attackData?.maneuverSlug ?? '',
           maneuverItemName: attackData?.maneuverItemName ?? '',
           maneuverWasUnarmed: !!attackData?.maneuverWasUnarmed,
+          attackerWeaponStrength: Number(attackData?.attackerWeaponStrength) || 0,
+          attackerWeaponName: attackData?.weaponName ?? '',
           delayRounds: Number(attackData?.delayRounds ?? 0) || 0,
           attackerId: attackData?.attackerId ?? '',
           // Token del atacante (uuid preferido): el control enfrentado de maniobras

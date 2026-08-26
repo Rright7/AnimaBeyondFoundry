@@ -45,7 +45,9 @@ export default async function rollManeuverAttackerActionHandler(message, _html, 
       role: 'attacker',
       actor: attacker,
       maneuver: def,
-      damagePercent: flags.damagePercent ?? 100
+      damagePercent: flags.damagePercent ?? 100,
+      weaponStrength: Number(flags.attackerWeaponStrength) || 0,
+      weaponName: flags.attackerWeaponName ?? ''
     });
     if (!result) return;
 

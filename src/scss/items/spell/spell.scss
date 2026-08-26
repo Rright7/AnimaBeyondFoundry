@@ -26,6 +26,14 @@
       height: 1.25rem;
     }
 
+    // Los <select> (Combate, Vía, Tipo, Acción, Crítico) recortaban la base del texto
+    // ("ATAQUE", "Efecto"...): las fuentes Cinzel/Alegreya tienen un line-height `normal`
+    // alto (~1.4) que desborda la caja del select y baja la línea base. Un line-height
+    // menor la sube y encaja en el alto existente, sin agrandar la caja.
+    select.input {
+      line-height: 1.1;
+    }
+
     .spell-header {
       padding-right: 0.5rem;
       padding-left: 0.5rem;
@@ -43,7 +51,16 @@
       .second-row {
         width: 100%;
         display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        row-gap: 0.25rem;
         justify-content: space-between;
+
+        // Los hijos de un flex no encogen por defecto (min-width:auto): sin esto el
+        // select de Vía (ancho fijo 8rem) desborda al estrechar la ventana.
+        > * {
+          min-width: 0;
+        }
 
         .level {
           .input {
@@ -64,19 +81,22 @@
         .combat-type {
           .input {
             height: 1.5rem;
-            padding: 0.15rem 0.5rem;
+            padding: 0 0.5rem;
           }
         }
 
         .via {
           .input {
             height: 1.5rem;
-            padding: 0.15rem 0.5rem;
+            padding: 0 0.5rem;
+            width: 100%;
+            max-width: 100%;
           }
         }
 
         .via .input-container {
           width: 8rem;
+          max-width: 100%;
         }
       }
     }
@@ -159,7 +179,7 @@
 
       .input {
         height: 1.5rem;
-        padding: 0.15rem 0.5rem;
+        padding: 0 0.5rem;
       }
 
       .has-daily-maintenance {

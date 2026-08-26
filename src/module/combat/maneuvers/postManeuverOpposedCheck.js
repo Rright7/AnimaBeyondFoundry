@@ -41,7 +41,11 @@ export async function postManeuverOpposedCheck({
   damagePercent = 100,
   // Persisted so post-resolution hooks can decide e.g. whether the
   // resulting Presa allows Aplastar (RAW: solo si fue sin armas).
-  maneuverWasUnarmed = false
+  maneuverWasUnarmed = false,
+  // Fuerza propia del arma de presa (boleadora, red): el atacante puede elegirla
+  // como característica del control enfrentado. 0 = el arma no tiene Fuerza fija.
+  attackerWeaponStrength = 0,
+  attackerWeaponName = ''
 }) {
   if (!attackerActor || !defenderActor) {
     ui.notifications?.error('postManeuverOpposedCheck: actores faltan.');
@@ -62,6 +66,8 @@ export async function postManeuverOpposedCheck({
     defenderIsQuadruped: false,
     damagePercent: Number(damagePercent) || 100,
     maneuverWasUnarmed: !!maneuverWasUnarmed,
+    attackerWeaponStrength: Number(attackerWeaponStrength) || 0,
+    attackerWeaponName: String(attackerWeaponName ?? ''),
     attackerRoll: null,
     defenderRoll: null,
     resolution: null

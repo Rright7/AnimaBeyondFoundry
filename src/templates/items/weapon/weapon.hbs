@@ -264,7 +264,12 @@
         <div class='weapon-qualities-list'>
           {{#each system.qualities.value as |slug|}}
             <span class='weapon-quality-chip' data-quality-slug='{{slug}}'>
-              {{equipmentQualitiesLabel (jsonArray slug)}}{{equipmentQualityParamSuffix slug ../system.qualityParams.value}}
+              {{equipmentQualitiesLabel (jsonArray slug)}}{{#if (is 'eq' slug 'grappling')}}
+              <input type='number' min='0' class='weapon-quality-chip__param'
+                     data-quality-slug='grappling' data-quality-param='grappleStrength'
+                     value='{{lookup (lookup ../system.qualityParams.value 'grappling') 'grappleStrength'}}'
+                     title='{{localize "anima.ui.combat.weapons.grappleStrength.title"}}' />
+              {{else}}{{equipmentQualityParamSuffix slug ../system.qualityParams.value}}{{/if}}
               <a class='weapon-quality-chip__remove'
                  data-action='removeQuality'
                  data-quality-slug='{{slug}}'

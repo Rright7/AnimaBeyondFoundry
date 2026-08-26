@@ -176,6 +176,22 @@ export default class ABFItemSheet extends ItemSheetV1 {
           await this._removeWeaponQuality(slug);
         });
       });
+
+    // Parametros editables de una cualidad (p.ej. grappling.grappleStrength = valor
+    // fijo de presa). Escribe system.qualityParams.value.<slug>.<param> con el numero.
+    root.querySelectorAll('[data-quality-param]').forEach(input => {
+      input.addEventListener('change', async e => {
+        const el = e.currentTarget;
+        const slug = el?.dataset?.qualitySlug;
+        const param = el?.dataset?.qualityParam;
+        if (!slug || !param) return;
+        const raw = String(el.value ?? '').trim();
+        const num = raw === '' ? 0 : Number(raw);
+        await this.item.update({
+          [`system.qualityParams.value.${slug}.${param}`]: Number.isFinite(num) ? num : 0
+        });
+      });
+    });
   }
 
   // ============================

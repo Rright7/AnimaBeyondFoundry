@@ -205,6 +205,7 @@
   "anima.ui.combat.weapons.unarmedProfile.unarmed": "Désarmé",
   "anima.ui.combat.weapons.unarmedProfile.martialArts": "Arts Martiaux",
   "anima.ui.combat.weapons.weaponStrength.title": "FOR Arme",
+  "anima.ui.combat.weapons.grappleStrength.title": "FOR Prise (valeur fixe du contrôle)",
   "anima.ui.contactSection.contactRow.description": "Description",
   "anima.ui.contactSection.contactRow.name": "Nom",
   "anima.ui.contactSection.title": "Contacts",

@@ -31,7 +31,9 @@ export async function openOpposedCheckRollDialog({
   actor,
   maneuver,
   damagePercent,
-  defenderIsQuadruped = false
+  defenderIsQuadruped = false,
+  weaponStrength = 0,
+  weaponName = ''
 }) {
   const baseStats = role === 'attacker' ? maneuver.attackerStats : maneuver.defenderStats;
   // Velez (Arcano) "permite usar POD para chequeos": anade POD como caracteristica elegible
@@ -55,12 +57,28 @@ export async function openOpposedCheckRollDialog({
   const quadrupedBonus =
     role === 'defender' && maneuver.grantsQuadrupedBonus && defenderIsQuadruped ? 3 : 0;
 
+  // Arma de presa con Fuerza propia fija (boleadora, red): se ofrece como
+  // característica del control (RAW: al presar con arma se usa su Fuerza, no la del
+  // atacante). weaponStrength ya incluye el +1 por cada +5 de calidad. Va la PRIMERA
+  // para quedar preseleccionada por defecto; el jugador puede cambiar a FUE/DES.
+  const useWeaponStr =
+    role === 'attacker' &&
+    !useFixed &&
+    Number(weaponStrength) > 0 &&
+    Array.isArray(stats) &&
+    stats.includes('strength');
+
   // Build select options with current values.
-  const options = stats.map(slug => {
-    const label = STAT_LABELS[slug] ?? slug.toUpperCase();
-    const value = getCharacteristicValue(actor, slug);
-    return `<option value="${slug}">${label} (${value})</option>`;
-  }).join('');
+  const weaponOption = useWeaponStr
+    ? `<option value="__weapon__">${weaponName ? `${weaponName}: ` : ''}FUE ${Number(weaponStrength)} (arma)</option>`
+    : '';
+  const options =
+    weaponOption +
+    stats.map(slug => {
+      const label = STAT_LABELS[slug] ?? slug.toUpperCase();
+      const value = getCharacteristicValue(actor, slug);
+      return `<option value="${slug}">${label} (${value})</option>`;
+    }).join('');
 
   const automaticBonusLines = [];
   if (damageMod !== 0) {
@@ -134,13 +152,20 @@ export async function openOpposedCheckRollDialog({
 
   if (!chosen?.stat) return null;
 
+  const usedWeaponStr = chosen.stat === '__weapon__';
   const statValue = useFixed
     ? Number(maneuver.fixedAttackerValue)
-    : getCharacteristicValue(actor, chosen.stat);
+    : usedWeaponStr
+      ? Number(weaponStrength)
+      : getCharacteristicValue(actor, chosen.stat);
   const { face: dieFace, value: dieValue } = await rollOpenD10();
 
   const total = dieValue + statValue + (role === 'attacker' ? damageMod : 0) + quadrupedBonus + chosen.extraMod;
-  const statLabel = useFixed ? 'Fija' : (STAT_LABELS[chosen.stat] ?? chosen.stat.toUpperCase());
+  const statLabel = useFixed
+    ? 'Fija'
+    : usedWeaponStr
+      ? weaponName || 'Arma'
+      : (STAT_LABELS[chosen.stat] ?? chosen.stat.toUpperCase());
 
   // Pre-format the breakdown string for the chat template (avoids needing
   // math helpers in HBS). On a 10 face, show "10→12" so the rule is visible.

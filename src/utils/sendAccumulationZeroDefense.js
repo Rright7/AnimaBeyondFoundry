@@ -92,6 +92,7 @@ export async function sendAccumulationZeroDefense({
           aimedWhere: attackData?.aimedWhere ?? '',
           maneuverSlug: attackData?.maneuverSlug ?? '',
           maneuverWasUnarmed: !!attackData?.maneuverWasUnarmed,
+          attackerWeaponStrength: Number(attackData?.attackerWeaponStrength) || 0,
           delayRounds: Number(attackData?.delayRounds ?? 0) || 0,
           // Para la animación de combate: distancia (proyectil) y subtipo.
           isProjectile: !!attackData?.isProjectile,

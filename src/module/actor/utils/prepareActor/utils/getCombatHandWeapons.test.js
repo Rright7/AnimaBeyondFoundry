@@ -1,5 +1,6 @@
 import {
   getCombatHandWeapons,
+  defaultCombatWeapon,
   getActiveTurnShield,
   isRodela,
   isTwoHandedGrip,
@@ -18,8 +19,11 @@ const w = ({
   manage = 'one_hand',
   grip = 'one-handed',
   hand = 'none',
-  quals = []
+  quals = [],
+  equipped = false,
+  id
 } = {}) => ({
+  _id: id,
   system: {
     isShield: { value: shield },
     isUnarmed: { value: unarmed },
@@ -27,7 +31,8 @@ const w = ({
     manageabilityType: { value: manage },
     oneOrTwoHanded: { value: grip },
     handSlot: { value: hand },
-    qualities: { value: quals }
+    qualities: { value: quals },
+    equipped: { value: equipped }
   }
 });
 
@@ -63,6 +68,32 @@ describe('getCombatHandWeapons', () => {
     const shield = w({ shield: true, hand: 'off' });
     const unarmed = w({ unarmed: true, hand: 'main' });
     expect(getCombatHandWeapons([shield, unarmed])).toEqual([]);
+  });
+});
+
+describe('defaultCombatWeapon', () => {
+  test('prefiere el arma EN LA MANO sobre la primera equipada (el bug de Precisa)', () => {
+    // Arrojadiza equipada pero SIN empuñar + espada precisa en la mano hábil.
+    const ranged = w({ id: 'jabalina', hand: 'none', equipped: true });
+    const inHand = w({ id: 'espada', hand: 'main', equipped: true, quals: ['precise'] });
+    expect(defaultCombatWeapon([ranged, inHand])).toBe(inHand);
+  });
+
+  test('nada en la mano + preferUnarmed -> perfil Desarmado antes que la equipada', () => {
+    const ranged = w({ id: 'jabalina', hand: 'none', equipped: true });
+    const unarmed = w({ id: 'desarmado', unarmed: true, quals: ['precise'] });
+    expect(defaultCombatWeapon([ranged, unarmed], { preferUnarmed: true })).toBe(unarmed);
+  });
+
+  test('sin preferUnarmed cae a la primera equipada (no a Desarmado)', () => {
+    const ranged = w({ id: 'jabalina', hand: 'none', equipped: true });
+    const unarmed = w({ id: 'desarmado', unarmed: true });
+    expect(defaultCombatWeapon([ranged, unarmed])).toBe(ranged);
+  });
+
+  test('sin manos ni Desarmado -> primera equipada (fallback)', () => {
+    const a = w({ id: 'a', hand: 'none', equipped: true });
+    expect(defaultCombatWeapon([a], { preferUnarmed: true })).toBe(a);
   });
 });
 

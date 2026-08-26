@@ -193,6 +193,7 @@
   "anima.ui.combat.weapons.unarmedProfile.unarmed": "Desarmado",
   "anima.ui.combat.weapons.unarmedProfile.martialArts": "Artes Marciales",
   "anima.ui.combat.weapons.weaponStrength.title": "FUE Arma",
+  "anima.ui.combat.weapons.grappleStrength.title": "FUE Presa (valor fijo del control)",
   "anima.ui.combat.weapons.attackButton.title": "Atacar",
   "anima.ui.combat.weapons.throwButton.title": "Lanzar",
   "anima.ui.combat.weapons.shootButton.title": "Disparar",

@@ -94,6 +94,10 @@ export class ABFAttackData {
     // resolvers can decide e.g. whether the resulting Presa allows
     // Aplastar (RAW: solo si la Presa fue sin armas).
     this.maneuverWasUnarmed = !!p.maneuverWasUnarmed;
+    // Valor fijo de presa del arma (boleadora, red, latigo...): vive en el parametro de
+    // la cualidad grappling (qualityParams.grappling.grappleStrength) + el +1 por cada +5
+    // de calidad. Se ofrece como caracteristica elegible en el control enfrentado. 0 = no aplica.
+    this.attackerWeaponStrength = Number(p.attackerWeaponStrength ?? 0) || 0;
 
     // Daño retrasado: asaltos (1-5) declarados para que el daño se manifieste
     // más tarde. 0 = sin retraso. Persiste hasta los flags del resultado.
@@ -427,6 +431,11 @@ export class ABFAttackDataBuilder {
 
   maneuverWasUnarmed(b = true) {
     this._p.maneuverWasUnarmed = !!b;
+    return this;
+  }
+
+  attackerWeaponStrength(n) {
+    this._p.attackerWeaponStrength = Number(n) || 0;
     return this;
   }
 

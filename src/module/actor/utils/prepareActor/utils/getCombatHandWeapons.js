@@ -57,6 +57,31 @@ export const getCombatHandWeapons = equippedWeapons => {
 };
 
 /**
+ * Arma por defecto para un ataque/maniobra que no trae arma explícita (maniobras,
+ * contraataques). Prioridad:
+ *   1. Arma EN LA MANO (mano hábil/torpe o a dos manos) — la que de verdad se empuña.
+ *   2. Si nada está empuñado y `preferUnarmed`, el perfil Desarmado/Artes Marciales, para
+ *      que apliquen SUS calidades (p.ej. Precisa) en combate sin armas.
+ *   3. La primera equipada (fallback).
+ * Antes se cogía la primera equipada a secas: si había un arma arrojadiza/a distancia
+ * equipada pero NO en la mano, se seleccionaba esa (ranged) y desactivaba Precisa (meleeOnly)
+ * aunque el arma de la mano fuese precisa.
+ * @param {object[]} weapons
+ * @param {{preferUnarmed?: boolean}} [opts]
+ * @returns {object|undefined}
+ */
+export const defaultCombatWeapon = (weapons, { preferUnarmed = false } = {}) => {
+  const list = weapons ?? [];
+  const inHand = getCombatHandWeapons(list)[0];
+  if (inHand) return inHand;
+  if (preferUnarmed) {
+    const unarmed = list.find(isUnarmedWeapon);
+    if (unarmed) return unarmed;
+  }
+  return list.find(w => w?.system?.equipped?.value);
+};
+
+/**
  * Escudo que penaliza el Turno: la rodela (pequeño) penaliza por estar EQUIPADA (se
  * lleva sin mano); cualquier otro escudo solo si está asignado a una mano.
  * @param {object[]} equippedWeapons

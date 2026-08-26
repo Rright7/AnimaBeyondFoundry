@@ -1,6 +1,7 @@
 import { AttackConfigurationDialog } from '../../module/dialogs/AttackConfigurationDialog';
 import { Templates } from '../../module/utils/constants.js';
 import { martialArtSpecialEffects } from '../../module/combat/martialArts/martialArtSpecials.js';
+import { defaultCombatWeapon } from '../../module/actor/utils/prepareActor/utils/getCombatHandWeapons.js';
 
 // Mensajes en proceso (anti doble-click en el mismo cliente, antes de que la marca
 // de "consumido" persista; la guardia por flag cubre el resto).
@@ -77,7 +78,8 @@ export default async function counterAttackActionHandler(message, html, dataset)
     // Arma del defensor para contraatacar: la equipada o, en su defecto, la primera
     // de su perfil de combate (incluye "Desarmado"/"Artes Marciales").
     const weapons = defenderToken.actor.system?.combat?.weapons ?? [];
-    const weaponId = (weapons.find(w => w.system?.equipped?.value) ?? weapons[0])?._id;
+    // Arma por defecto del contraataque: la de la MANO (o Desarmado), no la primera equipada.
+    const weaponId = (defaultCombatWeapon(weapons, { preferUnarmed: true }) ?? weapons[0])?._id;
 
     const bonus = Number(result.counterAttackValue) || 0;
 

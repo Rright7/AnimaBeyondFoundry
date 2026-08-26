@@ -101,6 +101,26 @@
             border-radius: var(--abf-radius);
             font-size: 0.8rem;
 
+            .weapon-quality-chip__param {
+              width: 3rem;
+              padding: 0 0.2rem;
+              text-align: center;
+              font-size: 0.75rem;
+              line-height: 1.2;
+              color: var(--abf-on-accent);
+              background: rgba(0, 0, 0, 0.18);
+              border: 1px solid var(--abf-on-accent);
+              border-radius: 3px;
+
+              -moz-appearance: textfield;
+
+              &::-webkit-inner-spin-button,
+              &::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+              }
+            }
+
             .weapon-quality-chip__remove {
               cursor: pointer;
               opacity: 0.8;

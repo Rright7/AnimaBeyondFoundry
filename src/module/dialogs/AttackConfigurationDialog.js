@@ -609,6 +609,18 @@ export class AttackConfigurationDialog extends FormApplication {
         .maneuverSlug(this.modalData.maneuver?.slug ?? '')
         .maneuverItemName(this.modalData.maneuver?.itemName ?? '')
         .maneuverWasUnarmed(!combat.weapon || !!combat.weapon.system?.isUnarmed?.value)
+        // Armas de presa con valor fijo (boleadora, red, latigo...): el valor vive en el
+        // PARAMETRO de la cualidad grappling (system.qualityParams.value.grappling.grappleStrength),
+        // ya poblado en el compendio. Se ofrece como caracteristica del control enfrentado,
+        // sumandole el +1 por cada +5 de calidad del arma. 0/sin parametro = no aplica.
+        .attackerWeaponStrength(
+          (() => {
+            const s = combat.weapon?.system;
+            const base = Number(s?.qualityParams?.value?.grappling?.grappleStrength) || 0;
+            if (base <= 0) return 0;
+            return base + (Number(s?.quality?.value) || 0) / 5;
+          })()
+        )
         .delayRounds(this.modalData.maneuver?.delayRounds ?? 0)
         .causesDamage(!!combat.causesDamage)
         // Excepcion de dano completo en maniobra (Grappling Supremo en Presa/Derribo):

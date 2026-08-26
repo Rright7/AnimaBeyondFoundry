@@ -193,6 +193,7 @@
   "anima.ui.combat.weapons.unarmedProfile.unarmed": "Unarmed",
   "anima.ui.combat.weapons.unarmedProfile.martialArts": "Martial Arts",
   "anima.ui.combat.weapons.weaponStrength.title": "Weapon STR",
+  "anima.ui.combat.weapons.grappleStrength.title": "Grapple STR (fixed control value)",
   "anima.ui.combat.weapons.attackButton.title": "Attack",
   "anima.ui.combat.weapons.throwButton.title": "Throw",
   "anima.ui.combat.weapons.shootButton.title": "Shoot",

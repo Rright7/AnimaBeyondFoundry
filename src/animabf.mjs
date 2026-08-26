@@ -685,7 +685,9 @@ Hooks.on('createChatMessage', async message => {
       attackerRef,
       defenderRef,
       damagePercent,
-      maneuverWasUnarmed = false
+      maneuverWasUnarmed = false,
+      attackerWeaponStrength = 0,
+      attackerWeaponName = ''
     ) => {
       const def = game.animabf?.maneuvers?.get?.(slug);
       if (!def) return;
@@ -721,7 +723,9 @@ Hooks.on('createChatMessage', async message => {
         attackerTokenUuid: attackerRef,
         defenderTokenUuid: defenderRef,
         damagePercent,
-        maneuverWasUnarmed
+        maneuverWasUnarmed,
+        attackerWeaponStrength,
+        attackerWeaponName
       });
     };
 
@@ -744,7 +748,9 @@ Hooks.on('createChatMessage', async message => {
         attackerRef,
         defenderRef,
         Number(result.damagePercentage ?? 0),
-        wasUnarmed
+        wasUnarmed,
+        Number(flags.attackData?.attackerWeaponStrength) || 0,
+        flags.attackData?.weaponName ?? ''
       );
       return;
     }
@@ -760,11 +766,13 @@ Hooks.on('createChatMessage', async message => {
       const itemName = flags.maneuverItemName || slug;
       const attackerRef = flags.attackerTokenUuid || flags.attackerId || '';
       const wasUnarmed = !!flags.maneuverWasUnarmed;
+      const weaponStr = Number(flags.attackerWeaponStrength) || 0;
+      const weaponName = flags.attackerWeaponName ?? '';
       const entries = flags.entries ?? [];
       for (const entry of entries) {
         const defenderRef = entry.tokenUuid || entry.actorUuid || entry.actorId || '';
         const dmg = Number(entry.damagePercentage ?? 0);
-        await post(slug, itemName, attackerRef, defenderRef, dmg, wasUnarmed);
+        await post(slug, itemName, attackerRef, defenderRef, dmg, wasUnarmed, weaponStr, weaponName);
       }
     }
   } catch (err) {

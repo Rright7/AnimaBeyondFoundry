@@ -193,6 +193,9 @@ export const INITIAL_WEAPON_DATA = {
     secondary: { value: NoneWeaponCritic.NONE }
   },
   useCustomFormula: { value: false },
+  // Parametros por cualidad (editables en la ficha). p.ej. grappling.grappleStrength =
+  // valor fijo de presa del arma. Estructura: { value: { <slug>: { <param>: <valor> } } }.
+  qualityParams: { value: {} },
   hotbarMacroCreatorId: 'weapon.attack'
 };
 

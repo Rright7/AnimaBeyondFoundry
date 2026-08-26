@@ -10,6 +10,7 @@ import {
   tokensInRadius,
   pickAreaCenter
 } from '../../../combat/maneuvers/areaTemplate.js';
+import { defaultCombatWeapon } from '../prepareActor/utils/getCombatHandWeapons.js';
 
 /**
  * Launch a combat maneuver by opening AttackConfigurationDialog with the
@@ -100,7 +101,10 @@ export function executeCombatManeuver(sheet, e) {
   }
 
   const weapons = sheet.actor.system?.combat?.weapons ?? [];
-  const equipped = weapons.find(w => w.system?.equipped?.value);
+  // Arma por defecto: la de la MANO (o el perfil Desarmado si se combate sin armas), NO la
+  // primera equipada (que podia ser arrojadiza/a distancia y desactivar Precisa por meleeOnly
+  // aunque el arma empuñada fuese precisa). El jugador puede cambiarla en el desplegable.
+  const equipped = defaultCombatWeapon(weapons, { preferUnarmed: true });
 
   // Resolve aimed zone: either fixed by the definition (Inconsciencia → head)
   // or chosen by the player via the card's <select>.
@@ -206,7 +210,7 @@ async function runAreaAttack(sheet, e, def, slug, name, attackerToken) {
   }
 
   const weapons = sheet.actor.system?.combat?.weapons ?? [];
-  const equipped = weapons.find(w => w.system?.equipped?.value);
+  const equipped = defaultCombatWeapon(weapons);
 
   new AttackConfigurationDialog(
     {

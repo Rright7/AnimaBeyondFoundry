@@ -349,6 +349,11 @@
 
       .spell-row {
         width: calc(50% - 1rem);
+        // Dos tarjetas por fila mientras quepan; por debajo de ~22rem cada una, el
+        // contenedor (flex-wrap) las baja a una por fila en vez de estrujar/desbordar.
+        // max-width evita desbordar cuando la ventana es más estrecha que ese mínimo.
+        min-width: 22rem;
+        max-width: 100%;
         height: 100%;
 
         border-radius: var(--abf-radius);
@@ -375,7 +380,17 @@
           .second-row {
             width: 100%;
             display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            row-gap: 0.25rem;
             justify-content: space-between;
+
+            // Los hijos de un flex no encogen por defecto (min-width:auto). Sin esto,
+            // el select de Vía (ancho fijo 8rem) desbordaba la tarjeta al estrechar la
+            // ventana, ya que .spell-row mide calc(50% - 1rem).
+            > * {
+              min-width: 0;
+            }
 
             .level {
               .input {
@@ -388,15 +403,23 @@
             .via {
               .input {
                 height: 1.5rem;
+                // Cinzel/Alegreya traen un line-height normal alto (~1.4) que baja la
+                // linea base y recorta el texto por abajo ("ATAQUE"...). Se compacta.
+                line-height: 1.1;
+                width: 100%;
+                max-width: 100%;
               }
             }
             .combat-type {
               .input {
                 height: 1.5rem;
+                line-height: 1.1;
+                max-width: 100%;
               }
             }
             .via .input-container {
               width: 8rem;
+              max-width: 100%;
             }
           }
         }
@@ -413,7 +436,9 @@
         .advanced-grade {
           margin-bottom: 0.5rem;
           .grade-name {
-            min-width: 7rem;
+            // Base 7rem (alinea Base/Intermedio/Avanzado/Arcano) pero encogible.
+            flex: 0 1 7rem;
+            min-width: 0;
           }
           .spell-cast-button {
             @include button;
@@ -425,22 +450,35 @@
 
         .grade-row {
           display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          row-gap: 0.15rem;
           justify-content: start;
           // height: 1.5rem;
+
+          // Los hijos de un flex no encogen por defecto (min-width:auto). Sin esto la
+          // fila (nombre 7rem + 3 columnas de 3rem + descripcion) desbordaba la tarjeta
+          // al estrechar la ventana.
+          > * {
+            min-width: 0;
+          }
 
           .int-required,
           .zeon,
           .maintenance-cost {
             .input-container {
               width: 3rem;
+              max-width: 100%;
             }
           }
 
           .description {
-            width: 100%;
+            flex: 1 1 auto;
+            min-width: 0;
 
             .input-container {
               width: 100%;
+              max-width: 100%;
             }
           }
         }
@@ -455,6 +493,7 @@
 
           .input {
             height: 1.5rem;
+            line-height: 1.1;
           }
           .has-daily-maintenance {
             .input-container {
