@@ -1,7 +1,7 @@
 {
     "name": "Presa",
     "type": "weaponQuality",
-    "img": "icons/skills/melee/strike-fists-grappling-orange.webp",
+    "img": "systems/animabf/assets/icons/game-icons.net/ffffff/lorc/grab.svg",
     "system": {
         "slug": {
             "value": "grappling"

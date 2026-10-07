@@ -18,7 +18,7 @@ export const grappling = new EquipmentQualityDefinition({
   slug: 'grappling',
   nameKey: 'anima.weaponQuality.grappling.name',
   descriptionKey: 'anima.weaponQuality.grappling.description',
-  icon: 'icons/skills/melee/strike-fists-grappling-orange.webp',
+  icon: 'systems/animabf/assets/icons/game-icons.net/ffffff/lorc/grab.svg',
 
   appliesTo: ['weapon'],
   aliases: ['presa', 'grappling', 'prise']
