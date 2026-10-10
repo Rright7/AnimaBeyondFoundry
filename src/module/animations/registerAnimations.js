@@ -82,6 +82,48 @@ export function registerAnimationHooks() {
     syncKiChargeAura(actor);
   });
 
+  Hooks.on('updateActor', (actor, changes, _opts, userId) => {
+    if (game.user?.id !== userId) return;
+    const path = 'flags.animabf.accumulatingZeon';
+    if (!(path in changes) && !foundry.utils.hasProperty(changes, path)) return;
+    for (const token of actor?.getActiveTokens?.() ?? []) {
+      const name = `abf-zeon-charge-${token.id}`;
+      endEffect(name);
+      if (!actor.flags?.animabf?.accumulatingZeon) continue;
+      playEffect({
+        file: effectFor('zeonCharge'),
+        source: token,
+        opts: {
+          attachTo: true,
+          persist: true,
+          name,
+          belowTokens: true,
+          scaleToObject: 1.5,
+          fadeIn: 300,
+          fadeOut: 400
+        }
+      });
+    }
+  });
+
+  // Item updates cover sheet buttons and macros, after Ki was successfully paid.
+  Hooks.on('updateItem', (item, changes, _opts, userId) => {
+    if (game.user?.id !== userId || item.type !== 'technique' || !item.actor) return;
+    const activated = ['active', 'freshTurn'].some(
+      key =>
+        (changes[`flags.animabf.${key}`] ??
+          foundry.utils.getProperty(changes, `flags.animabf.${key}`)) === true
+    );
+    if (!activated) return;
+    for (const token of item.actor.getActiveTokens?.() ?? []) {
+      playEffect({
+        file: effectFor('techniqueActivate'),
+        source: token,
+        opts: { scaleToObject: 1.8, fadeOut: 400 }
+      });
+    }
+  });
+
   // API publica para macros/pruebas y futuros disparadores desde el sistema.
   game.animabf = game.animabf || {};
   game.animabf.animations = {

@@ -1,3 +1,4 @@
+import { effectFor } from './animationMap.js';
 import { playEffect } from './AnimationService.js';
 import { magicElementFor, magicEffectFor, magicTintFor } from './magicAnimationMap.js';
 import { weaponMeleeEffect } from './weaponAnimationMap.js';
@@ -23,10 +24,20 @@ export async function playCombatResultAnimation(flags) {
   const defenderToken = resolveTokenFromRef(defenderRef);
   if (!defenderToken) return; // sin destino no hay nada que mostrar
 
+  const result = flags?.result ?? {};
+  if (Number.isFinite(result.difference) && result.difference <= 0) {
+    if (!flags.resistTheHit) playDefenseAnimation(defenderToken, flags.defenseType);
+    return;
+  }
+  if (!(Number(result.damageFinal) > 0)) return;
+
   const ad = flags?.attackData ?? {};
   const armorType = flags?.result?.armorType ?? ad.armorType ?? '';
   const attackerRef =
-    flags?.attacker?.tokenId || flags?.result?.attackerId || flags?.attacker?.actorId || '';
+    flags?.attacker?.tokenId ||
+    flags?.result?.attackerId ||
+    flags?.attacker?.actorId ||
+    '';
   const attackerToken = resolveTokenFromRef(attackerRef);
 
   // --- Magia / Psiquica: efecto elemental (via/dano/disciplina), explosion si es de area ---
@@ -74,7 +85,11 @@ export function playWeaponAttackAnimation(attackerToken, targetTokens, weapon) {
   const targets = (Array.isArray(targetTokens) ? targetTokens : []).filter(Boolean);
   // Sin objetivo: el arma sobre el atacante (pegada al actor), grande.
   if (!targets.length) {
-    playEffect({ file, source: attackerToken, opts: { attachTo: true, scaleToObject: 3, fadeOut: 400 } });
+    playEffect({
+      file,
+      source: attackerToken,
+      opts: { attachTo: true, scaleToObject: 3, fadeOut: 400 }
+    });
     return;
   }
   // Con objetivo: el arma se ESTIRA del atacante al enemigo (stretchTo). Se ancla en el atacante
@@ -105,4 +120,32 @@ export function playSpellCastAnimation(
       ? { scaleToObject: 1.8, fadeIn: 200, fadeOut: 500, tint }
       : { belowTokens: true, scaleToObject: 1.6, fadeIn: 200, fadeOut: 500, tint }
   });
+}
+
+/** Successful defense only: armor absorbing a hit is not a dodge or a parry. */
+export function playDefenseAnimation(token, defenseType) {
+  const action = {
+    dodge: 'defenseDodge',
+    block: 'defenseBlock',
+    shield: 'defenseShield',
+    supernaturalShield: 'defenseShield'
+  }[defenseType];
+  if (!token || !action) return;
+  return playEffect({
+    file: effectFor(action),
+    source: token,
+    opts: { scaleToObject: 1.5, fadeOut: 300 }
+  });
+}
+
+/** Automatic defenses share the same reactions as individual result cards. */
+export function playMultiDefenseAnimation(flags) {
+  if (game.users?.activeGM && game.users.activeGM.id !== game.user?.id) return;
+  for (const entry of flags?.entries ?? []) {
+    if (!Number.isFinite(entry.difference) || entry.difference > 0) continue;
+    playDefenseAnimation(
+      resolveTokenFromRef(entry.tokenId || entry.actorId),
+      entry.defenseType
+    );
+  }
 }

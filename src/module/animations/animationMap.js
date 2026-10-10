@@ -10,10 +10,17 @@
  * y copia el "Datapath". Truco: quitar el ultimo segmento (color) hace que Sequencer elija
  * una variante aleatoria.
  *
- * Granularidad inicial (decision del usuario): SIMPLE por tipo de tabla (armorType) + el
- * efecto de Cargar Ki. Las demas acciones llegan en fases posteriores.
+ * Acciones: impactos/proyectiles por tabla, reacciones defensivas, acumulacion de
+ * Ki/Zeon y activacion de tecnicas. Magia y armas tienen sus propios mapas.
  */
 export const ANIMATION_MAP = {
+  // Short reactions; every last candidate exists in the free JB2A catalog.
+  defenseDodge: ['jb2a.wind_lines.01.01.white'],
+  defenseBlock: ['jb2a.impact.004.blue'],
+  defenseShield: ['jb2a.shield.01.complete.01.blue'],
+  zeonCharge: ['jb2a.energy_field.02.below.blue'],
+  techniqueActivate: ['jb2a.particle_burst.01.circle.bluepurple'],
+
   // --- Cargar Ki: power-up en dos capas (estilo "concentrar energia") ---
   // 1) Energia que converge hacia el cuerpo. patreon = blue/green/purple/red/yellow;
   //    free solo registra green, asi que el resolver cae a green si no hay patreon.
@@ -37,10 +44,7 @@ export const ANIMATION_MAP = {
     'jb2a.melee_generic.slash.01.orange',
     'jb2a.sword.melee.01.white'
   ],
-  impactThrust: [
-    'jb2a.melee_generic.piercing.one_handed',
-    'jb2a.spear.melee.01.white'
-  ],
+  impactThrust: ['jb2a.melee_generic.piercing.one_handed', 'jb2a.spear.melee.01.white'],
   impactImpact: [
     'jb2a.melee_generic.bludgeoning.one_handed',
     'jb2a.melee_attack.02.mace.01',
@@ -63,18 +67,18 @@ export const ANIMATION_MAP = {
     'jb2a.spear.throw.01.white',
     'jb2a.dagger.throw.01.white'
   ],
-  projectileEnergy: [
-    'jb2a.eldritch_blast.dark_purple',
-    'jb2a.eldritch_blast.purple'
-  ]
+  projectileEnergy: ['jb2a.eldritch_blast.dark_purple', 'jb2a.eldritch_blast.purple']
 
-  // --- Pendiente (fases siguientes): critical, bleeding, parry, dodge, spellCast,
-  //     psychicAttack, grapple... Ver docs/develop/animaciones-jb2a-plan.md (tabla seccion 4).
+  // Other possible triggers: critical wounds, bleeding and grapple outcomes.
 };
 
 // Tablas de dano "no fisicas": comparten impacto/proyectil de energia.
 const ENERGY_ARMOR_TYPES = new Set(['energy', 'heat', 'cold', 'electricity']);
-const IMPACT_BY_ARMOR = { cut: 'impactCut', thrust: 'impactThrust', impact: 'impactImpact' };
+const IMPACT_BY_ARMOR = {
+  cut: 'impactCut',
+  thrust: 'impactThrust',
+  impact: 'impactImpact'
+};
 
 /** armorType (tabla de dano) -> clave de impacto. '-'/'' o desconocido -> golpe generico. */
 export function impactKeyForArmorType(armorType) {

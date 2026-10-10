@@ -661,6 +661,7 @@ export class DefenseConfigurationDialog extends FormApplication {
             },
             // Tipo de defensa (dodge/block/shield) para la reaccion cuando la defensa tiene exito.
             defenseType: type,
+            resistTheHit,
             attacker: {
               actorId: attackData?.attackerId ?? '',
               // Token del atacante (uuid preferido): el control enfrentado de maniobras debe

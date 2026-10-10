@@ -650,6 +650,12 @@ Hooks.on('createChatMessage', async message => {
       await playCombatResultAnimation(flags);
     }
 
+    if (flags.kind === 'multiDefenseResult') {
+      const { playMultiDefenseAnimation } =
+        await import('./module/animations/combatAnimations.js');
+      playMultiDefenseAnimation(flags);
+    }
+
     // Daño retrasado: programar automáticamente el daño diferido al crearse la
     // tarjeta (sin botón). Mismo punto GM-only que el auto-sangrado; reutiliza
     // makeDelayedDamageEntry y el flag scheduledDamages que procesa

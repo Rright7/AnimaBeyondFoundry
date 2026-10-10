@@ -178,6 +178,8 @@ function entryFromAuto(r, tok) {
     tokenId: r.token?.id ?? tok?.id ?? '',
     label: r.token?.name ?? tok?.name ?? r.actor.name,
     defenseTotal: Number(r.defenseTotal ?? 0),
+    defenseType: r.defenseData?.defenseType ?? '',
+    difference: r.combatResult?.difference,
     damageFinal: Number(
       r.combatResult?.damageFinal ??
         r.combatResult?.damage?.final ??
