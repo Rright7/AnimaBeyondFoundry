@@ -63,6 +63,15 @@ export async function playEffect({ file, source, target, opts = {} } = {}) {
   try {
     const seq = new Sequence({ inModuleName: 'animabf', softFail: true });
     const fx = seq.effect().file(f);
+    // Slower playback gives brief reactions enough time to be seen.
+    let speed = 0.7;
+    try {
+      const configured = game.settings.get('animabf', 'animationSpeed');
+      if (Number.isFinite(configured) && configured > 0) speed = configured;
+    } catch (e) {
+      /* Use the default when the setting is not registered yet. */
+    }
+    fx.playbackRate(speed);
     if (source) {
       if (opts.attachTo) fx.attachTo(source);
       else fx.atLocation(source);

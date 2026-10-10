@@ -954,6 +954,8 @@
   "anima.ui.secondaries.panel.search": "Search ability…",
   "anima.ui.settings.enableAnimations.name": "Combat animations (JB2A)",
   "anima.ui.settings.enableAnimations.hint": "Plays animations with Sequencer + JB2A if installed. If missing, it is ignored without affecting play.",
+  "anima.ui.settings.animationSpeed.name": "Animation speed (JB2A)",
+  "anima.ui.settings.animationSpeed.hint": "Playback speed: 0.7 is 70% speed (default), 1 is original speed, and 0.25 is quarter speed.",
   "chat.attackData.autoDefendButton": "Auto defend",
   "chat.attackData.defendButton": "Defend",
   "chat.attackData.resistButton": "Resist",

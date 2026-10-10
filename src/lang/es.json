@@ -956,6 +956,8 @@
   "anima.ui.secondaries.panel.search": "Buscar habilidad…",
   "anima.ui.settings.enableAnimations.name": "Animaciones de combate (JB2A)",
   "anima.ui.settings.enableAnimations.hint": "Reproduce animaciones con Sequencer + JB2A si están instalados. Si faltan, se ignora sin afectar al juego.",
+  "anima.ui.settings.animationSpeed.name": "Velocidad de animaciones (JB2A)",
+  "anima.ui.settings.animationSpeed.hint": "Velocidad de reproducción: 0.7 es el 70% (predeterminada), 1 es la original y 0.25 es un cuarto.",
   "chat.attackData.autoDefendButton": "Defensa automática",
   "chat.attackData.autoDefendPendingButton": "Defensas faltantes",
   "chat.attackData.defendButton": "Defensa",

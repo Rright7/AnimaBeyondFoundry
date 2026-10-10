@@ -10,9 +10,11 @@ let hooks;
 let token;
 let actor;
 let endEffects;
+let playbackRates;
 
 beforeEach(() => {
   files = [];
+  playbackRates = [];
   hooks = {};
   token = { id: 'token' };
   actor = { flags: { animabf: {} }, getActiveTokens: () => [token] };
@@ -37,6 +39,7 @@ beforeEach(() => {
           (_obj, key) =>
           (...args) => {
             if (key === 'file') files.push(args[0]);
+            if (key === 'playbackRate') playbackRates.push(args[0]);
             return key === 'play' ? Promise.resolve() : chain;
           }
       }
@@ -63,6 +66,21 @@ const resultFlags = (difference, damageFinal, defenseType = 'dodge') => ({
 test('successful defense replaces spell impact, including ties', async () => {
   await playCombatResultAnimation(resultFlags(0, 0));
   expect(files).toEqual(['jb2a.wind_lines.01.01.white']);
+});
+
+test.each([undefined, 0, -1, NaN, true])(
+  'missing or invalid speed %s uses the default speed',
+  async configured => {
+    game.settings.get = (_scope, key) => (key === 'animationSpeed' ? configured : true);
+    await playCombatResultAnimation(resultFlags(0, 0));
+    expect(playbackRates).toEqual([0.7]);
+  }
+);
+
+test.each([0.25, 0.5, 0.7, 0.75, 1])('respects configured playback speed %s', async speed => {
+  game.settings.get = (_scope, key) => (key === 'animationSpeed' ? speed : true);
+  await playCombatResultAnimation(resultFlags(0, 0));
+  expect(playbackRates).toEqual([speed]);
 });
 
 test('armor absorbing damage and resisting the hit do not animate a dodge', async () => {

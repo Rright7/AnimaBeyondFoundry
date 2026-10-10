@@ -22,6 +22,15 @@ export function registerAnimationSettings() {
     type: Boolean,
     default: true
   });
+  game.settings.register('animabf', 'animationSpeed', {
+    name: 'anima.ui.settings.animationSpeed.name',
+    hint: 'anima.ui.settings.animationSpeed.hint',
+    scope: 'world',
+    config: true,
+    type: Number,
+    range: { min: 0.25, max: 1, step: 0.05 },
+    default: 0.7
+  });
 }
 
 /**

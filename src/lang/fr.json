@@ -751,6 +751,8 @@
   "anima.ui.secondaries.panel.search": "Rechercher une compétence…",
   "anima.ui.settings.enableAnimations.name": "Animations de combat (JB2A)",
   "anima.ui.settings.enableAnimations.hint": "Joue des animations avec Sequencer + JB2A si installés. Sinon, ignoré sans affecter le jeu.",
+  "anima.ui.settings.animationSpeed.name": "Vitesse des animations (JB2A)",
+  "anima.ui.settings.animationSpeed.hint": "Vitesse de lecture : 0.7 correspond à 70 % (par défaut), 1 à la vitesse originale et 0.25 au quart.",
   "macros.combat.dialog.applyAndCloseButton.title": "Appliquer et fermer",
   "macros.combat.dialog.applyAndCloseButtonTooltip.title": "Appliquer les changements chez les acteurs, tels que les points de fatigue utilisés ou les dégâts sur les fiches de personnages concernés",
   "macros.combat.dialog.at.title": "IP",
