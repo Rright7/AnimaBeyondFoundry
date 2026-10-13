@@ -30,7 +30,7 @@ export const crush = new ManeuverDefinition({
   slug: 'crush',
   nameKey: 'anima.maneuvers.crush.name',
   descriptionKey: 'anima.maneuvers.crush.description',
-  icon: 'icons/skills/melee/strike-fists-grappling-orange.webp',
+  icon: 'systems/animabf/assets/icons/game-icons.net/ffffff/lorc/grab.svg',
 
   // No attack roll, no aimed: pure opposed STR check.
   noAttackPhase: true,
