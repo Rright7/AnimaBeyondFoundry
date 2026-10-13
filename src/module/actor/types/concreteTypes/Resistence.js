@@ -13,19 +13,6 @@ export class Resistance extends BaseType {
   }
 
   getDerivedFlowSpecs() {
-    return [
-      {
-        id: 'final',
-        deps: ['base.value', 'special.value', 'characteristicKey'],
-        mods: ['final.value'],
-        compute: this.#computeFinal.bind(this)
-      }
-    ];
-  }
-
-  #computeFinal({ base = 0, special = 0 }) {
-    const key = this._get('characteristicKey', '');
-    const charFinal = this.getValueByKey('Characteristic', key, 'final.value') ?? 0;
-    return { final: base + special + charFinal };
+    return [];
   }
 }
