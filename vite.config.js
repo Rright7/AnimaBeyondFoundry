@@ -27,6 +27,8 @@ export default defineConfig({
       formats: ['es']
     },
     rollupOptions: {
+      // Foundry serves these copied fonts at their existing runtime URLs.
+      external: [/^\/systems\/animabf\/assets\/fonts\/[^/]+\.woff2$/],
       output: {
         preserveModules: true,
         preserveModulesRoot: 'src',
