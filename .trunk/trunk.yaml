@@ -1,0 +1,88 @@
+# This file controls the behavior of Trunk: https://docs.trunk.io/cli
+# To learn more about the format of this file, see https://docs.trunk.io/reference/trunk-yaml
+version: 0.1
+cli:
+  version: 1.25.0
+# Trunk provides extensibility via plugins. (https://docs.trunk.io/plugins)
+plugins:
+  sources:
+    - id: trunk
+      ref: v1.11.0
+      uri: https://github.com/trunk-io/plugins
+# Many linters and tools depend on runtimes - configure them here. (https://docs.trunk.io/runtimes)
+runtimes:
+  enabled:
+    - node@22.16.0
+    - python@3.14.4
+# This is the section where you manage your linters. (https://docs.trunk.io/check/configuration)
+lint:
+  ignore:
+    # Upstream assets are maintained outside this repository.
+    - linters: [eslint, prettier, svgo, oxipng]
+      paths: [src/vendor/**, src/assets/icons/game-icons.net/**]
+    - linters: [eslint]
+      paths: ['**/*.d.ts']
+  files:
+    - name: handlebars
+      extensions: [hbs]
+      comments: [html-tag]
+  definitions:
+    # Keep the existing ESLint rules, with project coverage for build scripts and tests.
+    - name: eslint
+      commands:
+        - name: lint
+          version: <=8.57.0
+          run: eslint --no-eslintrc --config ${workspace}/.trunk/configs/.eslintrc.cjs --output-file ${tmpfile} --format json ${target}
+          output: eslint
+          error_codes: [2]
+          read_output_from: tmp_file
+          batch: true
+      affects_cache:
+        - .eslintrc
+        - .trunk/configs/.eslintrc.cjs
+        - .trunk/tsconfig.json
+        - tsconfig.json
+        - integration/tsconfig.json
+        - package.json
+        - package-lock.json
+    # Use the Handlebars parser: Prettier's Glimmer parser rejects our partials.
+    - name: handlebars-syntax
+      files: [handlebars]
+      runtime: node
+      package: handlebars
+      known_good_version: 4.7.10
+      affects_cache: [.trunk/scripts/handlebars-syntax.cjs]
+      commands:
+        - name: lint
+          run: node ${workspace}/.trunk/scripts/handlebars-syntax.cjs ${target}
+          output: sarif
+          success_codes: [0, 1]
+          batch: true
+  enabled:
+    - actionlint@1.7.12
+    - bandit@1.9.4
+    - black@26.10.1
+    - checkov@3.3.26
+    # ESLint 9+ requires a flat config and newer TypeScript ESLint plugins.
+    - eslint@8.57.0
+    - git-diff-check
+    - grype@0.120.1
+    - handlebars-syntax@4.7.10
+    - isort@9.0.2
+    - markdownlint@0.49.1
+    - osv-scanner@2.6.0
+    - oxipng@10.2.1
+    # Plugin v1.11.0 uses single-dash flags removed in pinact 5.
+    - pinact@4.0.0
+    - prettier@3.9.10
+    - ruff@0.17.0
+    - svgo@4.1.0
+    - trufflehog@3.99.2
+    - yamllint@1.38.0
+actions:
+  disabled:
+    - trunk-announce
+    - trunk-check-pre-push
+    - trunk-fmt-pre-commit
+  enabled:
+    - trunk-upgrade-available
