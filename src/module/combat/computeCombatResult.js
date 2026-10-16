@@ -196,6 +196,7 @@ export function computeCombatResult(attackData, defenseData) {
     .baseCriticalValue(critValue)
     .attackBreak(attackData.breakage)
     .armorType(attackData.armorType)
+    .kiElement(attackData.kiElement)
     .softReducedArmor(softArmorNullified ? 0 : softTaReduction)
     .softArmorNullified(softArmorNullified)
     .directBleeding(attackData.directBleeding)

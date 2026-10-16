@@ -35,6 +35,42 @@
  * (kept outside the repo until a Node port is decided).
  */
 
+// Retained for existing actors and imports with no element specified.
+const LEGACY_ELEMENTAL_ATTACK = {
+  id: 'elementalAttack',
+  name: 'Ataque elemental',
+  type: 'ki',
+  martialKnowledge: 10,
+  tree: { parent: 'weaponAuraExtension', depth: 2 },
+  aliases: { es: ['Ataque elemental', 'Daño elemental'] },
+  effects: []
+};
+
+export const ELEMENTAL_KI_SKILLS = [
+  ['Fire', 'Fuego', []],
+  ['Air', 'Aire', ['Eléctrico', 'Electricidad']],
+  ['Water', 'Agua', ['Hielo', 'Frío']],
+  ['Earth', 'Tierra', []],
+  ['Light', 'Luz', []],
+  ['Darkness', 'Oscuridad', []]
+].map(([id, element, aliases]) => ({
+  id: `elementalAttack${id}`,
+  name: `Ataque elemental: ${element}`,
+  element,
+  type: 'ki',
+  martialKnowledge: 10,
+  tree: { parent: 'weaponAuraExtension', depth: 2 },
+  aliases: {
+    es: [element, ...aliases].flatMap(name => [
+      `Ataque elemental: ${name}`,
+      `Ataque elemental (${name})`,
+      `Daño elemental: ${name}`,
+      `Daño elemental (${name})`
+    ])
+  },
+  effects: []
+}));
+
 /** @type {Array<{
  *   id: string,
  *   name: string,
@@ -284,15 +320,7 @@ export const KI_SKILLS = [
     aliases: { es: ['Extensión del aura al arma'] },
     effects: [{ target: 'damage', operation: 'add', value: 10 }]
   },
-  {
-    id: 'elementalAttack',
-    name: 'Ataque elemental',
-    type: 'ki',
-    martialKnowledge: 10,
-    tree: { parent: 'weaponAuraExtension', depth: 2 },
-    aliases: { es: ['Ataque elemental'] },
-    effects: []
-  },
+  ...ELEMENTAL_KI_SKILLS,
   {
     id: 'increasedDamage',
     name: 'Daño incrementado',
@@ -741,17 +769,29 @@ export const KI_SKILLS = [
 export function findKiSkillByName(name) {
   if (!name) return undefined;
   const needle = name.trim();
-  return KI_SKILLS.find(
+  const match = KI_SKILLS.find(
     s => s.name === needle || (s.aliases?.es ?? []).includes(needle)
+  );
+  return (
+    match ??
+    (LEGACY_ELEMENTAL_ATTACK.aliases.es.includes(needle)
+      ? LEGACY_ELEMENTAL_ATTACK
+      : undefined)
   );
 }
 
 /** Lookup a canonical Ki/Nemesis entry by stable internal id.
  *  Returns undefined when no match found.
  *  @param {string} id
+ *  @param {string} [name] legacy display name, when the old id omitted the element
  *  @returns {(typeof KI_SKILLS)[number] | undefined}
  */
-export function findKiSkillById(id) {
+export function findKiSkillById(id, name) {
   if (!id) return undefined;
+  if (id === LEGACY_ELEMENTAL_ATTACK.id) {
+    // Older Excel imports stored a generic id but kept the element in the name.
+    const byName = name ? findKiSkillByName(name) : undefined;
+    return byName?.element ? byName : LEGACY_ELEMENTAL_ATTACK;
+  }
   return KI_SKILLS.find(s => s.id === id);
 }

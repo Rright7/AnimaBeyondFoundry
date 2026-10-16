@@ -10,6 +10,11 @@
 
   {{#> "systems/animabf/templates/common/ui/group-body.hbs"}}
     {{!-- <p><strong>{{localize "anima.ui.combat.weapons.attack.title"}}:</strong> {{weapon.system.attack.final.value}}</p> --}}
+    {{#if attackData.kiElement}}
+      <div class='abf-ki-element-badge-row'>
+        {{> 'systems/animabf/templates/common/ui/ki-element-badge.hbs' element=attackData.kiElement}}
+      </div>
+    {{/if}}
     <p data-requires-permission="owner"><strong>{{localize "anima.ui.combat.weapons.attack.title"}}:</strong> {{attackData.attackAbility}}</p>
     <p data-requires-permission="owner"><strong>{{localize "anima.ui.combat.weapons.damage.final.title"}}:</strong> {{attackData.damage}}</p>
     {{#if attackData.critDamageBonus}}

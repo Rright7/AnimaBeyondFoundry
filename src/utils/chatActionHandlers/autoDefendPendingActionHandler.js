@@ -173,6 +173,7 @@ function entryFromAuto(r, tok) {
     finalArmor: Number(r.combatResult?.finalArmor ?? 0),
     finalBaseDamage: Number(r.combatResult?.finalBaseDamage ?? 0),
     areaMultiplier: Number(r.combatResult?.areaMultiplier ?? 1),
+    kiElement: r.combatResult?.kiElement ?? '',
     isCritical: !!r.combatResult?.isCritical,
     lifePercentRemoved: Number(r.combatResult?.lifePercentRemoved ?? 0),
     hasCounter: !!r.combatResult?.hasCounterAttack,

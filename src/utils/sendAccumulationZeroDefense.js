@@ -102,6 +102,7 @@ export async function sendAccumulationZeroDefense({
           spellVia: attackData?.spellVia ?? '',
           areaRadius: Number(attackData?.areaRadius) || 0,
           psychicDiscipline: attackData?.psychicDiscipline ?? '',
+          kiElement: attackData?.kiElement ?? '',
           weaponName: attackData?.weaponName ?? ''
         },
         defenseType: '',

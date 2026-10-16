@@ -1,4 +1,12 @@
 {
+  "anima.combat.kiElement.title": "Elemento del ataque",
+  "anima.combat.kiElement.none": "Sin elemento",
+  "anima.combat.kiElement.fire": "Fuego",
+  "anima.combat.kiElement.air": "Aire",
+  "anima.combat.kiElement.water": "Agua",
+  "anima.combat.kiElement.earth": "Tierra",
+  "anima.combat.kiElement.light": "Luz",
+  "anima.combat.kiElement.darkness": "Oscuridad",
   "anima.ui.combat.combatManeuver.slug.title": "Slug (identificador en el registry)",
   "anima.ui.combat.combatManeuver.actionType.title": "Tipo de acción",
   "anima.ui.combat.combatManeuver.actionType.active.title": "Activa",

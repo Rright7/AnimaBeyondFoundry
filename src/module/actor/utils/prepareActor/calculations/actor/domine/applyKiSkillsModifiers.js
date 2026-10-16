@@ -161,6 +161,7 @@ mutateKiDamageReduction.abfFlow = {
 const CANONICAL_INDEX = (() => {
   const map = new Map();
   KI_SKILLS.forEach((entry, idx) => map.set(entry.id, idx));
+  map.set('elementalAttack', map.get('elementalAttackFire'));
   return map;
 })();
 
@@ -176,6 +177,10 @@ function sortByCanonicalOrder(list) {
 
 function canonicalIndexOf(skill) {
   const id = skill?.system?.canonicalId;
+  if (id === 'elementalAttack') {
+    const canonical = findKiSkillById(id, skill.name);
+    return CANONICAL_INDEX.get(canonical.id);
+  }
   if (id && CANONICAL_INDEX.has(id)) return CANONICAL_INDEX.get(id);
   const byName = skill?.name ? findKiSkillByName(skill.name) : undefined;
   if (byName && CANONICAL_INDEX.has(byName.id)) return CANONICAL_INDEX.get(byName.id);
@@ -187,7 +192,7 @@ function enrichListFromCanonical(list, totals, actor) {
     const canonicalId = skill?.system?.canonicalId;
     const name = skill?.name;
 
-    let canonical = canonicalId ? findKiSkillById(canonicalId) : undefined;
+    let canonical = canonicalId ? findKiSkillById(canonicalId, name) : undefined;
     if (!canonical && name) {
       canonical = findKiSkillByName(name);
     }
@@ -308,7 +313,11 @@ function hasFollowingSiblingAtLevel(depths, i, level) {
 }
 
 applyKiSkillsModifiers.abfFlow = {
-  deps: ['system.domine.kiSkills', 'system.domine.nemesisSkills', 'system.domine.techniques'],
+  deps: [
+    'system.domine.kiSkills',
+    'system.domine.nemesisSkills',
+    'system.domine.techniques'
+  ],
   mods: [
     'system.general.modifiers.kiBonus.damage.value',
     'system.general.modifiers.kiBonus.initiative.value',

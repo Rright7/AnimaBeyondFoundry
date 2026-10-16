@@ -51,7 +51,7 @@ export function expandElementalAttack(text) {
   if (!text) return '';
 
   return text
-    .replace(/Ataque elemental\s*\(([^)]+)\)/gi, (_match, group) => {
+    .replace(/(?:Ataque|Daño) elemental\s*\(([^)]+)\)/gi, (_match, group) => {
       const elements = group
         .split(',')
         .map(e => e.trim())
@@ -81,7 +81,7 @@ export function stripTrailingValue(name) {
 /**
  * Normalises an Excel-emitted ability name down to its canonical form so we
  * can look it up against KI_SKILLS. Handles two patterns:
- *   - "Ataque elemental: Fuego" → "Ataque elemental"
+ *   - "Ataque elemental: Fuego" keeps its element for canonical lookup
  *   - "Detección del Ki 50"     → "Detección del Ki"
  * Names that are already canonical pass through untouched.
  *
@@ -91,7 +91,8 @@ export function stripTrailingValue(name) {
 export function normalizeForLookup(name) {
   if (!name) return '';
   let n = name.trim();
-  // Strip elemental-attack suffix ("...: Fuego")
+  if (/^(Ataque|Daño) elemental\b/i.test(n)) return n;
+  // Strip other descriptive suffixes.
   n = n.replace(/:\s*[^:]+$/, '').trim();
   // Strip trailing numeric value ("... 50")
   n = n.replace(/\s+\d+$/, '').trim();

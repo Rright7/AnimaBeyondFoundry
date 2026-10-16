@@ -54,6 +54,7 @@ export const Templates = {
     GroupHeader: T('common/ui/group-header.hbs'),
     GroupHeaderTitle: T('common/ui/group-header-title.hbs'),
     GroupBody: T('common/ui/group-body.hbs'),
+    KiElementBadge: T('common/ui/ki-element-badge.hbs'),
     GroupFooter: T('common/ui/group-footer.hbs'),
     AddItemButton: T('common/ui/add-item-button.hbs'),
     CustomSelect: T('common/ui/custom-select.hbs'),

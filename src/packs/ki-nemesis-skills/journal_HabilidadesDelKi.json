@@ -679,7 +679,7 @@
     },
     {
       "sort": 2700000,
-      "name": "Ataque elemental",
+      "name": "Ataque elemental (resumen)",
       "type": "text",
       "_id": "21f9cd9a85ca0f83",
       "title": {
@@ -689,7 +689,7 @@
       "image": {},
       "text": {
         "format": 1,
-        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Deriva de:</strong> Extensión del aura al arma</p>\n<hr>\n<p>Dota a sus ataques de carácter elemental. Al adquirirla elige un elemento: Fuego, Aire, Agua, Tierra, Luz u Oscuridad (obligado a elegir el de su desequilibrio, si lo tiene). Fuego/Aire/Agua permiten usar como Crítico secundario Calor/Electricidad/Frío. Tierra permite atacar en la Tabla de Contundente como Crítico secundario con cualquier arma (si ya es Contundente primario, +10 al Daño base). Puede elegirse varias veces, especializándose en distintos elementos.</p>"
+        "content": "<p><strong>Coste:</strong> 10 CM por elemento</p>\n<p><strong>Deriva de:</strong> Extensión del aura al arma</p>\n<hr>\n<p>Dota a sus ataques de carácter elemental. Al adquirirla elige un elemento: Fuego, Aire, Agua, Tierra, Luz u Oscuridad (obligado a elegir el de su desequilibrio, si lo tiene). Fuego/Aire/Agua permiten usar como Crítico secundario Calor/Electricidad/Frío. Tierra permite atacar en la Tabla de Contundente como Crítico secundario con cualquier arma (si ya es Contundente primario, +10 al Daño base). Puede elegirse varias veces, especializándose en distintos elementos.</p>"
       },
       "video": {
         "controls": true,
@@ -702,6 +702,162 @@
       },
       "flags": {},
       "_key": "!journal.pages!784d3cb5888fdd67.21f9cd9a85ca0f83"
+    },
+    {
+      "sort": 2714285,
+      "name": "Ataque elemental: Fuego",
+      "type": "text",
+      "_id": "ee3470b03c1f03bc",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Elemento:</strong> Fuego</p>\n<p><strong>Deriva de:</strong> Extensión del aura al arma</p>\n<hr>\n<p>Dota a sus ataques de carácter elemental. Al adquirirla elige un elemento: Fuego, Aire, Agua, Tierra, Luz u Oscuridad (obligado a elegir el de su desequilibrio, si lo tiene). Fuego/Aire/Agua permiten usar como Crítico secundario Calor/Electricidad/Frío. Tierra permite atacar en la Tabla de Contundente como Crítico secundario con cualquier arma (si ya es Contundente primario, +10 al Daño base). Puede elegirse varias veces, especializándose en distintos elementos.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.ee3470b03c1f03bc"
+    },
+    {
+      "sort": 2728570,
+      "name": "Ataque elemental: Aire",
+      "type": "text",
+      "_id": "1bc3a5b520fdca33",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Elemento:</strong> Aire</p>\n<p><strong>Deriva de:</strong> Extensión del aura al arma</p>\n<hr>\n<p>Dota a sus ataques de carácter elemental. Al adquirirla elige un elemento: Fuego, Aire, Agua, Tierra, Luz u Oscuridad (obligado a elegir el de su desequilibrio, si lo tiene). Fuego/Aire/Agua permiten usar como Crítico secundario Calor/Electricidad/Frío. Tierra permite atacar en la Tabla de Contundente como Crítico secundario con cualquier arma (si ya es Contundente primario, +10 al Daño base). Puede elegirse varias veces, especializándose en distintos elementos.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.1bc3a5b520fdca33"
+    },
+    {
+      "sort": 2742855,
+      "name": "Ataque elemental: Agua",
+      "type": "text",
+      "_id": "b9c286b7c23a73e8",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Elemento:</strong> Agua</p>\n<p><strong>Deriva de:</strong> Extensión del aura al arma</p>\n<hr>\n<p>Dota a sus ataques de carácter elemental. Al adquirirla elige un elemento: Fuego, Aire, Agua, Tierra, Luz u Oscuridad (obligado a elegir el de su desequilibrio, si lo tiene). Fuego/Aire/Agua permiten usar como Crítico secundario Calor/Electricidad/Frío. Tierra permite atacar en la Tabla de Contundente como Crítico secundario con cualquier arma (si ya es Contundente primario, +10 al Daño base). Puede elegirse varias veces, especializándose en distintos elementos.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.b9c286b7c23a73e8"
+    },
+    {
+      "sort": 2757140,
+      "name": "Ataque elemental: Tierra",
+      "type": "text",
+      "_id": "f97a9de624616735",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Elemento:</strong> Tierra</p>\n<p><strong>Deriva de:</strong> Extensión del aura al arma</p>\n<hr>\n<p>Dota a sus ataques de carácter elemental. Al adquirirla elige un elemento: Fuego, Aire, Agua, Tierra, Luz u Oscuridad (obligado a elegir el de su desequilibrio, si lo tiene). Fuego/Aire/Agua permiten usar como Crítico secundario Calor/Electricidad/Frío. Tierra permite atacar en la Tabla de Contundente como Crítico secundario con cualquier arma (si ya es Contundente primario, +10 al Daño base). Puede elegirse varias veces, especializándose en distintos elementos.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.f97a9de624616735"
+    },
+    {
+      "sort": 2771425,
+      "name": "Ataque elemental: Luz",
+      "type": "text",
+      "_id": "853e65ff11c97b91",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Elemento:</strong> Luz</p>\n<p><strong>Deriva de:</strong> Extensión del aura al arma</p>\n<hr>\n<p>Dota a sus ataques de carácter elemental. Al adquirirla elige un elemento: Fuego, Aire, Agua, Tierra, Luz u Oscuridad (obligado a elegir el de su desequilibrio, si lo tiene). Fuego/Aire/Agua permiten usar como Crítico secundario Calor/Electricidad/Frío. Tierra permite atacar en la Tabla de Contundente como Crítico secundario con cualquier arma (si ya es Contundente primario, +10 al Daño base). Puede elegirse varias veces, especializándose en distintos elementos.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.853e65ff11c97b91"
+    },
+    {
+      "sort": 2785710,
+      "name": "Ataque elemental: Oscuridad",
+      "type": "text",
+      "_id": "69e9b4a37368a809",
+      "title": {
+        "show": true,
+        "level": 1
+      },
+      "image": {},
+      "text": {
+        "format": 1,
+        "content": "<p><strong>Coste:</strong> 10 CM</p>\n<p><strong>Elemento:</strong> Oscuridad</p>\n<p><strong>Deriva de:</strong> Extensión del aura al arma</p>\n<hr>\n<p>Dota a sus ataques de carácter elemental. Al adquirirla elige un elemento: Fuego, Aire, Agua, Tierra, Luz u Oscuridad (obligado a elegir el de su desequilibrio, si lo tiene). Fuego/Aire/Agua permiten usar como Crítico secundario Calor/Electricidad/Frío. Tierra permite atacar en la Tabla de Contundente como Crítico secundario con cualquier arma (si ya es Contundente primario, +10 al Daño base). Puede elegirse varias veces, especializándose en distintos elementos.</p>"
+      },
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      },
+      "src": null,
+      "system": {},
+      "ownership": {
+        "default": -1
+      },
+      "flags": {},
+      "_key": "!journal.pages!784d3cb5888fdd67.69e9b4a37368a809"
     },
     {
       "sort": 2800000,

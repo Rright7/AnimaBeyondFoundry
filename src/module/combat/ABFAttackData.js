@@ -1,3 +1,4 @@
+import { normalizeKiElement } from './kiElementalAttack.js';
 import { Templates } from '../utils/constants';
 import { getChatVisibilityOptions } from '../utils/chatVisibility.js';
 
@@ -12,6 +13,8 @@ export class ABFAttackData {
     this.softArmorReduction = p.softArmorReduction ?? 0;
     this.ignoreArmor = !!p.ignoreArmor;
     this.armorType = p.armorType ?? game.animabf.weapon.NoneWeaponCritic.NONE;
+    // Elemental nature is independent of the selected critical / armor table.
+    this.kiElement = normalizeKiElement(p.kiElement);
 
     // Damage typing
     this.damageType = p.damageType ?? game.animabf.combat.DamageType.NONE;
@@ -456,6 +459,11 @@ export class ABFAttackDataBuilder {
   }
   addTarget(t) {
     (this._p.targets ??= []).push(t);
+    return this;
+  }
+
+  kiElement(v) {
+    this._p.kiElement = normalizeKiElement(v);
     return this;
   }
 

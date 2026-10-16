@@ -108,45 +108,25 @@
         <p class='label'>{{localize 'macros.combat.dialog.weapon.notFound'}}</p>
       {{/if}}
 
-      {{#if this.ui.martialAttackTables}}
-        {{!-- Perfil Arte Marcial: tabla de ataque elegible (CON/FIL/PEN/ENE) segun las
-              artes del atacante (Dumah FIL/PEN, Velez ENE). 'impact' siempre disponible. --}}
+      {{#if this.ui.kiElements.length}}
         {{#> 'systems/animabf/templates/common/ui/custom-select.hbs'
-            title=(localize 'macros.combat.dialog.weapon.critic.title')
-            inputName='attacker.combat.criticSelected' }}
-          {{#each this.ui.martialAttackTables as |t|}}
-            <option value='{{t.value}}' {{#if t.selected}}selected{{/if}}>
-              {{localize (concat 'anima.ui.combat.armors.at.' t.value '.title')}}
-            </option>
+            title=(localize 'anima.combat.kiElement.title')
+            inputName='attacker.combat.kiElement' }}
+          <option value='' {{#unless this.attacker.combat.kiElement}}selected{{/unless}}>{{localize 'anima.combat.kiElement.none'}}</option>
+          {{#each this.ui.kiElements as |element|}}
+            <option value='{{element.value}}' {{#if element.selected}}selected{{/if}}>{{localize (concat 'anima.combat.kiElement.' element.value)}}</option>
           {{/each}}
         {{/'systems/animabf/templates/common/ui/custom-select.hbs'}}
-      {{else}}
-      {{#unless this.attacker.combat.unarmed}}
-        {{#if this.ui.weaponHasSecondaryCritic}}
-          {{#> 'systems/animabf/templates/common/ui/custom-select.hbs'
-              title=(localize 'macros.combat.dialog.weapon.critic.title')
-              inputName='attacker.combat.criticSelected' }}
-            <option {{#if (is "eq" this.attacker.combat.weapon.system.critic.primary.value this.attacker.combat.criticSelected)}}selected{{/if}}
-                    value='{{this.attacker.combat.weapon.system.critic.primary.value}}'>
-              {{localize (concat 'anima.ui.combat.armors.at.' this.attacker.combat.weapon.system.critic.primary.value '.title')}}
-            </option>
-            <option {{#if (is "eq" this.attacker.combat.weapon.system.critic.secondary.value this.attacker.combat.criticSelected)}}selected{{/if}}
-                    value='{{this.attacker.combat.weapon.system.critic.secondary.value}}'>
-              {{localize (concat 'anima.ui.combat.armors.at.' this.attacker.combat.weapon.system.critic.secondary.value '.title')}}
-            </option>
-          {{/'systems/animabf/templates/common/ui/custom-select.hbs'}}
-        {{else}}
-          {{#> 'systems/animabf/templates/common/ui/custom-select.hbs'
-              title=(localize 'macros.combat.dialog.weapon.critic.title')
-              disabled=true
-              inputName='attacker.combat.criticSelected' }}
-            <option selected value='{{this.attacker.combat.weapon.system.critic.primary.value}}'>
-              {{localize (concat 'anima.ui.combat.armors.at.' this.attacker.combat.weapon.system.critic.primary.value '.title')}}
-            </option>
-          {{/'systems/animabf/templates/common/ui/custom-select.hbs'}}
-        {{/if}}
-      {{/unless}}
       {{/if}}
+
+      {{#> 'systems/animabf/templates/common/ui/custom-select.hbs'
+          title=(localize 'macros.combat.dialog.weapon.critic.title')
+          disabled=this.ui.singleAttackCritic
+          inputName='attacker.combat.criticSelected' }}
+        {{#each this.ui.attackCritics as |critic|}}
+          <option value='{{critic.value}}' {{#if critic.selected}}selected{{/if}}>{{localize (concat 'anima.ui.combat.armors.at.' critic.value '.title')}}</option>
+        {{/each}}
+      {{/'systems/animabf/templates/common/ui/custom-select.hbs'}}
 
       {{> "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
           title=(localize 'macros.combat.dialog.damage.title')

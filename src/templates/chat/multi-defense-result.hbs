@@ -17,6 +17,10 @@
           <div class="mdr-row mdr-row-top" style="display:flex; align-items:center; gap:.5rem; flex-wrap:wrap;">
             <strong class="mdr-name" style="flex:1 1 auto; min-width:12rem;">{{label}}</strong>
 
+            {{#if kiElement}}
+              {{> 'systems/animabf/templates/common/ui/ki-element-badge.hbs' element=kiElement}}
+            {{/if}}
+
             {{#if hasCounter}}
               <span class="mdr-pill" style="border:1px solid var(--color-border-light-tertiary); border-radius:999px; padding:.1rem .5rem;">
                 {{localize "chat.multiDefenseResult.defense"}}: {{defenseTotal}}

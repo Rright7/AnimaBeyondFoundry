@@ -8,6 +8,10 @@
 
     {{#> "systems/animabf/templates/common/ui/group-body.hbs" class="defense-config"}}
 
+      {{#if this.attackData.kiElement}}
+        <p><strong>{{localize 'anima.combat.kiElement.title'}}:</strong> {{localize (concat 'anima.combat.kiElement.' this.attackData.kiElement)}}</p>
+      {{/if}}
+
       {{>
         "systems/animabf/templates/common/ui/horizontal-titled-input.hbs"
         title=(localize 'macros.combat.dialog.modifier.title')

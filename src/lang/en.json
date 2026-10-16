@@ -1,4 +1,12 @@
 {
+  "anima.combat.kiElement.title": "Attack element",
+  "anima.combat.kiElement.none": "No element",
+  "anima.combat.kiElement.fire": "Fire",
+  "anima.combat.kiElement.air": "Air",
+  "anima.combat.kiElement.water": "Water",
+  "anima.combat.kiElement.earth": "Earth",
+  "anima.combat.kiElement.light": "Light",
+  "anima.combat.kiElement.darkness": "Darkness",
   "anima.ui.combat.combatManeuver.slug.title": "Slug (registry identifier)",
   "anima.ui.combat.combatManeuver.actionType.title": "Action type",
   "anima.ui.combat.combatManeuver.actionType.active.title": "Active",

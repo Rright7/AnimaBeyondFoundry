@@ -19,6 +19,35 @@ function uiTyped(name) {
 }
 
 describe('applyKiSkillsModifiers — passive effects', () => {
+  test('keeps separately acquired elements at 10 CM each on repeated preparation', () => {
+    const skills = [inner('elementalAttackWater'), inner('elementalAttackFire')];
+    const data = makeData({ kiSkills: skills });
+    applyKiSkillsModifiers(data);
+    applyKiSkillsModifiers(data);
+    expect(skills.map(skill => skill.system.canonicalId)).toEqual([
+      'elementalAttackFire',
+      'elementalAttackWater'
+    ]);
+    expect(skills.map(skill => skill.system.martialKnowledge.value)).toEqual([10, 10]);
+    expect(data.general.modifiers.kiBonus.damage.value).toBe(0);
+  });
+
+  test('preserves legacy generic ids and resolves their named elements for sorting', () => {
+    const water = {
+      name: 'Ataque elemental: Hielo',
+      system: { canonicalId: 'elementalAttack' }
+    };
+    const generic = inner('elementalAttack');
+    const fire = inner('elementalAttackFire');
+    const data = makeData({ kiSkills: [water, generic, fire] });
+    applyKiSkillsModifiers(data);
+    expect(data.domine.kiSkills).toEqual([generic, fire, water]);
+    expect(water.system.canonicalId).toBe('elementalAttack');
+    expect(generic.system.canonicalId).toBe('elementalAttack');
+    expect(water.system.martialKnowledge.value).toBe(10);
+    expect(generic.system.martialKnowledge.value).toBe(10);
+  });
+
   test('damage effect adds to kiBonus.damage', () => {
     const data = makeData({ kiSkills: [inner('weaponAuraExtension')] });
     applyKiSkillsModifiers(data);
@@ -145,7 +174,13 @@ describe('applyKiSkillsModifiers — active Ki techniques', () => {
         flags: { animabf: { active: true } },
         system: {
           build: {
-            effects: [{ effectId: 'incremento-de-resistencia-magica', maintMode: 'maintained', tierOptions: ['+50 RM'] }]
+            effects: [
+              {
+                effectId: 'incremento-de-resistencia-magica',
+                maintMode: 'maintained',
+                tierOptions: ['+50 RM']
+              }
+            ]
           }
         }
       }
@@ -186,7 +221,13 @@ describe('applyKiSkillsModifiers — traza (provenance) de habilidades de Ki', (
         flags: { animabf: { active: true } },
         system: {
           build: {
-            effects: [{ effectId: 'incremento-de-resistencia-fisica', maintMode: 'maintained', tierOptions: ['+50 RF'] }]
+            effects: [
+              {
+                effectId: 'incremento-de-resistencia-fisica',
+                maintMode: 'maintained',
+                tierOptions: ['+50 RF']
+              }
+            ]
           }
         }
       }
@@ -239,10 +280,7 @@ describe('applyKiSkillsModifiers — lookup and mirroring', () => {
 describe('applyKiSkillsModifiers — Nemesis and canonical sort', () => {
   test('Nemesis list is processed independently (CM + prefix)', () => {
     const data = makeData({
-      nemesisSkills: [
-        uiTyped('Armadura de vacío'),
-        uiTyped('Noht')
-      ]
+      nemesisSkills: [uiTyped('Armadura de vacío'), uiTyped('Noht')]
     });
     applyKiSkillsModifiers(data);
     expect(data.domine.nemesisSkills[0].system.martialKnowledge.value).toBe(20);
@@ -251,10 +289,7 @@ describe('applyKiSkillsModifiers — Nemesis and canonical sort', () => {
 
   test('out-of-order abilities are reordered to canonical DFS', () => {
     const data = makeData({
-      kiSkills: [
-        uiTyped('Aura de combate'),
-        uiTyped('Extrusión de presencia')
-      ]
+      kiSkills: [uiTyped('Aura de combate'), uiTyped('Extrusión de presencia')]
     });
     applyKiSkillsModifiers(data);
     const names = data.domine.kiSkills.map(k => k.name);

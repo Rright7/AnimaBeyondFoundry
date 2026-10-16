@@ -3,9 +3,12 @@ import { ABFConfig } from '../ABFConfig';
 import { getAimedPenalty, getAimedZones } from '../combat/criticalTables.js';
 import { composeAimedPenalty } from '../equipment/qualities/composeWeaponEffects.js';
 import { resolveManeuverAttackPenalty } from '../combat/maneuvers/resolveManeuverPenalty.js';
+import {
+  ownedKiAttackElements,
+  resolveKiElementalAttack
+} from '../combat/kiElementalAttack.js';
 import { ABFAttackData } from '../combat/ABFAttackData';
 import { getSnapshotTargets } from '../actor/utils/getSnapshotTargets.js';
-import { playWeaponAttackAnimation } from '../animations/combatAnimations.js';
 import {
   activeTechniqueCombatBonuses,
   usableInstantCombatTechniques
@@ -97,6 +100,7 @@ export class AttackConfigurationDialog extends FormApplication {
             !resolvedWeapon && (attackerActor.system?.combat?.weapons?.length ?? 0) === 0,
           weaponUsed: resolvedWeapon?._id,
           criticSelected: undefined,
+          kiElement: '',
           weapon: resolvedWeapon,
           projectile: { value: false, type: '' },
           damage: { special: 0, final: 0 },
@@ -233,20 +237,31 @@ export class AttackConfigurationDialog extends FormApplication {
         weapon?.system?.critic?.secondary?.value !==
         game.animabf.weapon.NoneWeaponCritic.NONE;
 
-      // Perfil "Artes Marciales": el atacante elige la TABLA de ataque entre las que sus
-      // artes permiten (Dumah FIL/PEN, Velez ENE), no solo CON. 'impact' siempre disponible.
-      if (weapon.system?.isMartialArtsProfile?.value) {
-        const tables = martialArtAllowedAttackTables(this.attackerActor);
-        if (!tables.includes(combat.criticSelected)) combat.criticSelected = 'impact';
-        ui.martialAttackTables = tables.map(value => ({
-          value,
-          selected: value === combat.criticSelected
-        }));
-      }
-
       combat.damage.final =
         (combat.damage.special ?? 0) + (weapon?.system?.damage?.final?.value ?? 0);
     }
+
+    const elemental = resolveKiElementalAttack(
+      this.attackerActor,
+      weapon,
+      combat.kiElement,
+      combat.criticSelected,
+      weapon?.system?.isMartialArtsProfile?.value
+        ? martialArtAllowedAttackTables(this.attackerActor)
+        : undefined
+    );
+    combat.kiElement = elemental.element;
+    combat.criticSelected = elemental.critic;
+    combat.damage.final += elemental.damageBonus;
+    ui.kiElements = ownedKiAttackElements(this.attackerActor).map(element => ({
+      value: element.id,
+      selected: element.id === combat.kiElement
+    }));
+    ui.attackCritics = elemental.critics.map(value => ({
+      value,
+      selected: value === combat.criticSelected
+    }));
+    ui.singleAttackCritic = ui.attackCritics.length <= 1;
 
     // Ataques adicionales (RAW: 1 por cada 100 de HA final; penalizador por tamano
     // de arma -P20/-M30/-G40 a TODOS los ataques) y gasto de Cansancio (+15 por
@@ -306,6 +321,7 @@ export class AttackConfigurationDialog extends FormApplication {
   async _sendAttack() {
     const actor = this.attackerActor;
     if (!actor) return ui.notifications?.warn('Actor no encontrado.');
+    this.getData();
     const combat = this.modalData.attacker?.combat;
     const weapon = combat?.weapon;
     if (!weapon) return ui.notifications?.warn(game.i18n.localize('macros.combat.dialog.weapon.notFound'));
@@ -376,20 +392,15 @@ export class AttackConfigurationDialog extends FormApplication {
       // generalized once more qualities feed into appliedBy.
       const aimedPreciseApplied = aimedAppliedBy.includes('precise');
 
-      // Crítico secundario: -10 when the player picks the weapon's secondary
-      // critic instead of the primary one.
-      let secondaryCritPenalty = 0;
-      const primaryCritic = weapon.system?.critic?.primary?.value;
-      const secondaryCritic = weapon.system?.critic?.secondary?.value;
-      if (
-        combat.criticSelected &&
-        secondaryCritic &&
-        secondaryCritic !== '-' &&
-        combat.criticSelected === secondaryCritic &&
-        combat.criticSelected !== primaryCritic
-      ) {
-        secondaryCritPenalty = -10;
-      }
+      const { secondaryPenalty: secondaryCritPenalty } = resolveKiElementalAttack(
+        actor,
+        weapon,
+        combat.kiElement,
+        combat.criticSelected,
+        weapon.system?.isMartialArtsProfile?.value
+          ? martialArtAllowedAttackTables(actor)
+          : undefined
+      );
 
       // ── F6.3: Bonos de combate de Tecnicas de Ki ──────────────────────
       // Activas (mantenidas/sostenidas): su bono se aplica automaticamente.
@@ -528,6 +539,9 @@ export class AttackConfigurationDialog extends FormApplication {
         const precisaTag = aimedPreciseApplied ? ' [Precisa]' : '';
         dialogContribs.push(`Apuntado: ${zoneLabel} (${sign}${aimedPenalty})${precisaTag}`);
       }
+      if (combat.kiElement) {
+        dialogContribs.push(game.i18n.localize(`anima.combat.kiElement.${combat.kiElement}`));
+      }
       if (secondaryCritPenalty !== 0) {
         dialogContribs.push(`Crit. secundario (${secondaryCritPenalty})`);
       }
@@ -589,6 +603,7 @@ export class AttackConfigurationDialog extends FormApplication {
         .softArmorReduction(martialArtArmorReduction(actor).soft)
         .armorType(combat.criticSelected ?? weapon.system.critic?.primary?.value)
         .damageType(game.animabf.combat.DamageType.NONE)
+        .kiElement(combat.kiElement)
         .presence(Number(weapon.system.presence?.final?.value ?? 0))
         .isProjectile(!!combat.projectile?.value)
         .projectileType(weapon.system.shotType?.value ?? '')
@@ -637,12 +652,7 @@ export class AttackConfigurationDialog extends FormApplication {
 
       const attackMsg = await attackData.toChatMessage({ actor, weapon });
 
-      // Animacion del arma AL ATACAR: swing melee del atacante hacia el/los objetivo(s).
-      playWeaponAttackAnimation(
-        actor.getActiveTokens?.()[0],
-        Array.from(game.user?.targets ?? []),
-        weapon
-      );
+      // ABF Animations consumes the attack chat flags, including kiElement.
 
       if (attackMsg && this.modalData.maneuver?.slug) {
         await attackMsg.setFlag('animabf', 'maneuverSlug', this.modalData.maneuver.slug);

@@ -657,6 +657,7 @@ export class DefenseConfigurationDialog extends FormApplication {
               areaRadius: Number(attackData?.areaRadius) || 0,
               psychicDiscipline: attackData?.psychicDiscipline ?? '',
               // Nombre del arma para la animacion por tipo (espada, hacha, lanza...).
+              kiElement: attackData?.kiElement ?? '',
               weaponName: attackData?.weaponName ?? ''
             },
             // Tipo de defensa (dodge/block/shield) para la reaccion cuando la defensa tiene exito.

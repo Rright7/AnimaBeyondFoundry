@@ -16,7 +16,12 @@ import {
   stripTrailingValue,
   normalizeForLookup
 } from './parseKiSkills.js';
-import { KI_SKILLS, findKiSkillByName } from './kiSkills.js';
+import {
+  KI_SKILLS,
+  ELEMENTAL_KI_SKILLS,
+  findKiSkillByName,
+  findKiSkillById
+} from './kiSkills.js';
 
 function makeActor() {
   const created = [];
@@ -29,9 +34,9 @@ function makeActor() {
 }
 
 describe('canonical data', () => {
-  test('has 75 entries — 54 Ki + 21 Nemesis', () => {
-    expect(KI_SKILLS).toHaveLength(75);
-    expect(KI_SKILLS.filter(s => s.type === 'ki')).toHaveLength(54);
+  test('has 80 entries — 59 Ki + 21 Nemesis', () => {
+    expect(KI_SKILLS).toHaveLength(80);
+    expect(KI_SKILLS.filter(s => s.type === 'ki')).toHaveLength(59);
     expect(KI_SKILLS.filter(s => s.type === 'nemesis')).toHaveLength(21);
   });
 
@@ -133,8 +138,8 @@ describe('expandElementalAttack', () => {
 });
 
 describe('normalizeForLookup', () => {
-  test('strips elemental-attack element suffix', () => {
-    expect(normalizeForLookup('Ataque elemental: Fuego')).toBe('Ataque elemental');
+  test('preserves the elemental-attack element suffix', () => {
+    expect(normalizeForLookup('Ataque elemental: Fuego')).toBe('Ataque elemental: Fuego');
   });
 
   test('strips trailing numeric value', () => {
@@ -241,8 +246,54 @@ describe('importKiSkills — edge cases preserved from old importer', () => {
     expect(actor.created).toHaveLength(2);
     expect(actor.created[0].name).toBe('Ataque elemental: Fuego');
     expect(actor.created[1].name).toBe('Ataque elemental: Hielo');
+    expect(actor.created[0].system.canonicalId).toBe('elementalAttackFire');
+    expect(actor.created[1].system.canonicalId).toBe('elementalAttackWater');
+  });
+
+  test('imports all six elements as separate 10 CM abilities', async () => {
+    const actor = makeActor();
+    const result = await importKiSkills(
+      actor,
+      'Ataque elemental (Fuego, Aire, Agua, Tierra, Luz, Oscuridad)'
+    );
+    expect(result.notFound).toEqual([]);
+    expect(new Set(actor.created.map(item => item.system.canonicalId)).size).toBe(6);
+    expect(actor.created.map(item => item.system.martialKnowledge.value)).toEqual([
+      10, 10, 10, 10, 10, 10
+    ]);
+    expect(actor.created.map(item => item.system.canonicalId)).toEqual(
+      ELEMENTAL_KI_SKILLS.map(skill => skill.id)
+    );
+  });
+
+  test('recognises the Daño elemental spelling and old electrical aliases', async () => {
+    const actor = makeActor();
+    const result = await importKiSkills(actor, 'Daño elemental (Eléctrico, Tierra)');
+    expect(result.notFound).toEqual([]);
+    expect(actor.created.map(item => item.system.canonicalId)).toEqual([
+      'elementalAttackAir',
+      'elementalAttackEarth'
+    ]);
+  });
+
+  test('keeps an unknown element without assigning a different element', async () => {
+    const actor = makeActor();
+    const result = await importKiSkills(actor, 'Ataque elemental: Metal');
+    expect(result.notFound).toEqual(['Ataque elemental: Metal']);
+    expect(actor.created[0].system).toEqual({});
+  });
+
+  test('still recognises a legacy ability without choosing an element for it', async () => {
+    const actor = makeActor();
+    await importKiSkills(actor, 'Ataque elemental');
     expect(actor.created[0].system.canonicalId).toBe('elementalAttack');
-    expect(actor.created[1].system.canonicalId).toBe('elementalAttack');
+    expect(findKiSkillById('elementalAttack').martialKnowledge).toBe(10);
+    expect(findKiSkillById('elementalAttack', 'Ataque elemental: Fuego').id).toBe(
+      'elementalAttackFire'
+    );
+    expect(findKiSkillByName('Daño elemental: Oscuridad').id).toBe(
+      'elementalAttackDarkness'
+    );
   });
 
   test('Sellos suffix is stripped before processing', async () => {

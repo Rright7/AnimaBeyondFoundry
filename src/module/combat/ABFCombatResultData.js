@@ -1,3 +1,5 @@
+import { normalizeKiElement } from './kiElementalAttack.js';
+
 export class ABFCombatResultData {
   /** @param {Partial<ABFCombatResultData>} p */
   constructor(p = {}) {
@@ -25,6 +27,7 @@ export class ABFCombatResultData {
     // Tipo de critico/tabla del ataque (cut/thrust/impact/energy/...). Se propaga para que
     // el disparador de sangrado sepa si el critico es fisico (desangra) o de energia (no).
     this.armorType = p.armorType ?? '-';
+    this.kiElement = normalizeKiElement(p.kiElement);
     // Reduccion de TA BLANDA (Hakyoukuken) para la tarjeta: cantidad plana (-2) o, si
     // softArmorNullified, "anula" la TA blanda (Arcano).
     this.softReducedArmor = p.softReducedArmor ?? 0;
@@ -189,6 +192,11 @@ export class ABFCombatResultDataBuilder {
     this._p.critLocation = critResult.location ?? null;
     this._p.critLocationRoll = critResult.locationRoll ?? 0;
     this._p.critEffects = critResult.effects ?? null;
+    return this;
+  }
+
+  kiElement(v) {
+    this._p.kiElement = normalizeKiElement(v);
     return this;
   }
 

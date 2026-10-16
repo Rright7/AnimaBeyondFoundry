@@ -1,0 +1,20 @@
+{{#if element}}
+  <span
+    class='abf-ki-element-badge abf-ki-element-badge--{{element}}'
+    title='{{localize "anima.combat.kiElement.title"}}'
+  >
+    {{#if (is 'eq' element 'fire')}}<i aria-hidden='true' class='fas fa-fire'></i>{{/if}}
+    {{#if (is 'eq' element 'air')}}<i aria-hidden='true' class='fas fa-wind'></i>{{/if}}
+    {{#if (is 'eq' element 'water')}}<i aria-hidden='true' class='fas fa-tint'></i>{{/if}}
+    {{#if (is 'eq' element 'earth')}}<i
+        aria-hidden='true'
+        class='fas fa-mountain'
+      ></i>{{/if}}
+    {{#if (is 'eq' element 'light')}}<i aria-hidden='true' class='fas fa-sun'></i>{{/if}}
+    {{#if (is 'eq' element 'darkness')}}<i
+        aria-hidden='true'
+        class='fas fa-moon'
+      ></i>{{/if}}
+    <span>{{localize (concat 'anima.combat.kiElement.' element)}}</span>
+  </span>
+{{/if}}

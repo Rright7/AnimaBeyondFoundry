@@ -1,0 +1,61 @@
+@use 'sass:list';
+
+.animabf-chat-message {
+  .abf-ki-element-badge-row {
+    margin-bottom: 0.4rem;
+  }
+
+  .abf-ki-element-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-shrink: 0;
+    padding: 0.2rem 0.55rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 50%);
+
+    i {
+      width: 1em;
+      text-align: center;
+    }
+  }
+
+  $elements: (
+    fire: (
+      #9b3517,
+      #fff0e4
+    ),
+    air: (
+      #185c63,
+      #e6f6f5
+    ),
+    water: (
+      #205a96,
+      #eaf3ff
+    ),
+    earth: (
+      #66502b,
+      #f3eddd
+    ),
+    light: (
+      #795800,
+      #fff8d6
+    ),
+    darkness: (
+      #64418a,
+      #f0e9fa
+    )
+  );
+
+  @each $element, $colors in $elements {
+    .abf-ki-element-badge--#{$element} {
+      color: list.nth($colors, 1);
+      background-color: list.nth($colors, 2);
+    }
+  }
+}
